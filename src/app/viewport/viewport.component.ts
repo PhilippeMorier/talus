@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import {
   BoxGeometry,
   Mesh,
@@ -20,6 +20,8 @@ export class ViewportComponent implements AfterViewInit {
   private camera: PerspectiveCamera;
   private component: HTMLElement;
 
+  @ViewChild('canvas') private canvasRef: ElementRef;
+
   constructor(private componentRef: ElementRef) {
     this.component = componentRef.nativeElement as HTMLElement;
   }
@@ -30,7 +32,9 @@ export class ViewportComponent implements AfterViewInit {
   }
 
   private createScene(): void {
-    this.camera = new PerspectiveCamera(70, this.hostDimension.x / this.hostDimension.y, 0.01, 10);
+    const { x, y } = this.hostDimension;
+
+    this.camera = new PerspectiveCamera(70, x / y, 0.01, 10);
     this.camera.position.z = 1;
 
     this.scene = new Scene();
@@ -41,19 +45,15 @@ export class ViewportComponent implements AfterViewInit {
     const mesh = new Mesh(geometry, material);
     this.scene.add(mesh);
 
-    this.renderer = new WebGLRenderer({ antialias: true });
-    const { x, y } = this.hostDimension;
-    console.log(this.hostDimension);
+    this.renderer = new WebGLRenderer({ antialias: true, canvas: this.canvasRef.nativeElement });
     this.renderer.setSize(x, y);
-
-    this.component.appendChild(this.renderer.domElement);
   }
 
-  private animate() {
+  private animate = () => {
     requestAnimationFrame(this.animate);
 
     this.renderer.render(this.scene, this.camera);
-  }
+  };
 
   private get hostDimension(): Vector2 {
     const rect = this.component.getBoundingClientRect();
