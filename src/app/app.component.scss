@@ -1,0 +1,27 @@
+.grid {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 10% auto 10%;
+  grid-template-rows: 6em auto 4em;
+  grid-template-areas: 'header header header' 'nav main section' 'footer footer footer';
+}
+
+header {
+  grid-area: header;
+}
+
+nav {
+  grid-area: nav;
+}
+
+main {
+  grid-area: main;
+}
+
+section {
+  grid-area: section;
+}
+
+footer {
+  grid-area: footer;
+}
