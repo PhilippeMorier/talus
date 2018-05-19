@@ -1,5 +1,13 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { BoxGeometry, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import {
+  BoxGeometry,
+  Mesh,
+  MeshNormalMaterial,
+  PerspectiveCamera,
+  Scene,
+  Vector2,
+  WebGLRenderer,
+} from 'three';
 
 @Component({
   selector: 'tls-viewport',
