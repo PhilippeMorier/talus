@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import {
   BoxGeometry,
+  Clock,
   Mesh,
   MeshNormalMaterial,
   PerspectiveCamera,
@@ -8,6 +9,7 @@ import {
   Vector2,
   WebGLRenderer,
 } from 'three';
+import { FirstPersonControls } from '../FirstPersonControls';
 
 @Component({
   selector: 'tls-viewport',
@@ -19,8 +21,10 @@ export class ViewportComponent implements AfterViewInit {
   private scene: Scene;
   private camera: PerspectiveCamera;
   private component: HTMLElement;
+  private controls: FirstPersonControls;
+  private clock = new Clock(true);
 
-  @ViewChild('canvas') private canvasRef: ElementRef;
+  @ViewChild('canvas') private canvasRef: ElementRef<HTMLCanvasElement>;
 
   constructor(private componentRef: ElementRef) {
     this.component = componentRef.nativeElement as HTMLElement;
@@ -34,12 +38,20 @@ export class ViewportComponent implements AfterViewInit {
   private createScene(): void {
     const { x, y } = this.hostDimension;
 
-    this.camera = new PerspectiveCamera(70, x / y, 0.01, 10);
-    this.camera.position.z = 1;
+    this.camera = new PerspectiveCamera(70, x / y, 0.1, 1000);
+    this.camera.position.z = 10;
+
+    this.controls = new FirstPersonControls(this.camera, this.canvasRef.nativeElement);
+    this.controls.lookSpeed = 0.4;
+    this.controls.movementSpeed = 10;
+    this.controls.lookVertical = true;
+    this.controls.constrainVertical = true;
+    this.controls.verticalMin = 1.0;
+    this.controls.verticalMax = 2.0;
 
     this.scene = new Scene();
 
-    const geometry = new BoxGeometry(0.2, 0.2, 0.2);
+    const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshNormalMaterial();
 
     const mesh = new Mesh(geometry, material);
@@ -52,6 +64,7 @@ export class ViewportComponent implements AfterViewInit {
   private animate = () => {
     requestAnimationFrame(this.animate);
 
+    this.controls.update(this.clock.getDelta());
     this.renderer.render(this.scene, this.camera);
   };
 
