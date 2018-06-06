@@ -43,7 +43,7 @@ export class FirstPersonControls {
   private viewHalfX = 0;
   private viewHalfY = 0;
 
-  constructor(private object: Camera, private domElement?: HTMLCanvasElement) {
+  constructor(private camera: Camera, private domElement?: HTMLCanvasElement) {
     this.domElement.setAttribute('tabindex', '-1');
 
     this.handleResize();
@@ -62,7 +62,7 @@ export class FirstPersonControls {
     }
 
     if (this.heightSpeed) {
-      const y = MathThree.clamp(this.object.position.y, this.heightMin, this.heightMax);
+      const y = MathThree.clamp(this.camera.position.y, this.heightMin, this.heightMax);
       const heightDelta = y - this.heightMin;
 
       this.autoSpeedFactor = delta * (heightDelta * this.heightCoef);
@@ -73,24 +73,24 @@ export class FirstPersonControls {
     const actualMoveSpeed = delta * this.movementSpeed;
 
     if (this.moveForward || (this.autoForward && !this.moveBackward)) {
-      this.object.translateZ(-(actualMoveSpeed + this.autoSpeedFactor));
+      this.camera.translateZ(-(actualMoveSpeed + this.autoSpeedFactor));
     }
     if (this.moveBackward) {
-      this.object.translateZ(actualMoveSpeed);
+      this.camera.translateZ(actualMoveSpeed);
     }
 
     if (this.moveLeft) {
-      this.object.translateX(-actualMoveSpeed);
+      this.camera.translateX(-actualMoveSpeed);
     }
     if (this.moveRight) {
-      this.object.translateX(actualMoveSpeed);
+      this.camera.translateX(actualMoveSpeed);
     }
 
     if (this.moveUp) {
-      this.object.translateY(actualMoveSpeed);
+      this.camera.translateY(actualMoveSpeed);
     }
     if (this.moveDown) {
-      this.object.translateY(-actualMoveSpeed);
+      this.camera.translateY(-actualMoveSpeed);
     }
 
     let actualLookSpeed = delta * this.lookSpeed;
@@ -120,13 +120,13 @@ export class FirstPersonControls {
     }
 
     const targetPosition = this.target;
-    const position = this.object.position;
+    const position = this.camera.position;
 
     targetPosition.x = position.x + 100 * Math.sin(this.phi) * Math.cos(this.theta);
     targetPosition.y = position.y + 100 * Math.cos(this.phi);
     targetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
 
-    this.object.lookAt(targetPosition);
+    this.camera.lookAt(targetPosition);
   }
 
   public dispose(): void {
