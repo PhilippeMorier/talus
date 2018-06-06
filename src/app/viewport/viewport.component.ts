@@ -39,8 +39,21 @@ export class ViewportComponent implements AfterViewInit {
     const { x, y } = this.hostDimension;
 
     this.camera = new PerspectiveCamera(70, x / y, 0.1, 1000);
-    this.camera.position.z = 10;
+    this.camera.position.z = 1;
+    this.setupCameraControls();
 
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshNormalMaterial();
+    const mesh = new Mesh(geometry, material);
+
+    this.scene = new Scene();
+    this.scene.add(mesh);
+
+    this.renderer = new WebGLRenderer({ antialias: true, canvas: this.canvasRef.nativeElement });
+    this.renderer.setSize(x, y);
+  }
+
+  private setupCameraControls() {
     this.controls = new FirstPersonControls(this.camera, this.canvasRef.nativeElement);
     this.controls.lookSpeed = 0.4;
     this.controls.movementSpeed = 10;
@@ -48,17 +61,6 @@ export class ViewportComponent implements AfterViewInit {
     this.controls.constrainVertical = true;
     this.controls.verticalMin = 1.0;
     this.controls.verticalMax = 2.0;
-
-    this.scene = new Scene();
-
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshNormalMaterial();
-
-    const mesh = new Mesh(geometry, material);
-    this.scene.add(mesh);
-
-    this.renderer = new WebGLRenderer({ antialias: true, canvas: this.canvasRef.nativeElement });
-    this.renderer.setSize(x, y);
   }
 
   private animate = () => {
