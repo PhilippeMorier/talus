@@ -2,7 +2,7 @@ import { Voxel } from './world';
 import { Vector3 } from './vector3';
 import { Chunk } from './chunk';
 
-describe('Chunk', () => {
+describe('chunk', () => {
   let chunk: Chunk;
   const size: Vector3 = [4, 2, 3];
 
@@ -21,7 +21,7 @@ describe('Chunk', () => {
   });
 
   it('should set and get the same getVoxel', () => {
-    chunk.voxels[0][1][2] = new Voxel(42);
+    chunk.voxels[0][1][2] = new Voxel(1, 42);
 
     expect(chunk.voxels[0][1][2].type).toEqual(42);
   });

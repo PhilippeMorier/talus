@@ -2,7 +2,7 @@ import { Vector3 } from './vector3';
 import { Chunk } from './chunk';
 
 export class Voxel {
-  public constructor(public type: number) {}
+  public constructor(public objectId: number, public type: number) {}
 }
 
 interface Position {
