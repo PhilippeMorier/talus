@@ -1,6 +1,11 @@
 import { Vector3 } from './vector3';
 import { Chunk } from './chunk';
 
+export interface VoxelResult {
+  voxel: Voxel;
+  index: Vector3;
+}
+
 export class Voxel {
   public constructor(public objectId: number, public type: number) {}
 }
@@ -14,18 +19,45 @@ export class World {
   private chunks: Chunk[][][] = [];
 
   public constructor(private readonly size: Vector3, private readonly chunkSize: Vector3) {
-    this.chunks = new Array(this.size[0]);
-    for (let x = 0; x < this.size[0]; x++) {
-      this.chunks[x] = new Array(this.size[1]);
-      for (let y = 0; y < this.size[1]; y++) {
+    const [sizeX, sizeY] = size;
+    this.chunks = new Array(sizeX);
+
+    for (let x = 0; x < sizeX; x++) {
+      this.chunks[x] = new Array(sizeY);
+      for (let y = 0; y < sizeY; y++) {
         this.chunks[x][y] = [];
       }
     }
   }
 
-  public getVoxel(position: Vector3): Voxel {
+  public get length(): Vector3 {
+    return [
+      this.size[0] * this.chunkSize[0],
+      this.size[1] * this.chunkSize[1],
+      this.size[2] * this.chunkSize[2],
+    ];
+  }
+
+  public *iterate(
+    [minX, minY, minZ]: Vector3,
+    [maxX, maxY, maxZ]: Vector3,
+  ): IterableIterator<VoxelResult> {
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        for (let z = minZ; z <= maxZ; z++) {
+          yield { index: [x, y, z], voxel: this.getVoxel([x, y, z]) };
+        }
+      }
+    }
+  }
+
+  public getVoxel(position: Vector3): Voxel | undefined {
     const { c, v } = this.calcPosition(position);
     const chunk = this.chunks[c[0]][c[1]][c[2]];
+
+    if (!chunk) {
+      return undefined;
+    }
 
     return chunk.voxels[v[0]][v[1]][v[2]];
   }
