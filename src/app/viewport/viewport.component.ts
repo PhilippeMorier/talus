@@ -1,15 +1,19 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import {
-  BoxGeometry,
+  AxesHelper,
+  BufferGeometry,
   Clock,
+  Float32BufferAttribute,
   Mesh,
-  MeshNormalMaterial,
+  MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
   Vector2,
   WebGLRenderer,
 } from 'three';
 import { FirstPersonControls } from '../FirstPersonControls';
+import { Voxel, World } from '../world/world';
+import { getNaiveMesh } from '../mesher/naive-mesher';
 
 @Component({
   selector: 'tls-viewport',
@@ -42,11 +46,17 @@ export class ViewportComponent implements AfterViewInit {
     this.camera.position.z = 1;
     this.setupCameraControls();
 
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshNormalMaterial();
+    const world = this.createWorld();
+    const vertices = getNaiveMesh(world, 1, [0, 0, 0], [3, 3, 0]);
+
+    const geometry = new BufferGeometry();
+    geometry.addAttribute('position', new Float32BufferAttribute(vertices, 3));
+    const material = new MeshBasicMaterial({ color: 0xff0000 });
+    material.wireframe = true;
     const mesh = new Mesh(geometry, material);
 
     this.scene = new Scene();
+    this.scene.add(new AxesHelper(10));
     this.scene.add(mesh);
 
     this.renderer = new WebGLRenderer({ antialias: true, canvas: this.canvasRef.nativeElement });
@@ -73,5 +83,12 @@ export class ViewportComponent implements AfterViewInit {
   private get hostDimension(): Vector2 {
     const rect = this.component.getBoundingClientRect();
     return new Vector2(rect.width, rect.height);
+  }
+
+  private createWorld(): World {
+    const world = new World([3, 3, 3], [4, 4, 4]);
+    world.setVoxel([0, 0, 0], new Voxel(1, 42));
+
+    return world;
   }
 }
