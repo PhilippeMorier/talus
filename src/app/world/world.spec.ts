@@ -8,7 +8,7 @@ describe('world', () => {
     world = new World([3, 3, 3], [4, 4, 4]);
   });
 
-  it('should set/get a voxel', () => {
+  it('should set & get a voxel', () => {
     const position: Vector3 = [2, 2, 2];
     const expectedVoxel = new Voxel(1, 42);
     world.setVoxel(position, expectedVoxel);
