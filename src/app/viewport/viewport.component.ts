@@ -47,7 +47,7 @@ export class ViewportComponent implements AfterViewInit {
     this.setupCameraControls();
 
     const world = this.createWorld();
-    const vertices = getNaiveMesh(world, 1, [0, 0, 0], [3, 3, 0]);
+    const vertices = getNaiveMesh(world, 1, [0, 0, 0], [4, 4, 4]);
 
     const geometry = new BufferGeometry();
     geometry.addAttribute('position', new Float32BufferAttribute(vertices, 3));
@@ -88,6 +88,10 @@ export class ViewportComponent implements AfterViewInit {
   private createWorld(): World {
     const world = new World([3, 3, 3], [4, 4, 4]);
     world.setVoxel([0, 0, 0], new Voxel(1, 42));
+    world.setVoxel([1, 1, 1], new Voxel(1, 42));
+    world.setVoxel([2, 2, 2], new Voxel(1, 42));
+    world.setVoxel([3, 3, 3], new Voxel(1, 42));
+    world.setVoxel([4, 4, 4], new Voxel(1, 42));
 
     return world;
   }

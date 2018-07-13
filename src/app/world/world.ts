@@ -20,7 +20,7 @@ export class World {
 
   public constructor(private readonly size: Vector3, private readonly chunkSize: Vector3) {
     const [sizeX, sizeY] = size;
-    this.chunks = new Array(sizeX);
+    this.chunks = new Array(sizeX); // TODO: this creates HOLES, use .push to keep array PACKED *elements types)
 
     for (let x = 0; x < sizeX; x++) {
       this.chunks[x] = new Array(sizeY);
@@ -45,7 +45,10 @@ export class World {
     for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
         for (let z = minZ; z <= maxZ; z++) {
-          yield { index: [x, y, z], voxel: this.getVoxel([x, y, z]) };
+          const voxel = this.getVoxel([x, y, z]);
+          if (voxel) {
+            yield { index: [x, y, z], voxel: voxel };
+          }
         }
       }
     }
