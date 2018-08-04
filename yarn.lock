@@ -3595,7 +3595,7 @@ karma-jasmine@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/karma-jasmine/-/karma-jasmine-1.1.2.tgz#394f2b25ffb4a644b9ada6f22d443e2fd08886c3"
 
-karma-mocha-reporter@^2.2.5:
+karma-mocha-reporter@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/karma-mocha-reporter/-/karma-mocha-reporter-2.2.5.tgz#15120095e8ed819186e47a0b012f3cd741895560"
   dependencies:
