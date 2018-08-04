@@ -14,6 +14,7 @@ import {
 import { FirstPersonControls } from '../FirstPersonControls';
 import { Voxel, World } from '../world/world';
 import { getNaiveMesh } from '../mesher/naive-mesher';
+import { sub3, Vector3 } from '../world/vector3';
 
 @Component({
   selector: 'tls-viewport',
@@ -47,7 +48,7 @@ export class ViewportComponent implements AfterViewInit {
     this.setupCameraControls();
 
     const world = this.createWorld();
-    const vertices = getNaiveMesh(world, 1, [0, 0, 0], [4, 4, 4]);
+    const vertices = getNaiveMesh(world, 1, [0, 0, 0], sub3(world.length, [1, 1, 1]));
 
     const geometry = new BufferGeometry();
     geometry.addAttribute('position', new Float32BufferAttribute(vertices, 3));
@@ -92,6 +93,16 @@ export class ViewportComponent implements AfterViewInit {
     world.setVoxel([2, 2, 2], new Voxel(1, 42));
     world.setVoxel([3, 3, 3], new Voxel(1, 42));
     world.setVoxel([4, 4, 4], new Voxel(1, 42));
+
+    const nextRandom = (max: number) => Math.floor(Math.random() * Math.floor(max));
+    for (let i = 0; i < 100; i++) {
+      const position: Vector3 = [
+        nextRandom(3 * 4 - 1),
+        nextRandom(3 * 4 - 1),
+        nextRandom(3 * 4 - 1),
+      ];
+      world.setVoxel(position, new Voxel(1, 42));
+    }
 
     return world;
   }
