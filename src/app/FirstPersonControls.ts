@@ -1,13 +1,20 @@
 import { Camera, Math as MathThree, Vector3 } from 'three';
 
 export class FirstPersonControls {
+  movementSpeed = 1.0;
+  lookSpeed = 0.005;
+
+  lookVertical = true;
+
+  constrainVertical = false;
+  verticalMin = 0;
+  verticalMax = Math.PI;
+
+  lat = 0;
+  lon = 0;
+
   private target: Vector3 = new Vector3(0, 0, 0);
   private enabled = true;
-
-  public movementSpeed = 1.0;
-  public lookSpeed = 0.005;
-
-  public lookVertical = true;
   private autoForward = false;
 
   private activeLook = true;
@@ -17,17 +24,10 @@ export class FirstPersonControls {
   private heightMin = 0.0;
   private heightMax = 1.0;
 
-  public constrainVertical = false;
-  public verticalMin = 0;
-  public verticalMax = Math.PI;
-
   private autoSpeedFactor = 0.0;
 
   private mouseX = 0;
   private mouseY = 0;
-
-  public lat = 0;
-  public lon = 0;
   private phi = 0;
   private theta = 0;
 
@@ -56,7 +56,7 @@ export class FirstPersonControls {
     this.domElement.addEventListener('keyup', e => this.onKeyUp(e), false);
   }
 
-  public update(delta: number): void {
+  update(delta: number): void {
     if (this.enabled === false) {
       return;
     }
@@ -129,7 +129,7 @@ export class FirstPersonControls {
     this.camera.lookAt(targetPosition);
   }
 
-  public dispose(): void {
+  dispose(): void {
     this.domElement.removeEventListener('contextmenu', this.contextmenu, false);
     this.domElement.removeEventListener('mousedown', this.onMouseDown, false);
     this.domElement.removeEventListener('mousemove', this.onMouseMove, false);
@@ -139,12 +139,12 @@ export class FirstPersonControls {
     window.removeEventListener('keyup', this.onKeyUp, false);
   }
 
-  private handleResize() {
+  private handleResize(): void {
     this.viewHalfX = this.domElement.offsetWidth / 2;
     this.viewHalfY = this.domElement.offsetHeight / 2;
   }
 
-  private onMouseDown(event: MouseEvent) {
+  private onMouseDown(event: MouseEvent): void {
     this.domElement.focus();
 
     event.preventDefault();
@@ -164,7 +164,7 @@ export class FirstPersonControls {
     this.mouseDragOn = true;
   }
 
-  private onMouseUp(event: MouseEvent) {
+  private onMouseUp(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -182,12 +182,12 @@ export class FirstPersonControls {
     this.mouseDragOn = false;
   }
 
-  private onMouseMove(event: MouseEvent) {
+  private onMouseMove(event: MouseEvent): void {
     this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
     this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
   }
 
-  private onKeyDown(event: KeyboardEvent) {
+  private onKeyDown(event: KeyboardEvent): void {
     switch (event.keyCode) {
       case 38: /*up*/
       case 87:
@@ -218,7 +218,7 @@ export class FirstPersonControls {
     }
   }
 
-  private onKeyUp(event: KeyboardEvent) {
+  private onKeyUp(event: KeyboardEvent): void {
     switch (event.keyCode) {
       case 38: /*up*/
       case 87:
@@ -249,7 +249,7 @@ export class FirstPersonControls {
     }
   }
 
-  private contextmenu(event: MouseEvent) {
+  private contextmenu(event: MouseEvent): void {
     event.preventDefault();
   }
 }

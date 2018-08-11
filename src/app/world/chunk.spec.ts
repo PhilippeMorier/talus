@@ -1,6 +1,6 @@
-import { Voxel } from './world';
-import { Vector3 } from './vector3';
 import { Chunk } from './chunk';
+import { Vector3 } from './vector3';
+import { Voxel } from './world';
 
 describe('chunk', () => {
   let chunk: Chunk;

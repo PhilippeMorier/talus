@@ -1,5 +1,5 @@
-import { VoxelResult, World } from '../world/world';
 import { Vector3 } from '../world/vector3';
+import { VoxelResult, World } from '../world/world';
 
 export function getNaiveMesh(world: World, objectId: number, from: Vector3, to: Vector3): number[] {
   const vertices: number[] = [];

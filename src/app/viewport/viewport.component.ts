@@ -11,10 +11,10 @@ import {
   Vector2,
   WebGLRenderer,
 } from 'three';
-import { FirstPersonControls } from '../FirstPersonControls';
-import { Voxel, World } from '../world/world';
 import { getNaiveMesh } from '../mesher/naive-mesher';
+import { OrbitControls } from '../orbit-controls';
 import { sub3, Vector3 } from '../world/vector3';
+import { Voxel, World } from '../world/world';
 
 @Component({
   selector: 'tls-viewport',
@@ -26,16 +26,17 @@ export class ViewportComponent implements AfterViewInit {
   private scene: Scene;
   private camera: PerspectiveCamera;
   private component: HTMLElement;
-  private controls: FirstPersonControls;
+  private controls: OrbitControls;
   private clock = new Clock(true);
 
-  @ViewChild('canvas') private canvasRef: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas')
+  private canvasRef: ElementRef<HTMLCanvasElement>;
 
   constructor(private componentRef: ElementRef) {
     this.component = componentRef.nativeElement as HTMLElement;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.createScene();
     this.animate();
   }
@@ -64,14 +65,16 @@ export class ViewportComponent implements AfterViewInit {
     this.renderer.setSize(x, y);
   }
 
-  private setupCameraControls() {
-    this.controls = new FirstPersonControls(this.camera, this.canvasRef.nativeElement);
-    this.controls.lookSpeed = 0.4;
-    this.controls.movementSpeed = 10;
-    this.controls.lookVertical = true;
-    this.controls.constrainVertical = true;
-    this.controls.verticalMin = 1.0;
-    this.controls.verticalMax = 2.0;
+  private setupCameraControls(): void {
+    // this.controls = new FirstPersonControls(this.camera, this.canvasRef.nativeElement);
+    // this.controls.lookSpeed = 0.4;
+    // this.controls.movementSpeed = 10;
+    // this.controls.lookVertical = true;
+    // this.controls.constrainVertical = true;
+    // this.controls.verticalMin = 1.0;
+    // this.controls.verticalMax = 2.0;
+
+    this.controls = new OrbitControls(this.camera, this.canvasRef.nativeElement.parentElement);
   }
 
   private animate = () => {

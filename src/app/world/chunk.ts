@@ -2,9 +2,9 @@ import { Vector3 } from './vector3';
 import { Voxel } from './world';
 
 export class Chunk {
-  public voxels: Voxel[][][];
+  voxels: Voxel[][][];
 
-  public constructor(private readonly size: Vector3) {
+  constructor(private readonly size: Vector3) {
     this.initialize();
   }
 

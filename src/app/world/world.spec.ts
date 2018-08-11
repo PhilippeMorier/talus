@@ -1,5 +1,5 @@
-import { Voxel, VoxelResult, World } from './world';
 import { Vector3 } from './vector3';
+import { Voxel, VoxelResult, World } from './world';
 
 describe('world', () => {
   let world: World;

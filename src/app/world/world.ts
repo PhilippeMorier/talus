@@ -1,5 +1,5 @@
-import { Vector3 } from './vector3';
 import { Chunk } from './chunk';
+import { Vector3 } from './vector3';
 
 export interface VoxelResult {
   voxel: Voxel;
@@ -7,7 +7,7 @@ export interface VoxelResult {
 }
 
 export class Voxel {
-  public constructor(public objectId: number, public type: number) {}
+  constructor(public objectId: number, public type: number) {}
 }
 
 interface Position {
@@ -18,7 +18,7 @@ interface Position {
 export class World {
   private chunks: Chunk[][][] = [];
 
-  public constructor(private readonly size: Vector3, private readonly chunkSize: Vector3) {
+  constructor(private readonly size: Vector3, private readonly chunkSize: Vector3) {
     const [sizeX, sizeY] = size;
     this.chunks = new Array(sizeX); // TODO: this creates HOLES, use .push to keep array PACKED *elements types)
 
@@ -30,7 +30,7 @@ export class World {
     }
   }
 
-  public get length(): Vector3 {
+  get length(): Vector3 {
     return [
       this.size[0] * this.chunkSize[0],
       this.size[1] * this.chunkSize[1],
@@ -38,7 +38,7 @@ export class World {
     ];
   }
 
-  public *iterate(
+  *iterate(
     [minX, minY, minZ]: Vector3,
     [maxX, maxY, maxZ]: Vector3,
   ): IterableIterator<VoxelResult> {
@@ -54,7 +54,7 @@ export class World {
     }
   }
 
-  public getVoxel(position: Vector3): Voxel | undefined {
+  getVoxel(position: Vector3): Voxel | undefined {
     const { c, v } = this.calcPosition(position);
     const chunk = this.chunks[c[0]][c[1]][c[2]];
 
@@ -65,7 +65,7 @@ export class World {
     return chunk.voxels[v[0]][v[1]][v[2]];
   }
 
-  public setVoxel(position: Vector3, voxel: Voxel): void {
+  setVoxel(position: Vector3, voxel: Voxel): void {
     const { c, v } = this.calcPosition(position);
 
     const chunk = this.chunks[c[0]][c[1]][c[2]];
