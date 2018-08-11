@@ -74,7 +74,7 @@ export class ViewportComponent implements AfterViewInit {
     // this.controls.verticalMin = 1.0;
     // this.controls.verticalMax = 2.0;
 
-    this.controls = new OrbitControls(this.camera, this.canvasRef.nativeElement.parentElement);
+    this.controls = new OrbitControls(this.camera);
   }
 
   private animate = () => {
