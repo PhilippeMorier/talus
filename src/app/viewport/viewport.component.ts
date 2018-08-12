@@ -9,6 +9,7 @@ import {
   PerspectiveCamera,
   Scene,
   Vector2,
+  Vector3 as Vec3,
   WebGLRenderer,
 } from 'three';
 import { getNaiveMesh } from '../mesher/naive-mesher';
@@ -45,8 +46,8 @@ export class ViewportComponent implements AfterViewInit {
     const { x, y } = this.hostDimension;
 
     this.camera = new PerspectiveCamera(70, x / y, 0.1, 1000);
-    this.camera.position.z = 1;
-    this.setupCameraControls();
+    this.camera.up = new Vec3(0, 0, 1);
+    this.camera.position.z = 30;
 
     const world = this.createWorld();
     const vertices = getNaiveMesh(world, 1, [0, 0, 0], sub3(world.length, [1, 1, 1]));
@@ -54,7 +55,7 @@ export class ViewportComponent implements AfterViewInit {
     const geometry = new BufferGeometry();
     geometry.addAttribute('position', new Float32BufferAttribute(vertices, 3));
     const material = new MeshBasicMaterial({ color: 0xff0000 });
-    material.wireframe = true;
+    material.wireframe = false;
     const mesh = new Mesh(geometry, material);
 
     this.scene = new Scene();
@@ -63,6 +64,8 @@ export class ViewportComponent implements AfterViewInit {
 
     this.renderer = new WebGLRenderer({ antialias: true, canvas: this.canvasRef.nativeElement });
     this.renderer.setSize(x, y);
+
+    this.setupCameraControls();
   }
 
   private setupCameraControls(): void {
@@ -74,7 +77,7 @@ export class ViewportComponent implements AfterViewInit {
     // this.controls.verticalMin = 1.0;
     // this.controls.verticalMax = 2.0;
 
-    this.controls = new OrbitControls(this.camera);
+    this.controls = new OrbitControls(this.camera, this.scene);
   }
 
   private animate = () => {
