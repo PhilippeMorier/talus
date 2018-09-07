@@ -29,6 +29,6 @@ describe('world', () => {
       i++;
     }
 
-    expect(i).toBe(8);
+    expect(i).toBe(2);
   });
 });
