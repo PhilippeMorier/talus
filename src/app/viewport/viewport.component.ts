@@ -9,6 +9,9 @@ import {
   Vector3,
   VertexData,
 } from 'babylonjs';
+import { getNaiveMesh } from '../mesher/naive-mesher';
+import { Vector3 as Vec3 } from '../world/vector3';
+import { Voxel, World } from '../world/world';
 
 @Component({
   selector: 'tls-viewport',
@@ -44,43 +47,39 @@ export class ViewportComponent implements AfterViewInit {
       scene,
     );
     camera.attachControl(this.canvasRef.nativeElement, true, false, 2);
-    camera.setPosition(new Vector3(0, 0, 10));
+    camera.setPosition(new Vector3(0, 10, 35));
 
     const light1: HemisphericLight = new HemisphericLight('light1', new Vector3(0, 1, 1), scene);
 
-    const box: Mesh = MeshBuilder.CreateBox('box', { size: 1 }, scene);
-
     const customMesh = new Mesh('custom', scene);
-
-    const positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
-    const indices = [0, 1, 2, 3, 4, 5];
     const vertexData = new VertexData();
-
-    vertexData.positions = positions;
-    vertexData.indices = indices;
+    const meshData = getNaiveMesh(this.createWorld(), [0, 0, 0], [11, 11, 11]);
+    vertexData.positions = meshData.positions;
+    vertexData.indices = meshData.indices;
     vertexData.applyToMesh(customMesh);
 
     return scene;
   }
 
-  // private createWorld(): World {
-  //   const world = new World([3, 3, 3], [4, 4, 4]);
-  //   world.setVoxel([0, 0, 0], new Voxel(1, 42));
-  //   world.setVoxel([1, 1, 1], new Voxel(1, 42));
-  //   world.setVoxel([2, 2, 2], new Voxel(1, 42));
-  //   world.setVoxel([3, 3, 3], new Voxel(1, 42));
-  //   world.setVoxel([4, 4, 4], new Voxel(1, 42));
-  //
-  //   const nextRandom = (max: number) => Math.floor(Math.random() * Math.floor(max));
-  //   for (let i = 0; i < 100; i++) {
-  //     const position: Vector3 = [
-  //       nextRandom(3 * 4 - 1),
-  //       nextRandom(3 * 4 - 1),
-  //       nextRandom(3 * 4 - 1),
-  //     ];
-  //     world.setVoxel(position, new Voxel(1, 42));
-  //   }
-  //
-  //   return world;
-  // }
+  private createWorld(): World {
+    const world = new World([3, 3, 3], [4, 4, 4]);
+    const maxIndex = 3 * 4 - 1;
+    world.setVoxel([0, 0, 0], new Voxel(1, 42));
+    world.setVoxel([maxIndex, 0, 0], new Voxel(1, 42));
+    // world.setVoxel([0, 0, maxIndex], new Voxel(1, 42));
+    // world.setVoxel([maxIndex, 0, maxIndex], new Voxel(1, 42));
+
+    world.setVoxel([0, maxIndex, 0], new Voxel(1, 42));
+    world.setVoxel([maxIndex, maxIndex, 0], new Voxel(1, 42));
+    world.setVoxel([0, maxIndex, maxIndex], new Voxel(1, 42));
+    world.setVoxel([maxIndex, maxIndex, maxIndex], new Voxel(1, 42));
+
+    // const nextRandom = (max: number) => Math.floor(Math.random() * Math.floor(max));
+    // for (let i = 0; i < 100; i++) {
+    //   const position: Vec3 = [nextRandom(maxIndex), nextRandom(maxIndex), nextRandom(maxIndex)];
+    //   world.setVoxel(position, new Voxel(1, 42));
+    // }
+
+    return world;
+  }
 }
