@@ -105,10 +105,5 @@
       }
     }
   },
-  "defaultProject": "talus",
-  "cli": {
-    "warnings": {
-      "typescriptMismatch": false
-    }
-  }
+  "defaultProject": "talus"
 }
