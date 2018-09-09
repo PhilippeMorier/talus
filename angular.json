@@ -75,6 +75,18 @@
             "assets": ["src/favicon.ico", "src/assets"]
           }
         },
+        "benchmark": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/benchmark.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.benchmark.json",
+            "karmaConfig": "src/karma.benchmark.conf.js",
+            "styles": [],
+            "scripts": [],
+            "assets": []
+          }
+        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
