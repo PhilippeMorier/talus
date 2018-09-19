@@ -4,7 +4,7 @@ import { Voxel } from './world';
 export class Chunk {
   voxels: Voxel[][][];
 
-  constructor(private readonly size: Vector3) {
+  constructor(readonly size: Vector3) {
     this.initialize();
   }
 
