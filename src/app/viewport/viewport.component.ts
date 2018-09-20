@@ -4,13 +4,12 @@ import {
   Engine,
   HemisphericLight,
   Mesh,
-  MeshBuilder,
   Scene,
   Vector3,
   VertexData,
 } from 'babylonjs';
 import { getNaiveMesh } from '../mesher/naive-mesher';
-import { Vector3 as Vec3 } from '../world/vector3';
+import { Chunk } from '../world/chunk';
 import { Voxel, World } from '../world/world';
 
 @Component({
@@ -47,39 +46,22 @@ export class ViewportComponent implements AfterViewInit {
       scene,
     );
     camera.attachControl(this.canvasRef.nativeElement, true, false, 2);
-    camera.setPosition(new Vector3(0, 10, 35));
+    camera.setPosition(new Vector3(0, 0, 35));
 
     const light1: HemisphericLight = new HemisphericLight('light1', new Vector3(0, 1, 1), scene);
 
     const customMesh = new Mesh('custom', scene);
     const vertexData = new VertexData();
-    const meshData = getNaiveMesh(this.createWorld(), [0, 0, 0], [11, 11, 11]);
+
+    const chunk = new Chunk([4, 4, 4]);
+    chunk.voxels[0][0][0] = new Voxel(1, 42);
+    chunk.voxels[3][3][3] = new Voxel(1, 42);
+    const meshData = getNaiveMesh(chunk);
+
     vertexData.positions = meshData.positions;
     vertexData.indices = meshData.indices;
     vertexData.applyToMesh(customMesh);
 
     return scene;
-  }
-
-  private createWorld(): World {
-    const world = new World([3, 3, 3], [4, 4, 4]);
-    const maxIndex = 3 * 4 - 1;
-    world.setVoxel([0, 0, 0], new Voxel(1, 42));
-    world.setVoxel([maxIndex, 0, 0], new Voxel(1, 42));
-    // world.setVoxel([0, 0, maxIndex], new Voxel(1, 42));
-    // world.setVoxel([maxIndex, 0, maxIndex], new Voxel(1, 42));
-
-    world.setVoxel([0, maxIndex, 0], new Voxel(1, 42));
-    world.setVoxel([maxIndex, maxIndex, 0], new Voxel(1, 42));
-    world.setVoxel([0, maxIndex, maxIndex], new Voxel(1, 42));
-    world.setVoxel([maxIndex, maxIndex, maxIndex], new Voxel(1, 42));
-
-    // const nextRandom = (max: number) => Math.floor(Math.random() * Math.floor(max));
-    // for (let i = 0; i < 100; i++) {
-    //   const position: Vec3 = [nextRandom(maxIndex), nextRandom(maxIndex), nextRandom(maxIndex)];
-    //   world.setVoxel(position, new Voxel(1, 42));
-    // }
-
-    return world;
   }
 }

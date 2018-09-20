@@ -1,117 +1,54 @@
-import { Vector3 } from '../world/vector3';
-import { VoxelResult, World } from '../world/world';
+import { Chunk } from '../world/chunk';
+import { X, Y, Z } from '../world/vector3';
 
 export interface MeshData {
   positions: number[];
   indices: number[];
 }
 
-export function getNaiveMesh(world: World, from: Vector3, to: Vector3): MeshData {
-  const positions: number[] = [];
-  const indices: number[] = [];
-  let i = 0;
+export function getNaiveMesh(chunk: Chunk): MeshData {
+  const indices = [];
+  const positions = [];
 
-  const iterator = world.iterate(from, to);
-  let result: IteratorResult<VoxelResult>;
-  while (!(result = iterator.next()).done) {
-    const [x, y, z] = result.value.index;
-    // x-y front-plane (red-green)
-    positions.push(x, y, z);
-    indices.push(i + 0);
-    positions.push(x, y + 1.0, z);
-    indices.push(i + 1);
-    positions.push(x + 1.0, y + 1.0, z);
-    indices.push(i + 2);
+  let indicesCount = 0;
+  for (let x = 0; x < chunk.size[X]; x++) {
+    for (let y = 0; y < chunk.size[Y]; y++) {
+      for (let z = 0; z < chunk.size[Z]; z++) {
+        const voxel = chunk.voxels[x][y][z];
 
-    // positions.push(x + 1.0, y + 1.0, z);
-    indices.push(i + 2);
-    // positions.push(x, y, z);
-    indices.push(i + 0);
-    positions.push(x + 1.0, y, z);
-    indices.push(i + 3);
+        if (voxel) {
+          //    5-------6
+          //   /|      /|
+          //  / |     / |
+          // 4--|----7  |     Y
+          // |  1----|--2     |  Z
+          // | /     | /      | /
+          // 0-------3        0--- X
 
-    i += 4;
+          positions.push(x, y, z); // 0
+          positions.push(x, y, z + 1); // 1
+          positions.push(x + 1, y, z + 1); // 2
+          positions.push(x + 1, y, z); // 3
 
-    // // x-y back-plane (red-green)
-    // const backZ = z + 1.0;
-    // positions.push(x, y, backZ);
-    // indices.push(i + 4);
-    // positions.push(x + 1.0, y + 1.0, backZ);
-    // indices.push(i + 5);
-    // positions.push(x, y + 1.0, backZ);
-    // indices.push(i + 6);
-    //
-    // // positions.push(x + 1.0, y + 1.0, backZ);
-    // indices.push(i + 5);
-    // // positions.push(x, y, backZ);
-    // indices.push(i + 4);
-    // positions.push(x + 1.0, y, backZ);
-    // indices.push(i + 7);
-    //
-    // // y-z front-plane (green-blue)
-    // // positions.push(x, y, z);
-    // indices.push(i + 0);
-    // positions.push(x, y + 1.0, z + 1.0);
-    // indices.push(i + 8);
-    // // positions.push(x, y + 1.0, z);
-    // indices.push(i + 1);
-    //
-    // // positions.push(x, y + 1.0, z + 1.0);
-    // indices.push(i + 8);
-    // // positions.push(x, y, z);
-    // indices.push(i + 0);
-    // positions.push(x, y, z + 1.0);
-    // indices.push(i + 9);
-    //
-    // // y-z back-plane
-    // const backX = x + 1;
-    // positions.push(backX, y, z);
-    // indices.push(i + 10);
-    // positions.push(backX, y + 1.0, z);
-    // indices.push(i + 11);
-    // positions.push(backX, y + 1.0, z + 1.0);
-    // indices.push(i + 12);
-    //
-    // // positions.push(backX, y + 1.0, z + 1.0);
-    // indices.push(i + 12);
-    // positions.push(backX, y, z + 1.0);
-    // indices.push(i + 13);
-    // // positions.push(backX, y, z);
-    // indices.push(i + 10);
-    //
-    // // x-z front-plane (red-blue)
-    // // positions.push(x, y, z);
-    // indices.push(i + 0);
-    // // positions.push(x + 1.0, y, z);
-    // indices.push(i + 3);
-    // positions.push(x + 1.0, y, z + 1.0);
-    // indices.push(i + 14);
-    //
-    // // positions.push(x + 1.0, y, z + 1.0);
-    // indices.push(i + 14);
-    // // positions.push(x, y, z + 1.0);
-    // indices.push(i + 9);
-    // // positions.push(x, y, z);
-    // indices.push(i + 0);
-    //
-    // // x-z back-plane
-    // const backY = y + 1;
-    // positions.push(x, backY, z);
-    // indices.push(i + 15);
-    // positions.push(x + 1.0, backY, z);
-    // indices.push(i + 16);
-    // positions.push(x + 1.0, backY, z + 1.0);
-    // indices.push(i + 17);
-    //
-    // // positions.push(x + 1.0, backY, z + 1.0);
-    // indices.push(i + 17);
-    // positions.push(x, backY, z + 1.0);
-    // indices.push(i + 18);
-    // // positions.push(x, backY, z);
-    // indices.push(i + 15);
+          positions.push(x, y + 1, z); // 4
+          positions.push(x, y + 1, z + 1); // 5
+          positions.push(x + 1, y + 1, z + 1); // 6
+          positions.push(x + 1, y + 1, z); // 7
 
-    // i += 19;
+          indices.push(...[0, 1, 2, 0, 2, 3].map(i => i + indicesCount)); // Bottom
+          indices.push(...[4, 6, 5, 4, 7, 6].map(i => i + indicesCount)); // Top
+
+          indices.push(...[0, 3, 7, 0, 7, 4].map(i => i + indicesCount)); // Back
+          indices.push(...[1, 5, 6, 1, 6, 2].map(i => i + indicesCount)); // Front
+
+          indices.push(...[0, 4, 5, 0, 5, 1].map(i => i + indicesCount)); // Left
+          indices.push(...[3, 6, 7, 3, 2, 6].map(i => i + indicesCount)); // Right
+
+          indicesCount += 8;
+        }
+      }
+    }
   }
 
-  return { positions, indices };
+  return { indices, positions };
 }
