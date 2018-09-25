@@ -6,8 +6,16 @@ export const Z = 2;
 
 export type Vector3 = [number, number, number];
 
+export function add3(a: Vector3, b: Vector3): Vector3 {
+  return [a[X] + b[X], a[Y] + b[Y], a[Z] + b[Z]];
+}
+
 export function sub3(a: Vector3, b: Vector3): Vector3 {
-  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  return [a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]];
+}
+
+export function mul3(a: Vector3, b: Vector3): Vector3 {
+  return [a[X] * b[X], a[Y] * b[Y], a[Z] * b[Z]];
 }
 
 export function isPowerOfTwo3(a: Vector3): boolean {

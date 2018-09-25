@@ -1,10 +1,12 @@
-import { Vector3 } from './vector3';
+import { mul3, Vector3 } from './vector3';
 import { Voxel } from './world';
 
 export class Chunk {
   voxels: Voxel[][][];
+  position: Vector3;
 
-  constructor(readonly size: Vector3) {
+  constructor(readonly size: Vector3, readonly index: Vector3) {
+    this.position = mul3(size, index);
     this.initialize();
   }
 

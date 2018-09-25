@@ -1,20 +1,24 @@
 import { Chunk } from '../world/chunk';
-import { X, Y, Z } from '../world/vector3';
+import { add3, Vector3, X, Y, Z } from '../world/vector3';
 
 export interface MeshData {
-  positions: number[];
+  colors: number[];
   indices: number[];
+  positions: number[];
 }
 
 export function getNaiveMesh(chunk: Chunk): MeshData {
+  const colors = [];
   const indices = [];
   const positions = [];
 
+  const color = [...getRandomColor(), 1];
+
   let indicesCount = 0;
-  for (let x = 0; x < chunk.size[X]; x++) {
-    for (let y = 0; y < chunk.size[Y]; y++) {
-      for (let z = 0; z < chunk.size[Z]; z++) {
-        const voxel = chunk.voxels[x][y][z];
+  for (let iX = 0; iX < chunk.size[X]; iX++) {
+    for (let iY = 0; iY < chunk.size[Y]; iY++) {
+      for (let iZ = 0; iZ < chunk.size[Z]; iZ++) {
+        const voxel = chunk.voxels[iX][iY][iZ];
 
         if (voxel) {
           //    5-------6
@@ -24,6 +28,18 @@ export function getNaiveMesh(chunk: Chunk): MeshData {
           // |  1----|--2     |  Z
           // | /     | /      | /
           // 0-------3        0--- X
+
+          const [x, y, z]: Vector3 = add3(chunk.position, [iX, iY, iZ]);
+
+          colors.push(...color);
+          colors.push(...color);
+          colors.push(...color);
+          colors.push(...color);
+
+          colors.push(...color);
+          colors.push(...color);
+          colors.push(...color);
+          colors.push(...color);
 
           positions.push(x, y, z); // 0
           positions.push(x, y, z + 1); // 1
@@ -50,5 +66,9 @@ export function getNaiveMesh(chunk: Chunk): MeshData {
     }
   }
 
-  return { indices, positions };
+  return { colors, indices, positions };
+}
+
+function getRandomColor(): Vector3 {
+  return [Math.random(), Math.random(), Math.random()];
 }

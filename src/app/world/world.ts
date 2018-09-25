@@ -10,15 +10,15 @@ export class Voxel {
   constructor(public objectId: number, public type: number) {}
 }
 
-export interface Position {
+export interface Index {
   chunk: Vector3;
   voxel: Vector3;
 }
 
 export class World {
-  private chunks: Chunk[][][];
+  chunks: Chunk[][][];
 
-  constructor(private readonly size: Vector3, private readonly chunkSize: Vector3) {
+  constructor(readonly size: Vector3, readonly chunkSize: Vector3) {
     if (!isPowerOfTwo3(size)) {
       throw new Error('The number of chunks needs to be a power of two.');
     }
@@ -60,7 +60,7 @@ export class World {
     return this.getVoxel(this.calcPosition(position));
   }
 
-  getVoxel(position: Position): Voxel | undefined {
+  getVoxel(position: Index): Voxel | undefined {
     const chunk = this.chunks[position.chunk[X]][position.chunk[Y]][position.chunk[Z]];
     if (!chunk) {
       return undefined;
@@ -69,27 +69,32 @@ export class World {
     return chunk.voxels[position.voxel[0]][position.voxel[1]][position.voxel[2]];
   }
 
-  setVoxel(position: Position, voxel: Voxel): void {
-    const chunk = this.chunks[position.chunk[X]][position.chunk[Y]][position.chunk[Z]];
+  setVoxelByAbsolutePosition(position: Vector3, voxel: Voxel): void {
+    this.setVoxel(this.calcPosition(position), voxel);
+  }
+
+  setVoxel(index: Index, voxel: Voxel): void {
+    const chunk = this.chunks[index.chunk[X]][index.chunk[Y]][index.chunk[Z]];
     if (!chunk) {
-      this.chunks[position.chunk[X]][position.chunk[Y]][position.chunk[Z]] = new Chunk(
+      this.chunks[index.chunk[X]][index.chunk[Y]][index.chunk[Z]] = new Chunk(
         this.chunkSize,
+        index.chunk,
       );
     }
 
-    this.chunks[position.chunk[X]][position.chunk[Y]][position.chunk[Z]].voxels[position.voxel[X]][
-      position.voxel[Y]
-    ][position.voxel[Z]] = voxel;
+    this.chunks[index.chunk[X]][index.chunk[Y]][index.chunk[Z]].voxels[index.voxel[X]][
+      index.voxel[Y]
+    ][index.voxel[Z]] = voxel;
   }
 
-  private calcPosition([x, y, z]: Vector3): Position {
+  private calcPosition([x, y, z]: Vector3): Index {
     // Integer division ('>> 0' removes the decimals)
     const chunk: Vector3 = [
       (x / this.chunkSize[X]) >> 0,
       (y / this.chunkSize[Y]) >> 0,
       (z / this.chunkSize[Z]) >> 0,
     ];
-    const voxel: Vector3 = [x % this.chunkSize[0], y % this.chunkSize[1], z % this.chunkSize[2]];
+    const voxel: Vector3 = [x % this.chunkSize[X], y % this.chunkSize[Y], z % this.chunkSize[Z]];
 
     return { chunk, voxel };
   }
