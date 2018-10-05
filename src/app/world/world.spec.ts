@@ -34,7 +34,7 @@ describe('world', () => {
     expect(world.chunks[1][1][1].voxels[0][0][0]).toEqual(voxel);
   });
 
-  fit('should get a voxel given an absolute position', () => {
+  it('should get a voxel given an absolute position', () => {
     const voxel = new Voxel(1, 42);
     const position: Vector3 = [4, 4, 4];
     world.setVoxelByAbsolutePosition(position, voxel);
