@@ -43,12 +43,13 @@ export class ViewportComponent implements AfterViewInit {
       Math.PI / 2,
       Math.PI / 2,
       2,
-      Vector3.Zero(),
+      new Vector3(0, 0, 0),
       scene,
     );
     camera.attachControl(this.canvasRef.nativeElement, true, false, 2);
     // camera.setPosition(new Vector3(0, 0, 35));
-    camera.setPosition(new Vector3(245, 826, 368));
+    camera.setPosition(new Vector3(256, 256, 256));
+    camera.panningSensibility = 10;
 
     const light1: HemisphericLight = new HemisphericLight('light1', new Vector3(0, 1, 1), scene);
 
@@ -62,11 +63,14 @@ export class ViewportComponent implements AfterViewInit {
       world.setVoxelByAbsolutePosition(position, new Voxel(1, 42));
     });
 
+    let chunkCount = 0;
     for (let x = 0; x < world.size[X]; x++) {
       for (let y = 0; y < world.size[Y]; y++) {
         for (let z = 0; z < world.size[Z]; z++) {
           const chunk = world.chunks[x][y][z];
           if (chunk) {
+            chunkCount++;
+
             const customMesh = new Mesh(`${x},${y},${z}`, scene);
             const vertexData = new VertexData();
             const { colors, indices, positions } = getNaiveMesh(chunk);
@@ -82,6 +86,8 @@ export class ViewportComponent implements AfterViewInit {
         }
       }
     }
+
+    console.log('chunkCount', chunkCount);
 
     return scene;
   }
