@@ -1,6 +1,7 @@
+import { Vector3 } from './vector3';
 import { Index, Voxel, World } from './world';
 
-fdescribe('world', () => {
+describe('world', () => {
   let world: World;
 
   beforeEach(() => {
@@ -9,25 +10,35 @@ fdescribe('world', () => {
 
   it('should set & get a voxel', () => {
     const position: Index = { chunk: [0, 0, 0], voxel: [0, 0, 0] };
-    const expectedVoxel = new Voxel(1, 42);
-    world.setVoxel(position, expectedVoxel);
+    const voxel = new Voxel(1, 42);
+    world.setVoxel(position, voxel);
 
-    const voxel = world.getVoxel(position);
-    expect(voxel).toEqual(expectedVoxel);
+    expect(world.getVoxel(position)).toEqual(voxel);
   });
 
-  // it('should iterate over given volume', () => {
-  //   const iterator = world.iterate([3, 3, 3], [4, 4, 4]);
-  //   const expectedVoxel = new Voxel(1, 42);
-  //   world.setVoxel([3, 3, 3], expectedVoxel);
-  //   world.setVoxel([4, 4, 4], expectedVoxel);
-  //
-  //   let i = 0;
-  //   let result: IteratorResult<VoxelResult>;
-  //   while (!(result = iterator.next()).done) {
-  //     i++;
-  //   }
-  //
-  //   expect(i).toBe(2);
-  // });
+  it('should create new chunks after adding voxel', () => {
+    const position: Index = { chunk: [0, 0, 0], voxel: [0, 0, 0] };
+    const voxel = new Voxel(1, 42);
+
+    expect(world.chunks[0][0][0]).toBeUndefined();
+    world.setVoxel(position, voxel);
+    expect(world.chunks[0][0][0]).toBeDefined();
+  });
+
+  it('should set a voxel given an absolute position', () => {
+    const voxel = new Voxel(1, 42);
+    world.setVoxelByAbsolutePosition([4, 4, 4], voxel);
+
+    expect(world.chunks[1][1][1]).toBeDefined();
+    expect(world.chunks[1][1][1].voxels[0][0][0]).toBeDefined();
+    expect(world.chunks[1][1][1].voxels[0][0][0]).toEqual(voxel);
+  });
+
+  fit('should get a voxel given an absolute position', () => {
+    const voxel = new Voxel(1, 42);
+    const position: Vector3 = [4, 4, 4];
+    world.setVoxelByAbsolutePosition(position, voxel);
+
+    expect(world.getVoxelByAbsolutePosition(position)).toEqual(voxel);
+  });
 });
