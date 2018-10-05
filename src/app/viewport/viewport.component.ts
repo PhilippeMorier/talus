@@ -5,6 +5,7 @@ import {
   HemisphericLight,
   Mesh,
   Scene,
+  StandardMaterial,
   Vector3,
   VertexData,
 } from 'babylonjs';
@@ -63,6 +64,8 @@ export class ViewportComponent implements AfterViewInit {
       world.setVoxelByAbsolutePosition(position, new Voxel(1, 42));
     });
 
+    const material = new StandardMaterial('material', scene);
+
     let chunkCount = 0;
     for (let x = 0; x < world.size[X]; x++) {
       for (let y = 0; y < world.size[Y]; y++) {
@@ -72,15 +75,13 @@ export class ViewportComponent implements AfterViewInit {
             chunkCount++;
 
             const customMesh = new Mesh(`${x},${y},${z}`, scene);
+            customMesh.material = material;
             const vertexData = new VertexData();
             const { colors, indices, positions } = getNaiveMesh(chunk);
-            const normals = [];
-            VertexData.ComputeNormals(positions, indices, normals);
 
             vertexData.positions = positions;
             vertexData.indices = indices;
             vertexData.colors = colors;
-            vertexData.normals = normals;
             vertexData.applyToMesh(customMesh);
           }
         }
