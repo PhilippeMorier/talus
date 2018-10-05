@@ -20,10 +20,11 @@ describe('chunk', () => {
     }
   });
 
-  it('should set and get the same getVoxel', () => {
-    chunk.voxels[0][0][0] = new Voxel(1, 42);
+  it('should set and get the same voxel', () => {
+    const voxel = new Voxel(1, 42);
+    chunk.voxels[0][0][0] = voxel;
 
-    expect(chunk.voxels[0][0][0].type).toEqual(42);
+    expect(chunk.voxels[0][0][0]).toEqual(voxel);
   });
 
   it('should have `undefined` for empty voxel', () => {
