@@ -1,11 +1,6 @@
 import { Chunk } from './chunk';
 import { isPowerOfTwo3, Vector3, X, Y, Z } from './vector3';
 
-export interface VoxelResult {
-  voxel: Voxel;
-  index: Vector3;
-}
-
 export class Voxel {
   constructor(public objectId: number, public type: number) {}
 }
