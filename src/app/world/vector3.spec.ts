@@ -21,7 +21,7 @@ describe('Vector3', () => {
     expect(mul3(a, b)).toEqual([0, 2, 9]);
   });
 
-  fit('should check vector to be a power of two', () => {
+  it('should check vector to be a power of two', () => {
     expect(isPowerOfTwo3([0, 0, 0])).toBeTruthy();
 
     expect(isPowerOfTwo3([0, 0, 1])).toBeTruthy();
