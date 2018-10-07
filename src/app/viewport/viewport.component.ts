@@ -17,7 +17,8 @@ import {
 import { getNaiveMesh } from '../mesher/naive-mesher';
 import { BunnyPoints, convertIntoRange } from '../world/bunny';
 import { Vector3 as Vec3, X, Y, Z } from '../world/vector3';
-import { Voxel, World } from '../world/world';
+import { Voxel } from '../world/voxel';
+import { World } from '../world/world';
 
 @Component({
   selector: 'tls-viewport',
