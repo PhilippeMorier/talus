@@ -1,9 +1,9 @@
 import { isPowerOfTwo3, mul3, Vector3 } from './vector3';
-import { Voxel } from './world';
+import { toVoxel, toVoxelValue, Voxel } from './voxel';
 
 export class Chunk {
-  voxels: Voxel[][][] = [];
   position: Vector3;
+  private voxels: number[][][] = [];
 
   constructor(readonly size: Vector3, readonly index: Vector3) {
     if (!isPowerOfTwo3(size)) {
@@ -12,6 +12,18 @@ export class Chunk {
 
     this.position = mul3(size, index);
     this.initialize();
+  }
+
+  get id(): string {
+    return `chunk ${this.index}`;
+  }
+
+  setVoxel([x, y, z]: Vector3, voxel: Voxel): void {
+    this.voxels[x][y][z] = toVoxelValue(voxel);
+  }
+
+  getVoxel([x, y, z]: Vector3): Voxel {
+    return toVoxel(this.voxels[x][y][z]);
   }
 
   private initialize(): void {

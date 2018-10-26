@@ -1,14 +1,6 @@
 import { Chunk } from './chunk';
 import { isPowerOfTwo3, Vector3, X, Y, Z } from './vector3';
-
-export class Voxel {
-  constructor(public objectId: number, public type: number) {}
-}
-
-export interface Index {
-  chunk: Vector3;
-  voxel: Vector3;
-}
+import { Voxel } from './voxel';
 
 export class World {
   chunks: Chunk[][][];
@@ -42,17 +34,20 @@ export class World {
       return undefined;
     }
 
-    return chunk.voxels[v[0]][v[1]][v[2]];
+    return chunk.getVoxel([v[X], v[Y], v[Z]]);
   }
 
-  setVoxel({ chunk: c, voxel: v }: Index, voxel: Voxel): void {
-    const chunk = this.chunks[c[X]][c[Y]][c[Z]];
+  setVoxel({ chunk: c, voxel: v }: Index, voxel: Voxel): Chunk {
+    let chunk = this.chunks[c[X]][c[Y]][c[Z]];
 
     if (!chunk) {
-      this.chunks[c[X]][c[Y]][c[Z]] = new Chunk(this.chunkSize, c);
+      chunk = new Chunk(this.chunkSize, c);
+      this.chunks[c[X]][c[Y]][c[Z]] = chunk;
     }
 
-    this.chunks[c[X]][c[Y]][c[Z]].voxels[v[X]][v[Y]][v[Z]] = voxel;
+    chunk.setVoxel([v[X], v[Y], v[Z]], voxel);
+
+    return chunk;
   }
 
   setVoxelByAbsolutePosition(position: Vector3, voxel: Voxel): void {
@@ -76,4 +71,9 @@ export class World {
 
     return { chunk, voxel };
   }
+}
+
+export interface Index {
+  chunk: Vector3;
+  voxel: Vector3;
 }

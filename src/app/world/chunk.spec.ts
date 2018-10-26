@@ -1,6 +1,6 @@
 import { Chunk } from './chunk';
 import { Vector3, X, Y, Z } from './vector3';
-import { Voxel } from './world';
+import { Voxel } from './voxel';
 
 describe('chunk', () => {
   let chunk: Chunk;
@@ -11,25 +11,27 @@ describe('chunk', () => {
   });
 
   it('should initialize chunk', () => {
-    expect(chunk.voxels.length).toEqual(size[X]);
-    for (let x = 0; x < size[X]; x++) {
-      expect(chunk.voxels[x].length).toEqual(size[Y]);
-      for (let y = 0; y < size[Y]; y++) {
-        expect(chunk.voxels[x][y].length).toEqual(size[Z]);
+    const emptyVoxel = new Voxel(0, 0);
+    for (let x = 0; x < chunk.size[X]; x++) {
+      for (let y = 0; y < chunk.size[Y]; y++) {
+        for (let z = 0; z < chunk.size[Z]; z++) {
+          expect(chunk.getVoxel([x, y, z])).toEqual(emptyVoxel);
+        }
       }
     }
   });
 
   it('should set and get the same voxel', () => {
     const voxel = new Voxel(1, 42);
-    chunk.voxels[0][0][0] = voxel;
+    chunk.setVoxel([0, 0, 0], voxel);
 
-    expect(chunk.voxels[0][0][0]).toEqual(voxel);
+    expect(chunk.getVoxel([0, 0, 0])).toEqual(voxel);
   });
 
   it('should have `undefined` for empty voxel', () => {
-    expect(chunk.voxels[0][0][0]).toBeUndefined();
-    expect(chunk.voxels[1][1][1]).toBeUndefined();
+    const emptyVoxel = new Voxel(0, 0);
+    expect(chunk.getVoxel([0, 0, 0])).toEqual(emptyVoxel);
+    expect(chunk.getVoxel([1, 1, 1])).toEqual(emptyVoxel);
   });
 
   it('should set position correctly', () => {
@@ -41,5 +43,13 @@ describe('chunk', () => {
 
     testChunk = new Chunk([2, 2, 2], [0, 1, 2]);
     expect(testChunk.position).toEqual([0, 2, 4]);
+  });
+
+  it('should set get chunk id', () => {
+    let testChunk = new Chunk([2, 2, 2], [0, 0, 0]);
+    expect(testChunk.id).toEqual('chunk 0,0,0');
+
+    testChunk = new Chunk([4, 4, 4], [1, 2, 3]);
+    expect(testChunk.id).toEqual('chunk 1,2,3');
   });
 });

@@ -18,9 +18,9 @@ export function getNaiveMesh(chunk: Chunk): MeshData {
   for (let iX = 0; iX < chunk.size[X]; iX++) {
     for (let iY = 0; iY < chunk.size[Y]; iY++) {
       for (let iZ = 0; iZ < chunk.size[Z]; iZ++) {
-        const voxel = chunk.voxels[iX][iY][iZ];
+        const voxel = chunk.getVoxel([iX, iY, iZ]);
 
-        if (voxel) {
+        if (voxel.type !== 0) {
           //    5-------6
           //   /|      /|
           //  / |     / |

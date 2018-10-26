@@ -1,5 +1,6 @@
 import { Vector3 } from './vector3';
-import { Index, Voxel, World } from './world';
+import { Voxel } from './voxel';
+import { Index, World } from './world';
 
 describe('world', () => {
   let world: World;
@@ -30,8 +31,8 @@ describe('world', () => {
     world.setVoxelByAbsolutePosition([4, 4, 4], voxel);
 
     expect(world.chunks[1][1][1]).toBeDefined();
-    expect(world.chunks[1][1][1].voxels[0][0][0]).toBeDefined();
-    expect(world.chunks[1][1][1].voxels[0][0][0]).toEqual(voxel);
+    expect(world.chunks[1][1][1].getVoxel([0, 0, 0])).toBeDefined();
+    expect(world.chunks[1][1][1].getVoxel([0, 0, 0])).toEqual(voxel);
   });
 
   it('should get a voxel given an absolute position', () => {
