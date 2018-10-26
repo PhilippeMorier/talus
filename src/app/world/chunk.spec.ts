@@ -47,9 +47,9 @@ describe('chunk', () => {
 
   it('should set get chunk id', () => {
     let testChunk = new Chunk([2, 2, 2], [0, 0, 0]);
-    expect(testChunk.id).toEqual('chunk 0,0,0');
+    expect(testChunk.name).toEqual('chunk 0,0,0');
 
     testChunk = new Chunk([4, 4, 4], [1, 2, 3]);
-    expect(testChunk.id).toEqual('chunk 1,2,3');
+    expect(testChunk.name).toEqual('chunk 1,2,3');
   });
 });

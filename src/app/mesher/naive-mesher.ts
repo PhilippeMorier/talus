@@ -7,7 +7,7 @@ export interface MeshData {
   positions: number[];
 }
 
-export function getNaiveMesh(chunk: Chunk): MeshData {
+export function getNaiveMeshData(chunk: Chunk): MeshData {
   const colors = [];
   const indices = [];
   const positions = [];

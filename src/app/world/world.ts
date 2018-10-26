@@ -50,8 +50,8 @@ export class World {
     return chunk;
   }
 
-  setVoxelByAbsolutePosition(position: Vector3, voxel: Voxel): void {
-    this.setVoxel(this.calcPosition(position), voxel);
+  setVoxelByAbsolutePosition(position: Vector3, voxel: Voxel): Chunk {
+    return this.setVoxel(this.calcPosition(position), voxel);
   }
 
   getVoxelByAbsolutePosition(position: Vector3): Voxel | undefined {

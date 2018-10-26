@@ -14,7 +14,7 @@ export class Chunk {
     this.initialize();
   }
 
-  get id(): string {
+  get name(): string {
     return `chunk ${this.index}`;
   }
 

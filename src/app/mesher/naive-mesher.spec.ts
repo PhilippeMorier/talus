@@ -1,6 +1,6 @@
 import { Chunk } from '../world/chunk';
 import { Voxel } from '../world/voxel';
-import { getNaiveMesh, MeshData } from './naive-mesher';
+import { getNaiveMeshData, MeshData } from './naive-mesher';
 
 describe('Naive mesher', () => {
   xit('should get the mesh for a single chunk', () => {
@@ -13,7 +13,7 @@ describe('Naive mesher', () => {
     const chunk: Chunk = new Chunk([4, 4, 4], [0, 0, 0]);
     chunk.setVoxel([0, 0, 0], new Voxel(1, 42));
     chunk.setVoxel([3, 3, 3], new Voxel(1, 42));
-    const mesh: MeshData = getNaiveMesh(chunk);
+    const mesh: MeshData = getNaiveMeshData(chunk);
 
     expect(mesh).toEqual(expectedMesh);
   });
