@@ -36,9 +36,7 @@ export class ViewportComponent implements AfterViewInit {
 
     this.scene = this.createScene();
 
-    this.engine.runRenderLoop(() => {
-      this.scene.render();
-    });
+    this.engine.runRenderLoop(() => this.scene.render());
   }
 
   addChunkToScene(chunk: Chunk, scene: Scene): void {
