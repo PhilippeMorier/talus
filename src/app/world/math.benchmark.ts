@@ -23,3 +23,17 @@ suite('Integer division', () => {
     (12 / 5) | 0;
   });
 });
+
+suite('Is integer', () => {
+  benchmark('Math.isInteger()', () => {
+    Number.isInteger(2.3);
+    Number.isInteger(2);
+    Number.isInteger(10.45);
+  });
+
+  benchmark('x | 0 === x)', () => {
+    (2.3 | 0) === 2.3;
+    (2 | 0) === 2;
+    (10.45 | 0) === 10.45;
+  });
+});
