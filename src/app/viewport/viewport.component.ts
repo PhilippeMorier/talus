@@ -13,6 +13,7 @@ import {
   VertexData,
 } from 'babylonjs';
 import { getNaiveMeshData } from '../mesher/naive-mesher';
+import { SceneService } from '../scene.service';
 import { BunnyPoints, convertIntoRange } from '../world/bunny';
 import { Chunk } from '../world/chunk';
 import { Vector3 as Vec3, X, Y, Z } from '../world/vector3';
@@ -31,12 +32,12 @@ export class ViewportComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef: ElementRef<HTMLCanvasElement>;
 
+  constructor(private sceneService: SceneService) {}
+
   ngAfterViewInit(): void {
-    this.engine = new Engine(this.canvasRef.nativeElement, true);
-
-    this.scene = this.createScene();
-
-    this.engine.runRenderLoop(() => this.scene.render());
+    this.sceneService.initialize(this.canvasRef.nativeElement);
+    this.loadData();
+    this.sceneService.startRendering();
   }
 
   addChunkToScene(chunk: Chunk, scene: Scene): void {
@@ -56,24 +57,7 @@ export class ViewportComponent implements AfterViewInit {
     chunkMesh.convertToFlatShadedMesh();
   }
 
-  private createScene(): Scene {
-    const scene: Scene = new Scene(this.engine);
-
-    const camera: ArcRotateCamera = new ArcRotateCamera(
-      'Camera',
-      Math.PI / 2,
-      Math.PI / 2,
-      2,
-      new Vector3(0, 0, 0),
-      scene,
-    );
-    camera.attachControl(this.canvasRef.nativeElement, true, false, 2);
-    // camera.setPosition(new Vector3(0, 0, 35));
-    camera.setPosition(new Vector3(256, 256, 256));
-    camera.panningSensibility = 10;
-
-    const light1: HemisphericLight = new HemisphericLight('light1', new Vector3(0, 1, 1), scene);
-
+  private loadData(): void {
     const world = new World([32, 32, 32], [16, 16, 16]);
     BunnyPoints.forEach(p => {
       const position: Vec3 = [
@@ -84,19 +68,18 @@ export class ViewportComponent implements AfterViewInit {
       world.setVoxelByAbsolutePosition(position, new Voxel(1, 42));
     });
 
-    const chunkCount = 0;
     for (let x = 0; x < world.size[X]; x++) {
       for (let y = 0; y < world.size[Y]; y++) {
         for (let z = 0; z < world.size[Z]; z++) {
           const chunk = world.chunks[x][y][z];
           if (chunk) {
-            this.addChunkToScene(chunk, scene);
+            this.addChunkToScene(chunk, this.sceneService.scene);
           }
         }
       }
     }
 
-    scene.onPointerObservable.add((pointer: PointerInfo, state: EventState) => {
+    this.sceneService.scene.onPointerObservable.add((pointer: PointerInfo, state: EventState) => {
       if (!pointer.pickInfo.hit) {
         return;
       }
@@ -119,15 +102,13 @@ export class ViewportComponent implements AfterViewInit {
         const z = (point.z | 0) + (normal.z < 0 ? -1 : 0);
 
         const updatedChunk = world.setVoxelByAbsolutePosition([x, y, z], new Voxel(1, 42));
-        this.addChunkToScene(updatedChunk, scene);
+        this.addChunkToScene(updatedChunk, this.sceneService.scene);
         if (updatedChunk.name === pointer.pickInfo.pickedMesh.name) {
-          scene.removeMesh(pointer.pickInfo.pickedMesh);
+          this.sceneService.scene.removeMesh(pointer.pickInfo.pickedMesh);
         }
       } else if (pointer.type === PointerEventTypes.POINTERUP) {
         pointer.pickInfo.pickedMesh.showBoundingBox = false;
       }
     });
-
-    return scene;
   }
 }
