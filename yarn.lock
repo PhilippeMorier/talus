@@ -950,7 +950,7 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
-babylonjs@4.4.0-alpha.4:
+babylonjs@4.4.0-alpha.8:
   version "4.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/babylonjs/-/babylonjs-4.0.0-alpha.8.tgz#10bab6131c584b756cf1944ea092465b010bae2e"
   integrity sha512-E0V7jiL6PmPz3z1Bx2movkEOlPCz0nl1IEfNLXE59APwCtkQtU2jjLUbBIr8zp3DS489aGJr/iGHsZySiUHxNA==
