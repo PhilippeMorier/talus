@@ -1,17 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import {
-  ArcRotateCamera,
-  Engine,
-  EventState,
-  HemisphericLight,
-  Mesh,
-  MeshBuilder,
-  PointerEventTypes,
-  PointerInfo,
-  Scene,
-  Vector3,
-  VertexData,
-} from 'babylonjs';
+import { Mesh, PointerEventTypes, PointerInfo, Scene, VertexData } from 'babylonjs';
 import { getNaiveMeshData } from '../mesher/naive-mesher';
 import { SceneService } from '../scene.service';
 import { BunnyPoints, convertIntoRange } from '../world/bunny';
@@ -26,9 +14,6 @@ import { World } from '../world/world';
   styleUrls: ['./viewport.component.scss'],
 })
 export class ViewportComponent implements AfterViewInit {
-  private engine: Engine;
-  private scene: Scene;
-
   @ViewChild('canvas')
   private canvasRef: ElementRef<HTMLCanvasElement>;
 
@@ -79,7 +64,7 @@ export class ViewportComponent implements AfterViewInit {
       }
     }
 
-    this.sceneService.scene.onPointerObservable.add((pointer: PointerInfo, state: EventState) => {
+    this.sceneService.scene.onPointerObservable.add((pointer: PointerInfo) => {
       if (!pointer.pickInfo.hit) {
         return;
       }

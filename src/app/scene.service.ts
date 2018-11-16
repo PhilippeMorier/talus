@@ -6,6 +6,7 @@ export class SceneService {
   scene: Scene;
 
   private engine: Engine;
+  // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
   private canvas: HTMLCanvasElement;
 
