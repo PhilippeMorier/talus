@@ -85,10 +85,12 @@ export class ViewportComponent implements AfterViewInit {
         //   (point.z | 0) - (normal.z > 0 ? 1 : 0),
         // );
 
-        // get neighbor voxel
+        // tslint:disable: no-bitwise
+        // get neighbour voxel
         const x = (point.x | 0) + (normal.x < 0 ? -1 : 0);
         const y = (point.y | 0) + (normal.y < 0 ? -1 : 0);
         const z = (point.z | 0) + (normal.z < 0 ? -1 : 0);
+        // tslint:enable: no-bitwise
 
         const updatedChunk = world.setVoxelByAbsolutePosition([x, y, z], new Voxel(1, 42));
         this.addChunkToScene(updatedChunk, this.sceneService.scene);
