@@ -103,6 +103,77 @@
           }
         }
       }
+    },
+    "uilib": {
+      "root": "projects/uilib/",
+      "sourceRoot": "projects/uilib/src",
+      "projectType": "application",
+      "prefix": "tls",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/uilib",
+            "index": "projects/uilib/src/index.html",
+            "main": "projects/uilib/src/main.ts",
+            "polyfills": "projects/uilib/src/polyfills.ts",
+            "tsConfig": "projects/uilib/tsconfig.app.json",
+            "assets": ["projects/uilib/src/favicon.ico", "projects/uilib/src/assets"],
+            "styles": ["projects/uilib/src/styles.scss"],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/uilib/src/environments/environment.ts",
+                  "with": "projects/uilib/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "uilib:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "uilib:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["projects/uilib/tsconfig.app.json"],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "defaultProject": "editor"
