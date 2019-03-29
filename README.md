@@ -16,7 +16,7 @@ Run `yarn build editor` to build the project. The build artifacts will be stored
 
 ## Running unit tests
 
-Run `yarn test editor` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `yarn test editor` to execute the unit tests via [Karma](https://karma-runner.github.io). Pass `--code-coverage` to generate the coverage-rapport.
 
 ## Running benchmarks
 
