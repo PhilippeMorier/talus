@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { SceneService } from '../scene.service';
 import { ViewportComponent } from './viewport.component';
 
 describe('ViewportComponent', () => {
@@ -9,6 +9,7 @@ describe('ViewportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ViewportComponent],
+      providers: [SceneService],
     }).compileComponents();
   }));
 

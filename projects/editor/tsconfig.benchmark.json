@@ -1,10 +1,10 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/spec",
+    "outDir": "../../out-tsc/spec",
     "module": "commonjs",
     "types": ["node"]
   },
-  "files": ["benchmark.ts", "polyfills.ts"],
+  "files": ["src/benchmark.ts", "src/polyfills.ts"],
   "include": ["**/*.benchmark.ts", "**/*.d.ts"]
 }
