@@ -64,6 +64,10 @@ export class ViewportComponent implements AfterViewInit {
       }
     }
 
+    // You were thinking about where do we dispatch the action for adding a voxel
+    // Do we need to put the whole world (all voxels) into the state? I think yes.
+    // dispatch(addVoxel) -> dispatch(generateMeshStart) -> dispatch(generateMeshSuccessful)
+    // -> dispatch(addMesh) -> dispatch(removeOldMesh)
     this.sceneService.scene.onPointerObservable.add((pointer: PointerInfo) => {
       if (!pointer.pickInfo.hit) {
         return;
@@ -91,9 +95,10 @@ export class ViewportComponent implements AfterViewInit {
         if (updatedChunk.name === pointer.pickInfo.pickedMesh.name) {
           this.sceneService.scene.removeMesh(pointer.pickInfo.pickedMesh);
         }
-      } else if (pointer.type === PointerEventTypes.POINTERUP) {
-        pointer.pickInfo.pickedMesh.showBoundingBox = false;
       }
+      // else if (pointer.type === PointerEventTypes.POINTERUP) {
+      // pointer.pickInfo.pickedMesh.showBoundingBox = false;
+      // }
     });
   }
 }
