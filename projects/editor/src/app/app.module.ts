@@ -7,6 +7,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { metaReducers, reducers } from './reducers';
 import { SceneService } from './scene.service';
 import { ViewportComponent } from './viewport/viewport.component';
 import { ViewPortModule } from './viewport/viewport.module';
@@ -21,6 +22,7 @@ import { ViewPortModule } from './viewport/viewport.module';
     ViewPortModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BrowserAnimationsModule,
+    StoreModule.forRoot(reducers, { metaReducers }),
   ],
   providers: [SceneService],
   bootstrap: [AppComponent],
