@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "benchmark": "ng benchmark",
+    "benchmark": "sh -c 'ng run ${0}:benchmark'",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",

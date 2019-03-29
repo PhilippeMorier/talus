@@ -20,7 +20,7 @@ Run `yarn test editor` to execute the unit tests via [Karma](https://karma-runne
 
 ## Running benchmarks
 
-`yarn run ng run editor:benchmark`
+`yarn benchmark editor`
 
 ## Further help
 
