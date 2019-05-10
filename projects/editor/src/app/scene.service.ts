@@ -41,6 +41,7 @@ export class SceneService {
       new Vector3(0, 0, 0),
       this.scene,
     );
+    camera.inertia = 0;
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
     camera.setPosition(new Vector3(256, 256, 256));
     camera.panningSensibility = 10;
