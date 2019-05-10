@@ -1,25 +1,17 @@
 .grid {
   display: grid;
   min-height: 100vh;
-  grid-template-columns: 10% auto 10%;
+  grid-template-columns: 100%;
   grid-template-rows: 6rem auto 4rem;
-  grid-template-areas: 'header header header' 'nav main section' 'footer footer footer';
+  grid-template-areas: 'header' 'main' 'footer';
 }
 
 header {
   grid-area: header;
 }
 
-nav {
-  grid-area: nav;
-}
-
 main {
   grid-area: main;
-}
-
-section {
-  grid-area: section;
 }
 
 footer {

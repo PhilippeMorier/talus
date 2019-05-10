@@ -29,7 +29,7 @@ export class SceneService {
 
   private createScene(): void {
     this.scene = new Scene(this.engine);
-    this.scene.debugLayer.show();
+    // this.scene.debugLayer.show();
   }
 
   private createCamera(): void {
