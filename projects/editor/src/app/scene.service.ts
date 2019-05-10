@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ArcRotateCamera, Engine, HemisphericLight, Scene, Vector3 } from 'babylonjs';
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { Engine } from '@babylonjs/core/Engines/engine';
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+import { Vector3 } from '@babylonjs/core/Maths/math';
+import { Scene } from '@babylonjs/core/scene';
 
 @Injectable()
 export class SceneService {
@@ -25,6 +29,7 @@ export class SceneService {
 
   private createScene(): void {
     this.scene = new Scene(this.engine);
+    this.scene.debugLayer.show();
   }
 
   private createCamera(): void {

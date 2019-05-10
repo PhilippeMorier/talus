@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Mesh, PointerEventTypes, PointerInfo, Scene, VertexData } from 'babylonjs';
+import { PointerEventTypes, PointerInfo } from '@babylonjs/core/Events/pointerEvents';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
+import { Scene } from '@babylonjs/core/scene';
 import { getNaiveMeshData } from '../mesher/naive-mesher';
 import { SceneService } from '../scene.service';
 import { BunnyPoints, convertIntoRange } from '../world/bunny';
