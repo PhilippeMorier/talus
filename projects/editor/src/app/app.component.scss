@@ -2,7 +2,7 @@
   display: grid;
   min-height: 100vh;
   grid-template-columns: 100%;
-  grid-template-rows: 6rem auto 4rem;
+  grid-template-rows: min-content auto 1rem;
   grid-template-areas: 'header' 'main' 'footer';
 }
 

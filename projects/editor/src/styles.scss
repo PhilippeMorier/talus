@@ -18,7 +18,7 @@ $editor-accent: mat-palette($mat-pink, A200, A100, A400);
 $editor-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$editor-theme: mat-light-theme($editor-primary, $editor-accent, $editor-warn);
+$editor-theme: mat-dark-theme($editor-primary, $editor-accent, $editor-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
