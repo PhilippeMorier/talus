@@ -1,14 +1,16 @@
 <mat-sidenav-container [hasBackdrop]="false" class="example-container">
-  <mat-sidenav #leftSidenav mode="over" position="start" opened="true">
+  <mat-sidenav #leftSidenav mode="over" position="start">
     <button mat-mini-fab id="left-sidenav-button" (click)="leftSidenav.toggle()">
-      <mat-icon>keyboard_arrow_left</mat-icon>
+      <mat-icon *ngIf="leftSidenav.opened">keyboard_arrow_left</mat-icon>
+      <mat-icon *ngIf="!leftSidenav.opened">keyboard_arrow_right</mat-icon>
     </button>
     <p>Left</p>
   </mat-sidenav>
 
-  <mat-sidenav #rightSidenav mode="over" position="end" opened="true">
+  <mat-sidenav #rightSidenav mode="over" position="end">
     <button mat-mini-fab id="right-sidenav-button" (click)="rightSidenav.toggle()">
-      <mat-icon>keyboard_arrow_right</mat-icon>
+      <mat-icon *ngIf="rightSidenav.opened">keyboard_arrow_right</mat-icon>
+      <mat-icon *ngIf="!rightSidenav.opened">keyboard_arrow_left</mat-icon>
     </button>
     <p>Right</p>
   </mat-sidenav>
