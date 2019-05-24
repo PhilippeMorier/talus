@@ -10,7 +10,8 @@
       "prefix": "tls",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "styleext": "scss",
+          "inlineTemplate": true
         }
       },
       "architect": {
