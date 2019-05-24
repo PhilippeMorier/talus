@@ -34,9 +34,6 @@ jobs:
           root: .
           paths: .
 
-      # run tests!
-      - run: yarn test:editor:ci
-
   unit_test:
     docker:
       - image: circleci/node:12.3.1-stretch-browsers
