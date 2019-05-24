@@ -12,11 +12,9 @@ export class SceneService {
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
-  private canvas: HTMLCanvasElement;
 
   initialize(canvas: HTMLCanvasElement): void {
-    this.canvas = canvas;
-    this.engine = new Engine(this.canvas);
+    this.engine = new Engine(canvas);
 
     this.createScene();
     this.createCamera();
