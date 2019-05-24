@@ -47,10 +47,10 @@ jobs:
       - run: yarn test:editor:ci
 
       - store_test_results:
-          path: ./projects/editor/reports/mocha
+          path: ./projects/editor/reports/test-results
 
       - store_artifacts:
-          path: ./projects/editor/reports
+          path: /editor/reports
 
 workflows:
   version: 2

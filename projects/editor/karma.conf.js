@@ -26,7 +26,7 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true,
     },
     junitReporter: {
-      outputDir: 'reports/mocha',
+      outputDir: 'reports/test-results/mocha',
       outputFile: 'junit.xml',
       useBrowserName: false,
     },
