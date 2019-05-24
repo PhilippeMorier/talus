@@ -50,7 +50,8 @@ jobs:
           path: ./projects/editor/reports/test-results
 
       - store_artifacts:
-          path: /editor/reports
+          path: ./projects/editor/reports
+          destination: editor
 
 workflows:
   version: 2
