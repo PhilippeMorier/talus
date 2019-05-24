@@ -3,38 +3,18 @@ import { PointerEventTypes, PointerInfo } from '@babylonjs/core/Events/pointerEv
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { Scene } from '@babylonjs/core/scene';
-import { getNaiveMeshData } from '../mesher/naive-mesher';
-import { SceneService } from '../scene.service';
-import { BunnyPoints, convertIntoRange } from '../world/bunny';
-import { Chunk } from '../world/chunk';
-import { Vector3 as Vec3, X, Y, Z } from '../world/vector3';
-import { Voxel } from '../world/voxel';
-import { World } from '../world/world';
+import { getNaiveMeshData } from '../../mesher/naive-mesher';
+import { SceneService } from '../../scene.service';
+import { BunnyPoints, convertIntoRange } from '../../world/bunny';
+import { Chunk } from '../../world/chunk';
+import { Vector3 as Vec3, X, Y, Z } from '../../world/vector3';
+import { Voxel } from '../../world/voxel';
+import { World } from '../../world/world';
 
 @Component({
   selector: 'tls-viewport',
   template: `
-    <mat-sidenav-container [hasBackdrop]="false" class="example-container">
-      <mat-sidenav #leftSidenav mode="over" position="start" [autoFocus]="false" [opened]="true">
-        <button mat-mini-fab id="left-sidenav-button" (click)="leftSidenav.toggle()">
-          <mat-icon *ngIf="leftSidenav.opened">keyboard_arrow_left</mat-icon>
-          <mat-icon *ngIf="!leftSidenav.opened">keyboard_arrow_right</mat-icon>
-        </button>
-        <p>Left</p>
-      </mat-sidenav>
-
-      <mat-sidenav #rightSidenav mode="over" position="end" [autoFocus]="false" [opened]="true">
-        <button mat-mini-fab id="right-sidenav-button" (click)="rightSidenav.toggle()">
-          <mat-icon *ngIf="rightSidenav.opened">keyboard_arrow_right</mat-icon>
-          <mat-icon *ngIf="!rightSidenav.opened">keyboard_arrow_left</mat-icon>
-        </button>
-        <p>Right</p>
-      </mat-sidenav>
-
-      <mat-sidenav-content>
-        <canvas #canvas></canvas>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+    <canvas #canvas></canvas>
   `,
   styleUrls: ['./viewport.component.scss'],
 })

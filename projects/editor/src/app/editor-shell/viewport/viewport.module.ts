@@ -6,9 +6,12 @@ import '@babylonjs/core/Debug/debugLayer';
 import '@babylonjs/core/Engines/Extensions/engine.webVR';
 import '@babylonjs/inspector';
 import { StoreModule } from '@ngrx/store';
+import { ViewportComponent } from './viewport.component';
 import { reducer } from './viewport.reducer';
 
 @NgModule({
+  declarations: [ViewportComponent],
+  exports: [ViewportComponent],
   imports: [StoreModule.forFeature('viewport', reducer)],
 })
 export class ViewPortModule {}

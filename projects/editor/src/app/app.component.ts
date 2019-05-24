@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
       </header>
 
       <main>
-        <tls-viewport></tls-viewport>
+        <tls-editor-shell></tls-editor-shell>
       </main>
 
       <footer>footer</footer>

@@ -1,8 +1,8 @@
 import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { ViewportComponent } from './editor-shell/viewport/viewport.component';
 import { SceneService } from './scene.service';
-import { ViewportComponent } from './viewport/viewport.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
