@@ -46,8 +46,11 @@ jobs:
 
       - run: yarn test:editor:ci
 
+      - store_test_results:
+          path: ./projects/editor/reports/mocha
+
       - store_artifacts:
-          path: ./coverage
+          path: ./projects/editor/reports
 
 workflows:
   version: 2
