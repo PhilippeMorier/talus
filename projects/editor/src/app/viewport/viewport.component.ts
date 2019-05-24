@@ -17,14 +17,14 @@ import { World } from '../world/world';
   styleUrls: ['./viewport.component.scss'],
 })
 export class ViewportComponent implements AfterViewInit {
-  @ViewChild('canvas')
+  @ViewChild('canvas', { static: true })
   private canvasRef: ElementRef<HTMLCanvasElement>;
 
   constructor(private sceneService: SceneService) {}
 
   ngAfterViewInit(): void {
     this.sceneService.initialize(this.canvasRef.nativeElement);
-    // this.loadData();
+    this.loadData();
     this.sceneService.startRendering();
   }
 
