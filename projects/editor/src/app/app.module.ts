@@ -7,7 +7,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { EditorShellModule } from './editor-shell/editor-shell.module';
+import { EditorShellModule } from './editor-shell';
 import { metaReducers, reducers } from './reducers';
 import { SceneService } from './scene.service';
 
