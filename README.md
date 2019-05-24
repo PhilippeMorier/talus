@@ -2,6 +2,18 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.1 by running `ng new talus --prefix tls --style scss --skip-git --routing true --skip-install` as command.
 
+## Install Node.js & Yarn
+
+1. Install `nvm`
+   - https://github.com/nvm-sh/nvm#installation-and-update
+2. Install (latest) `node`
+   - `nvm install node`
+   - or add a version `nvm install 12.3.1`
+3. Install `yarn`
+   - `brew install yarn`
+4. Update
+   - `brew upgrade yarn`
+
 ## Development server
 
 Run `yarn start editor` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
