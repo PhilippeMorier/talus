@@ -2,7 +2,7 @@ import { Vector3 } from './vector3';
 import { Voxel } from './voxel';
 import { Index, World } from './world';
 
-describe('world', () => {
+describe('World', () => {
   let world: World;
 
   beforeEach(() => {

@@ -2,7 +2,7 @@ import { Chunk } from './chunk';
 import { Vector3, X, Y, Z } from './vector3';
 import { Voxel } from './voxel';
 
-describe('chunk', () => {
+describe('Chunk', () => {
   let chunk: Chunk;
   const size: Vector3 = [2, 2, 2];
 
