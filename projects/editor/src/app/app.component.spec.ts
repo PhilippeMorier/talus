@@ -1,27 +1,22 @@
-import { async, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { ViewportComponent } from './editor-shell/viewport/viewport.component';
-import { SceneService } from './scene.service';
 
 describe('AppComponent', () => {
+  let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AppComponent, ViewportComponent],
-      providers: [SceneService],
+      declarations: [AppComponent],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.debugElement.componentInstance;
   }));
 
   it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
-
-  it(`should have as title 'tls'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('tls');
+    expect(component).toBeTruthy();
   }));
 });
