@@ -24,7 +24,7 @@ export class ViewportComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.sceneService.initialize(this.canvasRef.nativeElement);
-    this.loadData();
+    // this.loadData();
     this.sceneService.startRendering();
   }
 
