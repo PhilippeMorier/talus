@@ -23,7 +23,7 @@ describe('World', () => {
 
     expect(world.chunks[0][0][0]).toBeUndefined();
     world.setVoxel(position, voxel);
-    expect(world.chunks[0][0][0]).toBeDefined();
+    expect(world.chunks[0][0][0]).toBeUndefined();
   });
 
   it('should set a voxel given an absolute position', () => {
