@@ -39,7 +39,7 @@ jobs:
 
   unit_test:
     docker:
-      - image: circleci/node:12.3.1-stretch
+      - image: circleci/node:12.3.1-stretch-browsers
 
     working_directory: ~/talus
 
