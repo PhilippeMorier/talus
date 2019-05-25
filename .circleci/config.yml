@@ -24,7 +24,7 @@ aliases:
 
 version: 2
 jobs:
-  'Install dependencies':
+  'install dependencies':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -52,7 +52,7 @@ jobs:
           root: .
           paths: .
 
-  'Linting':
+  'linting':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -62,7 +62,7 @@ jobs:
 
       - run: yarn lint --format=stylish
 
-  'Prettier':
+  'prettier':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -93,17 +93,17 @@ workflows:
   version: 2
   'Editor':
     jobs:
-      - 'Install dependencies'
+      - 'install dependencies'
 
-      - 'Linting':
+      - 'linting':
           requires:
-            - 'Install dependencies'
+            - 'install dependencies'
 
-      - 'Prettier':
+      - 'prettier':
           requires:
-            - 'Install dependencies'
+            - 'install dependencies'
 
       - 'Unit test':
           requires:
-            - 'Linting'
-            - 'Prettier'
+            - 'linting'
+            - 'prettier'
