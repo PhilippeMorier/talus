@@ -2,17 +2,29 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.1 by running `ng new talus --prefix tls --style scss --skip-git --routing true --skip-install` as command.
 
-## Install Node.js & Yarn
+## Installations
+
+### Node
 
 1. Install `nvm`
    - https://github.com/nvm-sh/nvm#installation-and-update
 2. Install (latest) `node`
    - `nvm install node`
    - or add a version `nvm install 12.3.1`
-3. Install `yarn`
+
+### Yarn
+
+1. Install `yarn`
    - `brew install yarn`
-4. Update
+2. Update
    - `brew upgrade yarn`
+
+### CircleCI CLI
+
+1. Install CLI
+   - `curl -fLSs https://circle.ci/cli | bash`
+2. Check syntac of `config.yml`
+   - `circleci config process .circleci/config.yml`
 
 ## Development server
 
