@@ -26,7 +26,8 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true,
     },
     junitReporter: {
-      outputDir: 'reports/test-results/mocha',
+      // https://circleci.com/docs/2.0/configuration-reference/#store_test_results
+      outputDir: 'reports/test-results/jasmine',
       outputFile: 'junit.xml',
       useBrowserName: false,
     },
