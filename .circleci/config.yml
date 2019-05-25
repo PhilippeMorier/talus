@@ -2,14 +2,32 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
-jobs:
-  install_dependencies:
+
+aliases:
+  # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
+  - &use_docker_node
     docker:
-      # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
       - image: circleci/node:12.3.1-stretch
 
-    working_directory: ~/talus
+  - &use_docker_node_browsers
+    docker:
+      - image: circleci/node:12.3.1-stretch-browsers
+
+  - &workspace ~/talus
+
+  - &set_working_directory
+    working_directory: *workspace
+
+  - &attach_workspace
+    attach_workspace:
+      at: *workspace
+
+version: 2
+jobs:
+  'Install dependencies':
+    <<: *use_docker_node
+
+    <<: *set_working_directory
 
     steps:
       - checkout
@@ -34,39 +52,33 @@ jobs:
           root: .
           paths: .
 
-  linting:
-    docker:
-      - image: circleci/node:12.3.1-stretch
+  'Linting':
+    <<: *use_docker_node
 
-    working_directory: ~/talus
+    <<: *set_working_directory
 
     steps:
-      - attach_workspace:
-          at: ~/talus
+      - *attach_workspace
 
       - run: yarn lint --format=stylish
 
-  prettier:
-    docker:
-      - image: circleci/node:12.3.1-stretch
+  'Prettier':
+    <<: *use_docker_node
 
-    working_directory: ~/talus
-
-    steps:
-      - attach_workspace:
-          at: ~/talus
-
-      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  "{*,projects/**/*}.{ts,scss,json,html}"
-
-  unit_test:
-    docker:
-      - image: circleci/node:12.3.1-stretch-browsers
-
-    working_directory: ~/talus
+    <<: *set_working_directory
 
     steps:
-      - attach_workspace:
-          at: ~/talus
+      - *attach_workspace
+
+      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  "{*,projects/**/*}.{ts,scss,json,html,yml}"
+
+  'Unit test':
+    <<: *use_docker_node_browsers
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
 
       - run: yarn test:editor:ci
 
@@ -79,19 +91,19 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  'Editor':
     jobs:
-      - install_dependencies
+      - 'Install dependencies'
 
-      - linting:
+      - 'Linting':
           requires:
-            - install_dependencies
+            - 'Install dependencies'
 
-      - prettier:
+      - 'Prettier':
           requires:
-            - install_dependencies
+            - 'Install dependencies'
 
-      - unit_test:
+      - 'Unit test':
           requires:
-            - linting
-            - prettier
+            - 'Linting'
+            - 'Prettier'
