@@ -7,20 +7,30 @@ module.exports = function(config) {
     frameworks: ['benchmark', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-benchmark'),
-      require('karma-benchmark-reporter'),
+      require('karma-benchmarkjs-reporter'),
       require('karma-chrome-launcher'),
+      require('karma-junit-reporter'),
+
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
-    reporters: ['benchmark'],
-    port: 9876,
-    colors: true,
-    logLevel: config.LOG_INFO,
+
+    junitReporter: {
+      // https://circleci.com/docs/2.0/configuration-reference/#store_test_results
+      outputDir: 'reports/test-results/benchmark',
+      outputFile: 'junit.xml',
+      useBrowserName: false,
+    },
+
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    port: 9876,
+    reporters: ['benchmark'],
     restartOnFileChange: true,
+    singleRun: false,
   });
 };

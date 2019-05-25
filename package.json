@@ -10,6 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "benchmark": "sh -c 'ng run ${0}:benchmark'",
+    "benchmark:editor:ci": "ng run editor:benchmark --environment=prod --watch=false --progress=false --reporters benchmark,junit",
     "lint:styles": "sh -c 'stylelint \"projects/${0}/**/*.scss\"'"
   },
   "private": true,
@@ -51,7 +52,7 @@
     "jasmine-spec-reporter": "4.2.1",
     "karma": "4.1.0",
     "karma-benchmark": "1.0.1",
-    "karma-benchmark-reporter": "0.1.1",
+    "karma-benchmarkjs-reporter": "1.0.0",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage-istanbul-reporter": "2.0.5",
     "karma-jasmine": "2.0.1",
