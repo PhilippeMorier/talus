@@ -2,16 +2,17 @@
   "name": "talus",
   "version": "0.0.0",
   "scripts": {
+    "circleci:check": "circleci config process .circleci/config.yml",
+    "benchmark:editor:ci": "ng run editor:benchmark --environment=prod --watch=false --progress=false --reporters benchmark,junit",
+    "benchmark": "sh -c 'ng run ${0}:benchmark'",
+    "build": "ng build",
+    "e2e": "ng e2e",
+    "lint:styles": "sh -c 'stylelint \"projects/${0}/**/*.scss\"'",
+    "lint": "ng lint",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
     "test:editor:ci": "ng test editor --environment=prod --watch=false --progress=false --codeCoverage=true --reporters mocha,junit",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "benchmark": "sh -c 'ng run ${0}:benchmark'",
-    "benchmark:editor:ci": "ng run editor:benchmark --environment=prod --watch=false --progress=false --reporters benchmark,junit",
-    "lint:styles": "sh -c 'stylelint \"projects/${0}/**/*.scss\"'"
+    "test": "ng test"
   },
   "private": true,
   "engines": {

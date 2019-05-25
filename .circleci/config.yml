@@ -22,6 +22,10 @@ aliases:
     attach_workspace:
       at: *workspace
 
+  - &store_test_results
+    store_test_results:
+      path: ./projects/editor/reports/test-results
+
 version: 2
 jobs:
   'install dependencies':
@@ -72,7 +76,7 @@ jobs:
 
       - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  "{*,projects/**/*}.{ts,scss,json,html,yml}"
 
-  'Unit test':
+  'unit test':
     <<: *use_docker_node_browsers
 
     <<: *set_working_directory
@@ -82,12 +86,23 @@ jobs:
 
       - run: yarn test:editor:ci
 
-      - store_test_results:
-          path: ./projects/editor/reports/test-results
+      - *store_test_results
 
       - store_artifacts:
           path: ./projects/editor/reports
           destination: editor
+
+  'benchmark test':
+    <<: *use_docker_node_browsers
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run: yarn benchmark:editor:ci
+
+      - *store_test_results
 
 workflows:
   version: 2
@@ -103,7 +118,12 @@ workflows:
           requires:
             - 'install dependencies'
 
-      - 'Unit test':
+      - 'unit test':
+          requires:
+            - 'linting'
+            - 'prettier'
+
+      - 'benchmark test':
           requires:
             - 'linting'
             - 'prettier'
