@@ -1,4 +1,4 @@
-# Talus
+# Talus [![CircleCI](https://circleci.com/gh/PhilippeMorier/talus/tree/master.svg?style=svg)](https://circleci.com/gh/PhilippeMorier/talus/tree/master)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.1 by running `ng new talus --prefix tls --style scss --skip-git --routing true --skip-install` as command.
 
