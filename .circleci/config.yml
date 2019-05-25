@@ -34,6 +34,30 @@ jobs:
           root: .
           paths: .
 
+  linting:
+    docker:
+      - image: circleci/node:12.3.1-stretch
+
+    working_directory: ~/talus
+
+    steps:
+      - attach_workspace:
+          at: ~/talus
+
+      - run: yarn lint --format=stylish
+
+  prettier:
+    docker:
+      - image: circleci/node:12.3.1-stretch
+
+    working_directory: ~/talus
+
+    steps:
+      - attach_workspace:
+          at: ~/talus
+
+      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore "projects/**/*.{ts,scss,json,html}"
+
   unit_test:
     docker:
       - image: circleci/node:12.3.1-stretch-browsers
@@ -59,6 +83,15 @@ workflows:
     jobs:
       - install_dependencies
 
-      - unit_test:
+      - linting:
           requires:
             - install_dependencies
+
+      - prettier:
+          requires:
+            - install_dependencies
+
+      - unit_test:
+          requires:
+            - linting
+            - prettier
