@@ -28,7 +28,7 @@ aliases:
 
 version: 2
 jobs:
-  'install dependencies':
+  'dependencies':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -76,7 +76,7 @@ jobs:
 
       - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  "{*,projects/**/*}.{ts,scss,json,html,yml}"
 
-  'unit test':
+  'unit':
     <<: *use_docker_node_browsers
 
     <<: *set_working_directory
@@ -92,7 +92,7 @@ jobs:
           path: ./projects/editor/reports
           destination: editor
 
-  'benchmark test':
+  'benchmark':
     <<: *use_docker_node_browsers
 
     <<: *set_working_directory
@@ -108,22 +108,22 @@ workflows:
   version: 2
   'Editor':
     jobs:
-      - 'install dependencies'
+      - 'dependencies'
 
       - 'linting':
           requires:
-            - 'install dependencies'
+            - 'dependencies'
 
       - 'prettier':
           requires:
-            - 'install dependencies'
+            - 'dependencies'
 
-      - 'unit test':
+      - 'unit':
           requires:
             - 'linting'
             - 'prettier'
 
-      - 'benchmark test':
+      - 'benchmark':
           requires:
             - 'linting'
             - 'prettier'
