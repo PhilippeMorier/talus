@@ -74,7 +74,7 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  "{*,projects/**/*}.{ts,scss,json,html,yml}"
+      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  '{*,\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'
 
   'unit':
     <<: *use_docker_node_browsers
@@ -90,7 +90,7 @@ jobs:
 
       - store_artifacts:
           path: ./projects/editor/reports
-          destination: editor
+          destination: editor/reports
 
   'benchmark':
     <<: *use_docker_node_browsers
@@ -103,6 +103,60 @@ jobs:
       - run: yarn benchmark:editor:ci
 
       - *store_test_results
+
+  'build `editor`':
+    <<: *use_docker_node
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
+
+      - run:
+          name: Create index files
+          command: |
+            cd ./dist/editor
+
+            cp index.html index-circle-ci.html
+            cp index.html index-github.html
+
+            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/editor\/dist\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/"' >> $BASH_ENV
+
+            echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
+            echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
+
+      # Variable interpolation doesn't work on multi-line command
+      - run: cd ./dist/editor && sed -i "$REPLACE_CIRCLE_CI" index-circle-ci.html
+      - run: cd ./dist/editor && sed -i "$REPLACE_GITHUB" index-github.html
+
+      - store_artifacts:
+          path: ./dist/editor
+          destination: editor/dist
+
+      - persist_to_workspace:
+          root: .
+          paths: dist/editor
+
+  # 'deploy `editor`':
+  #   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
+  #   <<: *use_docker_node
+  #   <<: *set_working_directory
+  #   steps:
+  #     - *attach_workspace
+  #     - run:
+  #         name: Config Git user
+  #         command: |
+  #           git config user.email 'morier.dev@outlook.com'
+  #           git config user.name 'circle-ci'
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - 'e3:ad:b1:61:b5:f8:ea:7d:28:82:e1:89:9b:35:3f:e6'
+  #     - run:
+  #         name: Deploy to Github pages
+  #         command: yarn gh-pages --dotfiles --message '[skip ci] Updates' --dist dist/editor
 
 workflows:
   version: 2
@@ -127,3 +181,13 @@ workflows:
           requires:
             - 'linting'
             - 'prettier'
+
+      - 'build `editor`':
+          requires:
+            - 'unit'
+      # - 'deploy `editor`':
+      #     requires:
+      #       - 'build `editor`'
+      #     filters:
+      #       branches:
+      #         only: master

@@ -25,6 +25,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
    - `curl -fLSs https://circle.ci/cli | bash`
 2. Check syntac of `config.yml`
    - `circleci config process .circleci/config.yml`
+3. Run single job
+   - `circleci local execute --job 'dependencies'`
 
 ## Development server
 
