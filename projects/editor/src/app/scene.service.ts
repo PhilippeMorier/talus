@@ -27,6 +27,7 @@ export class SceneService {
 
   private createScene(): void {
     this.scene = new Scene(this.engine);
+    // Requires `import '@babylonjs/inspector';` (adds ~3.5mb)
     // this.scene.debugLayer.show();
   }
 
