@@ -157,8 +157,7 @@ jobs:
       # https://discuss.circleci.com/t/git-clone-fails-in-circle-2-0/15211/10
       - run:
           name: Disable StrictHostKeyChecking for Github
-          command: |
-            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+          command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
           name: Deploy to Github pages
           command: yarn gh-pages --dotfiles --message '[skip ci] Updates' --dist dist/editor
