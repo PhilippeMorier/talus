@@ -154,6 +154,11 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - 'e3:ad:b1:61:b5:f8:ea:7d:28:82:e1:89:9b:35:3f:e6'
+      # https://discuss.circleci.com/t/git-clone-fails-in-circle-2-0/15211/10
+      - run:
+          name: Disable StrictHostKeyChecking for Github
+          command: |
+            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
           name: Deploy to Github pages
           command: yarn gh-pages --dotfiles --message '[skip ci] Updates' --dist dist/editor
@@ -164,23 +169,23 @@ workflows:
     jobs:
       - 'dependencies'
 
-#      - 'linting':
-#          requires:
-#            - 'dependencies'
-#
-#      - 'prettier':
-#          requires:
-#            - 'dependencies'
-#
-#      - 'unit':
-#          requires:
-#            - 'linting'
-#            - 'prettier'
-#
-#      - 'benchmark':
-#          requires:
-#            - 'linting'
-#            - 'prettier'
+      #      - 'linting':
+      #          requires:
+      #            - 'dependencies'
+      #
+      #      - 'prettier':
+      #          requires:
+      #            - 'dependencies'
+      #
+      #      - 'unit':
+      #          requires:
+      #            - 'linting'
+      #            - 'prettier'
+      #
+      #      - 'benchmark':
+      #          requires:
+      #            - 'linting'
+      #            - 'prettier'
 
       - 'build `editor`':
           requires:
