@@ -151,6 +151,10 @@ jobs:
           command: |
             git config user.email 'morier.dev@outlook.com'
             git config user.name 'Circle CI'
+      # https://github.com/docksal/ci-agent/issues/26
+      - run:
+          name: Remove all existing SSH keys
+          command: ssh-add -D
       - add_ssh_keys:
           fingerprints:
             - 'e3:ad:b1:61:b5:f8:ea:7d:28:82:e1:89:9b:35:3f:e6'
