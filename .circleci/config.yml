@@ -157,7 +157,7 @@ jobs:
           command: ssh-add -D
       - add_ssh_keys:
           fingerprints:
-            - '2d:56:f6:2e:39:ec:53:32:e9:17:ad:18:27:76:6b:ce'
+            - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
       # https://discuss.circleci.com/t/git-clone-fails-in-circle-2-0/15211/10
       - run:
           name: Disable StrictHostKeyChecking for Github
