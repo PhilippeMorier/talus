@@ -376,6 +376,14 @@
     babylonjs-gltf2interface "4.0.3"
     tslib "^1.9.3"
 
+"@babylonjs/materials@4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@babylonjs/materials/-/materials-4.0.3.tgz#77d1f296a328db2e1dec831c1297261b0e9bdc75"
+  integrity sha512-y75SOhawDy8ezGlth/uryGMckqgAVqAexQIg3X8YmrGnZrg8oG1yXPsiigAS9a+enYLBfvDloJJIMvHRdzSiXw==
+  dependencies:
+    "@babylonjs/core" "4.0.3"
+    tslib "^1.9.3"
+
 "@babylonjs/serializers@4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@babylonjs/serializers/-/serializers-4.0.3.tgz#ea8959ca6de9cd96c4cba71c8427917a84385538"
