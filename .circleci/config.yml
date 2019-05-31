@@ -45,7 +45,9 @@ jobs:
             - yarn-packages-v1-{{ .Branch }}-
             - yarn-packages-v1-
 
-      - run: yarn install
+      - run:
+          name: Install dependencies
+          command: yarn install
 
       - save_cache:
           paths:
@@ -64,7 +66,9 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn lint --format=stylish
+      - run:
+          name: Run linting
+          command: yarn lint --format=stylish
 
   'prettier':
     <<: *use_docker_node
@@ -74,7 +78,12 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore  '{*,\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'
+      - run:
+          name: Run prettier
+          command: |
+            yarn prettier --check \
+            --config ./.prettierrc \
+            --ignore-path ./.prettierignore '{*,\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'
 
   'unit':
     <<: *use_docker_node_browsers
@@ -84,7 +93,9 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn test:editor:ci
+      - run:
+          name: Run unit tests
+          command: yarn test:editor:ci
 
       - *store_test_results
 
@@ -100,7 +111,9 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn benchmark:editor:ci
+      - run:
+          name: Run benchmarks
+          command: yarn benchmark:editor:ci
 
       - *store_test_results
 
@@ -149,9 +162,6 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: mkdir -p dist/editor
-      - run: touch dist/editor/index.html
-
       - run:
           name: Configure Git user
           command: |
@@ -169,7 +179,7 @@ jobs:
       - run:
           name: Prepare deployment variables
           command: |
-            echo 'export COMMIT_MESSAGE="[skip ci] Deploy `editor` #$CIRCLE_BUILD_NUM"' >> $BASH_ENV
+            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: editor (#$CIRCLE_BUILD_NUM)"' >> $BASH_ENV
             echo 'export DEST_PATH="editor/$CIRCLE_BRANCH/$CIRCLE_BUILD_NUM"' >> $BASH_ENV
 
       - run:
@@ -187,31 +197,31 @@ workflows:
     jobs:
       - 'dependencies'
 
-      #      - 'linting':
-      #          requires:
-      #            - 'dependencies'
-      #
-      #      - 'prettier':
-      #          requires:
-      #            - 'dependencies'
-      #
-      #      - 'unit':
-      #          requires:
-      #            - 'linting'
-      #            - 'prettier'
-      #
-      #      - 'benchmark':
-      #          requires:
-      #            - 'linting'
-      #            - 'prettier'
+      - 'linting':
+          requires:
+            - 'dependencies'
 
-      #      - 'build `editor`':
-      #          requires:
-      #            - 'dependencies'
+      - 'prettier':
+          requires:
+            - 'dependencies'
+
+      - 'unit':
+          requires:
+            - 'linting'
+            - 'prettier'
+
+      - 'benchmark':
+          requires:
+            - 'linting'
+            - 'prettier'
+
+      - 'build `editor`':
+          requires:
+            - 'unit'
 
       - 'deploy `editor`':
           requires:
-            - 'dependencies'
+            - 'build `editor`'
           filters:
             branches:
               only: master
