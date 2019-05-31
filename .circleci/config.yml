@@ -210,27 +210,27 @@ workflows:
     jobs:
       - 'dependencies'
 
-      #      - 'linting':
-      #          requires:
-      #            - 'dependencies'
-      #
-      #      - 'prettier':
-      #          requires:
-      #            - 'dependencies'
-      #
-      #      - 'unit':
-      #          requires:
-      #            - 'linting'
-      #            - 'prettier'
-      #
-      #      - 'benchmark':
-      #          requires:
-      #            - 'linting'
-      #            - 'prettier'
+      - 'linting':
+          requires:
+            - 'dependencies'
+
+      - 'prettier':
+          requires:
+            - 'dependencies'
+
+      - 'unit':
+          requires:
+            - 'linting'
+            - 'prettier'
+
+      - 'benchmark':
+          requires:
+            - 'linting'
+            - 'prettier'
 
       - 'build':
           requires:
-            - 'dependencies'
+            - 'unit'
 
       - 'deploy':
           requires:
