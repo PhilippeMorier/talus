@@ -165,7 +165,10 @@ jobs:
 
       - run:
           name: Deploy to Github pages
-          command: yarn gh-pages --dotfiles --message '[skip ci] Updates' --dist dist/editor
+          command: |
+            yarn gh-pages --dotfiles --message '[skip ci] Update Editor "$CIRCLE_BUILD_NUM"'
+            \ --dist dist/editor
+            \ --dest 'editor/"$CIRCLE_BRANCH"/"$CIRCLE_BUILD_NUM"'
 
 workflows:
   version: 2
