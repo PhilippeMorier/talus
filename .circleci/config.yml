@@ -112,7 +112,9 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
+      - run:
+          name: Build `editor` app
+          command: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
@@ -146,25 +148,21 @@ jobs:
     <<: *set_working_directory
     steps:
       - *attach_workspace
+
       - run:
-          name: Config Git user
+          name: Configure Git user
           command: |
             git config user.email 'morier.dev@outlook.com'
             git config user.name 'Circle CI'
-      #      # https://github.com/docksal/ci-agent/issues/26
-      #      - run:
-      #          name: Remove all existing SSH keys
-      #          command: ssh-add -D
+
       - add_ssh_keys:
           fingerprints:
             - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
-      #      # https://discuss.circleci.com/t/git-clone-fails-in-circle-2-0/15211/10
-      #      - run:
-      #          name: Disable StrictHostKeyChecking for Github
-      #          command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+
       - run:
-          name: Add Github to known hosts
+          name: Add github.com to known hosts
           command: echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' >> ~/.ssh/known_hosts
+
       - run:
           name: Deploy to Github pages
           command: yarn gh-pages --dotfiles --message '[skip ci] Updates' --dist dist/editor
