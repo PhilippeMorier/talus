@@ -118,7 +118,7 @@ jobs:
 
       - *store_test_results
 
-  'build `editor`':
+  'build':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -127,7 +127,7 @@ jobs:
       - *attach_workspace
 
       - run:
-          name: Build `editor` app
+          name: Build app
           command: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
@@ -157,7 +157,7 @@ jobs:
           paths: dist/editor
 
   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
-  'deploy `editor`':
+  'deploy':
     <<: *use_docker_node
     <<: *set_working_directory
     steps:
@@ -180,8 +180,8 @@ jobs:
       - run:
           name: Prepare deployment variables
           command: |
-            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: editor (#$CIRCLE_BUILD_NUM)"' >> $BASH_ENV
-            echo 'export DEST_PATH="editor/$CIRCLE_BRANCH/$CIRCLE_BUILD_NUM"' >> $BASH_ENV
+            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: editor (#$CIRCLE_PREVIOUS_BUILD_NUM)"' >> $BASH_ENV
+            echo 'export DEST_PATH="editor/$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM"' >> $BASH_ENV
 
       - run:
           name: Deploy to Github pages
@@ -216,13 +216,13 @@ workflows:
             - 'linting'
             - 'prettier'
 
-      - 'build `editor`':
+      - 'build':
           requires:
             - 'unit'
 
-      - 'deploy `editor`':
+      - 'deploy':
           requires:
-            - 'build `editor`'
+            - 'build'
           filters:
             branches:
               only: master
