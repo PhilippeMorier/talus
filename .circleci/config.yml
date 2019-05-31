@@ -150,7 +150,7 @@ jobs:
       - *attach_workspace
 
       - run: mkdir -p dist/editor
-      - run: touch index.html
+      - run: touch dist/editor/index.html
 
       - run:
           name: Configure Git user
@@ -194,9 +194,9 @@ workflows:
       #            - 'linting'
       #            - 'prettier'
 
-#      - 'build `editor`':
-#          requires:
-#            - 'dependencies'
+      #      - 'build `editor`':
+      #          requires:
+      #            - 'dependencies'
 
       - 'deploy `editor`':
           requires:
