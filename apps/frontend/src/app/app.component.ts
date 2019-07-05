@@ -13,12 +13,12 @@ import { Component } from '@angular/core';
       </ui-sidenav-shell-right>
 
       <ui-sidenav-shell-content>
-        Content
+        <ui-scene-viewer></ui-scene-viewer>
       </ui-sidenav-shell-content>
     </ui-sidenav-shell>
   `,
 
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'frontend';

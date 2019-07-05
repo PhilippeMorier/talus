@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { SidenavShellModule } from '@talus/ui';
+import { SceneViewerModule, SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -12,9 +12,10 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     RouterModule.forRoot([], { initialNavigation: 'enabled' }),
 
-    SidenavShellModule
+    SidenavShellModule,
+    SceneViewerModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
