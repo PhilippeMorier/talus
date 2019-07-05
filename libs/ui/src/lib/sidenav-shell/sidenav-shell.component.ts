@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   template: `
     <ng-content></ng-content>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavShellContentComponent {}
 
@@ -14,16 +14,16 @@ export class SidenavShellContentComponent {}
   template: `
     <ng-content></ng-content>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class SidenavShellLeftComponent {}
+
 @Component({
   selector: 'ui-sidenav-shell-right',
   template: `
     <ng-content></ng-content>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavShellRightComponent {}
 
@@ -31,18 +31,8 @@ export class SidenavShellRightComponent {}
   selector: 'ui-sidenav-shell',
   template: `
     <mat-sidenav-container [hasBackdrop]="false" class="example-container">
-      <mat-sidenav
-        #leftSidenav
-        mode="over"
-        position="start"
-        [autoFocus]="false"
-        [opened]="true"
-      >
-        <button
-          mat-mini-fab
-          id="left-sidenav-button"
-          (click)="leftSidenav.toggle()"
-        >
+      <mat-sidenav #leftSidenav mode="over" position="start" [autoFocus]="false" [opened]="true">
+        <button mat-mini-fab id="left-sidenav-button" (click)="leftSidenav.toggle()">
           <mat-icon *ngIf="leftSidenav.opened">keyboard_arrow_left</mat-icon>
           <mat-icon *ngIf="!leftSidenav.opened">keyboard_arrow_right</mat-icon>
         </button>
@@ -50,18 +40,8 @@ export class SidenavShellRightComponent {}
         <ng-content select="ui-sidenav-shell-left"></ng-content>
       </mat-sidenav>
 
-      <mat-sidenav
-        #rightSidenav
-        mode="over"
-        position="end"
-        [autoFocus]="false"
-        [opened]="true"
-      >
-        <button
-          mat-mini-fab
-          id="right-sidenav-button"
-          (click)="rightSidenav.toggle()"
-        >
+      <mat-sidenav #rightSidenav mode="over" position="end" [autoFocus]="false" [opened]="true">
+        <button mat-mini-fab id="right-sidenav-button" (click)="rightSidenav.toggle()">
           <mat-icon *ngIf="rightSidenav.opened">keyboard_arrow_right</mat-icon>
           <mat-icon *ngIf="!rightSidenav.opened">keyboard_arrow_left</mat-icon>
         </button>
@@ -74,7 +54,7 @@ export class SidenavShellRightComponent {}
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
-  styleUrls: ['./sidenav-shell.component.scss']
+  styleUrls: ['./sidenav-shell.component.scss'],
 })
 export class SidenavShellComponent implements OnInit {
   constructor() {}

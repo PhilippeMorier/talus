@@ -1,1 +1,1 @@
-export const getGreeting = () => cy.get('h1');
+export const getSidenavLeft = () => cy.get('ui-sidenav-shell-left');

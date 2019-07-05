@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule, MatIconModule, MatSidenavModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   SidenavShellComponent,
   SidenavShellContentComponent,
   SidenavShellLeftComponent,
-  SidenavShellRightComponent
+  SidenavShellRightComponent,
 } from './sidenav-shell.component';
 
 @NgModule({
@@ -13,14 +14,20 @@ import {
     SidenavShellComponent,
     SidenavShellContentComponent,
     SidenavShellLeftComponent,
-    SidenavShellRightComponent
+    SidenavShellRightComponent,
   ],
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatSidenavModule],
+  imports: [
+    BrowserAnimationsModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+  ],
   exports: [
     SidenavShellComponent,
     SidenavShellContentComponent,
     SidenavShellLeftComponent,
-    SidenavShellRightComponent
-  ]
+    SidenavShellRightComponent,
+  ],
 })
 export class SidenavShellModule {}
