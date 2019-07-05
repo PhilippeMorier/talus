@@ -10,5 +10,27 @@
     },
     "defaultCollection": "@nrwl/workspace"
   },
-  "schematics": {}
+  "schematics": {
+    "@nrwl/schematics:application": {
+      "style": "scss",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/schematics:library": {
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:ng-add": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:component": {
+      "styleext": "scss",
+      "inlineTemplate": true
+    }
+  }
 }
