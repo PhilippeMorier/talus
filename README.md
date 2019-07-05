@@ -38,3 +38,9 @@ This project was generated using [Nx](https://nx.dev) with the following command
    `ng add @nrwl/angular` & `npm audit fix`
 
 5. `ng generate @nrwl/angular:application frontend --directory --style=scss --inlineTemplate --viewEncapsulation=Emulated --prefix=fe --tags=frontend`
+
+6. `ng generate @nrwl/angular:lib ui --directory --style=scss --prefix=ui --tags=ui`
+
+7. `ng generate @nrwl/angular:module sidenav-shell --project=ui`
+
+8. `ng generate @nrwl/angular:component sidenav-shell --project=ui --module=sidenav-shell --export`
