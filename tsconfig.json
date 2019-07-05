@@ -1,22 +1,21 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "module": "esnext",
-    "outDir": "./dist/out-tsc",
+    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "importHelpers": true,
     "target": "es2015",
-    "types": ["jasmine"],
+    "module": "esnext",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "dom"],
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {}
   },
-  "angularCompilerOptions": {
-    "disableTypeScriptVersionCheck": true
-  }
+  "exclude": ["node_modules", "tmp"]
 }

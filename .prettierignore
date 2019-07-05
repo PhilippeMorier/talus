@@ -1,2 +1,1 @@
-projects/**/reports/**/*.*
-projects/editor/src/app/world/bunny.ts
+# Add files here to ignore them from prettier formatting

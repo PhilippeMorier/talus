@@ -1,53 +1,84 @@
-# Talus [![CircleCI](https://circleci.com/gh/PhilippeMorier/talus/tree/master.svg?style=svg)](https://circleci.com/gh/PhilippeMorier/talus/tree/master)
+# Talus
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.1 by running `ng new talus --prefix tls --style scss --skip-git --routing true --skip-install` as command.
+This project was generated using [Nx](https://nx.dev).
 
-## Installations
+<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
 
-### Node
+🔎 **Nx is a set of Angular CLI power-ups for modern development.**
 
-1. Install `nvm`
-   - https://github.com/nvm-sh/nvm#installation-and-update
-2. Install (latest) `node`
-   - `nvm install node`
-   - or add a version `nvm install 12.3.1`
+## Quick Start & Documentation
 
-### Yarn
+[Nx Documentation](https://nx.dev)
 
-1. Install `yarn`
-   - `brew install yarn`
-2. Update
-   - `brew upgrade yarn`
+[30-minute video showing all Nx features](https://nx.dev/getting-started/what-is-nx)
 
-### CircleCI CLI
+[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
 
-1. Install CLI
-   - `curl -fLSs https://circle.ci/cli | bash`
-2. Check syntac of `config.yml`
-   - `circleci config process .circleci/config.yml`
-3. Run single job
-   - `circleci local execute --job 'dependencies'`
+## Adding capabilities to your workspace
+
+Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+
+These capabilities include generating applications, libraries, .etc as well as the devtools to test, and build projects as well.
+
+Below are some plugins which you can add to your workspace:
+
+- [Angular](https://angular.io)
+  - `ng add @nrwl/angular`
+- [React](https://reactjs.org)
+  - `ng add @nrwl/react`
+- Web (no framework frontends)
+  - `ng add @nrwl/web`
+- [Nest](https://nestjs.com)
+  - `ng add @nrwl/nest`
+- [Express](https://expressjs.com)
+  - `ng add @nrwl/express`
+- [Node](https://nodejs.org)
+  - `ng add @nrwl/node`
+
+## Generate an application
+
+Run `ng g @nrwl/angular:app my-app` to generate an application.
+
+> You can use any of the plugins above to generate applications as well.
+
+When using Nx, you can create multiple applications and libraries in the same workspace.
+
+## Generate a library
+
+Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+
+> You can also use any of the plugins above to generate libraries as well.
+
+Libraries are sharable across libraries and applications. They can be imported from `@talus/mylib`.
 
 ## Development server
 
-Run `yarn start editor` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `ng g component my-component --project=my-app` to generate a new component.
 
 ## Build
 
-Run `yarn build editor` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
 ## Running unit tests
 
-Run `yarn test editor` to execute the unit tests via [Karma](https://karma-runner.github.io). Pass `--code-coverage` to generate the coverage-rapport.
+Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
 
-## Running benchmarks
+Run `npm run affected:test` to execute the unit tests affected by a change.
 
-`yarn benchmark editor`
+## Running end-to-end tests
+
+Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+
+Run `npm run affected:e2e` to execute the end-to-end tests affected by a change.
+
+## Understand your workspace
+
+Run `npm run dep-graph` to see a diagram of the dependencies of your projects.
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Visit the [Nx Documentation](https://nx.dev) to learn more.
