@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidenavShellComponent } from './sidenav-shell.component';
+import { NgModule } from '@angular/core';
 import { MatButtonModule, MatIconModule, MatSidenavModule } from '@angular/material';
+import { SidenavShellComponent } from './sidenav-shell.component';
 
 @NgModule({
   declarations: [SidenavShellComponent],

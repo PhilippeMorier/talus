@@ -1,1 +1,1 @@
-export * from './sidenav-shell.module'
+export * from './sidenav-shell.module';

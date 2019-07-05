@@ -50,5 +50,5 @@ import { Component, OnInit } from '@angular/core';
 export class SidenavShellComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit(): void {}
 }
