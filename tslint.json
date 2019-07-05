@@ -7,13 +7,11 @@
     "class-name": true,
     "comment-format": [true, "check-space"],
     "component-class-suffix": true,
-    "component-selector": [true, "element", "app", "kebab-case"],
     "curly": true,
     "deprecation": {
       "severity": "warn"
     },
     "directive-class-suffix": true,
-    "directive-selector": [true, "attribute", "app", "camelCase"],
     "eofline": true,
     "forin": true,
     "import-blacklist": [true, "rxjs/Rx"],
@@ -59,7 +57,6 @@
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
     "no-unused-variable": [false],
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "nx-enforce-module-boundaries": [
       true,
