@@ -1,4 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'ui-sidenav-shell-content',
+  template: `
+    <ng-content></ng-content>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class SidenavShellContentComponent {}
+
+@Component({
+  selector: 'ui-sidenav-shell-left',
+  template: `
+    <ng-content></ng-content>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+
+export class SidenavShellLeftComponent {}
+@Component({
+  selector: 'ui-sidenav-shell-right',
+  template: `
+    <ng-content></ng-content>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class SidenavShellRightComponent {}
 
 @Component({
   selector: 'ui-sidenav-shell',
@@ -19,7 +46,8 @@ import { Component, OnInit } from '@angular/core';
           <mat-icon *ngIf="leftSidenav.opened">keyboard_arrow_left</mat-icon>
           <mat-icon *ngIf="!leftSidenav.opened">keyboard_arrow_right</mat-icon>
         </button>
-        <p>Left</p>
+
+        <ng-content select="ui-sidenav-shell-left"></ng-content>
       </mat-sidenav>
 
       <mat-sidenav
@@ -37,11 +65,12 @@ import { Component, OnInit } from '@angular/core';
           <mat-icon *ngIf="rightSidenav.opened">keyboard_arrow_right</mat-icon>
           <mat-icon *ngIf="!rightSidenav.opened">keyboard_arrow_left</mat-icon>
         </button>
-        <p>Right</p>
+
+        <ng-content select="ui-sidenav-shell-right"></ng-content>
       </mat-sidenav>
 
       <mat-sidenav-content>
-        This is the sidenav-content!
+        <ng-content select="ui-sidenav-shell-content"></ng-content>
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
