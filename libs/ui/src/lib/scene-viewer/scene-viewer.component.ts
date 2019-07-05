@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { SceneViewerService } from './scene-viewer.service';
 
 @Component({
   selector: 'ui-scene-viewer',
@@ -10,7 +11,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 export class SceneViewerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
 
-  constructor() {}
+  constructor(private sceneViewerService: SceneViewerService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.sceneViewerService.initialize(this.canvas.nativeElement);
+    this.sceneViewerService.startRendering();
+  }
 }
