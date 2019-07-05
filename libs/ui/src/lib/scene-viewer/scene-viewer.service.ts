@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { MeshBuilder, Scene } from '@babylonjs/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Vector3 } from '@babylonjs/core/Maths/math';
-import { Scene } from '@babylonjs/core/scene';
 
 @Injectable()
 export class SceneViewerService {
@@ -27,8 +27,8 @@ export class SceneViewerService {
 
   private createScene(): void {
     this.scene = new Scene(this.engine);
-    // Requires `import '@babylonjs/inspector';` (adds ~3.5mb)
-    // this.scene.debugLayer.show();
+
+    MeshBuilder.CreateBox('box', {}, this.scene);
   }
 
   private createCamera(): void {
@@ -43,7 +43,7 @@ export class SceneViewerService {
     camera.inertia = 0;
     camera.panningInertia = 0;
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(256, 256, 256));
+    camera.setPosition(new Vector3(32, 32, 32));
     camera.panningSensibility = 10;
   }
 
