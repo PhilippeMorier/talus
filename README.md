@@ -37,4 +37,4 @@ This project was generated using [Nx](https://nx.dev) with the following command
 4. https://nx.dev/api/angular/schematics/ng-add  
    `ng add @nrwl/angular` & `npm audit fix`
 
-5. `ng generate @nrwl/angular:application frontend --directory --style=scss --inlineTemplate --routing --viewEncapsulation=Emulated --prefix=fe --tags=frontend`
+5. `ng generate @nrwl/angular:application frontend --directory --style=scss --inlineTemplate --viewEncapsulation=Emulated --prefix=fe --tags=frontend`
