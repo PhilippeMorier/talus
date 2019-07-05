@@ -4,9 +4,7 @@ import { SidenavShellComponent } from './sidenav-shell.component';
 
 @NgModule({
   declarations: [SidenavShellComponent],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [SidenavShellComponent]
 })
-export class SidenavShellModule { }
+export class SidenavShellModule {}

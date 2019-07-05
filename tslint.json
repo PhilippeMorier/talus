@@ -55,10 +55,7 @@
       {
         "allow": [],
         "depConstraints": [
-          {
-            "sourceTag": "*",
-            "onlyDependOnLibsWithTags": ["*"]
-          }
+          { "sourceTag": "frontend", "onlyDependOnLibsWithTags": ["ui"] }
         ]
       }
     ],
