@@ -13,6 +13,9 @@
     },
     "frontend": {
       "tags": ["frontend"]
+    },
+    "ui": {
+      "tags": ["ui"]
     }
   }
 }
