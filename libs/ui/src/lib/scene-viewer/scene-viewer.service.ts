@@ -4,7 +4,8 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Vector3 } from '@babylonjs/core/Maths/math';
-import { Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class SceneViewerService {
@@ -15,6 +16,7 @@ export class SceneViewerService {
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
+  private destroy$ = new Subject();
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = new Engine(canvas);
@@ -23,7 +25,13 @@ export class SceneViewerService {
     this.createCamera();
     this.createLight();
 
+    this.registerWindowResize();
     this.registerPointerUp();
+  }
+
+  destroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   startRendering(): void {
@@ -64,5 +72,11 @@ export class SceneViewerService {
     ): void => {
       this.pointerUp$.next(event);
     };
+  }
+
+  private registerWindowResize(): void {
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.engine.resize());
   }
 }
