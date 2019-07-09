@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { MeshBuilder, Scene } from '@babylonjs/core';
+import { MeshBuilder, Nullable, PickingInfo, PointerEventTypes, Scene } from '@babylonjs/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Vector3 } from '@babylonjs/core/Maths/math';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class SceneViewerService {
   scene: Scene;
+
+  pointerUp$ = new Subject<PointerEvent>();
 
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
@@ -19,6 +22,8 @@ export class SceneViewerService {
     this.createScene();
     this.createCamera();
     this.createLight();
+
+    this.registerPointerUp();
   }
 
   startRendering(): void {
@@ -49,5 +54,15 @@ export class SceneViewerService {
 
   private createLight(): void {
     this.light = new HemisphericLight('light', new Vector3(0, 1, 1), this.scene);
+  }
+
+  private registerPointerUp(): void {
+    this.scene.onPointerUp = (
+      event: PointerEvent,
+      pickInfo: Nullable<PickingInfo>,
+      type: PointerEventTypes,
+    ): void => {
+      this.pointerUp$.next(event);
+    };
   }
 }
