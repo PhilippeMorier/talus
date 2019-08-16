@@ -17,8 +17,6 @@ import { Component } from '@angular/core';
       </ui-sidenav-shell-content>
     </ui-sidenav-shell>
   `,
-
-  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'frontend';
