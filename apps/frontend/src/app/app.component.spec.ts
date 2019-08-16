@@ -1,7 +1,7 @@
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SceneViewerModule, SidenavShellModule } from '@talus/ui';
+import { SceneViewerTestModule, SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -11,7 +11,7 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         RouterTestingModule,
         SidenavShellModule,
-        SceneViewerModule,
+        SceneViewerTestModule,
       ],
       declarations: [AppComponent],
     }).compileComponents();

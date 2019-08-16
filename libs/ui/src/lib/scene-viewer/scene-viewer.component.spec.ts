@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { SceneViewerTestModule } from '@talus/ui';
 import { SceneViewerComponent } from './scene-viewer.component';
 
 describe('SceneViewerComponent', () => {
@@ -8,9 +8,8 @@ describe('SceneViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SceneViewerComponent ]
-    })
-    .compileComponents();
+      imports: [SceneViewerTestModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
