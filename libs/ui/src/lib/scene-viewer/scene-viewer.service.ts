@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MeshBuilder, Nullable, PickingInfo, PointerEventTypes, Scene } from '@babylonjs/core';
+import { MeshBuilder, Nullable, NullEngine, PickingInfo, PointerEventTypes, Scene } from '@babylonjs/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -12,6 +12,10 @@ export class EngineFactory {
   create(canvas: HTMLCanvasElement): Engine {
     return new Engine(canvas);
   }
+}
+
+export function testEngineFactor(): any {
+  return { create: () => new NullEngine() };
 }
 
 @Injectable()

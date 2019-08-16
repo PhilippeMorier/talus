@@ -79,7 +79,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 ### Unit
 
-- All: `yarn test`
+- All: `yarn test` (`--watch` or `--watchAll`)
 - Project 'ui': `yarn test ui`
 - Coverage: `yarn test --code-coverage` (saved in `./coverage`)
 
