@@ -85,6 +85,7 @@ jobs:
             yarn prettier --check \
             --config ./.prettierrc \
             --ignore-path ./.prettierignore '{*,\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'
+
   'unit':
     <<: *use_docker_node_browsers
 
@@ -133,11 +134,15 @@ jobs:
           name: Create index files
           command: |
             cd ./dist/editor
+
             cp index.html index-github.html
+
             echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/editor\/dist\/"' >> $BASH_ENV
             echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/editor\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/"' >> $BASH_ENV
+
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
             echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
+
       # Variable interpolation doesn't work on multi-line command
       - run:
           name: Replace 'BASE_PATH_PLACEHOLDER' for CircleCI index
@@ -167,6 +172,7 @@ jobs:
           command: |
             git config user.email 'morier.dev@outlook.com'
             git config user.name 'Circle CI'
+
       - add_ssh_keys:
           fingerprints:
             - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
@@ -188,6 +194,7 @@ jobs:
           command: |
             echo 'export COMMIT_MESSAGE="[skip ci] Deploy: editor (#$CIRCLE_PREVIOUS_BUILD_NUM)"' >> $BASH_ENV
             echo 'export DEST_PATH="editor/$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM"' >> $BASH_ENV
+
       - run:
           name: Deploy to Github pages
           command: |
@@ -196,6 +203,7 @@ jobs:
             --message "$COMMIT_MESSAGE" \
             --dist dist/editor \
             --dest "$DEST_PATH"
+
 workflows:
   version: 2
   'editor':
