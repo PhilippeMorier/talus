@@ -44,3 +44,29 @@ This project was generated using [Nx](https://nx.dev) with the following command
 7. `ng generate @nrwl/angular:module sidenav-shell --project=ui`
 
 8. `ng generate @nrwl/angular:component sidenav-shell --project=ui --module=sidenav-shell --export`
+
+## Installations
+
+### Node
+
+1. Install `nvm`
+   - https://github.com/nvm-sh/nvm#installation-and-update
+2. Install (latest) `node`
+   - `nvm install node`
+   - or add a version `nvm install 12.3.1`
+
+### Yarn
+
+1. Install `yarn`
+   - `brew install yarn`
+2. Update
+   - `brew upgrade yarn`
+
+### CircleCI CLI
+
+1. Install CLI
+   - `curl -fLSs https://circle.ci/cli | bash`
+2. Check syntac of `config.yml`
+   - `circleci config process .circleci/config.yml`
+3. Run single job
+   - `circleci local execute --job 'dependencies'`
