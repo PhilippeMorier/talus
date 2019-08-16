@@ -1,4 +1,4 @@
-# Talus
+# Talus [![CircleCI](https://circleci.com/gh/PhilippeMorier/talus/tree/convert-to-nx.svg?style=svg)](https://circleci.com/gh/PhilippeMorier/talus/tree/convert-to-nx)
 
 This project was generated using [Nx](https://nx.dev) with the following command sequence.
 
@@ -70,3 +70,19 @@ This project was generated using [Nx](https://nx.dev) with the following command
    - `circleci config process .circleci/config.yml`
 3. Run single job
    - `circleci local execute --job 'dependencies'`
+
+## Build
+
+- `yarn build frontend` (saved in `./dist`)
+
+## Test
+
+### Unit
+
+- All: `yarn test`
+- Project 'ui': `yarn test ui`
+- Coverage: `yarn test --code-coverage` (saved in `./coverage`)
+
+### E2E
+
+- `yarn e2e`
