@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MeshBuilder, Nullable, NullEngine, PickingInfo, PointerEventTypes, Scene } from '@babylonjs/core';
+import { MeshBuilder, Scene } from '@babylonjs/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -12,10 +12,6 @@ export class EngineFactory {
   create(canvas: HTMLCanvasElement): Engine {
     return new Engine(canvas);
   }
-}
-
-export function testEngineFactor(): any {
-  return { create: () => new NullEngine() };
 }
 
 @Injectable()
@@ -40,36 +36,6 @@ export class CameraFactory {
     );
   }
 }
-
-export function testCameraFactory(): any {
-  return {
-    create: (
-      name: string,
-      alpha: number,
-      beta: number,
-      radius: number,
-      target: Vector3,
-      scene: Scene,
-      setActiveOnSceneIfNoneActive?: boolean,
-    ): ArcRotateCamera => {
-      const camera = new ArcRotateCamera(
-        name,
-        alpha,
-        beta,
-        radius,
-        target,
-        scene,
-        setActiveOnSceneIfNoneActive,
-      );
-      camera.attachControl = () => {};
-
-      return camera;
-    },
-  };
-}
-
-@Injectable()
-export class Camera extends ArcRotateCamera {}
 
 @Injectable()
 export class SceneViewerService {
@@ -121,10 +87,6 @@ export class SceneViewerService {
     );
     camera.inertia = 0;
     camera.panningInertia = 0;
-    // https://forum.babylonjs.com/t/testing-my-project-with-jest/3988/4
-    // Deltakosh, Sith Overlord, Jun 20
-    // If you only need to do unit testing, you should use the NullEngine and not attach your camera
-    // This is what we do for all our unit tests on babylon.js CI
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
     camera.setPosition(new Vector3(32, 32, 32));
     camera.panningSensibility = 10;
@@ -135,13 +97,7 @@ export class SceneViewerService {
   }
 
   private registerPointerUp(): void {
-    this.scene.onPointerUp = (
-      event: PointerEvent,
-      pickInfo: Nullable<PickingInfo>,
-      type: PointerEventTypes,
-    ): void => {
-      this.pointerUp$.next(event);
-    };
+    this.scene.onPointerUp = (event: PointerEvent): void => this.pointerUp$.next(event);
   }
 
   private registerWindowResize(): void {

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SceneViewerTestModule } from '@talus/ui';
 import { SceneViewerComponent } from './scene-viewer.component';
+import { SceneViewerTestModule } from './scene-viewer.module.testing';
 
 describe('SceneViewerComponent', () => {
   let component: SceneViewerComponent;
