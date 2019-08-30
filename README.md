@@ -87,3 +87,9 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ### E2E
 
 - `yarn e2e <frontend-e2e>`
+
+## Nx
+
+### Update
+
+- Just run `yarn update` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
