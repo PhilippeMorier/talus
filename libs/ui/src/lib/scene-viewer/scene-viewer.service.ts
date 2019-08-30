@@ -87,9 +87,13 @@ export class SceneViewerService {
     );
     camera.inertia = 0;
     camera.panningInertia = 0;
+
+    camera.panningSensibility = 20;
+    camera.angularSensibilityX = 200;
+    camera.angularSensibilityY = 100;
+
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
     camera.setPosition(new Vector3(32, 32, 32));
-    camera.panningSensibility = 10;
   }
 
   private createLight(): void {
