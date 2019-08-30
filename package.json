@@ -23,7 +23,7 @@
     "lint:styles": "stylelint \"{apps,libs}/**/*.{css,scss}\"",
     "ng": "ng",
     "nx": "nx",
-    "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'",
+    "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci/**/*}.{ts,scss,json,html,yml}'",
     "start": "ng serve",
     "test": "ng test",
     "test:ci": "ng test --code-coverage",

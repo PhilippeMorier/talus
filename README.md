@@ -54,6 +54,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 2. Install (latest) `node`
    - `nvm install node`
    - or add a version `nvm install 12.3.1`
+   - set a version as default `nvm alias default 12.3.1`
 
 ### Yarn
 
@@ -80,9 +81,9 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ### Unit
 
 - All: `yarn test` (`--watch` or `--watchAll`)
-- Project 'ui': `yarn test ui`
+- Project 'frontend': `yarn test frontend`
 - Coverage: `yarn test --code-coverage` (saved in `./coverage`)
 
 ### E2E
 
-- `yarn e2e`
+- `yarn e2e <frontend-e2e>`
