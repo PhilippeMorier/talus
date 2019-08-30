@@ -67,7 +67,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 1. Install CLI
    - `curl -fLSs https://circle.ci/cli | bash`
-2. Check syntac of `config.yml`
+2. Check syntax of `config.yml`
    - `circleci config process .circleci/config.yml`
 3. Run single job
    - `circleci local execute --job 'dependencies'`
@@ -99,3 +99,10 @@ This project was generated using [Nx](https://nx.dev) with the following command
 See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 - `yarn nx --help`
+
+## Github Pages
+
+CircleCI pushes every build onto the [gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published by github under:
+
+- Schema: `https://philippemorier.github.io/talus/<branch>/<build-num>/dist/apps/frontend/`
+- Example: https://philippemorier.github.io/talus/convert-to-nx/245/dist/apps/frontend/
