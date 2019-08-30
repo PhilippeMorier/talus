@@ -152,7 +152,7 @@ jobs:
 
       - store_artifacts:
           path: ./dist/apps/frontend
-          destination: dist/apps
+          destination: dist/apps/frontend
 
       - persist_to_workspace:
           root: .

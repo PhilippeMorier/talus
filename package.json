@@ -66,6 +66,7 @@
     "codelyzer": "5.1.0",
     "cypress": "3.4.1",
     "dotenv": "8.1.0",
+    "gh-pages": "2.1.1",
     "jest": "24.9.0",
     "jest-preset-angular": "7.1.1",
     "prettier": "1.18.2",
