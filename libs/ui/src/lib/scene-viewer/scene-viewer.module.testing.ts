@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { ArcRotateCamera, NullEngine, Scene, Vector3 } from '@babylonjs/core';
-import { SceneViewerComponent } from './scene-viewer.component';
 import { CameraFactory, EngineFactory, SceneViewerService } from './scene-viewer.service';
 
 function testCameraFactory(): any {
@@ -40,10 +39,16 @@ function testEngineFactor(): any {
   return { create: () => new NullEngine() };
 }
 
+@Component({
+  selector: 'ui-scene-viewer',
+  template: ``,
+})
+export class SceneViewerMockComponent {}
+
 @NgModule({
-  declarations: [SceneViewerComponent],
+  declarations: [SceneViewerMockComponent],
+  exports: [SceneViewerMockComponent],
   imports: [CommonModule],
-  exports: [SceneViewerComponent],
   providers: [
     { provide: CameraFactory, useValue: testCameraFactory() },
     { provide: EngineFactory, useValue: testEngineFactor() },

@@ -8,6 +8,7 @@ describe('SceneViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [SceneViewerComponent],
       imports: [SceneViewerTestModule],
     }).compileComponents();
   }));

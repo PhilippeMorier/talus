@@ -7,13 +7,13 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [AppComponent],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
         SidenavShellModule,
         SceneViewerTestModule,
       ],
-      declarations: [AppComponent],
     }).compileComponents();
   }));
 
@@ -33,6 +33,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
+
     expect(compiled.querySelector('ui-sidenav-shell-left').textContent).toContain('Left');
+    expect(compiled.querySelector('ui-sidenav-shell-content > ui-scene-viewer')).toBeDefined();
   });
 });
