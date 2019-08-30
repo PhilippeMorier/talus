@@ -204,7 +204,7 @@ jobs:
 
 workflows:
   version: 2
-  'editor':
+  'apps':
     jobs:
       - 'dependencies'
 
