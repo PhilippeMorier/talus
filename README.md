@@ -75,6 +75,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ## Build
 
 - `yarn build frontend` (saved in `./dist`)
+- `yarn nx run frontend:build:production` (see [ng run](https://angular.io/cli/run))
 
 ## Test
 
@@ -93,3 +94,9 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ### Update
 
 - Just run `yarn update` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
+
+### Commands
+
+See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
+
+- `yarn nx --help`
