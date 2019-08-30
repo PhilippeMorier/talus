@@ -126,17 +126,17 @@ jobs:
 
       - run:
           name: Build app
-          command: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
+          command: yarn ng run frontend:build:production --base-href BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
           command: |
-            cd ./dist/editor
+            cd ./dist/apps/frontend
 
             cp index.html index-github.html
 
-            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/editor\/dist\/"' >> $BASH_ENV
-            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/editor\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/apps\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/apps\/frontend\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/"' >> $BASH_ENV
 
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
             echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
@@ -144,19 +144,19 @@ jobs:
       # Variable interpolation doesn't work on multi-line command
       - run:
           name: Replace 'BASE_PATH_PLACEHOLDER' for CircleCI index
-          command: cd ./dist/editor && sed -i "$REPLACE_CIRCLE_CI" index.html
+          command: cd ./dist/apps/frontend && sed -i "$REPLACE_CIRCLE_CI" index.html
 
       - run:
           name: Replace 'BASE_PATH_PLACEHOLDER' for Github index
-          command: cd ./dist/editor && sed -i "$REPLACE_GITHUB" index-github.html
+          command: cd ./dist/apps/frontend && sed -i "$REPLACE_GITHUB" index-github.html
 
       - store_artifacts:
-          path: ./dist/editor
-          destination: editor/dist
+          path: ./dist/apps/frontend
+          destination: dist/apps
 
       - persist_to_workspace:
           root: .
-          paths: dist/editor
+          paths: dist/apps/frontend
 
   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
   'deploy':
@@ -181,11 +181,11 @@ jobs:
 
       - run:
           name: Delete CircleCI index
-          command: rm dist/editor/index.html
+          command: rm dist/apps/frontend/index.html
 
       - run:
           name: Rename Github index
-          command: mv dist/editor/index-github.html dist/editor/index.html
+          command: mv dist/apps/frontend/index-github.html dist/apps/frontend/index.html
 
       - run:
           name: Prepare deployment variables
@@ -199,7 +199,7 @@ jobs:
             yarn gh-pages \
             --dotfiles \
             --message "$COMMIT_MESSAGE" \
-            --dist dist/editor \
+            --dist apps/frontend \
             --dest "$DEST_PATH"
 
 workflows:
