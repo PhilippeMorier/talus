@@ -135,7 +135,7 @@ jobs:
 
             cp index.html index-github.html
 
-            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/apps\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/dist\/apps\/frontend\/"' >> $BASH_ENV
             echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/apps\/frontend\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/"' >> $BASH_ENV
 
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
@@ -221,10 +221,10 @@ workflows:
             - 'linting'
             - 'prettier'
 
-      - 'benchmark':
-          requires:
-            - 'linting'
-            - 'prettier'
+      #      - 'benchmark':
+      #          requires:
+      #            - 'linting'
+      #            - 'prettier'
 
       - 'build':
           requires:
@@ -233,6 +233,6 @@ workflows:
       - 'deploy':
           requires:
             - 'build'
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
