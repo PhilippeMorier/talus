@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { SceneViewerService } from './scene-viewer.service';
 
 @Component({
@@ -7,18 +7,20 @@ import { SceneViewerService } from './scene-viewer.service';
     <canvas #canvas></canvas>
   `,
   styleUrls: ['./scene-viewer.component.scss'],
+  providers: [SceneViewerService],
 })
-export class SceneViewerComponent implements OnInit, OnDestroy {
+export class SceneViewerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
 
   constructor(private sceneViewerService: SceneViewerService) {}
 
+  @HostListener('window:resize')
+  onWindowsResize(): void {
+    this.sceneViewerService.resizeView();
+  }
+
   ngOnInit(): void {
     this.sceneViewerService.initialize(this.canvas.nativeElement);
     this.sceneViewerService.startRendering();
-  }
-
-  ngOnDestroy(): void {
-    this.sceneViewerService.destroy();
   }
 }
