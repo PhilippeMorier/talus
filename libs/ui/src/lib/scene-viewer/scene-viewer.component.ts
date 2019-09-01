@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { SceneViewerService } from './scene-viewer.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { SceneViewerService } from './scene-viewer.service';
   `,
   styleUrls: ['./scene-viewer.component.scss'],
   providers: [SceneViewerService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas: ElementRef;

@@ -55,6 +55,7 @@ export class SidenavShellRightComponent {}
     </mat-sidenav-container>
   `,
   styleUrls: ['./sidenav-shell.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavShellComponent implements OnInit {
   constructor() {}
