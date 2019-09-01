@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MeshBuilder, Scene } from '@babylonjs/core';
+import { AbstractMesh, MeshBuilder, PickingInfo, Scene } from '@babylonjs/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -40,7 +40,8 @@ export class CameraFactory {
 export class SceneViewerService {
   scene: Scene;
 
-  pointerUp$ = new Subject<PointerEvent>();
+  pointerPick$ = new Subject<PointerEvent>();
+  meshPick$ = new Subject<AbstractMesh>();
 
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
@@ -55,7 +56,7 @@ export class SceneViewerService {
     this.createCamera();
     this.createLight();
 
-    this.registerPointerUp();
+    this.registerPointerPick();
   }
 
   startRendering(): void {
@@ -89,14 +90,17 @@ export class SceneViewerService {
     camera.angularSensibilityY = 100;
 
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(32, 32, 32));
+    camera.setPosition(new Vector3(8, 8, 8));
   }
 
   private createLight(): void {
     this.light = new HemisphericLight('light', new Vector3(0, 1, 1), this.scene);
   }
 
-  private registerPointerUp(): void {
-    this.scene.onPointerUp = (event: PointerEvent): void => this.pointerUp$.next(event);
+  private registerPointerPick(): void {
+    this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
+      this.pointerPick$.next(event);
+      this.meshPick$.next(pickInfo.pickedMesh);
+    };
   }
 }
