@@ -63,6 +63,7 @@
     "@types/jest": "24.0.18",
     "@types/node": "12.7.3",
     "babylonjs": "4.0.3",
+    "benchmark": "2.1.4",
     "codelyzer": "5.1.0",
     "cypress": "3.4.1",
     "dotenv": "8.1.0",
