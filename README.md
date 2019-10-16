@@ -92,8 +92,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ## Nx
 
 ### Update
-
-- Just run `yarn update` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
+- Just run `nx migrate @nrwl/workspace` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
 
 ### Commands
 
