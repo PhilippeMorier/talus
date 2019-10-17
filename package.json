@@ -11,6 +11,7 @@
     "affected:libs": "nx affected:libs",
     "affected:lint": "nx affected:lint",
     "affected:test": "nx affected:test",
+    "benchmark": "sh -c 'ng run ${0}:benchmark'",
     "build": "ng build",
     "build:frontend:ci": "ng build --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false",
     "dep-graph": "nx dep-graph",
