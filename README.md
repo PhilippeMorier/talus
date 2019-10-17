@@ -74,6 +74,10 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 ### WebStorm
 
+#### Plugin: Awesome Console
+
+Install [this plugin](https://plugins.jetbrains.com/plugin/7677-awesome-console) to be able to click on a file path within the console.
+
 #### Macro
 
 Setting up a macro which will fix all the linting issues, optimizes the imports and runs Prettier.
@@ -120,6 +124,7 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 ## Nx
 
 ### Update
+
 - Just run `nx migrate @nrwl/workspace` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
 
 ### Commands
