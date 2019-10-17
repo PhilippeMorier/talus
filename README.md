@@ -72,6 +72,34 @@ This project was generated using [Nx](https://nx.dev) with the following command
 3. Run single job
    - `circleci local execute --job 'dependencies'`
 
+### WebStorm
+
+#### Macro
+
+Setting up a macro which will fix all the linting issues, optimizes the imports and runs Prettier.
+
+1. StyleLint
+
+   - Setup a file watcher ([fix action](https://youtrack.jetbrains.com/issue/WEB-25069) not yet supported) with
+     - File Type: `SCSS style sheet`
+     - Scope: `Current File`
+     - Program: `$ProjectFileDir$/node_modules/.bin/stylelint`
+     - Arguments: `$FilePathRelativeToProjectRoot$ --fix`
+     - Working Dir: `$ProjectFileDir$`
+     - Advanced Options: None, all deactivated
+
+2. Record macro in this order
+
+   - Action: TsLintFileFixAction
+   - Action: OptimizeImports
+   - Action: ReformatWithPrettierAction
+   - Action: FileWatcher.runForFiles
+   - Action: SaveAll
+
+3. Save macro as e.g. `Fix & Save`
+
+4. Assign Keyboard shortcut `Ctrl` + `S` to macro `Fix & Save`
+
 ## Build
 
 - `yarn build frontend` (saved in `./dist`)
