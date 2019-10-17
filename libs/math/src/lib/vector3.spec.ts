@@ -1,6 +1,6 @@
 import { add3, isPowerOfTwo3, mul3, sub3, Vector3 } from './vector3';
 
-describe.skip('Vector3', () => {
+describe('Vector3', () => {
   let a: Vector3;
   let b: Vector3;
 
