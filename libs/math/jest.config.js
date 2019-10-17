@@ -1,6 +1,7 @@
 module.exports = {
   name: 'math',
   preset: '../../jest.config.js',
+  testMatch: ['**/+(*.)+(benchmark).+(ts|js)?(x)'],
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },

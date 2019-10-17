@@ -60,6 +60,7 @@
     "@nrwl/cypress": "8.6.0",
     "@nrwl/jest": "8.6.0",
     "@nrwl/workspace": "8.6.0",
+    "@types/benchmark": "1.0.31",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.3",
     "babylonjs": "4.0.3",

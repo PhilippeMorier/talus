@@ -3,14 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node"]
+    "types": ["benchmark", "jest", "node"]
   },
   "include": [
-    "**/*.benchmark.ts",
-    //    "**/*.spec.ts",
-    //    "**/*.spec.tsx",
-    //    "**/*.spec.js",
-    //    "**/*.spec.jsx",
-    "**/*.d.ts"
+    "**/*.benchmark.ts"
   ]
 }
