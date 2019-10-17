@@ -84,8 +84,8 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
      - File Type: `SCSS style sheet`
      - Scope: `Current File`
      - Program: `$ProjectFileDir$/node_modules/.bin/stylelint`
-     - Arguments: `$FilePathRelativeToProjectRoot$ --fix`
-     - Working Dir: `$ProjectFileDir$`
+     - Arguments: `$FileName$ --fix`
+     - Working Dir: `$FileDir$`
      - Advanced Options: None, all deactivated
 
 2. Record macro in this order
