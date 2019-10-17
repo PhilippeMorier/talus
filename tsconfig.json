@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@talus/ui": ["libs/ui/src/index.ts"]
+      "@talus/ui": ["libs/ui/src/index.ts"],
+      "@talus/math": ["libs/math/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -67,10 +67,42 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 1. Install CLI
    - `curl -fLSs https://circle.ci/cli | bash`
-2. Check syntac of `config.yml`
+2. Check syntax of `config.yml`
    - `circleci config process .circleci/config.yml`
 3. Run single job
    - `circleci local execute --job 'dependencies'`
+
+### WebStorm
+
+#### Plugin: Awesome Console
+
+Install [this plugin](https://plugins.jetbrains.com/plugin/7677-awesome-console) to be able to click on a file path within the console.
+
+#### Macro
+
+Setting up a macro which will fix all the linting issues, optimizes the imports and runs Prettier.
+
+1. StyleLint
+
+   - Setup a file watcher ([fix action](https://youtrack.jetbrains.com/issue/WEB-25069) not yet supported) with
+     - File Type: `SCSS style sheet`
+     - Scope: `Current File`
+     - Program: `$ProjectFileDir$/node_modules/.bin/stylelint`
+     - Arguments: `$FileName$ --fix`
+     - Working Dir: `$FileDir$`
+     - Advanced Options: None, all deactivated
+
+2. Record macro in this order
+
+   - Action: TsLintFileFixAction
+   - Action: OptimizeImports
+   - Action: ReformatWithPrettierAction
+   - Action: FileWatcher.runForFiles
+   - Action: SaveAll
+
+3. Save macro as e.g. `Fix & Save`
+
+4. Assign Keyboard shortcut `Ctrl` + `S` to macro `Fix & Save`
 
 ## Build
 
@@ -92,6 +124,7 @@ This project was generated using [Nx](https://nx.dev) with the following command
 ## Nx
 
 ### Update
+
 - Just run `nx migrate @nrwl/workspace` (see [nx.dev-guide](https://nx.dev/angular/guides/update))
 
 ### Commands
@@ -99,3 +132,10 @@ This project was generated using [Nx](https://nx.dev) with the following command
 See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 - `yarn nx --help`
+
+## Github Pages
+
+CircleCI pushes every build onto the [gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published by github under:
+
+- Schema: `https://philippemorier.github.io/talus/<branch>/<build-num>/dist/apps/frontend/`
+- Example: https://philippemorier.github.io/talus/convert-to-nx/245/dist/apps/frontend/
