@@ -2,6 +2,8 @@
  * @jest-environment node
  */
 
+/* tslint:disable:no-bitwise no-unused-expression */
+
 import { Suite } from 'benchmark';
 
 const suites: Suite[] = [];
