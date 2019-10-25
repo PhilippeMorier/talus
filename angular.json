@@ -143,35 +143,6 @@
         }
       }
     },
-    "math": {
-      "root": "libs/math",
-      "sourceRoot": "libs/math/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/math/tsconfig.lib.json", "libs/math/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/math/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/math/jest.config.js",
-            "tsConfig": "libs/math/tsconfig.spec.json"
-          }
-        },
-        "benchmark": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/math/jest.benchmark.config.js",
-            "tsConfig": "libs/math/tsconfig.spec.json"
-          }
-        }
-      }
-    },
     "benchmark": {
       "root": "apps/benchmark",
       "sourceRoot": "apps/benchmark/src",

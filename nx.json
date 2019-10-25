@@ -17,9 +17,6 @@
     "ui": {
       "tags": ["ui"]
     },
-    "math": {
-      "tags": ["math"]
-    },
     "benchmark": {
       "tags": ["benchmark"]
     }
