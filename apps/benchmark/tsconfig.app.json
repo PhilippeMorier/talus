@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["node"]
+  },
+  "exclude": ["**/*.spec.ts"],
+  "include": [
+    "**/*.ts",
+    "../../node_modules/cypress/types/mocha/index.d.ts"
+  ]
+}

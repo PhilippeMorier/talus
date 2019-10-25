@@ -19,6 +19,9 @@
     },
     "math": {
       "tags": ["math"]
+    },
+    "benchmark": {
+      "tags": ["benchmark"]
     }
   }
 }

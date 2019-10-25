@@ -171,6 +171,50 @@
           }
         }
       }
+    },
+    "benchmark": {
+      "root": "apps/benchmark",
+      "sourceRoot": "apps/benchmark/src",
+      "projectType": "application",
+      "prefix": "benchmark",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/benchmark",
+            "main": "apps/benchmark/src/main.ts",
+            "tsConfig": "apps/benchmark/tsconfig.app.json",
+            "assets": ["apps/benchmark/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/benchmark/src/environments/environment.ts",
+                  "with": "apps/benchmark/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "benchmark:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/benchmark/tsconfig.app.json", "apps/benchmark/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
+          }
+        }
+      }
     }
   },
   "cli": {
