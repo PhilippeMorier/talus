@@ -1,5 +1,7 @@
 import { benchmark, suite } from '../main';
 
+/* tslint:disable:no-bitwise no-unused-expression */
+
 suite('Integer division', () => {
   benchmark('Math.floor()', () => {
     Math.floor(10 / 2);

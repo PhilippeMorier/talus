@@ -181,7 +181,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/benchmark/tsconfig.app.json", "apps/benchmark/tsconfig.spec.json"],
+            "tsConfig": ["apps/benchmark/tsconfig.app.json"],
             "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
           }
         }
