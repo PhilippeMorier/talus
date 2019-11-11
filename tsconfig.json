@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@talus/ui": ["libs/ui/src/index.ts"],
-      "@talus/math": ["libs/math/src/index.ts"]
+      "@talus/math": ["libs/math/src/index.ts"],
+      "@talus/vdb": ["libs/vdb/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
