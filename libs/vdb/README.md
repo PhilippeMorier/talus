@@ -40,7 +40,7 @@ e.g. `sudo apt-get install libboost-python-dev`
     <stdlib.h>
 
 - `make`
-- `make install`
+- `sudo make install`
 
 #### Run Tests
 
@@ -53,8 +53,12 @@ Dependencies:
 
 Running tests:
 
-- In `../openvdb/openvdb/` run `make test` to run Python and C++ tests
+- In `../openvdb/build/` run `make test` to run Python and C++ tests
 - Alternatively run tests via `./openvdb/unittest/vdb_test -v` for more details on the C++ tests
   - `Segmentation fault` happens and is mentioned in `tsc/meetings/2019-09-26.md` explaining it
     happens `during serialization of OpenVDB Point Data Grids into Houdini file formats`
+  - Add custom test (e.g. in `../unittest/TestLeaf.cc`) and run it
+    1. `CPPUNIT_TEST(testCoordToOffset);`
+    2. `void testCoordToOffset();`
+    3. `make && ./openvdb/unittest/vdb_test -v -t TestLeaf::testCoordToOffset`
 - Test log files are under `openvdb/build/Testing/Temporary`
