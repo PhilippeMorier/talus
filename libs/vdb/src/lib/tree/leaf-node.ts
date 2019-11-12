@@ -1,4 +1,6 @@
 import { Coord } from '../math/coord';
+import { NodeMask } from '../util/node-mask';
+import { LeafBuffer } from './leaf-buffer';
 
 export type ValueType = boolean | number | string;
 export type Index = number;
@@ -14,8 +16,12 @@ export class LeafNode<T extends ValueType> {
   static readonly LEVEL: Index = 0; // level 0 = leaf
   // tslint:enable:no-bitwise
 
-  private buffer;
-  private valueMask;
+  // Buffer containing the actual data values
+  private buffer = new LeafBuffer<T>();
+  // Bitmask that determines which voxels are active
+  private valueMask = new NodeMask();
+  // Global grid index coordinates (x,y,z) of the local origin of this node
+  private origin: Coord;
 
   static coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
@@ -27,5 +33,20 @@ export class LeafNode<T extends ValueType> {
     // tslint:enable:no-bitwise
   }
 
-  setValueOn(xyz: Coord, value: T): void {}
+  /**
+   * Set the value of the voxel at the given coordinates and mark the voxel as active.
+   */
+  setValueOn(xyz: Coord, value: T): void {
+    const offset = LeafNode.coordToOffset(xyz);
+
+    this.buffer.setValue(offset, value);
+    this.valueMask.setOn(offset);
+  }
+
+  /**
+   * Return the value of the voxel at the given coordinates.
+   */
+  getValue(xyz: Coord): T {
+    return this.buffer.getValue(LeafNode.coordToOffset(xyz));
+  }
 }

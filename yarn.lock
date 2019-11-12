@@ -6923,6 +6923,13 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@0.x, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mnemonist@0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.30.0.tgz#c8c37f4425b8abcf7aa04a34199af254b398a90f"
+  integrity sha512-g9rbX4ug7am8oW3jnM7adaFaj5vv5PeOaMPNUwjKQQaTyY+qPQHTmUF59/ZOfQdtTknkjA7+7RhtmL2C0mtwPA==
+  dependencies:
+    obliterator "^1.5.0"
+
 moment@2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
@@ -7312,6 +7319,11 @@ object.pick@^1.3.0:
   integrity sha1-h6EKxMFpS9Lhy/U1kaZhQftd10c=
   dependencies:
     isobject "^3.0.1"
+
+obliterator@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-1.5.0.tgz#f3535e5be192473ef59efb2d30396738f7c645c6"
+  integrity sha512-dENe0UviDf8/auXn0bIBKwCcUr49khvSBWDLlszv/ZB2qz1VxWDmkNKFqO2nfmve7hQb/QIDY7+rc7K3LdJimQ==
 
 obuf@^1.0.0, obuf@^1.1.2:
   version "1.1.2"

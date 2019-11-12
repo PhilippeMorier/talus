@@ -31,4 +31,20 @@ describe('LeafNode', () => {
       expect(LeafNode.coordToOffset([1, 0, 7])).toEqual(71);
     });
   });
+
+  describe('[set|get]ValueOn()', () => {
+    it('should set/get value on at given coordinate', () => {
+      const leaf = new LeafNode<number>();
+
+      leaf.setValueOn([0, 0, 0], 42);
+      leaf.setValueOn([0, 1, 0], 43);
+      leaf.setValueOn([1, 0, 0], 44);
+
+      expect(leaf.getValue([0, 0, 0])).toEqual(42);
+      expect(leaf.getValue([0, 1, 0])).toEqual(43);
+      expect(leaf.getValue([1, 0, 0])).toEqual(44);
+
+      expect(leaf.getValue([1, 1, 1])).toBeUndefined();
+    });
+  });
 });
