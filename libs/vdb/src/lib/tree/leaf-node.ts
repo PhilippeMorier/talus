@@ -1,4 +1,4 @@
-import { Coord } from '../math/coord';
+import { Coord, X, Y, Z } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
 import { LeafBuffer } from './leaf-buffer';
 
@@ -17,19 +17,37 @@ export class LeafNode<T extends ValueType> {
   // tslint:enable:no-bitwise
 
   // Buffer containing the actual data values
-  private buffer = new LeafBuffer<T>();
+  private buffer;
   // Bitmask that determines which voxels are active
-  private valueMask = new NodeMask();
+  private valueMask;
   // Global grid index coordinates (x,y,z) of the local origin of this node
   private origin: Coord;
 
   static coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (
-      ((xyz[0] & (LeafNode.DIM - 1)) << (2 * LeafNode.LOG2DIM)) +
-      ((xyz[1] & (LeafNode.DIM - 1)) << LeafNode.LOG2DIM) +
-      (xyz[2] & (LeafNode.DIM - 1))
+      ((xyz[X] & (LeafNode.DIM - 1)) << (2 * LeafNode.LOG2DIM)) +
+      ((xyz[Y] & (LeafNode.DIM - 1)) << LeafNode.LOG2DIM) +
+      (xyz[Z] & (LeafNode.DIM - 1))
     );
+    // tslint:enable:no-bitwise
+  }
+
+  /**
+   * @param xyz - the grid index coordinates of a voxel
+   * @param value - a value with which to fill the buffer
+   * @param active - the active state to which to initialize all voxels
+   */
+  constructor(xyz: Coord, value: T, active: boolean) {
+    this.buffer = new LeafBuffer<T>(value);
+    this.valueMask = new NodeMask(active);
+
+    // tslint:disable:no-bitwise
+    this.origin = [
+      xyz[X] & ~(LeafNode.DIM - 1),
+      xyz[Y] & ~(LeafNode.DIM - 1),
+      xyz[Z] & ~(LeafNode.DIM - 1),
+    ];
     // tslint:enable:no-bitwise
   }
 
