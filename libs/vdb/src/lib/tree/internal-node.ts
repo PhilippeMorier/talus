@@ -24,25 +24,33 @@ export class InternalNode<T extends ValueType> {
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
   setValueOn(xyz: Coord, value: T): void {
-    const n: Index = this.coordToOffset(xyz);
-    const node = this.nodes[n];
-    let hasChild = this.childMask.isOn(n);
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+    let hasChild = this.childMask.isOn(i);
 
     if (!hasChild) {
-      const active = this.valueMask.isOn(n); // tile's active state
+      const active = this.valueMask.isOn(i); // tile's active state
 
       if (!active || node.getValue() !== value) {
         // If the voxel belongs to a tile that is either inactive or that
         // has a constant value that is different from the one provided,
         // a child subtree must be constructed.
         hasChild = true;
-        this.setChildNode(n, new LeafNode<T>(xyz, node.getValue(), active)); // TODO: s/LeafNode/ChildNode
+        this.setChildNode(i, new LeafNode<T>(xyz, node.getValue(), active)); // TODO: s/LeafNode/ChildNode
       }
     }
 
     if (hasChild) {
       node.getChild().setValueOn(xyz, value);
     }
+  }
+
+  getValue(xyz: Coord): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    return this.childMask.isOff(i)
+      ? this.nodes[i].getValue()
+      : this.nodes[i].getChild().getValue(xyz);
   }
 
   coordToOffset(xyz: Coord): Index {
