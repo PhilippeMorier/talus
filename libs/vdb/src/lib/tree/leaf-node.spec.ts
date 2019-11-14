@@ -34,7 +34,7 @@ describe('LeafNode', () => {
 
   describe('[set|get]ValueOn()', () => {
     it('should set/get value on at given coordinate', () => {
-      const leaf = new LeafNode<number>();
+      const leaf = new LeafNode<number>([0, 0, 0]);
 
       leaf.setValueOn([0, 0, 0], 42);
       leaf.setValueOn([0, 1, 0], 43);

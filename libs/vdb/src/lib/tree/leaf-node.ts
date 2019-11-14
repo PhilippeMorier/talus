@@ -38,7 +38,7 @@ export class LeafNode<T extends ValueType> {
    * @param value - a value with which to fill the buffer
    * @param active - the active state to which to initialize all voxels
    */
-  constructor(xyz: Coord, value: T, active: boolean) {
+  constructor(xyz: Coord, value?: T, active: boolean = false) {
     this.buffer = new LeafBuffer<T>(value);
     this.valueMask = new NodeMask(active);
 
