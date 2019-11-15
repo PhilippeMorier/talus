@@ -12,13 +12,13 @@ export class InternalNode<T extends ValueType> {
   static readonly LOG2DIM = 4; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode.TOTAL; // total voxel count in one dimension
-  static readonly NUM_VALUES = 1 << (3 * InternalNode.LOG2DIM); // total voxel count represented by this node
+  static readonly NUM_VALUES = 1 << (3 * InternalNode.LOG2DIM); // total child count represented by this node
   static readonly LEVEL = 1 + LeafNode.LEVEL; // level 0 = leaf
   static readonly NUM_VOXELS = 1 << (3 * InternalNode.TOTAL); // total voxel count represented by this node
   // tslint:enable:no-bitwise
 
-  private childMask = new NodeMask();
-  private valueMask = new NodeMask();
+  private childMask = new NodeMask(InternalNode.NUM_VALUES);
+  private valueMask = new NodeMask(InternalNode.NUM_VALUES);
 
   private nodes = createDenseArray(
     InternalNode.NUM_VALUES,

@@ -2,9 +2,11 @@ import { Index } from '@talus/vdb';
 import { BitSet } from 'mnemonist';
 
 export class NodeMask {
-  private mask = new BitSet(64);
+  private mask: BitSet;
 
-  constructor(on?: boolean) {
+  constructor(bitSetLength: number, on?: boolean) {
+    this.mask = new BitSet(bitSetLength);
+
     if (on) {
       this.mask.forEach(index => this.mask.set(index, on));
     }

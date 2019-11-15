@@ -40,7 +40,7 @@ export class LeafNode<T extends ValueType> {
    */
   constructor(xyz: Coord, value?: T, active: boolean = false) {
     this.buffer = new LeafBuffer<T>(value);
-    this.valueMask = new NodeMask(active);
+    this.valueMask = new NodeMask(LeafNode.NUM_VALUES, active);
 
     // tslint:disable:no-bitwise
     this.origin = [
