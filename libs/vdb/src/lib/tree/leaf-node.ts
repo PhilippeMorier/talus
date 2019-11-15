@@ -67,4 +67,8 @@ export class LeafNode<T extends ValueType> {
   getValue(xyz: Coord): T {
     return this.buffer.getValue(LeafNode.coordToOffset(xyz));
   }
+
+  isValueOn(xyz: Coord): boolean {
+    return this.valueMask.isOn(LeafNode.coordToOffset(xyz));
+  }
 }

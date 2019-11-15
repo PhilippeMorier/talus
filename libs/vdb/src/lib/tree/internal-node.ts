@@ -58,6 +58,15 @@ export class InternalNode<T extends ValueType> {
       : this.nodes[i].getChild().getValue(xyz);
   }
 
+  isValueOn(xyz: Coord): boolean {
+    const i: Index = this.coordToOffset(xyz);
+    if (this.childMask.isOff(i)) {
+      return this.valueMask.isOn(i);
+    }
+
+    return this.nodes[i].getChild().isValueOn(xyz);
+  }
+
   coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (

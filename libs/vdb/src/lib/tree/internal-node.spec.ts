@@ -93,4 +93,16 @@ describe('InternalNode', () => {
       expect(child.coordToOffset(xyz)).toEqual(offset);
     });
   });
+
+  describe('isValueOn()', () => {
+    it('should set value on', () => {
+      const child = new InternalNode<boolean>();
+
+      child.setValueOn([0, 0, 0], true);
+
+      expect(child.isValueOn([0, 0, 0])).toBeTruthy();
+      expect(child.isValueOn([0, 0, 1])).toBeFalsy();
+      expect(child.isValueOn([0, 0, 8])).toBeFalsy();
+    });
+  });
 });
