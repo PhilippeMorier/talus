@@ -1,5 +1,5 @@
-import { Index } from '@talus/vdb';
 import { BitSet } from 'mnemonist';
+import { Index } from '../tree/leaf-node';
 
 export class NodeMask {
   private mask: BitSet;
