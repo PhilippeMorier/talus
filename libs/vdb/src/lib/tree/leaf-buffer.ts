@@ -1,10 +1,9 @@
+import { createDenseArray } from '../util/array';
 import { Index, LeafNode, ValueType } from './leaf-node';
 
 export class LeafBuffer<T extends ValueType> {
   private size: Index = LeafNode.LOG2DIM;
-  // Creating a dense/packed array, so it has no holes and avoiding it to be sparse.
-  // Dense: [undefined, 1, 2], sparse: [,,2] -> Chrome displays it as [empty × 2, 2]
-  private data: T[] = Array.apply(null, Array(this.size));
+  private data: T[] = createDenseArray(this.size);
 
   /**
    * Construct a buffer populated with the specified value.
