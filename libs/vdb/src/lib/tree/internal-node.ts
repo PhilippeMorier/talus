@@ -1,7 +1,9 @@
-import { Coord } from '../math/coord';
+import { Coord, X, Y, Z } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
 import { Index, LeafNode, ValueType } from './leaf-node';
 import { NodeUnion } from './node-union';
+
+import { createDenseArray } from '../util/array';
 
 type ChildNodeType<T extends ValueType> = InternalNode<T> | LeafNode<T>;
 
@@ -18,7 +20,10 @@ export class InternalNode<T extends ValueType> {
   private childMask = new NodeMask();
   private valueMask = new NodeMask();
 
-  private nodes: Array<NodeUnion<T, ChildNodeType<T>>> = new Array(InternalNode.NUM_VALUES);
+  private nodes = createDenseArray(
+    InternalNode.NUM_VALUES,
+    () => new NodeUnion<T, ChildNodeType<T>>(),
+  );
 
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
@@ -56,9 +61,9 @@ export class InternalNode<T extends ValueType> {
   coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (
-      (((xyz[0] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << (2 * InternalNode.LOG2DIM)) +
-      (((xyz[1] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << InternalNode.LOG2DIM) +
-      ((xyz[2] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL)
+      (((xyz[X] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << (2 * InternalNode.LOG2DIM)) +
+      (((xyz[Y] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << InternalNode.LOG2DIM) +
+      ((xyz[Z] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL)
     );
     // tslint:enable:no-bitwise
   }
