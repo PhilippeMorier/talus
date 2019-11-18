@@ -1,29 +1,22 @@
 import { Coord, X, Y, Z } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
-import { Index, LeafNode, ValueType } from './leaf-node';
+import { Index, LeafNode } from './leaf-node';
 import { NodeUnion } from './node-union';
 
 import { createDenseArray } from '../util/array';
 
-type ChildNodeType<T extends ValueType> = InternalNode<T> | LeafNode<T>;
+type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
 
-export class InternalNode<T extends ValueType> {
-  // tslint:disable:no-bitwise
-  static readonly LOG2DIM = 4; // log2 of tile count in one dimension
-  static readonly TOTAL = InternalNode.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
-  static readonly DIM = 1 << InternalNode.TOTAL; // total voxel count in one dimension
-  static readonly NUM_VALUES = 1 << (3 * InternalNode.LOG2DIM); // total child count represented by this node
-  static readonly LEVEL = 1 + LeafNode.LEVEL; // level 0 = leaf
-  static readonly NUM_VOXELS = 1 << (3 * InternalNode.TOTAL); // total voxel count represented by this node
-  // tslint:enable:no-bitwise
+abstract class InternalNode<T> {
+  protected childMask: NodeMask;
+  protected valueMask: NodeMask;
+  protected origin: Coord;
 
-  private childMask = new NodeMask(InternalNode.NUM_VALUES);
-  private valueMask = new NodeMask(InternalNode.NUM_VALUES);
+  protected nodes: NodeUnion<T, ChildNodeType<T>>[];
 
-  private nodes = createDenseArray(
-    InternalNode.NUM_VALUES,
-    () => new NodeUnion<T, ChildNodeType<T>>(),
-  );
+  abstract coordToOffset(xyz: Coord): Index;
+
+  abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
 
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
@@ -41,7 +34,7 @@ export class InternalNode<T extends ValueType> {
         // has a constant value that is different from the one provided,
         // a child subtree must be constructed.
         hasChild = true;
-        this.setChildNode(i, new LeafNode<T>(xyz, node.getValue(), active)); // TODO: s/LeafNode/ChildNode
+        this.setChildNode(i, this.createChildNode(xyz, node.getValue(), active));
       }
     }
 
@@ -67,17 +60,7 @@ export class InternalNode<T extends ValueType> {
     return this.nodes[i].getChild().isValueOn(xyz);
   }
 
-  coordToOffset(xyz: Coord): Index {
-    // tslint:disable:no-bitwise
-    return (
-      (((xyz[X] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << (2 * InternalNode.LOG2DIM)) +
-      (((xyz[Y] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL) << InternalNode.LOG2DIM) +
-      ((xyz[Z] & (InternalNode.DIM - 1)) >> LeafNode.TOTAL)
-    );
-    // tslint:enable:no-bitwise
-  }
-
-  private setChildNode(i: Index, child: LeafNode<T>): void {
+  private setChildNode(i: Index, child: ChildNodeType<T>): void {
     if (this.childMask.isOn(i)) {
       throw new Error('Child is already on.');
     }
@@ -87,11 +70,60 @@ export class InternalNode<T extends ValueType> {
     this.nodes[i].setChild(child);
   }
 
-  private getChildNode(i: Index): InternalNode<T> | LeafNode<T> {
+  private getChildNode(i: Index): ChildNodeType<T> {
     if (this.childMask.isOff(i)) {
       throw new Error('Child is off.');
     }
 
     return this.nodes[i].getChild();
+  }
+}
+
+export class InternalNode1<T> extends InternalNode<T> {
+  // tslint:disable:no-bitwise
+  static readonly LOG2DIM = 4; // log2 of tile count in one dimension
+  static readonly TOTAL = InternalNode1.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
+  static readonly DIM = 1 << InternalNode1.TOTAL; // total voxel count in one dimension
+  static readonly NUM_VALUES = 1 << (3 * InternalNode1.LOG2DIM); // total child count represented by this node
+  static readonly LEVEL = 1 + LeafNode.LEVEL; // level 0 = leaf
+  static readonly NUM_VOXELS = 1 << (3 * InternalNode1.TOTAL); // total voxel count represented by this node
+  // tslint:enable:no-bitwise
+
+  constructor(xyz: Coord, value?: T, active: boolean = false) {
+    super();
+
+    this.childMask = new NodeMask(InternalNode1.NUM_VALUES);
+    this.valueMask = new NodeMask(InternalNode1.NUM_VALUES);
+
+    // tslint:disable:no-bitwise
+    this.origin = [
+      xyz[X] & ~(LeafNode.DIM - 1),
+      xyz[Y] & ~(LeafNode.DIM - 1),
+      xyz[Z] & ~(LeafNode.DIM - 1),
+    ];
+    // tslint:enable:no-bitwise
+
+    if (active) {
+      this.valueMask.setAllOn();
+    }
+
+    this.nodes = createDenseArray<NodeUnion<T, InternalNode1<T>>>(
+      InternalNode1.NUM_VALUES,
+      () => new NodeUnion<T, InternalNode1<T>>(value),
+    );
+  }
+
+  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): LeafNode<T> {
+    return new LeafNode(xyz, value, active);
+  }
+
+  coordToOffset(xyz: Coord): Index {
+    // tslint:disable:no-bitwise
+    return (
+      (((xyz[X] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL) << (2 * InternalNode1.LOG2DIM)) +
+      (((xyz[Y] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL) << InternalNode1.LOG2DIM) +
+      ((xyz[Z] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL)
+    );
+    // tslint:enable:no-bitwise
   }
 }

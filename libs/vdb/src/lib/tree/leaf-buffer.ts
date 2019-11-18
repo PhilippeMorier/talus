@@ -1,7 +1,7 @@
 import { createDenseArray } from '../util/array';
-import { Index, LeafNode, ValueType } from './leaf-node';
+import { Index, LeafNode } from './leaf-node';
 
-export class LeafBuffer<T extends ValueType> {
+export class LeafBuffer<T> {
   private size: Index = LeafNode.NUM_VOXELS;
   private data: T[] = createDenseArray(this.size);
 

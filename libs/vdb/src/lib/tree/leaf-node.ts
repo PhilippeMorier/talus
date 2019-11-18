@@ -5,7 +5,7 @@ import { LeafBuffer } from './leaf-buffer';
 export type ValueType = boolean | number | string;
 export type Index = number;
 
-export class LeafNode<T extends ValueType> {
+export class LeafNode<T> {
   // tslint:disable:no-bitwise
   static readonly LOG2DIM: Index = 3; // needed by parent nodes
   static readonly TOTAL: Index = LeafNode.LOG2DIM; // needed by parent nodes

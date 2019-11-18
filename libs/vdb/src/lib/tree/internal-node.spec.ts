@@ -1,7 +1,7 @@
 import { Coord } from '../math/coord';
-import { InternalNode } from './internal-node';
+import { InternalNode1 } from './internal-node';
 
-describe('InternalNode', () => {
+describe('InternalNode1', () => {
   describe('setValueOn()', () => {
     it.each([
       [[0, 0, 0], true],
@@ -21,7 +21,7 @@ describe('InternalNode', () => {
     ])(
       '%#. should set and activate at the given index %j the value (%j)',
       (xyz: Coord, value: boolean) => {
-        const child = new InternalNode<boolean>();
+        const child = new InternalNode1<boolean>([0, 0, 0]);
 
         child.setValueOn(xyz, value);
 
@@ -30,7 +30,7 @@ describe('InternalNode', () => {
     );
 
     it('should get `undefined` on an unset index', () => {
-      const child = new InternalNode<boolean>();
+      const child = new InternalNode1<boolean>([0, 0, 0]);
 
       expect(child.getValue([0, 0, 0])).toBeUndefined();
     });
@@ -88,7 +88,7 @@ describe('InternalNode', () => {
       // 104 / 8 = 13 -> 13 x 1   = 13    ╯
       [[57, 19, 104], 1837],
     ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
-      const child = new InternalNode<number>();
+      const child = new InternalNode1<number>([0, 0, 0]);
 
       expect(child.coordToOffset(xyz)).toEqual(offset);
     });
@@ -96,7 +96,7 @@ describe('InternalNode', () => {
 
   describe('isValueOn()', () => {
     it('should set value on', () => {
-      const child = new InternalNode<boolean>();
+      const child = new InternalNode1<boolean>([0, 0, 0]);
 
       child.setValueOn([0, 0, 0], true);
 

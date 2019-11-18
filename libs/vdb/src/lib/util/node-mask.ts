@@ -8,9 +8,13 @@ export class NodeMask {
     this.mask = new BitSet(bitSetLength);
 
     if (on) {
-      for (let i = 0; i < this.mask.length; i++) {
-        this.mask.set(i, on);
-      }
+      this.setAllOn();
+    }
+  }
+
+  setAllOn(): void {
+    for (let i = 0; i < this.mask.length; i++) {
+      this.setOn(i);
     }
   }
 
