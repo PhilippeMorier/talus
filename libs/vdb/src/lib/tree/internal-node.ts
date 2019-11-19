@@ -1,13 +1,13 @@
 import { Coord, X, Y, Z } from '../math/coord';
+import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
 import { Index, LeafNode } from './leaf-node';
+import { Node } from './node';
 import { NodeUnion } from './node-union';
-
-import { createDenseArray } from '../util/array';
 
 type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
 
-abstract class InternalNode<T> {
+abstract class InternalNode<T> implements Node<T> {
   protected readonly childMask: NodeMask;
   protected readonly valueMask: NodeMask;
   protected readonly origin: Coord;
@@ -61,9 +61,6 @@ abstract class InternalNode<T> {
 
   abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
 
-  /**
-   * Set the value of the voxel at the given coordinates and mark the voxel as active.
-   */
   setValueOn(xyz: Coord, value: T): void {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];

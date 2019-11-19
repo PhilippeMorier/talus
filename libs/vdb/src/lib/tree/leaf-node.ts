@@ -1,11 +1,12 @@
 import { Coord, X, Y, Z } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
 import { LeafBuffer } from './leaf-buffer';
+import { Node } from './node';
 
 export type ValueType = boolean | number | string;
 export type Index = number;
 
-export class LeafNode<T> {
+export class LeafNode<T> implements Node<T> {
   // tslint:disable:no-bitwise
   static readonly LOG2DIM: Index = 3; // needed by parent nodes
   static readonly TOTAL: Index = LeafNode.LOG2DIM; // needed by parent nodes
@@ -51,9 +52,6 @@ export class LeafNode<T> {
     // tslint:enable:no-bitwise
   }
 
-  /**
-   * Set the value of the voxel at the given coordinates and mark the voxel as active.
-   */
   setValueOn(xyz: Coord, value: T): void {
     const offset = LeafNode.coordToOffset(xyz);
 
