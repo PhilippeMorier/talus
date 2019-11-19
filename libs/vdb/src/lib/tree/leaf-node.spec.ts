@@ -1,6 +1,15 @@
 import { LeafNode } from './leaf-node';
 
 describe('LeafNode', () => {
+  describe('static config values', () => {
+    expect(LeafNode.LOG2DIM).toEqual(3);
+    expect(LeafNode.TOTAL).toEqual(3);
+    expect(LeafNode.DIM).toEqual(8);
+    expect(LeafNode.NUM_VALUES).toEqual(512);
+    expect(LeafNode.LEVEL).toEqual(0);
+    expect(LeafNode.NUM_VOXELS).toEqual(512);
+  });
+
   describe('coordToOffset()', () => {
     it('should calculate the offset', () => {
       expect(LeafNode.coordToOffset([0, 0, 0])).toEqual(0);

@@ -8,11 +8,54 @@ import { createDenseArray } from '../util/array';
 type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
 
 abstract class InternalNode<T> {
-  protected childMask: NodeMask;
-  protected valueMask: NodeMask;
-  protected origin: Coord;
+  protected readonly childMask: NodeMask;
+  protected readonly valueMask: NodeMask;
+  protected readonly origin: Coord;
 
   protected nodes: NodeUnion<T, ChildNodeType<T>>[];
+
+  protected constructor(
+    numValues: number,
+    childNodeDim: number,
+    xyz: Coord,
+    value?: T,
+    active: boolean = false,
+  ) {
+    this.childMask = new NodeMask(numValues);
+    this.valueMask = new NodeMask(numValues);
+
+    // tslint:disable:no-bitwise
+    this.origin = [
+      xyz[X] & ~(LeafNode.DIM - 1),
+      xyz[Y] & ~(LeafNode.DIM - 1),
+      xyz[Z] & ~(LeafNode.DIM - 1),
+    ];
+    // tslint:enable:no-bitwise
+
+    if (active) {
+      this.valueMask.setAllOn();
+    }
+
+    this.nodes = createDenseArray<NodeUnion<T, ChildNodeType<T>>>(
+      InternalNode1.NUM_VALUES,
+      () => new NodeUnion(value),
+    );
+  }
+
+  protected calcCoordToOffset(
+    dim: number,
+    log2dim: number,
+    childNodeTotal: number,
+    xyz: Coord,
+  ): Index {
+    // tslint:disable:no-bitwise
+    return (
+      (((xyz[X] & (dim - 1)) >> childNodeTotal) << (2 * log2dim)) +
+      (((xyz[Y] & (dim - 1)) >> childNodeTotal) << log2dim) +
+      ((xyz[Z] & (dim - 1)) >> childNodeTotal)
+    );
+    // tslint:enable:no-bitwise
+  }
 
   abstract coordToOffset(xyz: Coord): Index;
 
@@ -90,27 +133,7 @@ export class InternalNode1<T> extends InternalNode<T> {
   // tslint:enable:no-bitwise
 
   constructor(xyz: Coord, value?: T, active: boolean = false) {
-    super();
-
-    this.childMask = new NodeMask(InternalNode1.NUM_VALUES);
-    this.valueMask = new NodeMask(InternalNode1.NUM_VALUES);
-
-    // tslint:disable:no-bitwise
-    this.origin = [
-      xyz[X] & ~(LeafNode.DIM - 1),
-      xyz[Y] & ~(LeafNode.DIM - 1),
-      xyz[Z] & ~(LeafNode.DIM - 1),
-    ];
-    // tslint:enable:no-bitwise
-
-    if (active) {
-      this.valueMask.setAllOn();
-    }
-
-    this.nodes = createDenseArray<NodeUnion<T, InternalNode1<T>>>(
-      InternalNode1.NUM_VALUES,
-      () => new NodeUnion<T, InternalNode1<T>>(value),
-    );
+    super(InternalNode1.NUM_VALUES, LeafNode.DIM, xyz, value, active);
   }
 
   createChildNode(xyz: [number, number, number], value?: T, active?: boolean): LeafNode<T> {
@@ -118,12 +141,37 @@ export class InternalNode1<T> extends InternalNode<T> {
   }
 
   coordToOffset(xyz: Coord): Index {
-    // tslint:disable:no-bitwise
-    return (
-      (((xyz[X] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL) << (2 * InternalNode1.LOG2DIM)) +
-      (((xyz[Y] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL) << InternalNode1.LOG2DIM) +
-      ((xyz[Z] & (InternalNode1.DIM - 1)) >> LeafNode.TOTAL)
+    return this.calcCoordToOffset(InternalNode1.DIM, InternalNode1.LOG2DIM, LeafNode.TOTAL, xyz);
+  }
+}
+
+export class InternalNode2<T> extends InternalNode<T> {
+  // tslint:disable:no-bitwise
+  static readonly LOG2DIM = 5; // log2 of tile count in one dimension
+  static readonly TOTAL = InternalNode2.LOG2DIM + InternalNode1.TOTAL; // log2 of voxel count in one dimension
+  static readonly DIM = 1 << InternalNode2.TOTAL; // total voxel count in one dimension
+  static readonly NUM_VALUES = 1 << (3 * InternalNode2.LOG2DIM); // total child count represented by this node
+  static readonly LEVEL = 1 + InternalNode1.LEVEL; // level 0 = leaf
+  // Operands of all bitwise operators are converted to signed 32-bit. Therefore, 1 << 31 >>> 0 is the largest
+  // uint we can get with bit-shift.
+  // static readonly NUM_VOXELS = 1 << (3 * InternalNode2.TOTAL); // total voxel count represented by this node
+  static readonly NUM_VOXELS = Math.pow(2, 3 * InternalNode2.TOTAL);
+  // tslint:enable:no-bitwise
+
+  constructor(xyz: Coord, value?: T, active: boolean = false) {
+    super(InternalNode2.NUM_VALUES, InternalNode1.DIM, xyz, value, active);
+  }
+
+  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): InternalNode1<T> {
+    return new InternalNode1(xyz, value, active);
+  }
+
+  coordToOffset(xyz: Coord): Index {
+    return this.calcCoordToOffset(
+      InternalNode2.DIM,
+      InternalNode2.LOG2DIM,
+      InternalNode1.TOTAL,
+      xyz,
     );
-    // tslint:enable:no-bitwise
   }
 }
