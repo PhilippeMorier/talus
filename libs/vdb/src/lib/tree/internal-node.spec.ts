@@ -126,16 +126,26 @@ describe('InternalNode2', () => {
     expect(InternalNode2.NUM_VOXELS).toEqual(68_719_476_736);
   });
 
-  it('should create two levels of internal nodes', () => {
-    const child = new InternalNode2<boolean>([0, 0, 0]);
+  const generateRandomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+  const generateRandomCoord = (min, max): Coord => [
+    generateRandomInRange(min, max),
+    generateRandomInRange(min, max),
+    generateRandomInRange(min, max),
+  ];
+  const generateRandomCoords = (length, min, max) => {
+    return Array.from({ length }, () => [generateRandomCoord(min, max)]);
+  };
 
-    child.setValueOn([0, 0, 0], true);
+  it.each(generateRandomCoords(100, 0, 4095))(
+    'should set/get random value at %j ',
+    (xyz: Coord) => {
+      const child = new InternalNode2<boolean>([0, 0, 0]);
 
-    expect(child.isValueOn([0, 0, 0])).toBeTruthy();
-    expect(child.isValueOn([0, 0, 1])).toBeFalsy();
-    expect(child.isValueOn([0, 0, 8])).toBeFalsy();
-    expect(child.isValueOn([0, 0, 8])).toBeFalsy();
-  });
+      child.setValueOn(xyz, true);
+
+      expect(child.isValueOn(xyz)).toBeTruthy();
+    },
+  );
 
   describe('coordToOffset()', () => {
     it.each([

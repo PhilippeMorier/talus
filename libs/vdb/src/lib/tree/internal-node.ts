@@ -37,7 +37,7 @@ abstract class InternalNode<T> {
     }
 
     this.nodes = createDenseArray<NodeUnion<T, ChildNodeType<T>>>(
-      InternalNode1.NUM_VALUES,
+      numValues,
       () => new NodeUnion(value),
     );
   }
