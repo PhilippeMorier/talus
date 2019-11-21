@@ -53,11 +53,13 @@ describe('NodeMask', () => {
     });
 
     it('should activate all bits', () => {
-      const mask = new NodeMask(48, true);
+      const mask = new NodeMask(32, true);
 
-      for (let i = 0; i < 48; i++) {
+      for (let i = 0; i < 32; i++) {
         expect(mask.isOn(i)).toBeTruthy();
       }
+
+      expect(mask.countOn()).toEqual(32);
     });
   });
 });
