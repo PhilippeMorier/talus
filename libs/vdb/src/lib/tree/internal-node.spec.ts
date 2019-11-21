@@ -1,14 +1,15 @@
 import { Coord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
+import { LeafNode } from './leaf-node';
 
 describe('InternalNode1', () => {
   describe('static config values', () => {
-    expect(InternalNode1.LOG2DIM).toEqual(4);
-    expect(InternalNode1.TOTAL).toEqual(7);
-    expect(InternalNode1.DIM).toEqual(128);
-    expect(InternalNode1.NUM_VALUES).toEqual(4096);
+    expect(InternalNode1.LOG2DIM).toEqual(2);
+    expect(InternalNode1.TOTAL).toEqual(5);
+    expect(InternalNode1.DIM).toEqual(32);
+    expect(InternalNode1.NUM_VALUES).toEqual(64);
     expect(InternalNode1.LEVEL).toEqual(1);
-    expect(InternalNode1.NUM_VOXELS).toEqual(2_097_152);
+    expect(InternalNode1.NUM_VOXELS).toEqual(32_768);
   });
 
   describe('setValueOn()', () => {
@@ -47,55 +48,29 @@ describe('InternalNode1', () => {
 
   describe('coordToOffset()', () => {
     it.each([
-      [[0, 0, 128], 0],
-      [[0, 0, 127], 15],
+      [[0, 0, LeafNode.DIM], 1],
+      [[0, LeafNode.DIM, LeafNode.DIM], 4 + 1],
+      [[LeafNode.DIM, LeafNode.DIM, LeafNode.DIM], 16 + 4 + 1],
 
-      [[0, 0, 0], 0],
-      [[0, 0, 1], 0],
-      [[0, 1, 0], 0],
-      [[1, 0, 0], 0],
-      [[1, 1, 1], 0],
+      [[0, 0, LeafNode.DIM * 0], 0],
+      [[0, 0, LeafNode.DIM * 1], 1],
+      [[0, 0, LeafNode.DIM * 2], 2],
+      [[0, 0, LeafNode.DIM * 3], 3],
 
-      [[0, 0, 127], 15],
-      [[0, 127, 127], 255],
-      [[127, 127, 127], 4095],
+      [[0, LeafNode.DIM * 0, 0], 0 * 4],
+      [[0, LeafNode.DIM * 1, 0], 1 * 4],
+      [[0, LeafNode.DIM * 2, 0], 2 * 4],
+      [[0, LeafNode.DIM * 3, 0], 3 * 4],
 
-      [[0, 0, 8], 1],
-      [[0, 0, 16], 2],
-      [[0, 0, 24], 3],
-      [[0, 0, 112], 14],
-      [[0, 0, 120], 15],
+      [[LeafNode.DIM * 0, 0, 0], 0 * 16],
+      [[LeafNode.DIM * 1, 0, 0], 1 * 16],
+      [[LeafNode.DIM * 2, 0, 0], 2 * 16],
+      [[LeafNode.DIM * 3, 0, 0], 3 * 16],
 
-      [[0, 8, 0], 16],
-      [[0, 16, 0], 32],
-      [[0, 24, 0], 48],
-      [[0, 112, 0], 224],
-      [[0, 120, 0], 240],
-
-      [[8, 0, 0], 256],
-      [[16, 0, 0], 512],
-      [[24, 0, 0], 768],
-      [[112, 0, 0], 3584],
-      [[120, 0, 0], 3840],
-
-      [[0, 8, 0], 16],
-      [[0, 8, 8], 17],
-      [[0, 8, 16], 18],
-      [[0, 8, 24], 19],
-      [[0, 8, 112], 30],
-      [[0, 8, 120], 31],
-
-      [[8, 0, 0], 256],
-      [[8, 0, 8], 257],
-      [[8, 0, 16], 258],
-      [[8, 0, 24], 259],
-      [[8, 0, 112], 270],
-      [[8, 0, 120], 271],
-
-      // 57  / 8 = 7  -> 7  x 256 = 1792  ╮
-      // 19  / 8 = 2  -> 2  x 16  = 32    ├─> 1792 + 32 + 13 = 1837
-      // 104 / 8 = 13 -> 13 x 1   = 13    ╯
-      [[57, 19, 104], 1837],
+      // 24 / 8 = 3 -> 3 x 16 = 48  ╮
+      // 9  / 8 = 1 -> 1 x 4  = 4   ├─> 48 + 4 + 2 = 54
+      // 17 / 8 = 2 -> 2 x 1  = 2   ╯
+      [[24, 9, 17], 54],
     ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
       const child = new InternalNode1<number>([0, 0, 0]);
 
@@ -112,6 +87,26 @@ describe('InternalNode1', () => {
       expect(child.isValueOn([0, 0, 0])).toBeTruthy();
       expect(child.isValueOn([0, 0, 1])).toBeFalsy();
       expect(child.isValueOn([0, 0, 8])).toBeFalsy();
+    });
+  });
+
+  describe('onVoxelCount()', () => {
+    it('should count all activated voxels', () => {
+      const leaf = new InternalNode1<number>([0, 0, 0]);
+
+      let onCounter = 0;
+      for (let x = 0; x < InternalNode1.DIM; x++) {
+        for (let y = 0; y < InternalNode1.DIM; y++) {
+          for (let z = 0; z < InternalNode1.DIM; z++) {
+            leaf.setValueOn([x, y, z], 42);
+            onCounter++;
+
+            expect(leaf.onVoxelCount()).toEqual(onCounter);
+          }
+        }
+      }
+
+      expect(onCounter).toEqual(Math.pow(InternalNode1.DIM, 3));
     });
   });
 });

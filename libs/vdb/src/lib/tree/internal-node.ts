@@ -57,9 +57,17 @@ abstract class InternalNode<T> implements Node<T> {
     // tslint:enable:no-bitwise
   }
 
+  protected *beginChildOn(): IterableIterator<Node<T>> {
+    for (const [index, value] of this.childMask.beginOn()) {
+      yield this.nodes[index].getChild();
+    }
+  }
+
   abstract coordToOffset(xyz: Coord): Index;
 
   abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
+
+  abstract onVoxelCount(): number;
 
   setValueOn(xyz: Coord, value: T): void {
     const i: Index = this.coordToOffset(xyz);
@@ -121,7 +129,7 @@ abstract class InternalNode<T> implements Node<T> {
 
 export class InternalNode1<T> extends InternalNode<T> {
   // tslint:disable:no-bitwise
-  static readonly LOG2DIM = 4; // log2 of tile count in one dimension
+  static readonly LOG2DIM = 2; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode1.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode1.TOTAL; // total voxel count in one dimension
   static readonly NUM_VALUES = 1 << (3 * InternalNode1.LOG2DIM); // total child count represented by this node
@@ -139,6 +147,15 @@ export class InternalNode1<T> extends InternalNode<T> {
 
   coordToOffset(xyz: Coord): Index {
     return this.calcCoordToOffset(InternalNode1.DIM, InternalNode1.LOG2DIM, LeafNode.TOTAL, xyz);
+  }
+
+  onVoxelCount(): number {
+    let sum: number = LeafNode.NUM_VOXELS * this.valueMask.countOn();
+    for (const child of this.beginChildOn()) {
+      sum += child.onVoxelCount();
+    }
+
+    return sum;
   }
 }
 
