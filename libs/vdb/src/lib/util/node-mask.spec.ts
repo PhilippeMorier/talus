@@ -62,4 +62,19 @@ describe('NodeMask', () => {
       expect(mask.countOn()).toEqual(32);
     });
   });
+
+  it('should iterate over all activated bits', () => {
+    const mask = new NodeMask(32);
+    const expectedSetIndices = [6, 16, 31];
+
+    expectedSetIndices.forEach(index => mask.setOn(index));
+
+    let counter = 0;
+    for (const entry of mask.beginOn()) {
+      expect(entry).toEqual([expectedSetIndices[counter], 1]);
+      counter++;
+    }
+
+    expect(counter).toEqual(3);
+  });
 });
