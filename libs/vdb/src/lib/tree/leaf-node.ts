@@ -69,4 +69,8 @@ export class LeafNode<T> implements Node<T> {
   isValueOn(xyz: Coord): boolean {
     return this.valueMask.isOn(LeafNode.coordToOffset(xyz));
   }
+
+  onVoxelCount(): number {
+    return this.valueMask.countOn();
+  }
 }

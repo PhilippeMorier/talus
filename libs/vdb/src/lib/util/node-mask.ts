@@ -26,6 +26,10 @@ export class NodeMask {
     return this.mask.test(n);
   }
 
+  countOn(): number {
+    return this.mask.size;
+  }
+
   setOff(n: Index): void {
     this.mask.set(n, false);
   }

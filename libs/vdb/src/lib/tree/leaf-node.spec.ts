@@ -13,6 +13,8 @@ describe('LeafNode', () => {
   describe('coordToOffset()', () => {
     it('should calculate the offset', () => {
       expect(LeafNode.coordToOffset([0, 0, 0])).toEqual(0);
+      expect(LeafNode.coordToOffset([0, 0, 8])).toEqual(0);
+
       expect(LeafNode.coordToOffset([0, 0, 1])).toEqual(1);
       expect(LeafNode.coordToOffset([0, 0, 2])).toEqual(2);
       expect(LeafNode.coordToOffset([0, 0, 3])).toEqual(3);
@@ -54,6 +56,26 @@ describe('LeafNode', () => {
       expect(leaf.getValue([1, 0, 0])).toEqual(44);
 
       expect(leaf.getValue([1, 1, 1])).toBeUndefined();
+    });
+  });
+
+  describe('onVoxelCount()', () => {
+    it('should count all activated voxels', () => {
+      const leaf = new LeafNode<number>([0, 0, 0]);
+
+      let onCounter = 0;
+      for (let x = 0; x < LeafNode.DIM; x++) {
+        for (let y = 0; y < LeafNode.DIM; y++) {
+          for (let z = 0; z < LeafNode.DIM; z++) {
+            leaf.setValueOn([x, y, z], 42);
+            onCounter++;
+
+            expect(leaf.onVoxelCount()).toEqual(onCounter);
+          }
+        }
+      }
+
+      expect(onCounter).toEqual(Math.pow(LeafNode.DIM, 3));
     });
   });
 });
