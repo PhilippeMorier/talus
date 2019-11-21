@@ -63,6 +63,15 @@ abstract class InternalNode<T> implements Node<T> {
     }
   }
 
+  protected calcOnVoxelCount(childNodeNumVoxels: number): number {
+    let sum: number = childNodeNumVoxels * this.valueMask.countOn();
+    for (const child of this.beginChildOn()) {
+      sum += child.onVoxelCount();
+    }
+
+    return sum;
+  }
+
   abstract coordToOffset(xyz: Coord): Index;
 
   abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
@@ -150,18 +159,13 @@ export class InternalNode1<T> extends InternalNode<T> {
   }
 
   onVoxelCount(): number {
-    let sum: number = LeafNode.NUM_VOXELS * this.valueMask.countOn();
-    for (const child of this.beginChildOn()) {
-      sum += child.onVoxelCount();
-    }
-
-    return sum;
+    return this.calcOnVoxelCount(LeafNode.NUM_VOXELS);
   }
 }
 
 export class InternalNode2<T> extends InternalNode<T> {
   // tslint:disable:no-bitwise
-  static readonly LOG2DIM = 5; // log2 of tile count in one dimension
+  static readonly LOG2DIM = 2; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode2.LOG2DIM + InternalNode1.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode2.TOTAL; // total voxel count in one dimension
   static readonly NUM_VALUES = 1 << (3 * InternalNode2.LOG2DIM); // total child count represented by this node
@@ -187,5 +191,9 @@ export class InternalNode2<T> extends InternalNode<T> {
       InternalNode1.TOTAL,
       xyz,
     );
+  }
+
+  onVoxelCount(): number {
+    return this.calcOnVoxelCount(InternalNode1.NUM_VOXELS);
   }
 }
