@@ -6923,10 +6923,10 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@0.x, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mnemonist@0.31.1:
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.31.1.tgz#c206d14c6b49154c3cf47bb92a100a0ff21d421a"
-  integrity sha512-J8xhzkxk2LYkmWc42/ASV0aat2Q7sIXTK7F2LWXYYqgCwD914fsEQwmr5d1uoqO3v/V7VQGLPupJvBkRZAZUPw==
+mnemonist@0.31.2:
+  version "0.31.2"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.31.2.tgz#71f7fc7f4602c7956d0b45d123eefcf45c9809b3"
+  integrity sha512-07X0Kf9qb6hPq6dJhtuDgqdMRBlHL17XXVVqWbHNK/KwQjO6OonZ4/y3stZGfRKrYwvhAf/cAL7DGXpgmEJXlw==
   dependencies:
     obliterator "^1.5.0"
 
