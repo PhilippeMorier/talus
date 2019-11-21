@@ -63,6 +63,26 @@ export class RootNode<T> implements Node<T> {
     return struct.isTileOn() ? true : struct.getChild().isValueOn(xyz);
   }
 
+  onVoxelCount(): number {
+    let sum = 0;
+    for (const nodeStruct of this.table.values()) {
+      if (nodeStruct.isChild()) {
+        sum += nodeStruct.getChild().onVoxelCount();
+      } else if (nodeStruct.isTile()) {
+        sum += InternalNode2.NUM_VOXELS;
+      }
+    }
+
+    return sum;
+  }
+
+  /**
+   * Return the number of entries in this node's table.
+   */
+  getTableSize(): number {
+    return this.table.size;
+  }
+
   /**
    * Convert the given coordinates to a key and look the key up in this node's table.
    */

@@ -15,4 +15,9 @@ export interface Node<T> {
    * Return `true` if the voxel at the given coordinates is active.
    */
   isValueOn(xyz: Coord): boolean;
+
+  /**
+   * Return the number of active voxels.
+   */
+  onVoxelCount(): number;
 }
