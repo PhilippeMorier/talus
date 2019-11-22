@@ -26,7 +26,7 @@
     "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci/**/*,apps/**/*}.{ts,scss,json,html,yml}'",
     "start": "ng serve",
     "test": "ng test",
-    "test:ci": "ng test --code-coverage",
+    "test:code-coverage": "ng test --code-coverage",
     "update": "ng update @nrwl/workspace",
     "update:check": "ng update",
     "workspace-schematic": "nx workspace-schematic"
