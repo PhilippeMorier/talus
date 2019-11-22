@@ -7,7 +7,12 @@ module.exports = {
     'default',
     [
       'jest-junit',
-      { outputDirectory: './test-results/jest', outputName: 'apps-frontend.junit.xml' },
+      {
+        outputDirectory: './test-results/jest',
+        outputName: 'apps-frontend.junit.xml',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
     ],
   ],
   snapshotSerializers: [

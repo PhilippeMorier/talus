@@ -5,7 +5,15 @@ module.exports = {
   // https://github.com/nrwl/nx/issues/837#issuecomment-501188633
   reporters: [
     'default',
-    ['jest-junit', { outputDirectory: './test-results/jest', outputName: 'libs-ui.junit.xml' }],
+    [
+      'jest-junit',
+      {
+        outputDirectory: './test-results/jest',
+        outputName: 'libs-ui.junit.xml',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
+    ],
   ],
   snapshotSerializers: [
     'jest-preset-angular/AngularSnapshotSerializer.js',
