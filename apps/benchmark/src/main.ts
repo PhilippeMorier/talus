@@ -2,21 +2,23 @@ import { Suite } from 'benchmark';
 
 const suites: Suite[] = [];
 
-export function suite(name: string, benchmarks: () => void): void {
+export function suite(name: string, benchmarksFn: () => void): void {
   const newSuite = new Suite(name);
   suites.push(newSuite);
 
-  let cycleLog = '';
-  newSuite.on('cycle', event => {
-    cycleLog += `  - ${event.target}\n`;
-  });
-  newSuite.on('complete', () => {
+  newSuite.on('complete', event => {
     const fastestBenchmarkName = newSuite.filter('fastest').map(bm => bm.name);
+    const conjugatedVerbBe = fastestBenchmarkName.length > 1 ? 'are' : 'is';
+
     console.log(name);
-    console.log(`  Fastest is ${fastestBenchmarkName}\n${cycleLog}`);
+    console.log(`  Fastest ${conjugatedVerbBe} [${fastestBenchmarkName.join(', ')}]`);
+
+    const currentSuite = event.currentTarget;
+    const benchmarks = Array.from({ length: currentSuite.length }, (x, i) => currentSuite[i]);
+    benchmarks.forEach(bm => console.log(`  - ${bm}`));
   });
 
-  benchmarks();
+  benchmarksFn();
 
   newSuite.run({ async: true });
 }
