@@ -57,6 +57,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.cache/yarn
+            - ~/.cache/Cypress
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
