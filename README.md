@@ -76,7 +76,8 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 #### Plugin: Awesome Console
 
-Install [this plugin](https://plugins.jetbrains.com/plugin/7677-awesome-console) to be able to click on a file path within the console.
+Install [this plugin](https://plugins.jetbrains.com/plugin/7677-awesome-console) to be able to click
+on a file path within the console.
 
 #### Macro
 
@@ -84,7 +85,8 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 
 1. StyleLint
 
-   - Setup a file watcher ([fix action](https://youtrack.jetbrains.com/issue/WEB-25069) not yet supported) with
+   - Setup a file watcher ([fix action](https://youtrack.jetbrains.com/issue/WEB-25069) not yet
+     supported) with
      - File Type: `SCSS style sheet`
      - Scope: `Current File`
      - Program: `$ProjectFileDir$/node_modules/.bin/stylelint`
@@ -115,7 +117,7 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 
 - All: `yarn test` (`--watch` or `--watchAll`)
 - Project 'frontend': `yarn test frontend`
-- Coverage: `yarn test --code-coverage` (saved in `./coverage`)
+- Coverage: `yarn test:code-coverage` (saved in `./coverage`)
 
 ### E2E
 
@@ -135,7 +137,9 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 ## Github Pages
 
-CircleCI pushes every build onto the [gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published by github under:
+CircleCI pushes every build onto the
+[gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published by
+github under:
 
 - Schema: `https://philippemorier.github.io/talus/<branch>/<build-num>/dist/apps/frontend/`
 - Example: https://philippemorier.github.io/talus/convert-to-nx/245/dist/apps/frontend/
