@@ -121,6 +121,9 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 
 ### E2E
 
+- Ensure that all
+  [dependencies](https://docs.cypress.io/guides/guides/continuous-integration.html#Dependencies) are
+  installed in order to be able to run Cypress locally.
 - `yarn e2e <frontend-e2e>`
 
 ## Nx
