@@ -212,6 +212,10 @@ jobs:
             --dist dist/apps \
             --dest "$DEST_PATH"
 
+      - run:
+          name: Log deploy URL
+          command: echo 'https://philippemorier.github.io/talus/$DEST_PATH'
+
 workflows:
   version: 2
   'apps':
