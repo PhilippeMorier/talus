@@ -15,6 +15,7 @@
     "build:frontend:ci": "ng build --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false",
     "dep-graph": "nx dep-graph",
     "e2e": "ng e2e",
+    "e2e:ci": "ng e2e --prod --headless",
     "format": "nx format:write",
     "format:check": "nx format:check",
     "format:write": "nx format:write",

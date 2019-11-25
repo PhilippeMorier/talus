@@ -118,7 +118,7 @@ jobs:
 
       - run:
           name: Run frontend-e2e
-          command: yarn e2e frontend-e2e
+          command: yarn e2e:ci frontend-e2e
 
   'benchmark':
     <<: *use_docker_node_browsers
