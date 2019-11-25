@@ -13,6 +13,10 @@ aliases:
     docker:
       - image: circleci/node:12.3.1-stretch-browsers
 
+  - &use_docker_cypress_included
+    docker:
+      - image: cypress/included:3.6.1
+
   - &workspace ~/talus
 
   - &set_working_directory
@@ -102,6 +106,18 @@ jobs:
       - store_artifacts:
           path: ./coverage
           destination: coverage
+
+  'frontend-e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run frontend-e2e
+          command: yarn e2e frontend-e2e
 
   'benchmark':
     <<: *use_docker_node_browsers
@@ -245,9 +261,17 @@ workflows:
             - 'unit'
             - 'benchmark'
 
+      - 'frontend-e2e':
+          requires:
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
+
       - 'deploy':
           requires:
             - 'build'
+            - 'frontend-e2e'
 #          filters:
 #            branches:
 #              only: master
