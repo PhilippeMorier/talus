@@ -96,6 +96,7 @@ function writeReportToFile(): void {
   const folderPath = `${process.cwd()}/${config.outputDirectory}`;
   fs.mkdir(folderPath, { recursive: true }, err => {
     if (err) {
+      console.error(err.message);
       throw err;
     }
   });
