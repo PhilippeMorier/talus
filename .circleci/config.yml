@@ -112,8 +112,12 @@ jobs:
       - *attach_workspace
 
       - run:
+          name: Build benchmarks
+          command: yarn build benchmark
+
+      - run:
           name: Run benchmarks
-          command: yarn build benchmark && node ./dist/apps/benchmark/main.js
+          command: node ./dist/apps/benchmark/main.js
 
       - store_test_results:
           path: ./test-results

@@ -96,13 +96,14 @@ function writeReportToFile(): void {
   const folderPath = `${process.cwd()}/${config.outputDirectory}`;
   fs.mkdir(folderPath, { recursive: true }, err => {
     if (err) {
-      console.error(err.message);
+      console.log(err.message);
       throw err;
     }
   });
 
   fs.writeFile(`${folderPath}/${config.outputName}`, getJunitXml(report), err => {
     if (err) {
+      console.log(err.message);
       throw err;
     }
 
