@@ -1,12 +1,31 @@
-import { Suite } from 'benchmark';
+import * as Benchmark from 'benchmark';
+import * as fs from 'fs';
+import { getJunitXml, TestSuite, TestSuiteReport } from 'junit-xml';
 
-const suites: Suite[] = [];
+const config = require('../benchmark.config');
+
+const suites: Benchmark.Suite[] = [];
+const report: TestSuiteReport = {
+  name: config.suiteName,
+  time: 0,
+  suites: [],
+};
 
 export function suite(name: string, benchmarksFn: () => void): void {
-  const newSuite = new Suite(name);
+  const newSuite = new Benchmark.Suite(name);
   suites.push(newSuite);
 
-  newSuite.on('complete', event => logSummary(event.currentTarget));
+  newSuite.on('complete', event => {
+    logSummary(event.currentTarget);
+
+    report.suites.push(convertToTestSuite(name, event.currentTarget));
+
+    if (everySuiteFinished()) {
+      sumUpTotalTime();
+
+      writeReportToFile();
+    }
+  });
 
   benchmarksFn();
 
@@ -18,27 +37,75 @@ export function benchmark(name: string, fn: () => void): void {
 }
 
 function logSummary(suiteToLog: any): void {
-  const fastestBenchmarkName = suiteToLog.filter('fastest').map(bm => bm.name);
-  const conjugatedVerbBe = fastestBenchmarkName.length > 1 ? 'are' : 'is';
-  console.log(suiteToLog.name);
-  console.log(`  Fastest ${conjugatedVerbBe} [${fastestBenchmarkName.join(', ')}]`);
+  logFastestBenchmarkNames(suiteToLog);
 
   const benchmarks = Array.from({ length: suiteToLog.length }, (x, i) => suiteToLog[i]);
   const descSortedBenchmarks = benchmarks.sort((a, b) => b.hz - a.hz);
   const highestHz = descSortedBenchmarks[0].hz;
 
   descSortedBenchmarks.forEach(bm => {
-    const barPercentage = (100 / highestHz) * bm.hz;
-    const charsPerOnePercentage = 2;
+    logBenchmarkBar(highestHz, bm);
+  });
+}
 
-    const filledBarLength = barPercentage / charsPerOnePercentage;
-    const emptyBarLength = (100 - barPercentage) / charsPerOnePercentage;
+function logFastestBenchmarkNames(suiteToLog: any): void {
+  const fastestBenchmarkNames = suiteToLog.filter('fastest').map(bm => bm.name);
+  const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
-    const createBar = (length, char) => Array.from({ length }, () => char).join('');
-    const filledBar = `${createBar(Math.floor(filledBarLength), '-')}`;
-    const emptyBar = createBar(Math.ceil(emptyBarLength), ' ');
+  console.log(suiteToLog.name);
+  console.log(`  Fastest ${conjugatedVerbBe} [${fastestBenchmarkNames.join(', ')}]`);
+}
 
-    console.log(`  |${filledBar}${emptyBar}| ${bm}`);
+function logBenchmarkBar(highestHz: number, bm: Benchmark): void {
+  const barPercentage = (100 / highestHz) * bm.hz;
+  const charsPerOnePercentage = 2;
+
+  const filledBarLength = barPercentage / charsPerOnePercentage;
+  const emptyBarLength = (100 - barPercentage) / charsPerOnePercentage;
+
+  const createBar = (length, char) => Array.from({ length }, () => char).join('');
+  const filledBar = `${createBar(Math.floor(filledBarLength), '-')}`;
+  const emptyBar = createBar(Math.ceil(emptyBarLength), ' ');
+
+  console.log(`  |${filledBar}${emptyBar}| ${bm}`);
+}
+
+function convertToTestSuite(suiteName: string, currentSuite: Benchmark.Suite): TestSuite {
+  const benchmarks = Array.from({ length: currentSuite.length }, (x, i) => currentSuite[i]);
+
+  return {
+    name: suiteName,
+    time: benchmarks.map(bm => bm.stats.mean).reduce((previous, current) => previous + current, 0),
+    testCases: benchmarks.map(bm => ({
+      name: bm.name,
+      time: bm.stats.mean,
+    })),
+    timestamp: new Date(benchmarks[0].times.timeStamp),
+  };
+}
+
+function sumUpTotalTime(): void {
+  report.time = report.suites.map(s => s.time).reduce((previous, current) => previous + current, 0);
+}
+
+function everySuiteFinished(): boolean {
+  return suites.every(s => !s.running);
+}
+
+function writeReportToFile(): void {
+  const folderPath = `${process.cwd()}/${config.outputDirectory}`;
+  fs.mkdir(folderPath, { recursive: true }, err => {
+    if (err) {
+      throw err;
+    }
+  });
+
+  fs.writeFile(`${folderPath}/${config.outputName}`, getJunitXml(report), err => {
+    if (err) {
+      throw err;
+    }
+
+    console.log('\nJUnit report saved!');
   });
 }
 
