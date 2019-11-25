@@ -77,6 +77,7 @@ function convertToTestSuite(suiteName: string, currentSuite: Benchmark.Suite): T
     name: suiteName,
     time: benchmarks.map(bm => bm.stats.mean).reduce((previous, current) => previous + current, 0),
     testCases: benchmarks.map(bm => ({
+      classname: suiteName,
       name: bm.name,
       time: bm.stats.mean,
     })),
