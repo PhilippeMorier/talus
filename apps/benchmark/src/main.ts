@@ -94,21 +94,14 @@ function everySuiteFinished(): boolean {
 
 function writeReportToFile(): void {
   const folderPath = `${process.cwd()}/${config.outputDirectory}`;
-  fs.mkdir(folderPath, { recursive: true }, err => {
-    if (err) {
-      console.log(err.message);
-      throw err;
-    }
-  });
-
-  fs.writeFile(`${folderPath}/${config.outputName}`, getJunitXml(report), err => {
-    if (err) {
-      console.log(err.message);
-      throw err;
-    }
-
-    console.log('\nJUnit report saved!');
-  });
+  fs.promises
+    .mkdir(folderPath, { recursive: true })
+    .then(() => fs.promises.writeFile(`${folderPath}/${config.outputName}`, getJunitXml(report)))
+    .then(() => console.log('\nJUnit report saved!'))
+    .catch((err: NodeJS.ErrnoException) => {
+      console.log(err);
+      process.exit(err.errno);
+    });
 }
 
 declare const require: any;
