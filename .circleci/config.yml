@@ -103,19 +103,20 @@ jobs:
           path: ./coverage
           destination: coverage
 
-  #  'benchmark':
-  #    <<: *use_docker_node_browsers
-  #
-  #    <<: *set_working_directory
-  #
-  #    steps:
-  #      - *attach_workspace
-  #
-  #      - run:
-  #          name: Run benchmarks
-  #          command: yarn benchmark:editor:ci
-  #
-  #      - *store_test_results
+  'benchmark':
+    <<: *use_docker_node_browsers
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run benchmarks
+          command: yarn build benchmark && node ./dist/apps/benchmark/main.js
+
+      - store_test_results:
+          path: ./test-results
 
   'build':
     <<: *use_docker_node
@@ -225,16 +226,16 @@ workflows:
           requires:
             - 'dependencies'
 
-      #      - 'benchmark':
-      #          requires:
-      #            - 'linting'
-      #            - 'prettier'
+      - 'benchmark':
+          requires:
+            - 'dependencies'
 
       - 'build':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
+            - 'benchmark'
 
       - 'deploy':
           requires:
