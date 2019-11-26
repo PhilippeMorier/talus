@@ -225,7 +225,7 @@ jobs:
           name: Prepare deployment variables
           command: |
             echo 'export COMMIT_MESSAGE="[skip ci] Deploy: apps (#$CIRCLE_PREVIOUS_BUILD_NUM)"' >> $BASH_ENV
-            echo 'export DEST_PATH="$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM/dist/apps/"' >> $BASH_ENV
+            echo 'export DEST_PATH="$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM/"' >> $BASH_ENV
 
       - run:
           name: Deploy to Github pages
@@ -238,7 +238,7 @@ jobs:
 
       - run:
           name: Log deploy URL
-          command: echo 'https://philippemorier.github.io/talus/$DEST_PATH'
+          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH
 
 workflows:
   version: 2
