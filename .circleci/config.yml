@@ -166,8 +166,10 @@ jobs:
 
             cp index.html index-github.html
 
+            echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+
             echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/dist\/apps\/frontend\/"' >> $BASH_ENV
-            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$LAST_COMMIT_HASH_SHORT\/frontend\/"' >> $BASH_ENV
 
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
             echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
@@ -224,8 +226,10 @@ jobs:
       - run:
           name: Prepare deployment variables
           command: |
-            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: apps (#$CIRCLE_PREVIOUS_BUILD_NUM)"' >> $BASH_ENV
-            echo 'export DEST_PATH="$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM"' >> $BASH_ENV
+            echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+
+            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: apps (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
+            echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
 
       - run:
           name: Deploy to Github pages
