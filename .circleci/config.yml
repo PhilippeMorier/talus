@@ -284,6 +284,6 @@ workflows:
           requires:
             - 'build'
             - 'frontend-e2e'
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
