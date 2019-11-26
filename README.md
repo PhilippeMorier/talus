@@ -141,8 +141,8 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 ## Github Pages
 
 CircleCI pushes every build onto the
-[gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published by
-github under:
+[gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published on
+GitHub under:
 
-- Schema: `https://philippemorier.github.io/talus/<branch>/<build-num>/dist/apps/frontend/`
-- Example: https://philippemorier.github.io/talus/convert-to-nx/245/dist/apps/frontend/
+- Schema: `https://philippemorier.github.io/talus/<branch>/<commit-hash>/frontend/`
+- Example: `https://philippemorier.github.io/talus/convert-to-nx/9cff96f/frontend/`
