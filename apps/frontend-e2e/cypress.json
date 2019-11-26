@@ -1,0 +1,18 @@
+{
+  "chromeWebSecurity": false,
+  "fileServerFolder": ".",
+  "fixturesFolder": "./src/fixtures",
+  "integrationFolder": "./src/integration",
+  "pluginsFile": "./src/plugins/index",
+  "reporter": "junit",
+  "reporterOptions": {
+    "jenkinsMode": true,
+    "mochaFile": "../../test-results/mocha/apps-frontend-e2e.[hash].junit.xml",
+    "testCaseSwitchClassnameAndName": true,
+    "toConsole": true
+  },
+  "screenshotsFolder": "../../test-results/cypress/apps/frontend-e2e/screenshots",
+  "supportFile": false,
+  "video": true,
+  "videosFolder": "../../test-results/cypress/apps/frontend-e2e/videos"
+}

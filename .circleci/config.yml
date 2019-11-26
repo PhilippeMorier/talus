@@ -13,6 +13,10 @@ aliases:
     docker:
       - image: circleci/node:12.3.1-stretch-browsers
 
+  - &use_docker_cypress_included
+    docker:
+      - image: cypress/included:3.6.1
+
   - &workspace ~/talus
 
   - &set_working_directory
@@ -53,6 +57,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.cache/yarn
+            - ~/.cache/Cypress
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
@@ -69,7 +74,7 @@ jobs:
 
       - run:
           name: Run linting
-          command: yarn lint --format=stylish
+          command: yarn lint
 
   'prettier':
     <<: *use_docker_node
@@ -82,9 +87,7 @@ jobs:
       - run:
           name: Run prettier
           command: |
-            yarn prettier --check \
-            --config ./.prettierrc \
-            --ignore-path ./.prettierignore '{*,\.circleci/**/*,projects/**/*}.{ts,scss,json,html,yml}'
+            yarn prettier:check
 
   'unit':
     <<: *use_docker_node_browsers
@@ -96,13 +99,33 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn test:editor:ci
+          command: yarn test:code-coverage
 
-      - *store_test_results
+      - store_test_results:
+          path: ./test-results
 
       - store_artifacts:
-          path: ./projects/editor/reports
-          destination: editor/reports
+          path: ./coverage
+          destination: coverage
+
+  'frontend-e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run frontend-e2e
+          command: yarn e2e:ci frontend-e2e
+
+      - store_test_results:
+          path: ./test-results
+
+      - store_artifacts:
+          path: ./test-results/cypress
+          destination: cypress
 
   'benchmark':
     <<: *use_docker_node_browsers
@@ -113,10 +136,15 @@ jobs:
       - *attach_workspace
 
       - run:
-          name: Run benchmarks
-          command: yarn benchmark:editor:ci
+          name: Build benchmarks
+          command: yarn build benchmark
 
-      - *store_test_results
+      - run:
+          name: Run benchmarks
+          command: node ./dist/apps/benchmark/main.js
+
+      - store_test_results:
+          path: ./test-results
 
   'build':
     <<: *use_docker_node
@@ -128,17 +156,20 @@ jobs:
 
       - run:
           name: Build app
-          command: yarn build editor --prod=true --base-href BASE_PATH_PLACEHOLDER --progress=false
+          command:
+            yarn ng run frontend:build:production --base-href BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
           command: |
-            cd ./dist/editor
+            cd ./dist/apps/frontend
 
             cp index.html index-github.html
 
-            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/editor\/dist\/"' >> $BASH_ENV
-            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/editor\/$CIRCLE_BRANCH\/$CIRCLE_BUILD_NUM\/"' >> $BASH_ENV
+            echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+
+            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/dist\/apps\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$LAST_COMMIT_HASH_SHORT\/frontend\/"' >> $BASH_ENV
 
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
             echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
@@ -146,19 +177,19 @@ jobs:
       # Variable interpolation doesn't work on multi-line command
       - run:
           name: Replace 'BASE_PATH_PLACEHOLDER' for CircleCI index
-          command: cd ./dist/editor && sed -i "$REPLACE_CIRCLE_CI" index.html
+          command: cd ./dist/apps/frontend && sed -i "$REPLACE_CIRCLE_CI" index.html
 
       - run:
           name: Replace 'BASE_PATH_PLACEHOLDER' for Github index
-          command: cd ./dist/editor && sed -i "$REPLACE_GITHUB" index-github.html
+          command: cd ./dist/apps/frontend && sed -i "$REPLACE_GITHUB" index-github.html
 
       - store_artifacts:
-          path: ./dist/editor
-          destination: editor/dist
+          path: ./dist/apps/frontend
+          destination: dist/apps/frontend
 
       - persist_to_workspace:
           root: .
-          paths: dist/editor
+          paths: dist/apps/frontend
 
   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
   'deploy':
@@ -179,21 +210,26 @@ jobs:
 
       - run:
           name: Add github.com to known hosts
-          command: echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' >> ~/.ssh/known_hosts
+          command:
+            echo 'github.com ssh-rsa
+            AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+            >> ~/.ssh/known_hosts
 
       - run:
           name: Delete CircleCI index
-          command: rm dist/editor/index.html
+          command: rm dist/apps/frontend/index.html
 
       - run:
           name: Rename Github index
-          command: mv dist/editor/index-github.html dist/editor/index.html
+          command: mv dist/apps/frontend/index-github.html dist/apps/frontend/index.html
 
       - run:
           name: Prepare deployment variables
           command: |
-            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: editor (#$CIRCLE_PREVIOUS_BUILD_NUM)"' >> $BASH_ENV
-            echo 'export DEST_PATH="editor/$CIRCLE_BRANCH/$CIRCLE_PREVIOUS_BUILD_NUM"' >> $BASH_ENV
+            echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+
+            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: apps (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
+            echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
 
       - run:
           name: Deploy to Github pages
@@ -201,12 +237,16 @@ jobs:
             yarn gh-pages \
             --dotfiles \
             --message "$COMMIT_MESSAGE" \
-            --dist dist/editor \
+            --dist dist/apps \
             --dest "$DEST_PATH"
+
+      - run:
+          name: Log deploy URL
+          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/frontend/'
 
 workflows:
   version: 2
-  'editor':
+  'apps':
     jobs:
       - 'dependencies'
 
@@ -220,21 +260,30 @@ workflows:
 
       - 'unit':
           requires:
-            - 'linting'
-            - 'prettier'
+            - 'dependencies'
 
       - 'benchmark':
           requires:
-            - 'linting'
-            - 'prettier'
+            - 'dependencies'
 
       - 'build':
           requires:
+            - 'linting'
+            - 'prettier'
             - 'unit'
+            - 'benchmark'
+
+      - 'frontend-e2e':
+          requires:
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
 
       - 'deploy':
           requires:
             - 'build'
+            - 'frontend-e2e'
           filters:
             branches:
               only: master
