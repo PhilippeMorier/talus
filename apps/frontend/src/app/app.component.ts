@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AbstractMesh } from '@babylonjs/core';
+import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 
 @Component({
   selector: 'fe-root',

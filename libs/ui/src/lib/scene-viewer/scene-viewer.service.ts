@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AbstractMesh, MeshBuilder, PickingInfo, Scene } from '@babylonjs/core';
+// Babylon.js needs to target individual files to fully benefit from tree shaking.
+// See: https://doc.babylonjs.com/features/es6_support#tree-shaking
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { Vector3 } from '@babylonjs/core/Maths/math';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { Scene } from '@babylonjs/core/scene';
 import { Subject } from 'rxjs';
 
 @Injectable()
