@@ -53,12 +53,15 @@ Dependencies:
 
 Running tests:
 
-- In `../openvdb/build/` run `make test` to run Python and C++ tests
-- Alternatively run tests via `./openvdb/unittest/vdb_test -v` for more details on the C++ tests
+- Python & C++ tests: In `../openvdb/build/` run `make test` to run Python and C++ tests
+- C++ tests only: Alternatively run tests via `./openvdb/unittest/vdb_test -v` for more details on
+  the C++ tests
   - `Segmentation fault` happens and is mentioned in `tsc/meetings/2019-09-26.md` explaining it
     happens `during serialization of OpenVDB Point Data Grids into Houdini file formats`
-  - Add custom test (e.g. in `../unittest/TestLeaf.cc`) and run it
-    1. `CPPUNIT_TEST(testCoordToOffset);`
-    2. `void testCoordToOffset();`
-    3. `make && ./openvdb/unittest/vdb_test -v -t TestLeaf::testCoordToOffset`
-- Test log files are under `openvdb/build/Testing/Temporary`
+- C++ custom test:
+  1. Copy custom test file `TestTalus.cc` to `../unittest/TestTalus.cc`
+  2. Add `TestTalus.cc` in `CMakeLists.txt`
+  3. Run specific test with
+     - `clear && make && ./openvdb/unittest/vdb_test -v -t TestTalus::InternalNode_testCoordToOffset`
+
+Test log files can be found in `openvdb/build/Testing/Temporary`.
