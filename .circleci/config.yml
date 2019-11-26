@@ -120,6 +120,10 @@ jobs:
           name: Run frontend-e2e
           command: yarn e2e:ci frontend-e2e
 
+      - store_artifacts:
+          path: ./dist/cypress
+          destination: cypress
+
   'benchmark':
     <<: *use_docker_node_browsers
 
