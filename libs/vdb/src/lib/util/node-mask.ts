@@ -18,12 +18,12 @@ export class NodeMask {
     }
   }
 
-  setOn(n: Index): void {
-    this.mask.set(n, true);
+  setOn(i: Index): void {
+    this.mask.set(i, true);
   }
 
-  isOn(n: Index): boolean {
-    return this.mask.test(n);
+  isOn(i: Index): boolean {
+    return this.mask.test(i);
   }
 
   countOn(): number {
@@ -44,8 +44,8 @@ export class NodeMask {
     }
   }
 
-  setOff(n: Index): void {
-    this.mask.set(n, false);
+  setOff(i: Index): void {
+    this.mask.set(i, false);
   }
 
   isOff(i: Index): boolean {
