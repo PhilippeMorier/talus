@@ -3,6 +3,8 @@ import { InternalNode2 } from './internal-node';
 import { Node } from './node';
 
 export class RootNode<T> implements Node<T> {
+  static readonly LEVEL = 1 + InternalNode2.LEVEL; // level 0 = leaf
+
   private table = new Map<string, NodeStruct<T>>();
 
   constructor(private background: T) {}
