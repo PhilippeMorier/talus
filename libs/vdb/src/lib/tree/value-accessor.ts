@@ -75,25 +75,25 @@ export class ValueAccessor3<T> {
 
   private isHashed0(xyz: Coord): boolean {
     return (
-      (xyz[X] & (~LeafNode.DIM - 1)) === this.leafKey[X] &&
-      (xyz[Y] & (~LeafNode.DIM - 1)) === this.leafKey[Y] &&
-      (xyz[Z] & (~LeafNode.DIM - 1)) === this.leafKey[Z]
+      (xyz[X] & ~(LeafNode.DIM - 1)) === this.leafKey[X] &&
+      (xyz[Y] & ~(LeafNode.DIM - 1)) === this.leafKey[Y] &&
+      (xyz[Z] & ~(LeafNode.DIM - 1)) === this.leafKey[Z]
     );
   }
 
   private isHashed1(xyz: Coord): boolean {
     return (
-      (xyz[X] & (~InternalNode1.DIM - 1)) === this.internalKey1[X] &&
-      (xyz[Y] & (~InternalNode1.DIM - 1)) === this.internalKey1[Y] &&
-      (xyz[Z] & (~InternalNode1.DIM - 1)) === this.internalKey1[Z]
+      (xyz[X] & ~(InternalNode1.DIM - 1)) === this.internalKey1[X] &&
+      (xyz[Y] & ~(InternalNode1.DIM - 1)) === this.internalKey1[Y] &&
+      (xyz[Z] & ~(InternalNode1.DIM - 1)) === this.internalKey1[Z]
     );
   }
 
   private isHashed2(xyz: Coord): boolean {
     return (
-      (xyz[X] & (~InternalNode2.DIM - 1)) === this.internalKey2[X] &&
-      (xyz[Y] & (~InternalNode2.DIM - 1)) === this.internalKey2[Y] &&
-      (xyz[Z] & (~InternalNode2.DIM - 1)) === this.internalKey2[Z]
+      (xyz[X] & ~(InternalNode2.DIM - 1)) === this.internalKey2[X] &&
+      (xyz[Y] & ~(InternalNode2.DIM - 1)) === this.internalKey2[Y] &&
+      (xyz[Z] & ~(InternalNode2.DIM - 1)) === this.internalKey2[Z]
     );
   }
   // tslint:enable:no-bitwise
