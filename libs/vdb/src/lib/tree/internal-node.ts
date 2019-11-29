@@ -2,12 +2,13 @@ import { Coord, X, Y, Z } from '../math/coord';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
 import { Index, LeafNode } from './leaf-node';
-import { Node } from './node';
+import { HashableNode } from './node';
 import { NodeUnion } from './node-union';
+import { ValueAccessor3 } from './value-accessor';
 
 type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
 
-abstract class InternalNode<T> implements Node<T> {
+abstract class InternalNode<T> implements HashableNode<T> {
   protected readonly childMask: NodeMask;
   protected readonly valueMask: NodeMask;
   protected readonly origin: Coord;
@@ -57,7 +58,7 @@ abstract class InternalNode<T> implements Node<T> {
     // tslint:enable:no-bitwise
   }
 
-  protected *beginChildOn(): IterableIterator<Node<T>> {
+  protected *beginChildOn(): IterableIterator<HashableNode<T>> {
     for (const [index, value] of this.childMask.beginOn()) {
       yield this.nodes[index].getChild();
     }
@@ -106,6 +107,17 @@ abstract class InternalNode<T> implements Node<T> {
     return this.childMask.isOff(i)
       ? this.nodes[i].getValue()
       : this.nodes[i].getChild().getValue(xyz);
+  }
+
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    if (this.childMask.isOn(i)) {
+      accessor.insert(xyz, this.nodes[i].getChild());
+      return this.nodes[i].getChild().getValueAndCache(xyz, accessor);
+    }
+
+    return this.nodes[i].getValue();
   }
 
   isValueOn(xyz: Coord): boolean {

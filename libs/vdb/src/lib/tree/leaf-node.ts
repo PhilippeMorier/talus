@@ -1,12 +1,13 @@
 import { Coord, X, Y, Z } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
 import { LeafBuffer } from './leaf-buffer';
-import { Node } from './node';
+import { HashableNode } from './node';
+import { ValueAccessor3 } from './value-accessor';
 
 export type ValueType = boolean | number | string;
 export type Index = number;
 
-export class LeafNode<T> implements Node<T> {
+export class LeafNode<T> implements HashableNode<T> {
   // tslint:disable:no-bitwise
   static readonly LOG2DIM: Index = 3; // needed by parent nodes
   static readonly TOTAL: Index = LeafNode.LOG2DIM; // needed by parent nodes
@@ -72,5 +73,13 @@ export class LeafNode<T> implements Node<T> {
 
   onVoxelCount(): number {
     return this.valueMask.countOn();
+  }
+
+  /**
+   * @brief Return the value of the voxel at the given coordinates.
+   * @note Used internally by ValueAccessor.
+   */
+  getValueAndCache(xyz: Coord, _: ValueAccessor3<T>): T {
+    return this.getValue(xyz);
   }
 }

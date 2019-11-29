@@ -1,4 +1,5 @@
 import { Coord } from '../math/coord';
+import { ValueAccessor3 } from './value-accessor';
 
 export interface Node<T> {
   /**
@@ -20,4 +21,14 @@ export interface Node<T> {
    * Return the number of active voxels.
    */
   onVoxelCount(): number;
+}
+
+export interface HashableNode<T> extends Node<T> {
+  /**
+   * Return the value of the voxel at the given coordinates and, if necessary, update
+   * the accessor with pointers to the nodes along the path from the root node to
+   * the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T;
 }
