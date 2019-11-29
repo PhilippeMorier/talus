@@ -8,6 +8,18 @@ Run `ng test vdb` to execute the unit tests via [Jest](https://jestjs.io).
 
 ## openVDB
 
+When manipulating data in OpenVDB, the three essential objects are
+
+1. the `Tree`, a B-tree-like three-dimensional data structure;
+2. the `Transform`, which relates voxel indices (i, j, k) to physical locations (x, y, z) in World
+   Space "world" space; and
+3. the `Grid`, a container that associates a Tree with a Transform and additional metadata.
+
+### Sources
+
+- [Overview](https://www.openvdb.org/documentation/doxygen/overview.html)
+- [Cookbook](https://www.openvdb.org/documentation/doxygen/codeExamples.html)
+
 ### Install Blosc
 
 - `git clone git@github.com:Blosc/c-blosc.git`
