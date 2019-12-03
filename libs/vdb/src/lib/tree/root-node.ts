@@ -1,4 +1,4 @@
-import { Coord, X, Y, Z } from '../math/coord';
+import { Coord } from '../math/coord';
 import { InternalNode2 } from './internal-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
