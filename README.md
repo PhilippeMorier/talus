@@ -1,4 +1,4 @@
-# Talus [![CircleCI](https://circleci.com/gh/PhilippeMorier/talus/tree/convert-to-nx.svg?style=svg)](https://circleci.com/gh/PhilippeMorier/talus/tree/convert-to-nx)
+# Talus [![CircleCI](https://circleci.com/gh/PhilippeMorier/talus/tree/master.svg?style=svg)](https://circleci.com/gh/PhilippeMorier/talus/tree/master)
 
 This project was generated using [Nx](https://nx.dev) with the following command sequence.
 
