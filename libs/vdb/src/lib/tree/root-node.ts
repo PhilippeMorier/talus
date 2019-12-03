@@ -1,13 +1,14 @@
 import { Coord, X, Y, Z } from '../math/coord';
 import { InternalNode2 } from './internal-node';
-import { Node } from './node';
+import { HashableNode } from './node';
+import { ValueAccessor3 } from './value-accessor';
 
-export class RootNode<T> implements Node<T> {
+export class RootNode<T> implements HashableNode<T> {
   static readonly LEVEL = 1 + InternalNode2.LEVEL; // level 0 = leaf
 
   private table = new Map<string, NodeStruct<T>>();
 
-  constructor(private background: T) {}
+  constructor(private _background: T) {}
 
   /**
    * Return a MapType key for the given coordinates.
@@ -26,12 +27,47 @@ export class RootNode<T> implements Node<T> {
     return coord.join(',');
   }
 
-  setValueOn(xyz: Coord, value: T): void {
+  get background(): T {
+    return this._background;
+  }
+
+  getValue(xyz: Coord): T {
     const struct = this.findCoord(xyz);
-    let child: Node<T>;
 
     if (!struct) {
-      child = new InternalNode2(xyz, this.background);
+      return this._background;
+    }
+
+    return struct.isTile() ? struct.getTile().value : struct.getChild().getValue(xyz);
+  }
+
+  /**
+   * Return the value of the voxel at the given coordinates and, if necessary, update
+   * the accessor with pointers to the nodes along the path from the root node to
+   * the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      return this._background;
+    }
+
+    if (struct.isChild()) {
+      accessor.insert(xyz, struct.getChild());
+      return struct.getChild().getValueAndCache(xyz, accessor);
+    }
+
+    return struct.getTile().value;
+  }
+
+  setValueOn(xyz: Coord, value: T): void {
+    const struct = this.findCoord(xyz);
+    let child: HashableNode<T>;
+
+    if (!struct) {
+      child = new InternalNode2(xyz, this._background);
       this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
     } else if (struct.isChild()) {
       child = struct.getChild();
@@ -45,14 +81,30 @@ export class RootNode<T> implements Node<T> {
     }
   }
 
-  getValue(xyz: Coord): T {
+  /**
+   * Change the value of the voxel at the given coordinates and mark it as active.
+   * If necessary, update the accessor with pointers to the nodes along the path
+   * from the root node to the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const struct = this.findCoord(xyz);
+    let child: HashableNode<T>;
 
     if (!struct) {
-      return this.background;
+      child = new InternalNode2(xyz, this._background);
+      this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else if (struct.isTileOff()) {
+      child = new InternalNode2(xyz, struct.getTile().value, struct.isTileOn());
+      struct.setChild(child);
     }
 
-    return struct.isTile() ? struct.getTile().value : struct.getChild().getValue(xyz);
+    if (child) {
+      accessor.insert(xyz, child);
+      child.setValueOn(xyz, value);
+    }
   }
 
   isValueOn(xyz: Coord): boolean {
@@ -96,13 +148,13 @@ export class RootNode<T> implements Node<T> {
 class NodeStruct<T> {
   tile: Tile<T>;
 
-  constructor(private child?: Node<T>) {}
+  constructor(private child?: HashableNode<T>) {}
 
-  getChild(): Node<T> {
+  getChild(): HashableNode<T> {
     return this.child;
   }
 
-  setChild(child: Node<T>): void {
+  setChild(child: HashableNode<T>): void {
     this.child = child;
   }
 

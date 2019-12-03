@@ -2,12 +2,13 @@ import { Coord, X, Y, Z } from '../math/coord';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
 import { Index, LeafNode } from './leaf-node';
-import { Node } from './node';
+import { HashableNode } from './node';
 import { NodeUnion } from './node-union';
+import { ValueAccessor3 } from './value-accessor';
 
 type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
 
-abstract class InternalNode<T> implements Node<T> {
+abstract class InternalNode<T> implements HashableNode<T> {
   protected readonly childMask: NodeMask;
   protected readonly valueMask: NodeMask;
   protected readonly origin: Coord;
@@ -57,7 +58,7 @@ abstract class InternalNode<T> implements Node<T> {
     // tslint:enable:no-bitwise
   }
 
-  protected *beginChildOn(): IterableIterator<Node<T>> {
+  protected *beginChildOn(): IterableIterator<HashableNode<T>> {
     for (const [index, value] of this.childMask.beginOn()) {
       yield this.nodes[index].getChild();
     }
@@ -77,6 +78,25 @@ abstract class InternalNode<T> implements Node<T> {
   abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
 
   abstract onVoxelCount(): number;
+
+  getValue(xyz: Coord): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    return this.childMask.isOff(i)
+      ? this.nodes[i].getValue()
+      : this.nodes[i].getChild().getValue(xyz);
+  }
+
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    if (this.childMask.isOn(i)) {
+      accessor.insert(xyz, this.nodes[i].getChild());
+      return this.nodes[i].getChild().getValueAndCache(xyz, accessor);
+    }
+
+    return this.nodes[i].getValue();
+  }
 
   setValueOn(xyz: Coord, value: T): void {
     const i: Index = this.coordToOffset(xyz);
@@ -100,12 +120,24 @@ abstract class InternalNode<T> implements Node<T> {
     }
   }
 
-  getValue(xyz: Coord): T {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+    let hasChild = this.childMask.isOn(i);
 
-    return this.childMask.isOff(i)
-      ? this.nodes[i].getValue()
-      : this.nodes[i].getChild().getValue(xyz);
+    if (!hasChild) {
+      const active = this.valueMask.isOn(i); // tile's active state
+
+      if (!active || node.getValue() !== value) {
+        hasChild = true;
+        this.setChildNode(i, this.createChildNode(xyz, node.getValue(), active));
+      }
+    }
+
+    if (hasChild) {
+      accessor.insert(xyz, node.getChild());
+      node.getChild().setValueAndCache(xyz, value, accessor);
+    }
   }
 
   isValueOn(xyz: Coord): boolean {
