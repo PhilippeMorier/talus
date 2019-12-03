@@ -1,7 +1,7 @@
 import { Grid, InternalNode2 } from '@talus/vdb';
-import { benchmark, suite } from '../main';
+import { benchmark, suite } from '../../main';
 
-suite('vdb > getValue', () => {
+suite('[Grid] getValue()', () => {
   const grid = new Grid(-1);
   const accessor = grid.getAccessor();
 
