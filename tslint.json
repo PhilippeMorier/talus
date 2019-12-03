@@ -64,8 +64,16 @@
         "allow": [],
         "depConstraints": [
           {
-            "sourceTag": "frontend",
-            "onlyDependOnLibsWithTags": ["ui"]
+            "sourceTag": "scope:frontend",
+            "onlyDependOnLibsWithTags": ["scope:libs", "scope:frontend"]
+          },
+          {
+            "sourceTag": "scope:benchmark",
+            "onlyDependOnLibsWithTags": ["scope:libs", "scope:benchmark"]
+          },
+          {
+            "sourceTag": "scope:libs",
+            "onlyDependOnLibsWithTags": ["scope:libs"]
           }
         ]
       }

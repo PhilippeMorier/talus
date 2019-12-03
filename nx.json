@@ -8,20 +8,25 @@
     "nx.json": "*"
   },
   "projects": {
-    "frontend-e2e": {
-      "tags": []
-    },
     "frontend": {
-      "tags": ["frontend"]
+      "tags": ["scope:frontend"],
+      "implicitDependencies": []
     },
-    "ui": {
-      "tags": ["ui"]
+    "frontend-e2e": {
+      "tags": ["scope:frontend"],
+      "implicitDependencies": ["frontend"]
     },
     "benchmark": {
-      "tags": ["benchmark"]
+      "tags": ["scope:benchmark"],
+      "implicitDependencies": []
+    },
+    "ui": {
+      "tags": ["scope:libs"],
+      "implicitDependencies": []
     },
     "vdb": {
-      "tags": []
+      "tags": ["scope:libs"],
+      "implicitDependencies": []
     }
   }
 }
