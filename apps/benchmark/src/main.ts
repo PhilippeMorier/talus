@@ -52,13 +52,13 @@ function logFastestBenchmarkNames(suiteToLog: any): void {
   const fastestBenchmarkNames = suiteToLog.filter('fastest').map(bm => bm.name);
   const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
-  console.log(suiteToLog.name);
+  console.log(`\n${suiteToLog.name}`);
   console.log(`  Fastest ${conjugatedVerbBe} [${fastestBenchmarkNames.join(', ')}]`);
 }
 
 function logBenchmarkBar(highestHz: number, bm: Benchmark): void {
   const barPercentage = (100 / highestHz) * bm.hz;
-  const charsPerOnePercentage = 2;
+  const charsPerOnePercentage = 4;
 
   const filledBarLength = barPercentage / charsPerOnePercentage;
   const emptyBarLength = (100 - barPercentage) / charsPerOnePercentage;
@@ -110,5 +110,9 @@ declare const require: any;
   // find all benchmark files
   const context = require.context('./', true, /\.benchmark\.ts$/);
   // Load the modules.
-  context.keys().map(context);
+  console.log('Found benchmarks:');
+  context.keys().map(key => {
+    console.log(`- ${key}`);
+    context(key);
+  });
 })();
