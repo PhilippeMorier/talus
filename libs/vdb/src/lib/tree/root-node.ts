@@ -81,10 +81,12 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
-  /// Change the value of the voxel at the given coordinates and mark it as active.
-  /// If necessary, update the accessor with pointers to the nodes along the path
-  /// from the root node to the node containing the voxel.
-  /// @note Used internally by ValueAccessor.
+  /**
+   * Change the value of the voxel at the given coordinates and mark it as active.
+   * If necessary, update the accessor with pointers to the nodes along the path
+   * from the root node to the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
