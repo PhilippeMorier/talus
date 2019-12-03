@@ -41,7 +41,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @param active - the active state to which to initialize all voxels
    */
   constructor(xyz: Coord, value?: T, active: boolean = false) {
-    this.buffer = new LeafBuffer<T>(value);
+    this.buffer = new LeafBuffer<T>(LeafNode.NUM_VOXELS, value);
     this.valueMask = new NodeMask(LeafNode.NUM_VALUES, active);
 
     // tslint:disable:no-bitwise

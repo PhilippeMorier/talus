@@ -1,1 +1,2 @@
-export * from './lib/tree/leaf-node';
+export * from './lib/grid';
+export * from './lib/tree';

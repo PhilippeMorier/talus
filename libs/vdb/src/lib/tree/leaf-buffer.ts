@@ -1,14 +1,13 @@
 import { createDenseArray } from '../util/array';
-import { Index, LeafNode } from './leaf-node';
+import { Index } from './leaf-node';
 
 export class LeafBuffer<T> {
-  private size: Index = LeafNode.NUM_VOXELS;
   private data: T[] = createDenseArray(this.size);
 
   /**
    * Construct a buffer populated with the specified value.
    */
-  constructor(value?: T) {
+  constructor(private size: Index, value?: T) {
     if (value) {
       this.fill(value);
     }

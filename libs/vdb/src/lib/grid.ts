@@ -16,7 +16,7 @@ import { ValueAccessor3 } from './tree/value-accessor';
  *  Source: https://www.openvdb.org/documentation/doxygen/overview.html
  */
 export class Grid<T extends ValueType> {
-  private readonly tree: Tree<T>;
+  readonly tree: Tree<T>;
 
   constructor(background: T) {
     this.tree = new Tree<T>(background);
