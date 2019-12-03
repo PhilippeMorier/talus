@@ -18,9 +18,9 @@ export class RootNode<T> implements HashableNode<T> {
   static coordToKey(xyz: Coord): string {
     // tslint:disable:no-bitwise
     const coord: Coord = [
-      xyz[X] & ~(InternalNode2.DIM - 1),
-      xyz[Y] & ~(InternalNode2.DIM - 1),
-      xyz[Z] & ~(InternalNode2.DIM - 1),
+      xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED,
+      xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED,
+      xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED,
     ];
     // tslint:enable:no-bitwise
 

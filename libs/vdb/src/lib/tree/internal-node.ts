@@ -27,9 +27,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
     // tslint:disable:no-bitwise
     this.origin = [
-      xyz[X] & ~(LeafNode.DIM - 1),
-      xyz[Y] & ~(LeafNode.DIM - 1),
-      xyz[Z] & ~(LeafNode.DIM - 1),
+      xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
     ];
     // tslint:enable:no-bitwise
 
@@ -51,9 +51,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
   ): Index {
     // tslint:disable:no-bitwise
     return (
-      (((xyz[X] & (dim - 1)) >> childNodeTotal) << (2 * log2dim)) +
-      (((xyz[Y] & (dim - 1)) >> childNodeTotal) << log2dim) +
-      ((xyz[Z] & (dim - 1)) >> childNodeTotal)
+      (((xyz[0] & (dim - 1)) >> childNodeTotal) << (2 * log2dim)) +
+      (((xyz[1] & (dim - 1)) >> childNodeTotal) << log2dim) +
+      ((xyz[2] & (dim - 1)) >> childNodeTotal)
     );
     // tslint:enable:no-bitwise
   }
@@ -173,6 +173,7 @@ export class InternalNode1<T> extends InternalNode<T> {
   static readonly LOG2DIM = 2; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode1.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode1.TOTAL; // total voxel count in one dimension
+  static readonly DIM_MAX_INDEX_INVERTED: Index = ~(InternalNode1.DIM - 1); // Performance: max index
   static readonly NUM_VALUES = 1 << (3 * InternalNode1.LOG2DIM); // total child count represented by this node
   static readonly LEVEL = 1 + LeafNode.LEVEL; // level 0 = leaf
   static readonly NUM_VOXELS = 1 << (3 * InternalNode1.TOTAL); // total voxel count represented by this node
@@ -200,6 +201,7 @@ export class InternalNode2<T> extends InternalNode<T> {
   static readonly LOG2DIM = 2; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode2.LOG2DIM + InternalNode1.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode2.TOTAL; // total voxel count in one dimension
+  static readonly DIM_MAX_INDEX_INVERTED: Index = ~(InternalNode2.DIM - 1); // Performance: max index
   static readonly NUM_VALUES = 1 << (3 * InternalNode2.LOG2DIM); // total child count represented by this node
   static readonly LEVEL = 1 + InternalNode1.LEVEL; // level 0 = leaf
   // Operands of all bitwise operators are converted to signed 32-bit. Therefore, 1 << 31 >>> 0 is the largest

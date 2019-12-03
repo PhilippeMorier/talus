@@ -1,4 +1,4 @@
-import { Coord, X, Y, Z } from '../math/coord';
+import { Coord } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
 import { LeafBuffer } from './leaf-buffer';
 import { HashableNode } from './node';
@@ -12,6 +12,8 @@ export class LeafNode<T> implements HashableNode<T> {
   static readonly LOG2DIM: Index = 3; // needed by parent nodes
   static readonly TOTAL: Index = LeafNode.LOG2DIM; // needed by parent nodes
   static readonly DIM: Index = 1 << LeafNode.TOTAL; // dimension along one coordinate direction
+  static readonly DIM_MAX_INDEX: Index = LeafNode.DIM - 1; // @performance
+  static readonly DIM_MAX_INDEX_INVERTED: Index = ~(LeafNode.DIM - 1); // @performance
   static readonly NUM_VALUES: Index = 1 << (3 * LeafNode.LOG2DIM);
   static readonly NUM_VOXELS: Index = LeafNode.NUM_VALUES; // total number of voxels represented by this node
   static readonly SIZE: Index = LeafNode.NUM_VALUES;
@@ -28,9 +30,9 @@ export class LeafNode<T> implements HashableNode<T> {
   static coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (
-      ((xyz[X] & (LeafNode.DIM - 1)) << (2 * LeafNode.LOG2DIM)) +
-      ((xyz[Y] & (LeafNode.DIM - 1)) << LeafNode.LOG2DIM) +
-      (xyz[Z] & (LeafNode.DIM - 1))
+      ((xyz[0] & LeafNode.DIM_MAX_INDEX) << (2 * LeafNode.LOG2DIM)) +
+      ((xyz[1] & LeafNode.DIM_MAX_INDEX) << LeafNode.LOG2DIM) +
+      (xyz[2] & LeafNode.DIM_MAX_INDEX)
     );
     // tslint:enable:no-bitwise
   }
@@ -46,9 +48,9 @@ export class LeafNode<T> implements HashableNode<T> {
 
     // tslint:disable:no-bitwise
     this.origin = [
-      xyz[X] & ~(LeafNode.DIM - 1),
-      xyz[Y] & ~(LeafNode.DIM - 1),
-      xyz[Z] & ~(LeafNode.DIM - 1),
+      xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
     ];
     // tslint:enable:no-bitwise
   }

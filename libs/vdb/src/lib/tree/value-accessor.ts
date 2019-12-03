@@ -1,4 +1,4 @@
-import { Coord, createMaxCoord, X, Y, Z } from '../math/coord';
+import { Coord, createMaxCoord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -69,44 +69,44 @@ export class ValueAccessor3<T> {
   // tslint:disable:no-bitwise
   insert(xyz: Coord, node: HashableNode<T>): void {
     if (node instanceof LeafNode) {
-      this.leafKey[X] = xyz[X] & ~(LeafNode.DIM - 1);
-      this.leafKey[Y] = xyz[Y] & ~(LeafNode.DIM - 1);
-      this.leafKey[Z] = xyz[Z] & ~(LeafNode.DIM - 1);
+      this.leafKey[0] = xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED;
+      this.leafKey[1] = xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED;
+      this.leafKey[2] = xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED;
       this.leafNode = node;
     } else if (node instanceof InternalNode1) {
-      this.internalKey1[X] = xyz[X] & ~(InternalNode1.DIM - 1);
-      this.internalKey1[Y] = xyz[Y] & ~(InternalNode1.DIM - 1);
-      this.internalKey1[Z] = xyz[Z] & ~(InternalNode1.DIM - 1);
+      this.internalKey1[0] = xyz[0] & InternalNode1.DIM_MAX_INDEX_INVERTED;
+      this.internalKey1[1] = xyz[1] & InternalNode1.DIM_MAX_INDEX_INVERTED;
+      this.internalKey1[2] = xyz[2] & InternalNode1.DIM_MAX_INDEX_INVERTED;
       this.internalNode1 = node;
     } else if (node instanceof InternalNode2) {
-      this.internalKey2[X] = xyz[X] & ~(InternalNode2.DIM - 1);
-      this.internalKey2[Y] = xyz[Y] & ~(InternalNode2.DIM - 1);
-      this.internalKey2[Z] = xyz[Z] & ~(InternalNode2.DIM - 1);
+      this.internalKey2[0] = xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED;
+      this.internalKey2[1] = xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED;
+      this.internalKey2[2] = xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED;
       this.internalNode2 = node;
     }
   }
 
   private isHashed0(xyz: Coord): boolean {
     return (
-      (xyz[X] & ~(LeafNode.DIM - 1)) === this.leafKey[X] &&
-      (xyz[Y] & ~(LeafNode.DIM - 1)) === this.leafKey[Y] &&
-      (xyz[Z] & ~(LeafNode.DIM - 1)) === this.leafKey[Z]
+      (xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[0] &&
+      (xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[1] &&
+      (xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[2]
     );
   }
 
   private isHashed1(xyz: Coord): boolean {
     return (
-      (xyz[X] & ~(InternalNode1.DIM - 1)) === this.internalKey1[X] &&
-      (xyz[Y] & ~(InternalNode1.DIM - 1)) === this.internalKey1[Y] &&
-      (xyz[Z] & ~(InternalNode1.DIM - 1)) === this.internalKey1[Z]
+      (xyz[0] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[0] &&
+      (xyz[1] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[1] &&
+      (xyz[2] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[2]
     );
   }
 
   private isHashed2(xyz: Coord): boolean {
     return (
-      (xyz[X] & ~(InternalNode2.DIM - 1)) === this.internalKey2[X] &&
-      (xyz[Y] & ~(InternalNode2.DIM - 1)) === this.internalKey2[Y] &&
-      (xyz[Z] & ~(InternalNode2.DIM - 1)) === this.internalKey2[Z]
+      (xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[0] &&
+      (xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[1] &&
+      (xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[2]
     );
   }
   // tslint:enable:no-bitwise
