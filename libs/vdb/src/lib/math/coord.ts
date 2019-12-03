@@ -4,5 +4,10 @@ export const Z = 2;
 
 export type Coord = [number, number, number];
 
-export const COORD_MAX: Coord = [Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE];
-export const COORD_MIN: Coord = [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
+export function createMaxCoord(): Coord {
+  return [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+}
+
+export function createMinCoord(): Coord {
+  return [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
+}

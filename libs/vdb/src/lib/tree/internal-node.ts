@@ -79,6 +79,25 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
   abstract onVoxelCount(): number;
 
+  getValue(xyz: Coord): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    return this.childMask.isOff(i)
+      ? this.nodes[i].getValue()
+      : this.nodes[i].getChild().getValue(xyz);
+  }
+
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
+    const i: Index = this.coordToOffset(xyz);
+
+    if (this.childMask.isOn(i)) {
+      accessor.insert(xyz, this.nodes[i].getChild());
+      return this.nodes[i].getChild().getValueAndCache(xyz, accessor);
+    }
+
+    return this.nodes[i].getValue();
+  }
+
   setValueOn(xyz: Coord, value: T): void {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
@@ -101,23 +120,24 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
-  getValue(xyz: Coord): T {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+    let hasChild = this.childMask.isOn(i);
 
-    return this.childMask.isOff(i)
-      ? this.nodes[i].getValue()
-      : this.nodes[i].getChild().getValue(xyz);
-  }
+    if (!hasChild) {
+      const active = this.valueMask.isOn(i); // tile's active state
 
-  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
-    const i: Index = this.coordToOffset(xyz);
-
-    if (this.childMask.isOn(i)) {
-      accessor.insert(xyz, this.nodes[i].getChild());
-      return this.nodes[i].getChild().getValueAndCache(xyz, accessor);
+      if (!active || node.getValue() !== value) {
+        hasChild = true;
+        this.setChildNode(i, this.createChildNode(xyz, node.getValue(), active));
+      }
     }
 
-    return this.nodes[i].getValue();
+    if (hasChild) {
+      accessor.insert(xyz, node.getChild());
+      node.getChild().setValueAndCache(xyz, value, accessor);
+    }
   }
 
   isValueOn(xyz: Coord): boolean {

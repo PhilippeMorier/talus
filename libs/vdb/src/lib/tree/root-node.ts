@@ -31,6 +31,37 @@ export class RootNode<T> implements HashableNode<T> {
     return this._background;
   }
 
+  getValue(xyz: Coord): T {
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      return this._background;
+    }
+
+    return struct.isTile() ? struct.getTile().value : struct.getChild().getValue(xyz);
+  }
+
+  /**
+   * Return the value of the voxel at the given coordinates and, if necessary, update
+   * the accessor with pointers to the nodes along the path from the root node to
+   * the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      return this._background;
+    }
+
+    if (struct.isChild()) {
+      accessor.insert(xyz, struct.getChild());
+      return struct.getChild().getValueAndCache(xyz, accessor);
+    }
+
+    return struct.getTile().value;
+  }
+
   setValueOn(xyz: Coord, value: T): void {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
@@ -50,29 +81,28 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
-  getValue(xyz: Coord): T {
+  /// Change the value of the voxel at the given coordinates and mark it as active.
+  /// If necessary, update the accessor with pointers to the nodes along the path
+  /// from the root node to the node containing the voxel.
+  /// @note Used internally by ValueAccessor.
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const struct = this.findCoord(xyz);
+    let child: HashableNode<T>;
 
     if (!struct) {
-      return this._background;
+      child = new InternalNode2(xyz, this._background);
+      this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else if (struct.isTileOff()) {
+      child = new InternalNode2(xyz, struct.getTile().value, struct.isTileOn());
+      struct.setChild(child);
     }
 
-    return struct.isTile() ? struct.getTile().value : struct.getChild().getValue(xyz);
-  }
-
-  getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
-    const struct = this.findCoord(xyz);
-
-    if (!struct) {
-      return this._background;
+    if (child) {
+      accessor.insert(xyz, child);
+      child.setValueOn(xyz, value);
     }
-
-    if (struct.isChild()) {
-      accessor.insert(xyz, struct.getChild());
-      return struct.getChild().getValueAndCache(xyz, accessor);
-    }
-
-    return struct.getTile().value;
   }
 
   isValueOn(xyz: Coord): boolean {

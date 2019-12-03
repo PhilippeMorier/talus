@@ -82,4 +82,12 @@ export class LeafNode<T> implements HashableNode<T> {
   getValueAndCache(xyz: Coord, _: ValueAccessor3<T>): T {
     return this.getValue(xyz);
   }
+
+  /**
+   * @brief Change the value of the voxel at the given coordinates and mark it as active.
+   * @note Used internally by ValueAccessor.
+   */
+  setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+    this.setValueOn(xyz, value);
+  }
 }

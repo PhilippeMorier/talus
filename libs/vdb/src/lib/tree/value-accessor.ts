@@ -1,4 +1,4 @@
-import { Coord, COORD_MAX, X, Y, Z } from '../math/coord';
+import { Coord, createMaxCoord, X, Y, Z } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -20,13 +20,13 @@ import { Tree } from './tree';
 export class ValueAccessor3<T> {
   constructor(private tree: Tree<T>) {}
 
-  private leafKey: Coord = COORD_MAX;
+  private leafKey: Coord = createMaxCoord();
   private leafNode: LeafNode<T>;
 
-  private internalKey1: Coord = COORD_MAX;
+  private internalKey1: Coord = createMaxCoord();
   private internalNode1: InternalNode1<T>;
 
-  private internalKey2: Coord = COORD_MAX;
+  private internalKey2: Coord = createMaxCoord();
   private internalNode2: InternalNode2<T>;
 
   /**
@@ -39,16 +39,31 @@ export class ValueAccessor3<T> {
   /**
    * Return the value of the voxel at the given coordinates.
    */
-  public getValue(xyz: Coord): T {
+  getValue(xyz: Coord): T {
     if (this.isHashed0(xyz)) {
       return this.leafNode.getValueAndCache(xyz, this);
     } else if (this.isHashed1(xyz)) {
       return this.internalNode1.getValueAndCache(xyz, this);
     } else if (this.isHashed2(xyz)) {
       return this.internalNode2.getValueAndCache(xyz, this);
+    } else {
+      return this.tree.root.getValueAndCache(xyz, this);
     }
+  }
 
-    return this.tree.root.getValueAndCache(xyz, this);
+  /**
+   * Set the value of the voxel at the given coordinates and mark the voxel as active.
+   */
+  setValue(xyz: Coord, value: T): void {
+    if (this.isHashed0(xyz)) {
+      this.leafNode.setValueAndCache(xyz, value, this);
+    } else if (this.isHashed1(xyz)) {
+      this.internalNode1.setValueAndCache(xyz, value, this);
+    } else if (this.isHashed2(xyz)) {
+      this.internalNode2.setValueAndCache(xyz, value, this);
+    } else {
+      this.tree.root.setValueAndCache(xyz, value, this);
+    }
   }
 
   // tslint:disable:no-bitwise
@@ -58,14 +73,12 @@ export class ValueAccessor3<T> {
       this.leafKey[Y] = xyz[Y] & ~(LeafNode.DIM - 1);
       this.leafKey[Z] = xyz[Z] & ~(LeafNode.DIM - 1);
       this.leafNode = node;
-    }
-    if (node instanceof InternalNode1) {
+    } else if (node instanceof InternalNode1) {
       this.internalKey1[X] = xyz[X] & ~(InternalNode1.DIM - 1);
       this.internalKey1[Y] = xyz[Y] & ~(InternalNode1.DIM - 1);
       this.internalKey1[Z] = xyz[Z] & ~(InternalNode1.DIM - 1);
       this.internalNode1 = node;
-    }
-    if (node instanceof InternalNode2) {
+    } else if (node instanceof InternalNode2) {
       this.internalKey2[X] = xyz[X] & ~(InternalNode2.DIM - 1);
       this.internalKey2[Y] = xyz[Y] & ~(InternalNode2.DIM - 1);
       this.internalKey2[Z] = xyz[Z] & ~(InternalNode2.DIM - 1);
@@ -112,7 +125,7 @@ export class ValueAccessor3<T> {
 //   private next: CacheItem<RootNode<T>>;
 //
 //   constructor() {
-//     this.hash = COORD_MAX;
+//     this.hash = createMaxCoord();
 //   }
 //
 //   /**
@@ -172,7 +185,7 @@ export class ValueAccessor3<T> {
 //       this.hash[Z] = xyz[Z] & ~(InternalNode2.DIM - 1);
 //       // tslint:enable:no-bitwise
 //     } else {
-//       this.hash = COORD_MAX;
+//       this.hash = createMaxCoord();
 //     }
 //
 //     this.node = node;
