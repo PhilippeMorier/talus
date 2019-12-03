@@ -53,7 +53,7 @@ function logFastestBenchmarkNames(suiteToLog: any): void {
   const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
   console.log(`\n${suiteToLog.name}`);
-  console.log(`  Fastest ${conjugatedVerbBe} [${fastestBenchmarkNames.join(', ')}]`);
+  console.log(`  Fastest ${conjugatedVerbBe} "${fastestBenchmarkNames.join(', ')}"`);
 }
 
 function logBenchmarkBar(highestHz: number, bm: Benchmark): void {

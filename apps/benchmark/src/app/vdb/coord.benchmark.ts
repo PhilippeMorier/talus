@@ -13,6 +13,13 @@ suite('[Coord] write', () => {
     coord[1] = 1;
     coord[2] = 1;
   });
+
+  const coordObj = { x: 0, y: 0, z: 0 };
+  benchmark('coordObj.x=1', () => {
+    coordObj.x = 1;
+    coordObj.y = 1;
+    coordObj.z = 1;
+  });
 });
 
 suite('[Coord] read', () => {
@@ -52,11 +59,11 @@ suite('[Coord] function parameter', () => {
     const _z = z;
   }
 
-  benchmark('oneParameter', () => {
+  benchmark('fn(xyz)', () => {
     oneParameter(coord);
   });
 
-  benchmark('deconstruct', () => {
+  benchmark('fn([x,y,z])', () => {
     deconstruct(coord);
   });
 });
