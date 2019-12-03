@@ -1,4 +1,4 @@
-import { Coord, X, Y, Z } from '../math/coord';
+import { Coord } from '../math/coord';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
 import { Index, LeafNode } from './leaf-node';
