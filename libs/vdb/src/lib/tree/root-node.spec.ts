@@ -50,4 +50,24 @@ describe('RootNode', () => {
       expect(root.getTableSize()).toEqual(3);
     });
   });
+
+  describe('beginVoxelOn()', () => {
+    it('should iterate over all activated voxels', () => {
+      const root = new RootNode(-1);
+      const expectedValues = [0, 1, 2, 3];
+
+      root.setValueOn([0, 0, 0], expectedValues[0]);
+      root.setValueOn([0, 0, InternalNode2.DIM], expectedValues[1]);
+      root.setValueOn([0, InternalNode2.DIM, 0], expectedValues[2]);
+      root.setValueOn([InternalNode2.DIM, 0, 0], expectedValues[3]);
+
+      let counter = 0;
+      for (const value of root.beginVoxelOn()) {
+        expect(value).toEqual(expectedValues[counter]);
+        counter++;
+      }
+
+      expect(counter).toEqual(expectedValues.length);
+    });
+  });
 });

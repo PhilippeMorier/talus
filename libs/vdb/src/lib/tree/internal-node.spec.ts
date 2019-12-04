@@ -101,21 +101,41 @@ describe('InternalNode', () => {
 
     describe('onVoxelCount()', () => {
       it('should count all activated voxels', () => {
-        const leaf = new InternalNode1<number>([0, 0, 0]);
+        const node1 = new InternalNode1<number>([0, 0, 0]);
 
         let onCounter = 0;
         for (let x = 0; x < InternalNode1.DIM; x++) {
           for (let y = 0; y < InternalNode1.DIM; y++) {
             for (let z = 0; z < InternalNode1.DIM; z++) {
-              leaf.setValueOn([x, y, z], 42);
+              node1.setValueOn([x, y, z], 42);
               onCounter++;
 
-              expect(leaf.onVoxelCount()).toEqual(onCounter);
+              expect(node1.onVoxelCount()).toEqual(onCounter);
             }
           }
         }
 
         expect(onCounter).toEqual(Math.pow(InternalNode1.DIM, 3));
+      });
+    });
+
+    describe('beginVoxelOn()', () => {
+      it('should iterate over all activated voxels', () => {
+        const node1 = new InternalNode1<number>([0, 0, 0]);
+        const expectedValues = [0, 1, 2, 3];
+
+        node1.setValueOn([0, 0, 0], expectedValues[0]);
+        node1.setValueOn([0, 0, 11], expectedValues[1]);
+        node1.setValueOn([0, 22, 0], expectedValues[2]);
+        node1.setValueOn([31, 0, 0], expectedValues[3]);
+
+        let counter = 0;
+        for (const value of node1.beginVoxelOn()) {
+          expect(value).toEqual(expectedValues[counter]);
+          counter++;
+        }
+
+        expect(counter).toEqual(expectedValues.length);
       });
     });
   });
@@ -186,6 +206,26 @@ describe('InternalNode', () => {
         }
 
         expect(onCounter).toEqual(Math.pow(InternalNode2.DIM, 3));
+      });
+    });
+
+    describe('beginVoxelOn()', () => {
+      it('should iterate over all activated voxels', () => {
+        const node2 = new InternalNode2<number>([0, 0, 0]);
+        const expectedValues = [0, 1, 2, 3];
+
+        node2.setValueOn([0, 0, 0], expectedValues[0]);
+        node2.setValueOn([0, 0, 50], expectedValues[1]);
+        node2.setValueOn([0, 75, 0], expectedValues[2]);
+        node2.setValueOn([InternalNode2.DIM - 1, 0, 0], expectedValues[3]);
+
+        let counter = 0;
+        for (const value of node2.beginVoxelOn()) {
+          expect(value).toEqual(expectedValues[counter]);
+          counter++;
+        }
+
+        expect(counter).toEqual(expectedValues.length);
       });
     });
   });

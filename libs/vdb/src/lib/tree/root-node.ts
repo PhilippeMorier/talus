@@ -41,12 +41,6 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.isTile() ? struct.getTile().value : struct.getChild().getValue(xyz);
   }
 
-  /**
-   * Return the value of the voxel at the given coordinates and, if necessary, update
-   * the accessor with pointers to the nodes along the path from the root node to
-   * the node containing the voxel.
-   * @note Used internally by ValueAccessor.
-   */
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
     const struct = this.findCoord(xyz);
 
@@ -81,12 +75,6 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
-  /**
-   * Change the value of the voxel at the given coordinates and mark it as active.
-   * If necessary, update the accessor with pointers to the nodes along the path
-   * from the root node to the node containing the voxel.
-   * @note Used internally by ValueAccessor.
-   */
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
@@ -135,6 +123,14 @@ export class RootNode<T> implements HashableNode<T> {
    */
   getTableSize(): number {
     return this.table.size;
+  }
+
+  *beginVoxelOn(): IterableIterator<T> {
+    for (const nodeStruct of this.table.values()) {
+      if (nodeStruct.isChild()) {
+        yield* nodeStruct.getChild().beginVoxelOn();
+      }
+    }
   }
 
   /**
