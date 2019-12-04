@@ -2,17 +2,21 @@ import { NodeMask } from './node-mask';
 
 describe('NodeMask', () => {
   describe('setOn()', () => {
-    it.each([[0, true], [16, true], [32, true], [48, true], [63, true], [64, false]])(
-      'should set bit on at index (%j)',
-      (index: number, isOn: boolean) => {
-        const mask = new NodeMask(64);
+    it.each([
+      [0, true],
+      [16, true],
+      [32, true],
+      [48, true],
+      [63, true],
+      [64, false],
+    ])('should set bit on at index (%j)', (index: number, isOn: boolean) => {
+      const mask = new NodeMask(64);
 
-        mask.setOn(index);
+      mask.setOn(index);
 
-        expect(mask.isOn(index)).toEqual(isOn);
-        expect(mask.isOff(index)).toEqual(!isOn);
-      },
-    );
+      expect(mask.isOn(index)).toEqual(isOn);
+      expect(mask.isOff(index)).toEqual(!isOn);
+    });
 
     it('should ignore given index out of bounds', () => {
       const mask = new NodeMask(16);
@@ -30,17 +34,21 @@ describe('NodeMask', () => {
   });
 
   describe('setOff()', () => {
-    it.each([[1, false], [17, false], [33, false], [49, false], [62, false], [64, false]])(
-      'should set bit off at index (%j)',
-      (index: number, isOn: boolean) => {
-        const mask = new NodeMask(64, true);
+    it.each([
+      [1, false],
+      [17, false],
+      [33, false],
+      [49, false],
+      [62, false],
+      [64, false],
+    ])('should set bit off at index (%j)', (index: number, isOn: boolean) => {
+      const mask = new NodeMask(64, true);
 
-        mask.setOff(index);
+      mask.setOff(index);
 
-        expect(mask.isOn(index)).toEqual(isOn);
-        expect(mask.isOff(index)).toEqual(!isOn);
-      },
-    );
+      expect(mask.isOn(index)).toEqual(isOn);
+      expect(mask.isOff(index)).toEqual(!isOn);
+    });
   });
 
   describe('constructor()', () => {
@@ -70,8 +78,8 @@ describe('NodeMask', () => {
     expectedSetIndices.forEach(index => mask.setOn(index));
 
     let counter = 0;
-    for (const entry of mask.beginOn()) {
-      expect(entry).toEqual([expectedSetIndices[counter], 1]);
+    for (const index of mask.beginOn()) {
+      expect(index).toEqual(expectedSetIndices[counter]);
       counter++;
     }
 

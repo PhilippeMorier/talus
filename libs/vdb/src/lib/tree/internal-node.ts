@@ -59,7 +59,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
   }
 
   protected *beginChildOn(): IterableIterator<HashableNode<T>> {
-    for (const [index, value] of this.childMask.beginOn()) {
+    for (const index of this.childMask.beginOn()) {
       yield this.nodes[index].getChild();
     }
   }

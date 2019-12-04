@@ -30,14 +30,14 @@ export class NodeMask {
     return this.mask.size;
   }
 
-  *beginOn(): IterableIterator<[number, number]> {
+  *beginOn(): IterableIterator<number> {
     const iterator = this.mask.entries();
     let result = iterator.next();
 
     while (!result.done) {
       const isBitOn = result.value[1] === 1;
       if (isBitOn) {
-        yield result.value;
+        yield result.value[0];
       }
 
       result = iterator.next();

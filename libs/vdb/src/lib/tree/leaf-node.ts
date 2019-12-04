@@ -21,9 +21,9 @@ export class LeafNode<T> implements HashableNode<T> {
   // tslint:enable:no-bitwise
 
   // Buffer containing the actual data values
-  private buffer;
+  private buffer: LeafBuffer<T>;
   // Bitmask that determines which voxels are active
-  private valueMask;
+  private valueMask: NodeMask;
   // Global grid index coordinates (x,y,z) of the local origin of this node
   private origin: Coord;
 
