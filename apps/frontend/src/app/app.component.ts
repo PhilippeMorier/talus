@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import '@babylonjs/core/Rendering/edgesRenderer';
 
 @Component({
   selector: 'fe-root',
