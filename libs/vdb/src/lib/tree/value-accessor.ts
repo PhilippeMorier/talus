@@ -5,6 +5,16 @@ import { HashableNode } from './node';
 import { Tree } from './tree';
 
 /**
+ * When traversing a grid by (i, j, k) index in a spatially coherent pattern, such as when
+ * iterating over neighboring voxels, request a ValueAccessor from the grid (with Grid.getAccessor)
+ * and use the accessor’s `getValue` and `setValue` methods, since these will usually be
+ * significantly faster than accessing voxels directly in the grid’s tree. The accessor records
+ * the sequence of nodes visited during the most recent access; on the next access, rather than
+ * traversing the tree from the root node down, it performs an inverted traversal from the deepest
+ * recorded node up. For neighboring voxels, the traversal need only proceed as far as the voxels’
+ * common ancestor node, which more often than not is the first node in the sequence.
+ * @source: https://www.openvdb.org/documentation/doxygen/overview.html#subsecValueAccessor
+ *
  * A ValueAccessor caches pointers to tree nodes along the path to a voxel (x, y, z).
  * A subsequent access to voxel (x', y', z') starts from the cached leaf node and
  * moves up until a cached node that encloses (x', y', z') is found, then traverses
