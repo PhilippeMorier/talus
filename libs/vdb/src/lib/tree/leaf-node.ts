@@ -58,19 +58,19 @@ export class LeafNode<T> implements HashableNode<T> {
   }
 
   /**
-   * @param xyz - the grid index coordinates of a voxel
+   * @param origin - the grid index coordinates of a voxel
    * @param value - a value with which to fill the buffer
    * @param active - the active state to which to initialize all voxels
    */
-  constructor(xyz: Coord, value?: T, active: boolean = false) {
+  constructor(origin: Coord, value?: T, active: boolean = false) {
     this.buffer = new LeafBuffer<T>(LeafNode.NUM_VOXELS, value);
     this.valueMask = new NodeMask(LeafNode.NUM_VALUES, active);
 
     // tslint:disable:no-bitwise
     this.origin = [
-      xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      origin[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      origin[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
+      origin[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
     ];
     // tslint:enable:no-bitwise
   }
