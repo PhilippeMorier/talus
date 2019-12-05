@@ -140,4 +140,22 @@ describe('LeafNode', () => {
       expect(LeafNode.offsetToLocalCoord(7 * dimSquare + 7 * dim + 7)).toEqual([7, 7, 7]);
     });
   });
+
+  describe('offsetToGlobalCoord()', () => {
+    it('should calculate global coordinate from offset', () => {
+      const dim = LeafNode.DIM;
+      const dimSquare = LeafNode.DIM * LeafNode.DIM;
+
+      const leaf = new LeafNode<number>([dim, dim, dim]);
+
+      expect(leaf.offsetToGlobalCoord(0)).toEqual([dim, dim, dim]);
+      expect(leaf.offsetToGlobalCoord(1)).toEqual([dim, dim, dim + 1]);
+      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1)).toEqual([dim + 1, dim, dim + 1]);
+      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1 * dim + 1)).toEqual([
+        dim + 1,
+        dim + 1,
+        dim + 1,
+      ]);
+    });
+  });
 });

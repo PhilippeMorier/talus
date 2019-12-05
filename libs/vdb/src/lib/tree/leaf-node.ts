@@ -113,6 +113,19 @@ export class LeafNode<T> implements HashableNode<T> {
     this.setValueOn(xyz, value);
   }
 
+  /**
+   * Return the global coordinates for a linear table offset.
+   */
+  offsetToGlobalCoord(i: Index): Coord {
+    const localCoord = LeafNode.offsetToLocalCoord(i);
+
+    return [
+      localCoord[0] + this.origin[0],
+      localCoord[1] + this.origin[1],
+      localCoord[2] + this.origin[2],
+    ];
+  }
+
   *beginVoxelOn(): IterableIterator<T> {
     for (const index of this.valueMask.beginOn()) {
       yield this.buffer.getValue(index);

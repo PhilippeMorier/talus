@@ -30,6 +30,7 @@ public:
     CPPUNIT_TEST(InternalNode_testStaticConfigValues);
     CPPUNIT_TEST(LeafNode_testCoordToOffset);
     CPPUNIT_TEST(LeafNode_testOffsetToLocalCoord);
+    CPPUNIT_TEST(LeafNode_testOffsetToGlobalCoord);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -39,6 +40,7 @@ public:
     void InternalNode_testStaticConfigValues();
     void LeafNode_testCoordToOffset();
     void LeafNode_testOffsetToLocalCoord();
+    void LeafNode_testOffsetToGlobalCoord();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestTalus);
@@ -228,4 +230,17 @@ TestTalus::LeafNode_testOffsetToLocalCoord()
     CPPUNIT_ASSERT_EQUAL(Coord(5, 5, 5), LeafType::offsetToLocalCoord(Index(5 * LeafType::DIM * LeafType::DIM + 5 * LeafType::DIM + 5)));
     CPPUNIT_ASSERT_EQUAL(Coord(6, 6, 6), LeafType::offsetToLocalCoord(Index(6 * LeafType::DIM * LeafType::DIM + 6 * LeafType::DIM + 6)));
     CPPUNIT_ASSERT_EQUAL(Coord(7, 7, 7), LeafType::offsetToLocalCoord(Index(7 * LeafType::DIM * LeafType::DIM + 7 * LeafType::DIM + 7)));
+}
+
+void
+TestTalus::LeafNode_testOffsetToGlobalCoord()
+{
+    const Coord origin(LeafType::DIM, LeafType::DIM, LeafType::DIM);
+    const bool bg = false;
+    LeafType leaf(origin, bg, false);
+
+    CPPUNIT_ASSERT_EQUAL(Coord(LeafType::DIM, LeafType::DIM, LeafType::DIM), leaf.offsetToGlobalCoord(Index(0)));
+    CPPUNIT_ASSERT_EQUAL(Coord(LeafType::DIM, LeafType::DIM, LeafType::DIM + 1), leaf.offsetToGlobalCoord(Index(1)));
+    CPPUNIT_ASSERT_EQUAL(Coord(LeafType::DIM + 1, LeafType::DIM, LeafType::DIM + 1), leaf.offsetToGlobalCoord(Index(LeafType::DIM * LeafType::DIM + 1)));
+    CPPUNIT_ASSERT_EQUAL(Coord(LeafType::DIM + 1, LeafType::DIM + 1, LeafType::DIM + 1), leaf.offsetToGlobalCoord(Index(LeafType::DIM * LeafType::DIM + LeafType::DIM + 1)));
 }
