@@ -3,6 +3,7 @@ import { NodeMask } from '../util/node-mask';
 import { LeafBuffer } from './leaf-buffer';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
+import { Voxel } from './voxel';
 
 export type ValueType = boolean | number | string;
 export type Index = number;
@@ -25,7 +26,7 @@ export class LeafNode<T> implements HashableNode<T> {
   // Bitmask that determines which voxels are active
   private valueMask: NodeMask;
   // Global grid index coordinates (x,y,z) of the local origin of this node
-  private origin: Coord;
+  private readonly origin: Coord;
 
   /**
    * Return the linear table offset of the given global or local coordinates.
@@ -126,9 +127,12 @@ export class LeafNode<T> implements HashableNode<T> {
     ];
   }
 
-  *beginVoxelOn(): IterableIterator<T> {
+  *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.valueMask.beginOn()) {
-      yield this.buffer.getValue(index);
+      yield {
+        globalCoord: this.offsetToGlobalCoord(index),
+        value: this.buffer.getValue(index),
+      };
     }
   }
 }

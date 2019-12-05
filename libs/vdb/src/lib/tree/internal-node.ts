@@ -5,6 +5,7 @@ import { Index, LeafNode } from './leaf-node';
 import { HashableNode } from './node';
 import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';
+import { Voxel } from './voxel';
 
 abstract class InternalNode<T> implements HashableNode<T> {
   protected childMask: NodeMask;
@@ -128,7 +129,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return this.nodes[i].getChild().isValueOn(xyz);
   }
 
-  *beginVoxelOn(): IterableIterator<T> {
+  *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.childMask.beginOn()) {
       const child = this.nodes[index].getChild();
 

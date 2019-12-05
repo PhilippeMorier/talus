@@ -62,8 +62,8 @@ describe('RootNode', () => {
       root.setValueOn([InternalNode2.DIM, 0, 0], expectedValues[3]);
 
       let counter = 0;
-      for (const value of root.beginVoxelOn()) {
-        expect(value).toEqual(expectedValues[counter]);
+      for (const voxel of root.beginVoxelOn()) {
+        expect(voxel.value).toEqual(expectedValues[counter]);
         counter++;
       }
 

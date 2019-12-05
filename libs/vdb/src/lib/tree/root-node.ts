@@ -2,6 +2,7 @@ import { Coord } from '../math/coord';
 import { InternalNode2 } from './internal-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
+import { Voxel } from './voxel';
 
 export class RootNode<T> implements HashableNode<T> {
   static readonly LEVEL = 1 + InternalNode2.LEVEL; // level 0 = leaf
@@ -125,7 +126,7 @@ export class RootNode<T> implements HashableNode<T> {
     return this.table.size;
   }
 
-  *beginVoxelOn(): IterableIterator<T> {
+  *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const nodeStruct of this.table.values()) {
       if (nodeStruct.isChild()) {
         yield* nodeStruct.getChild().beginVoxelOn();

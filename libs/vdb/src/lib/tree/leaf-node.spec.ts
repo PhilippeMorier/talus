@@ -89,8 +89,8 @@ describe('LeafNode', () => {
       leaf.setValueOn([3, 0, 0], expectedValues[3]);
 
       let counter = 0;
-      for (const value of leaf.beginVoxelOn()) {
-        expect(value).toEqual(expectedValues[counter]);
+      for (const voxel of leaf.beginVoxelOn()) {
+        expect(voxel.value).toEqual(expectedValues[counter]);
         counter++;
       }
 

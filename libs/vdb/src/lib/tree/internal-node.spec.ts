@@ -130,8 +130,8 @@ describe('InternalNode', () => {
         node1.setValueOn([31, 0, 0], expectedValues[3]);
 
         let counter = 0;
-        for (const value of node1.beginVoxelOn()) {
-          expect(value).toEqual(expectedValues[counter]);
+        for (const voxel of node1.beginVoxelOn()) {
+          expect(voxel.value).toEqual(expectedValues[counter]);
           counter++;
         }
 
@@ -220,8 +220,8 @@ describe('InternalNode', () => {
         node2.setValueOn([InternalNode2.DIM - 1, 0, 0], expectedValues[3]);
 
         let counter = 0;
-        for (const value of node2.beginVoxelOn()) {
-          expect(value).toEqual(expectedValues[counter]);
+        for (const voxel of node2.beginVoxelOn()) {
+          expect(voxel.value).toEqual(expectedValues[counter]);
           counter++;
         }
 

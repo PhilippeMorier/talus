@@ -1,6 +1,7 @@
 import { Coord } from '../math/coord';
 import { Node } from './node';
 import { RootNode } from './root-node';
+import { Voxel } from './voxel';
 
 export class Tree<T> implements Node<T> {
   static readonly DEPTH = 1 + RootNode.LEVEL; // level 0 = leaf
@@ -31,7 +32,7 @@ export class Tree<T> implements Node<T> {
     this.root.setValueOn(xyz, value);
   }
 
-  beginVoxelOn(): IterableIterator<T> {
+  beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.root.beginVoxelOn();
   }
 }

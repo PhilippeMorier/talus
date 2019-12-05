@@ -1,5 +1,6 @@
 import { Coord } from '../math/coord';
 import { ValueAccessor3 } from './value-accessor';
+import { Voxel } from './voxel';
 
 export interface Node<T> extends IterableNode<T> {
   /**
@@ -46,5 +47,5 @@ export interface IterableNode<T> {
    * Iterator for visiting all active voxels. I.e. only values from `LeafNode`'s are yielded
    * and no values from tiles.
    */
-  beginVoxelOn(): IterableIterator<T>;
+  beginVoxelOn(): IterableIterator<Voxel<T>>;
 }
