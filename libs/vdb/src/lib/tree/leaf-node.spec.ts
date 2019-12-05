@@ -97,4 +97,47 @@ describe('LeafNode', () => {
       expect(counter).toEqual(expectedValues.length);
     });
   });
+
+  describe('offsetToLocalCoord()', () => {
+    it('should calculate local coordinate from offset', () => {
+      const dim = LeafNode.DIM;
+      const dimSquare = LeafNode.DIM * LeafNode.DIM;
+
+      expect(LeafNode.offsetToLocalCoord(0)).toEqual([0, 0, 0]);
+      expect(LeafNode.offsetToLocalCoord(1)).toEqual([0, 0, 1]);
+      expect(LeafNode.offsetToLocalCoord(2)).toEqual([0, 0, 2]);
+      expect(LeafNode.offsetToLocalCoord(3)).toEqual([0, 0, 3]);
+      expect(LeafNode.offsetToLocalCoord(4)).toEqual([0, 0, 4]);
+      expect(LeafNode.offsetToLocalCoord(5)).toEqual([0, 0, 5]);
+      expect(LeafNode.offsetToLocalCoord(6)).toEqual([0, 0, 6]);
+      expect(LeafNode.offsetToLocalCoord(7)).toEqual([0, 0, 7]);
+
+      expect(LeafNode.offsetToLocalCoord(0 * dim + 0)).toEqual([0, 0, 0]);
+      expect(LeafNode.offsetToLocalCoord(1 * dim + 1)).toEqual([0, 1, 1]);
+      expect(LeafNode.offsetToLocalCoord(2 * dim + 2)).toEqual([0, 2, 2]);
+      expect(LeafNode.offsetToLocalCoord(3 * dim + 3)).toEqual([0, 3, 3]);
+      expect(LeafNode.offsetToLocalCoord(4 * dim + 4)).toEqual([0, 4, 4]);
+      expect(LeafNode.offsetToLocalCoord(5 * dim + 5)).toEqual([0, 5, 5]);
+      expect(LeafNode.offsetToLocalCoord(6 * dim + 6)).toEqual([0, 6, 6]);
+      expect(LeafNode.offsetToLocalCoord(7 * dim + 7)).toEqual([0, 7, 7]);
+
+      expect(LeafNode.offsetToLocalCoord(0 * dimSquare + 0)).toEqual([0, 0, 0]);
+      expect(LeafNode.offsetToLocalCoord(1 * dimSquare + 1)).toEqual([1, 0, 1]);
+      expect(LeafNode.offsetToLocalCoord(2 * dimSquare + 2)).toEqual([2, 0, 2]);
+      expect(LeafNode.offsetToLocalCoord(3 * dimSquare + 3)).toEqual([3, 0, 3]);
+      expect(LeafNode.offsetToLocalCoord(4 * dimSquare + 4)).toEqual([4, 0, 4]);
+      expect(LeafNode.offsetToLocalCoord(5 * dimSquare + 5)).toEqual([5, 0, 5]);
+      expect(LeafNode.offsetToLocalCoord(6 * dimSquare + 6)).toEqual([6, 0, 6]);
+      expect(LeafNode.offsetToLocalCoord(7 * dimSquare + 7)).toEqual([7, 0, 7]);
+
+      expect(LeafNode.offsetToLocalCoord(0 * dimSquare + 0 * dim + 0)).toEqual([0, 0, 0]);
+      expect(LeafNode.offsetToLocalCoord(1 * dimSquare + 1 * dim + 1)).toEqual([1, 1, 1]);
+      expect(LeafNode.offsetToLocalCoord(2 * dimSquare + 2 * dim + 2)).toEqual([2, 2, 2]);
+      expect(LeafNode.offsetToLocalCoord(3 * dimSquare + 3 * dim + 3)).toEqual([3, 3, 3]);
+      expect(LeafNode.offsetToLocalCoord(4 * dimSquare + 4 * dim + 4)).toEqual([4, 4, 4]);
+      expect(LeafNode.offsetToLocalCoord(5 * dimSquare + 5 * dim + 5)).toEqual([5, 5, 5]);
+      expect(LeafNode.offsetToLocalCoord(6 * dimSquare + 6 * dim + 6)).toEqual([6, 6, 6]);
+      expect(LeafNode.offsetToLocalCoord(7 * dimSquare + 7 * dim + 7)).toEqual([7, 7, 7]);
+    });
+  });
 });

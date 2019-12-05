@@ -27,6 +27,9 @@ export class LeafNode<T> implements HashableNode<T> {
   // Global grid index coordinates (x,y,z) of the local origin of this node
   private origin: Coord;
 
+  /**
+   * Return the linear table offset of the given global or local coordinates.
+   */
   static coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (
@@ -35,6 +38,23 @@ export class LeafNode<T> implements HashableNode<T> {
       (xyz[2] & LeafNode.DIM_MAX_INDEX)
     );
     // tslint:enable:no-bitwise
+  }
+
+  /**
+   * Return the local coordinates for a linear table offset,
+   * where offset 0 has coordinates (0, 0, 0).
+   */
+  static offsetToLocalCoord(i: Index): Coord {
+    const xyz: Coord = [0, 0, 0];
+
+    // tslint:disable:no-bitwise
+    xyz[0] = i >> (2 * LeafNode.LOG2DIM);
+    i &= (1 << (2 * LeafNode.LOG2DIM)) - 1;
+    xyz[1] = i >> LeafNode.LOG2DIM;
+    xyz[2] = i & ((1 << LeafNode.LOG2DIM) - 1);
+    // tslint:enable:no-bitwise
+
+    return xyz;
   }
 
   /**
