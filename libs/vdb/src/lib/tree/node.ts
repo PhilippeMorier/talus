@@ -1,7 +1,7 @@
 import { Coord } from '../math/coord';
 import { ValueAccessor3 } from './value-accessor';
 
-export interface Node<T> {
+export interface Node<T> extends IterableNode<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
@@ -31,4 +31,20 @@ export interface HashableNode<T> extends Node<T> {
    * @note Used internally by ValueAccessor.
    */
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T;
+
+  /**
+   * Change the value of the voxel at the given coordinates and mark it as active.
+   * If necessary, update the accessor with pointers to the nodes along the path
+   * from the root node to the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void;
+}
+
+export interface IterableNode<T> {
+  /**
+   * Iterator for visiting all active voxels. I.e. only values from `LeafNode`'s are yielded
+   * and no values from tiles.
+   */
+  beginVoxelOn(): IterableIterator<T>;
 }

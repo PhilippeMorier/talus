@@ -6,14 +6,12 @@ import { HashableNode } from './node';
 import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';
 
-type ChildNodeType<T> = InternalNode1<T> | LeafNode<T>;
-
 abstract class InternalNode<T> implements HashableNode<T> {
   protected readonly childMask: NodeMask;
   protected readonly valueMask: NodeMask;
   protected readonly origin: Coord;
 
-  protected nodes: NodeUnion<T, ChildNodeType<T>>[];
+  protected nodes: NodeUnion<T, HashableNode<T>>[];
 
   protected constructor(
     numValues: number,
@@ -37,7 +35,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
       this.valueMask.setAllOn();
     }
 
-    this.nodes = createDenseArray<NodeUnion<T, ChildNodeType<T>>>(
+    this.nodes = createDenseArray<NodeUnion<T, HashableNode<T>>>(
       numValues,
       () => new NodeUnion(value),
     );
@@ -75,7 +73,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
   abstract coordToOffset(xyz: Coord): Index;
 
-  abstract createChildNode(xyz: Coord, value?: T, active?: boolean): ChildNodeType<T>;
+  abstract createChildNode(xyz: Coord, value?: T, active?: boolean): HashableNode<T>;
 
   abstract onVoxelCount(): number;
 
@@ -150,7 +148,15 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return this.nodes[i].getChild().isValueOn(xyz);
   }
 
-  private setChildNode(i: Index, child: ChildNodeType<T>): void {
+  *beginVoxelOn(): IterableIterator<T> {
+    for (const index of this.childMask.beginOn()) {
+      const child = this.nodes[index].getChild();
+
+      yield* child.beginVoxelOn();
+    }
+  }
+
+  private setChildNode(i: Index, child: HashableNode<T>): void {
     if (this.childMask.isOn(i)) {
       throw new Error('Child is already on.');
     }
@@ -160,7 +166,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     this.nodes[i].setChild(child);
   }
 
-  private getChildNode(i: Index): ChildNodeType<T> {
+  private getChildNode(i: Index): HashableNode<T> {
     if (this.childMask.isOff(i)) {
       throw new Error('Child is off.');
     }

@@ -78,4 +78,23 @@ describe('LeafNode', () => {
       expect(onCounter).toEqual(Math.pow(LeafNode.DIM, 3));
     });
   });
+
+  describe('beginVoxelOn()', () => {
+    it('should iterate over all activated voxels', () => {
+      const leaf = new LeafNode<number>([0, 0, 0]);
+      const expectedValues = [0, 1, 2, 3];
+      leaf.setValueOn([0, 0, 0], expectedValues[0]);
+      leaf.setValueOn([0, 0, 1], expectedValues[1]);
+      leaf.setValueOn([0, 2, 0], expectedValues[2]);
+      leaf.setValueOn([3, 0, 0], expectedValues[3]);
+
+      let counter = 0;
+      for (const value of leaf.beginVoxelOn()) {
+        expect(value).toEqual(expectedValues[counter]);
+        counter++;
+      }
+
+      expect(counter).toEqual(expectedValues.length);
+    });
+  });
 });

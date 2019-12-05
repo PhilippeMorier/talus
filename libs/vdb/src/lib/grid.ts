@@ -1,4 +1,5 @@
 import { ValueType } from './tree/leaf-node';
+import { IterableNode } from './tree/node';
 import { Tree } from './tree/tree';
 import { ValueAccessor3 } from './tree/value-accessor';
 
@@ -15,7 +16,7 @@ import { ValueAccessor3 } from './tree/value-accessor';
  *
  *  Source: https://www.openvdb.org/documentation/doxygen/overview.html
  */
-export class Grid<T = ValueType> {
+export class Grid<T = ValueType> implements IterableNode<T> {
   readonly tree: Tree<T>;
 
   constructor(background: T) {
@@ -31,5 +32,9 @@ export class Grid<T = ValueType> {
 
   get background(): T {
     return this.tree.background;
+  }
+
+  beginVoxelOn(): IterableIterator<T> {
+    return this.tree.beginVoxelOn();
   }
 }

@@ -92,4 +92,10 @@ export class LeafNode<T> implements HashableNode<T> {
   setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
     this.setValueOn(xyz, value);
   }
+
+  *beginVoxelOn(): IterableIterator<T> {
+    for (const index of this.valueMask.beginOn()) {
+      yield this.buffer.getValue(index);
+    }
+  }
 }

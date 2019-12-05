@@ -30,4 +30,8 @@ export class Tree<T> implements Node<T> {
   setValueOn(xyz: Coord, value: T): void {
     this.root.setValueOn(xyz, value);
   }
+
+  beginVoxelOn(): IterableIterator<T> {
+    return this.root.beginVoxelOn();
+  }
 }
