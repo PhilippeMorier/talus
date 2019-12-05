@@ -7,38 +7,18 @@ import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';
 
 abstract class InternalNode<T> implements HashableNode<T> {
-  protected readonly childMask: NodeMask;
-  protected readonly valueMask: NodeMask;
-  protected readonly origin: Coord;
+  protected childMask: NodeMask;
+  protected valueMask: NodeMask;
+  protected origin: Coord;
 
   protected nodes: NodeUnion<T, HashableNode<T>>[];
 
-  protected constructor(
-    numValues: number,
-    childNodeDim: number,
-    xyz: Coord,
-    value?: T,
-    active: boolean = false,
-  ) {
-    this.childMask = new NodeMask(numValues);
-    this.valueMask = new NodeMask(numValues);
-
-    // tslint:disable:no-bitwise
-    this.origin = [
-      xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
-    ];
-    // tslint:enable:no-bitwise
-
-    if (active) {
-      this.valueMask.setAllOn();
+  constructor(xyz: Coord, value?: T, active: boolean = false) {
+    if (this instanceof InternalNode1) {
+      this.initializeInternalNode1(xyz, value, active);
+    } else if (this instanceof InternalNode2) {
+      this.initializeInternalNode2(xyz, value, active);
     }
-
-    this.nodes = createDenseArray<NodeUnion<T, HashableNode<T>>>(
-      numValues,
-      () => new NodeUnion(value),
-    );
   }
 
   protected calcCoordToOffset(
@@ -156,6 +136,54 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
+  protected initializeInternalNode1(xyz: Coord, value?: T, active: boolean = false): void {
+    this.initialize(
+      InternalNode1.NUM_VALUES,
+      InternalNode1.DIM_MAX_INDEX_INVERTED,
+      xyz,
+      value,
+      active,
+    );
+  }
+
+  protected initializeInternalNode2(xyz: Coord, value?: T, active: boolean = false): void {
+    this.initialize(
+      InternalNode2.NUM_VALUES,
+      InternalNode2.DIM_MAX_INDEX_INVERTED,
+      xyz,
+      value,
+      active,
+    );
+  }
+
+  private initialize(
+    numValues: number,
+    dimMaxIndexInverted: number,
+    xyz: Coord,
+    value?: T,
+    active: boolean = false,
+  ): void {
+    this.childMask = new NodeMask(numValues);
+    this.valueMask = new NodeMask(numValues);
+
+    // tslint:disable:no-bitwise
+    this.origin = [
+      xyz[0] & dimMaxIndexInverted,
+      xyz[1] & dimMaxIndexInverted,
+      xyz[2] & dimMaxIndexInverted,
+    ];
+    // tslint:enable:no-bitwise
+
+    if (active) {
+      this.valueMask.setAllOn();
+    }
+
+    this.nodes = createDenseArray<NodeUnion<T, HashableNode<T>>>(
+      numValues,
+      () => new NodeUnion(value),
+    );
+  }
+
   private setChildNode(i: Index, child: HashableNode<T>): void {
     if (this.childMask.isOn(i)) {
       throw new Error('Child is already on.');
@@ -186,10 +214,6 @@ export class InternalNode1<T> extends InternalNode<T> {
   static readonly NUM_VOXELS = 1 << (3 * InternalNode1.TOTAL); // total voxel count represented by this node
   // tslint:enable:no-bitwise
 
-  constructor(xyz: Coord, value?: T, active: boolean = false) {
-    super(InternalNode1.NUM_VALUES, LeafNode.DIM, xyz, value, active);
-  }
-
   createChildNode(xyz: [number, number, number], value?: T, active?: boolean): LeafNode<T> {
     return new LeafNode(xyz, value, active);
   }
@@ -216,10 +240,6 @@ export class InternalNode2<T> extends InternalNode<T> {
   // static readonly NUM_VOXELS = 1 << (3 * InternalNode2.TOTAL); // total voxel count represented by this node
   static readonly NUM_VOXELS = Math.pow(2, 3 * InternalNode2.TOTAL);
   // tslint:enable:no-bitwise
-
-  constructor(xyz: Coord, value?: T, active: boolean = false) {
-    super(InternalNode2.NUM_VALUES, InternalNode1.DIM, xyz, value, active);
-  }
 
   createChildNode(xyz: [number, number, number], value?: T, active?: boolean): InternalNode1<T> {
     return new InternalNode1(xyz, value, active);
