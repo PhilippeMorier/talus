@@ -65,15 +65,15 @@ export function gridToMesh(grid: Grid): MeshData {
 
     vertexCount += 8;
 
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
 
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
-    mesh.colors.push(1, 0, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(0, 1, 0, 1);
   }
 
   return mesh;
