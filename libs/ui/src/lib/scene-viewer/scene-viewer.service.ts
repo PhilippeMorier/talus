@@ -8,9 +8,12 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
+import { Grid, gridToMesh } from '@talus/vdb';
 import { Subject } from 'rxjs';
 
 @Injectable()
@@ -64,6 +67,8 @@ export class SceneViewerService {
     this.createLight();
 
     this.registerPointerPick();
+
+    this.addGrid();
   }
 
   startRendering(): void {
@@ -97,7 +102,7 @@ export class SceneViewerService {
     camera.angularSensibilityY = 100;
 
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(50, 50, -50));
+    camera.setPosition(new Vector3(20, 20, -20));
   }
 
   private createLight(): void {
@@ -109,5 +114,29 @@ export class SceneViewerService {
       this.pointerPick$.next(event);
       this.meshPick$.next(pickInfo.pickedMesh);
     };
+  }
+
+  private addGrid(): void {
+    const grid = new Grid(0);
+    const accessor = grid.getAccessor();
+
+    for (let x = -10; x < 10; x++) {
+      for (let z = -10; z < 10; z++) {
+        accessor.setValue([x, Math.sin(z / 4) * 10, z], 1);
+      }
+    }
+
+    const mesh = gridToMesh(grid);
+
+    const gridMesh = new Mesh('grid', this.scene);
+    const data = new VertexData();
+
+    data.colors = mesh.colors;
+    data.indices = mesh.indices;
+    data.normals = mesh.normals;
+    data.positions = mesh.positions;
+
+    data.applyToMesh(gridMesh);
+    gridMesh.convertToFlatShadedMesh();
   }
 }
