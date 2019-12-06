@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
-import '@babylonjs/core/Rendering/edgesRenderer';
+// import '@babylonjs/core/Rendering/edgesRenderer';
+import '@babylonjs/core/Rendering/outlineRenderer';
 
 @Component({
   selector: 'fe-root',
@@ -31,7 +32,7 @@ export class AppComponent {
   }
 
   onMeshPick(mesh: AbstractMesh): void {
-    // mesh.renderOutline = !mesh.renderOutline;
-    mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
+    // mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
+    mesh.renderOutline = !mesh.renderOutline;
   }
 }
