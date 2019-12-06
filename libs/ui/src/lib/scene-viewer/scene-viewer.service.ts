@@ -97,11 +97,11 @@ export class SceneViewerService {
     camera.angularSensibilityY = 100;
 
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(8, 8, 8));
+    camera.setPosition(new Vector3(50, 50, -50));
   }
 
   private createLight(): void {
-    this.light = new HemisphericLight('light', new Vector3(0, 1, 1), this.scene);
+    this.light = new HemisphericLight('light', new Vector3(0, 1, -1), this.scene);
   }
 
   private registerPointerPick(): void {
