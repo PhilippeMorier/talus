@@ -15,7 +15,7 @@ aliases:
 
   - &use_docker_cypress_included
     docker:
-      - image: cypress/included:3.6.1
+      - image: cypress/included:3.7.0
 
   - &workspace ~/talus
 
