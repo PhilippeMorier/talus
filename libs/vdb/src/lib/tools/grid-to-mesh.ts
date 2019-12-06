@@ -14,7 +14,7 @@
  *           0--- X                   0-------1
  */
 
-import { Grid } from '@talus/vdb';
+import { Grid } from '../grid';
 
 export interface MeshData {
   colors: number[];
