@@ -4,7 +4,7 @@ import { UiModule } from './ui.module';
 describe('UiModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiModule]
+      imports: [UiModule],
     }).compileComponents();
   }));
 
