@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { NullEngine } from '@babylonjs/core/Engines/nullEngine';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
@@ -45,12 +45,13 @@ function testEngineFactor(): any {
 @Component({
   selector: 'ui-scene-viewer',
   template: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerMockComponent {}
+export class SceneViewerStubComponent {}
 
 @NgModule({
-  declarations: [SceneViewerMockComponent],
-  exports: [SceneViewerMockComponent],
+  declarations: [SceneViewerStubComponent],
+  exports: [SceneViewerStubComponent],
   imports: [CommonModule],
   providers: [
     { provide: CameraFactory, useValue: testCameraFactory() },

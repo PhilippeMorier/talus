@@ -26,7 +26,6 @@ export interface UiToolbarToolChange<T> extends MatButtonToggleChange {
       </mat-button-toggle>
     </mat-button-toggle-group>
   `,
-  styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {

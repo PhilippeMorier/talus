@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 import '@babylonjs/core/Rendering/outlineRenderer';
@@ -8,7 +8,7 @@ import '@babylonjs/core/Rendering/outlineRenderer';
   template: `
     <ui-sidenav-shell>
       <ui-sidenav-shell-left>
-        Left
+        <fe-tools-panel></fe-tools-panel>
       </ui-sidenav-shell-left>
 
       <ui-sidenav-shell-right>
@@ -23,6 +23,7 @@ import '@babylonjs/core/Rendering/outlineRenderer';
       </ui-sidenav-shell-content>
     </ui-sidenav-shell>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   title = 'frontend';
