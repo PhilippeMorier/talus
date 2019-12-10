@@ -23,4 +23,4 @@ export const reducer = createReducer(
   }),
 );
 
-export const getSelectedToolId = (state: State) => state.selectedToolId;
+export const selectSelectedToolId = (state: State) => state.selectedToolId;

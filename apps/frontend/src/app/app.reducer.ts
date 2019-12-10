@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { Action, ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer } from '@ngrx/store';
 import { environment } from '../environments/environment';
 
 import * as fromToolsPanel from './tools-panel/tools-panel.reducer';
@@ -44,3 +44,15 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
  * that will be composed to form the root meta-reducer.
  */
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [logger] : [];
+
+/**
+ * ToolsPanel reducers
+ */
+export const selectToolsPanelState = createFeatureSelector<State, fromToolsPanel.State>(
+  fromToolsPanel.toolsPanelFeatureKey,
+);
+
+export const selectSelectedToolId = createSelector(
+  selectToolsPanelState,
+  fromToolsPanel.selectSelectedToolId,
+);

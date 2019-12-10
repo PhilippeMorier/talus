@@ -14,7 +14,7 @@ export interface UiToolbarToolChange<T> extends MatButtonToggleChange {
 @Component({
   selector: ' ui-toolbar',
   template: `
-    <mat-button-toggle-group vertical="true" (change)="onChange($event)">
+    <mat-button-toggle-group vertical="true" [value]="selectedToolId" (change)="onChange($event)">
       <mat-button-toggle
         *ngFor="let tool of tools"
         matTooltipPosition="right"
@@ -30,6 +30,8 @@ export interface UiToolbarToolChange<T> extends MatButtonToggleChange {
 })
 export class ToolbarComponent {
   @Input() tools: UiToolbarToolConfig<any>[];
+
+  @Input() selectedToolId: any;
 
   @Output() toolChange = new EventEmitter<UiToolbarToolChange<any>>();
 
