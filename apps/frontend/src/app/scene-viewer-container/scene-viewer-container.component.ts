@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 import '@babylonjs/core/Rendering/outlineRenderer';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../app.reducer';
+import { pointerPick } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -14,8 +17,10 @@ import '@babylonjs/core/Rendering/outlineRenderer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerContainerComponent {
+  constructor(private store: Store<fromApp.State>) {}
+
   onPointerPick(pointerEvent: PointerEvent): void {
-    console.log(pointerEvent.button);
+    this.store.dispatch(pointerPick({ pointerButton: pointerEvent.button }));
   }
 
   onMeshPick(mesh: AbstractMesh): void {
