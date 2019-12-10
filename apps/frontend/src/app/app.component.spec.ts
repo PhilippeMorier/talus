@@ -6,6 +6,13 @@ import { SceneViewerTestModule, SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
 @Component({
+  selector: 'fe-scene-viewer-container',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class SceneViewerContainerStubComponent {}
+
+@Component({
   selector: 'fe-tools-panel',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +22,7 @@ class ToolsPanelStubComponent {}
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent, ToolsPanelStubComponent],
+      declarations: [AppComponent, SceneViewerContainerStubComponent, ToolsPanelStubComponent],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -43,6 +50,8 @@ describe('AppComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
 
     expect(compiled.querySelector('ui-sidenav-shell-left > fe-tools-panel')).not.toBeNull();
-    expect(compiled.querySelector('ui-sidenav-shell-content > ui-scene-viewer')).not.toBeNull();
+    expect(
+      compiled.querySelector('ui-sidenav-shell-content > fe-scene-viewer-container'),
+    ).not.toBeNull();
   });
 });

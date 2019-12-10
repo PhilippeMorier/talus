@@ -3,9 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import { SceneViewerModule, SidenavShellModule } from '@talus/ui';
+import { SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 import { metaReducers, ROOT_REDUCERS } from './app.reducer';
+import { SceneViewerContainerModule } from './scene-viewer-container';
 import { ToolsPanelModule } from './tools-panel/tools-panel.module';
 
 @NgModule({
@@ -31,8 +32,8 @@ import { ToolsPanelModule } from './tools-panel/tools-panel.module';
       },
     }),
 
+    SceneViewerContainerModule,
     SidenavShellModule,
-    SceneViewerModule,
     ToolsPanelModule,
   ],
   providers: [],
