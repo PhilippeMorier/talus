@@ -82,6 +82,7 @@
     "one-line": [true, "check-open-brace", "check-catch", "check-else", "check-whitespace"],
     "ordered-imports": true,
     "prefer-const": true,
+    "prefer-on-push-component-change-detection": true,
     "quotemark": [true, "single"],
     "radix": true,
     "semicolon": [true, "always", "ignore-bound-class-methods"],

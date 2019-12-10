@@ -4,6 +4,8 @@ describe('frontend', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display left side navigation', () => {
-    getSidenavLeft().contains('Left');
+    getSidenavLeft()
+      .get('ui-toolbar')
+      .should('exist');
   });
 });

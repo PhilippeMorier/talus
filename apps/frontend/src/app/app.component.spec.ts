@@ -1,13 +1,21 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SceneViewerTestModule, SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
+@Component({
+  selector: 'fe-tools-panel',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class ToolsPanelStubComponent {}
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [AppComponent, ToolsPanelStubComponent],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -34,7 +42,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
-    expect(compiled.querySelector('ui-sidenav-shell-left').textContent).toContain('Left');
-    expect(compiled.querySelector('ui-sidenav-shell-content > ui-scene-viewer')).toBeDefined();
+    expect(compiled.querySelector('ui-sidenav-shell-left > fe-tools-panel')).not.toBeNull();
+    expect(compiled.querySelector('ui-sidenav-shell-content > ui-scene-viewer')).not.toBeNull();
   });
 });
