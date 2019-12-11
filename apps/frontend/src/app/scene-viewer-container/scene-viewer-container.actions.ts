@@ -1,7 +1,14 @@
 import { createAction, props } from '@ngrx/store';
-import { PointerButton } from './pointer-button.model';
+import { Coord } from '@talus/vdb';
 
-export const pointerPick = createAction(
-  '[SceneViewerContainer] Pointer pick',
-  props<{ pointerButton: PointerButton }>(),
+const actionTypePrefix = '[SceneViewerContainer]';
+
+export const addVoxel = createAction(
+  `${actionTypePrefix} Add voxel`,
+  props<{ position: Coord; value: number }>(),
+);
+
+export const removeVoxel = createAction(
+  `${actionTypePrefix} Remove voxel`,
+  props<{ position: Coord }>(),
 );

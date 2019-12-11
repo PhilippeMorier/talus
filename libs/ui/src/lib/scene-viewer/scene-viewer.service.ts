@@ -7,14 +7,14 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
-import { Grid, gridToMesh } from '@talus/vdb';
+import { Coord, Grid, gridToMesh } from '@talus/vdb';
 import { Subject } from 'rxjs';
+import { PointerButton } from './pointer-button';
 
 @Injectable()
 export class EngineFactory {
@@ -50,8 +50,7 @@ export class CameraFactory {
 export class SceneViewerService {
   scene: Scene;
 
-  pointerPick$ = new Subject<PointerEvent>();
-  meshPick$ = new Subject<AbstractMesh>();
+  pointerPick$ = new Subject<PointerPickInfo>();
 
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
@@ -111,8 +110,13 @@ export class SceneViewerService {
 
   private registerPointerPick(): void {
     this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
-      this.pointerPick$.next(event);
-      this.meshPick$.next(pickInfo.pickedMesh);
+      const info: PointerPickInfo = {
+        pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
+        pointerButton: event.button,
+        normal: vector3ToCoord(pickInfo.getNormal()),
+      };
+
+      this.pointerPick$.next(info);
     };
   }
 
@@ -139,4 +143,14 @@ export class SceneViewerService {
     data.applyToMesh(gridMesh);
     gridMesh.convertToFlatShadedMesh();
   }
+}
+
+function vector3ToCoord(vector: Vector3): Coord {
+  return [vector.x, vector.y, vector.z];
+}
+
+export interface PointerPickInfo {
+  pickedPoint: Coord;
+  pointerButton: PointerButton;
+  normal: Coord;
 }
