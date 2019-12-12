@@ -7,7 +7,6 @@ import { add, Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { GridService } from './grid.service';
 import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
 
 @Component({
@@ -27,7 +26,7 @@ export class SceneViewerContainerComponent {
   selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
   voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
 
-  constructor(private gridService: GridService, private store: Store<fromApp.State>) {}
+  constructor(private store: Store<fromApp.State>) {}
 
   onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);
