@@ -19,7 +19,7 @@ import { Grid } from '../grid';
 export interface MeshData {
   colors: number[];
   indices: number[];
-  normals: number[];
+  // normals: number[];
   positions: number[];
 }
 
@@ -28,7 +28,7 @@ export function gridToMesh(grid: Grid): MeshData {
     positions: [],
     indices: [],
     colors: [],
-    normals: [],
+    // normals: [],
   };
 
   let vertexCount = 0;
@@ -44,14 +44,14 @@ export function gridToMesh(grid: Grid): MeshData {
     mesh.indices.push(...[0, 1, 2, 2, 3, 0].map(i => i + vertexCount)); // Front
     mesh.indices.push(...[4, 5, 6, 6, 7, 4].map(i => i + vertexCount)); // Back
 
-    mesh.normals.push(-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0); // Left
-    mesh.normals.push(1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0); // Right
+    // mesh.normals.push(-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0); // Left
+    // mesh.normals.push(1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0); // Right
 
-    mesh.normals.push(0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0); // Bottom
-    mesh.normals.push(0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0); // Top
+    // mesh.normals.push(0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0); // Bottom
+    // mesh.normals.push(0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0); // Top
 
-    mesh.normals.push(0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1); // Front
-    mesh.normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1); // Back
+    // mesh.normals.push(0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1); // Front
+    // mesh.normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1); // Back
 
     mesh.positions.push(x, y, z); // 0
     mesh.positions.push(x + 1, y, z); // 1

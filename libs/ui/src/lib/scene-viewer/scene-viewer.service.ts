@@ -7,14 +7,14 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
-import { Grid, gridToMesh } from '@talus/vdb';
+import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
+import { PointerButton } from './pointer-button';
 
 @Injectable()
 export class EngineFactory {
@@ -46,12 +46,16 @@ export class CameraFactory {
   }
 }
 
+/**
+ * This service allows to set a new mesh for `SceneViewerComponent` to render. This service is
+ * provided on module level. Therefore, only one `SceneViewerComponent` at the time is supported.
+ */
 @Injectable()
 export class SceneViewerService {
   scene: Scene;
+  gridMesh: Mesh;
 
-  pointerPick$ = new Subject<PointerEvent>();
-  meshPick$ = new Subject<AbstractMesh>();
+  pointerPick$ = new Subject<PointerPickInfo>();
 
   private engine: Engine;
   // @ts-ignore: noUnusedLocals
@@ -61,14 +65,17 @@ export class SceneViewerService {
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
+    this.scene = new Scene(this.engine);
 
-    this.createScene();
     this.createCamera();
     this.createLight();
 
     this.registerPointerPick();
 
-    this.addGrid();
+    const box = MeshBuilder.CreateBox('box', {}, this.scene);
+    box.position.x = 0.5;
+    box.position.y = 0.5;
+    box.position.z = 0.5;
   }
 
   startRendering(): void {
@@ -79,10 +86,18 @@ export class SceneViewerService {
     this.engine.resize();
   }
 
-  private createScene(): void {
-    this.scene = new Scene(this.engine);
+  updateGridMesh(mesh: MeshData): void {
+    this.scene.removeMesh(this.gridMesh);
 
-    MeshBuilder.CreateBox('box', {}, this.scene);
+    this.gridMesh = new Mesh('grid', this.scene);
+    const data = new VertexData();
+
+    data.colors = mesh.colors;
+    data.indices = mesh.indices;
+    data.positions = mesh.positions;
+
+    data.applyToMesh(this.gridMesh);
+    this.gridMesh.convertToFlatShadedMesh();
   }
 
   private createCamera(): void {
@@ -111,32 +126,23 @@ export class SceneViewerService {
 
   private registerPointerPick(): void {
     this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
-      this.pointerPick$.next(event);
-      this.meshPick$.next(pickInfo.pickedMesh);
+      const info: PointerPickInfo = {
+        pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
+        pointerButton: event.button,
+        normal: vector3ToCoord(pickInfo.getNormal()),
+      };
+
+      this.pointerPick$.next(info);
     };
   }
+}
 
-  private addGrid(): void {
-    const grid = new Grid(0);
-    const accessor = grid.getAccessor();
+function vector3ToCoord(vector: Vector3): Coord {
+  return [vector.x, vector.y, vector.z];
+}
 
-    for (let x = -10; x < 10; x++) {
-      for (let z = -10; z < 10; z++) {
-        accessor.setValue([x, Math.sin(z / 4) * 10, z], 1);
-      }
-    }
-
-    const mesh = gridToMesh(grid);
-
-    const gridMesh = new Mesh('grid', this.scene);
-    const data = new VertexData();
-
-    data.colors = mesh.colors;
-    data.indices = mesh.indices;
-    data.normals = mesh.normals;
-    data.positions = mesh.positions;
-
-    data.applyToMesh(gridMesh);
-    gridMesh.convertToFlatShadedMesh();
-  }
+export interface PointerPickInfo {
+  pickedPoint: Coord;
+  pointerButton: PointerButton;
+  normal: Coord;
 }

@@ -22,6 +22,5 @@ describe('gridToMesh()', () => {
     expect(meshData.positions.length).toEqual(voxels * corners * xyz);
     expect(meshData.colors.length).toEqual(voxels * corners * rgba);
     expect(meshData.indices.length).toEqual(voxels * triangles * xyz);
-    expect(meshData.normals.length).toEqual(voxels * triangles * 3 * xyz);
   });
 });

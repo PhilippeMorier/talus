@@ -1,7 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
-// import '@babylonjs/core/Rendering/edgesRenderer';
-import '@babylonjs/core/Rendering/outlineRenderer';
 
 @Component({
   selector: 'fe-root',
@@ -16,10 +13,7 @@ import '@babylonjs/core/Rendering/outlineRenderer';
       </ui-sidenav-shell-right>
 
       <ui-sidenav-shell-content>
-        <ui-scene-viewer
-          (meshPick)="onMeshPick($event)"
-          (pointerPick)="onPointerPick($event)"
-        ></ui-scene-viewer>
+        <fe-scene-viewer-container></fe-scene-viewer-container>
       </ui-sidenav-shell-content>
     </ui-sidenav-shell>
   `,
@@ -27,13 +21,4 @@ import '@babylonjs/core/Rendering/outlineRenderer';
 })
 export class AppComponent {
   title = 'frontend';
-
-  onPointerPick(pointerEvent: PointerEvent): void {
-    console.log(pointerEvent.button);
-  }
-
-  onMeshPick(mesh: AbstractMesh): void {
-    // mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
-    mesh.renderOutline = !mesh.renderOutline;
-  }
 }

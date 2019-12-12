@@ -75,6 +75,38 @@ export class ValueAccessor3<T> {
       this.tree.root.setValueAndCache(xyz, value, this);
     }
   }
+  setValueOn(xyz: Coord, value: T): void {
+    this.setValue(xyz, value);
+  }
+
+  /**
+   * Set the value of the voxel at the given coordinates and mark the voxel as inactive.
+   */
+  setValueOff(xyz: Coord, value: T): void {
+    if (this.isHashed0(xyz)) {
+      this.leafNode.setValueOffAndCache(xyz, value, this);
+    } else if (this.isHashed1(xyz)) {
+      this.internalNode1.setValueOffAndCache(xyz, value, this);
+    } else if (this.isHashed2(xyz)) {
+      this.internalNode2.setValueOffAndCache(xyz, value, this);
+    } else {
+      this.tree.root.setValueOffAndCache(xyz, value, this);
+    }
+  }
+
+  /**
+   * Return the active state of the voxel at the given coordinates.
+   */
+  isValueOn(xyz: Coord): boolean {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode.isValueOnAndCache(xyz, this);
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.isValueOnAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.isValueOnAndCache(xyz, this);
+    }
+    return this.tree.root.isValueOnAndCache(xyz, this);
+  }
 
   // tslint:disable:no-bitwise
   insert(xyz: Coord, node: HashableNode<T>): void {

@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { Tool } from './tool.model';
 import { selectTool } from './tools-panel.actions';
 
-export const toolsPanelFeatureKey = 'toolsPanel';
+export const featureKey = 'toolsPanel';
 
 export interface State {
   selectedToolId: Tool;
@@ -23,4 +23,4 @@ export const reducer = createReducer(
   }),
 );
 
-export const getSelectedToolId = (state: State) => state.selectedToolId;
+export const selectSelectedToolId = (state: State) => state.selectedToolId;

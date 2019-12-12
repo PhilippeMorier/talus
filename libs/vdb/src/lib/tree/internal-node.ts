@@ -109,6 +109,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
       const active = this.valueMask.isOn(i); // tile's active state
 
       if (!active || node.getValue() !== value) {
+        // If the voxel belongs to a tile that is either inactive or that
+        // has a constant value that is different from the one provided,
+        // a child subtree must be constructed.
         hasChild = true;
         this.setChildNode(i, this.createChildNode(xyz, node.getValue(), active));
       }
@@ -120,6 +123,29 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
+  setValueOffAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+    let hasChild = this.childMask.isOn(i);
+
+    if (!hasChild) {
+      const active = this.valueMask.isOn(i); // tile's active state
+
+      if (active || node.getValue() !== value) {
+        // If the voxel belongs to a tile that is either active or that
+        // has a constant value that is different from the one provided,
+        // a child subtree must be constructed.
+        hasChild = true;
+        this.setChildNode(i, this.createChildNode(xyz, node.getValue(), active));
+      }
+    }
+
+    if (hasChild) {
+      accessor.insert(xyz, node.getChild());
+      node.getChild().setValueOffAndCache(xyz, value, accessor);
+    }
+  }
+
   isValueOn(xyz: Coord): boolean {
     const i: Index = this.coordToOffset(xyz);
     if (this.childMask.isOff(i)) {
@@ -127,6 +153,16 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     return this.nodes[i].getChild().isValueOn(xyz);
+  }
+
+  isValueOnAndCache(xyz: Coord, accessor: ValueAccessor3<T>): boolean {
+    const i: Index = this.coordToOffset(xyz);
+    if (this.childMask.isOff(i)) {
+      return this.valueMask.isOn(i);
+    }
+
+    accessor.insert(xyz, this.nodes[i].getChild());
+    return this.nodes[i].getChild().isValueOnAndCache(xyz, accessor);
   }
 
   *beginVoxelOn(): IterableIterator<Voxel<T>> {

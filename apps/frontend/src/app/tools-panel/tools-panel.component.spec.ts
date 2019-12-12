@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { ROOT_REDUCERS, State } from '../app.reducer';
 import { ToolsPanelComponent } from './tools-panel.component';
 import { ToolsPanelModule } from './tools-panel.module';
-import { initialState, State } from './tools-panel.reducer';
 
 describe('ToolsPanelComponent', () => {
   let component: ToolsPanelComponent;
@@ -14,8 +14,17 @@ describe('ToolsPanelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [ToolsPanelModule],
-      providers: [provideMockStore({ initialState })],
+      imports: [
+        ToolsPanelModule,
+        StoreModule.forRoot(ROOT_REDUCERS, {
+          runtimeChecks: {
+            strictStateImmutability: true,
+            strictActionImmutability: true,
+            strictStateSerializability: true,
+            strictActionSerializability: true,
+          },
+        }),
+      ],
     }).compileComponents();
 
     store = TestBed.get<Store<State>>(Store);

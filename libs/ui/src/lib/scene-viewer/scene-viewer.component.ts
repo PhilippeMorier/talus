@@ -15,14 +15,12 @@ import { SceneViewerService } from './scene-viewer.service';
     <canvas #canvas></canvas>
   `,
   styleUrls: ['./scene-viewer.component.scss'],
-  providers: [SceneViewerService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>;
 
   @Output() pointerPick = this.sceneViewerService.pointerPick$;
-  @Output() meshPick = this.sceneViewerService.meshPick$;
 
   constructor(private sceneViewerService: SceneViewerService) {}
 
