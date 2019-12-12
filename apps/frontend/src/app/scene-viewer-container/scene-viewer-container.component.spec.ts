@@ -24,6 +24,7 @@ describe('SceneViewerContainerComponent', () => {
   let component: SceneViewerContainerComponent;
   let stubComponent: SceneViewerStubComponent;
   let fixture: ComponentFixture<SceneViewerContainerComponent>;
+
   let mockStore: MockStore<fromApp.State>;
   let mockSelectedToolIdSelector: MemoizedSelector<fromApp.State, Tool>;
 
@@ -68,7 +69,7 @@ describe('SceneViewerContainerComponent', () => {
   });
 
   it('should dispatch `addVoxel` action', () => {
-    const action = addVoxel({ position: [1, 1, 2], value: 42 });
+    const action = addVoxel({ position: [1, 1, 1], value: 42 });
 
     stubComponent.pointerPick.next({
       pickedPoint: [1, 1, 1],
