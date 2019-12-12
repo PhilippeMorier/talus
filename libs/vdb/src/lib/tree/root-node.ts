@@ -77,8 +77,8 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
-    const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
+    const struct = this.findCoord(xyz);
 
     if (!struct) {
       child = new InternalNode2(xyz, this._background);
@@ -96,6 +96,28 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
+  setValueOffAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
+    let child: HashableNode<T>;
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      if (this._background !== value) {
+        child = new InternalNode2(xyz, this._background);
+        this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+      }
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else if (struct.isTileOn() || struct.getTile().value !== value) {
+      child = new InternalNode2(xyz, struct.getTile().value, struct.isTileOn());
+      struct.setChild(child);
+    }
+
+    if (child) {
+      accessor.insert(xyz, child);
+      child.setValueOffAndCache(xyz, value, accessor);
+    }
+  }
+
   isValueOn(xyz: Coord): boolean {
     const struct = this.findCoord(xyz);
 
@@ -104,6 +126,22 @@ export class RootNode<T> implements HashableNode<T> {
     }
 
     return struct.isTileOn() ? true : struct.getChild().isValueOn(xyz);
+  }
+
+  isValueOnAndCache(xyz: Coord, accessor: ValueAccessor3<T>): boolean {
+    const struct = this.findCoord(xyz);
+
+    if (!struct || struct.isTileOff()) {
+      return false;
+    }
+
+    if (struct.isTileOn()) {
+      return true;
+    }
+
+    accessor.insert(xyz, struct.getChild());
+
+    return struct.getChild().isValueOnAndCache(xyz, accessor);
   }
 
   onVoxelCount(): number {

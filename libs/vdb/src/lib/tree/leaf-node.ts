@@ -76,11 +76,24 @@ export class LeafNode<T> implements HashableNode<T> {
     // tslint:enable:no-bitwise
   }
 
+  /**
+   * Set the value of the voxel at the given coordinates and mark the voxel as active.
+   */
   setValueOn(xyz: Coord, value: T): void {
     const offset = LeafNode.coordToOffset(xyz);
 
     this.buffer.setValue(offset, value);
     this.valueMask.setOn(offset);
+  }
+
+  /**
+   * Set the value of the voxel at the given coordinates and mark the voxel as inactive.
+   */
+  setValueOff(xyz: Coord, value: T): void {
+    const offset = LeafNode.coordToOffset(xyz);
+
+    this.buffer.setValue(offset, value);
+    this.valueMask.setOff(offset);
   }
 
   /**
@@ -112,6 +125,22 @@ export class LeafNode<T> implements HashableNode<T> {
    */
   setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
     this.setValueOn(xyz, value);
+  }
+
+  /**
+   * @brief Change the value of the voxel at the given coordinates and mark it as inactive.
+   * @note Used internally by ValueAccessor.
+   */
+  setValueOffAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+    this.setValueOff(xyz, value);
+  }
+
+  /**
+   * @brief Return `true` if the voxel at the given coordinates is active.
+   * @note Used internally by ValueAccessor.
+   */
+  isValueOnAndCache(xyz: Coord, _: ValueAccessor3<T>): boolean {
+    return this.isValueOn(xyz);
   }
 
   /**
