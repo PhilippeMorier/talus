@@ -12,7 +12,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
-import { Coord, Grid, gridToMesh } from '@talus/vdb';
+import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { PointerButton } from './pointer-button';
 
@@ -46,9 +46,14 @@ export class CameraFactory {
   }
 }
 
+/**
+ * This service allows to set a new mesh for `SceneViewerComponent` to render. This service is
+ * provided on module level. Therefore, only one `SceneViewerComponent` at the time is supported.
+ */
 @Injectable()
 export class SceneViewerService {
   scene: Scene;
+  gridMesh: Mesh;
 
   pointerPick$ = new Subject<PointerPickInfo>();
 
@@ -60,14 +65,17 @@ export class SceneViewerService {
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
+    this.scene = new Scene(this.engine);
 
-    this.createScene();
     this.createCamera();
     this.createLight();
 
     this.registerPointerPick();
 
-    this.addGrid();
+    const box = MeshBuilder.CreateBox('box', {}, this.scene);
+    box.position.x = 0.5;
+    box.position.y = 0.5;
+    box.position.z = 0.5;
   }
 
   startRendering(): void {
@@ -78,10 +86,18 @@ export class SceneViewerService {
     this.engine.resize();
   }
 
-  private createScene(): void {
-    this.scene = new Scene(this.engine);
+  updateGridMesh(mesh: MeshData): void {
+    this.scene.removeMesh(this.gridMesh);
 
-    MeshBuilder.CreateBox('box', {}, this.scene);
+    this.gridMesh = new Mesh('grid', this.scene);
+    const data = new VertexData();
+
+    data.colors = mesh.colors;
+    data.indices = mesh.indices;
+    data.positions = mesh.positions;
+
+    data.applyToMesh(this.gridMesh);
+    this.gridMesh.convertToFlatShadedMesh();
   }
 
   private createCamera(): void {
@@ -118,30 +134,6 @@ export class SceneViewerService {
 
       this.pointerPick$.next(info);
     };
-  }
-
-  private addGrid(): void {
-    const grid = new Grid(0);
-    const accessor = grid.getAccessor();
-
-    for (let x = -10; x < 10; x++) {
-      for (let z = -10; z < 10; z++) {
-        accessor.setValue([x, Math.sin(z / 4) * 10, z], 1);
-      }
-    }
-
-    const mesh = gridToMesh(grid);
-
-    const gridMesh = new Mesh('grid', this.scene);
-    const data = new VertexData();
-
-    data.colors = mesh.colors;
-    data.indices = mesh.indices;
-    data.normals = mesh.normals;
-    data.positions = mesh.positions;
-
-    data.applyToMesh(gridMesh);
-    gridMesh.convertToFlatShadedMesh();
   }
 }
 

@@ -46,6 +46,7 @@
     "@angular/router": "8.2.14",
     "@babylonjs/core": "4.1.0-beta.9",
     "@babylonjs/materials": "4.1.0-beta.9",
+    "@ngrx/effects": "8.5.2",
     "@ngrx/store": "8.5.2",
     "@nrwl/angular": "8.9.0",
     "core-js": "3.4.8",

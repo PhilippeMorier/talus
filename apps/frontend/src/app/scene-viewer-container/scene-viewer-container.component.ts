@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { PointerButton, PointerPickInfo } from '@talus/ui';
+import { PointerButton, PointerPickInfo, SceneViewerComponent } from '@talus/ui';
 import { add, Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
+import { GridService } from './grid.service';
 import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
 
 @Component({
@@ -20,11 +21,13 @@ import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerContainerComponent {
-  private selectedToolId$: Observable<Tool>;
+  @ViewChild(SceneViewerComponent, { static: false })
+  private sceneViewerComponent: SceneViewerComponent;
 
-  constructor(private store: Store<fromApp.State>) {
-    this.selectedToolId$ = store.pipe(select(fromApp.selectSelectedToolId));
-  }
+  selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
+  voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
+
+  constructor(private gridService: GridService, private store: Store<fromApp.State>) {}
 
   onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);
@@ -42,7 +45,7 @@ export class SceneViewerContainerComponent {
 
     switch (selectedToolId) {
       case Tool.AddVoxel:
-        this.store.dispatch(addVoxel({ position: this.calcNewVoxelPosition(pickInfo), value: 42 }));
+        this.store.dispatch(addVoxel({ position: pickInfo.pickedPoint, value: 42 }));
         break;
       case Tool.RemoveVoxel:
         this.store.dispatch(removeVoxel({ position: pickInfo.pickedPoint }));

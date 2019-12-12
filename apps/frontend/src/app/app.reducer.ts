@@ -8,11 +8,12 @@ import {
   MetaReducer,
 } from '@ngrx/store';
 import { environment } from '../environments/environment';
-
+import * as fromSceneViewerContainer from './scene-viewer-container/scene-viewer-container.reducer';
 import * as fromToolsPanel from './tools-panel/tools-panel.reducer';
 
 export interface State {
-  [fromToolsPanel.toolsPanelFeatureKey]: fromToolsPanel.State;
+  [fromToolsPanel.featureKey]: fromToolsPanel.State;
+  [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.State;
 }
 
 /**
@@ -26,7 +27,8 @@ export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<State, Action>>
   'Root reducers token',
   {
     factory: () => ({
-      [fromToolsPanel.toolsPanelFeatureKey]: fromToolsPanel.reducer,
+      [fromToolsPanel.featureKey]: fromToolsPanel.reducer,
+      [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.reducer,
     }),
   },
 );
@@ -53,10 +55,23 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [logger] : [];
 
 /**
+ * SceneViewerContainer reducers
+ */
+export const selectSceneViewerContainerState = createFeatureSelector<
+  State,
+  fromSceneViewerContainer.State
+>(fromSceneViewerContainer.featureKey);
+
+export const selectVoxelCount = createSelector(
+  selectSceneViewerContainerState,
+  fromSceneViewerContainer.selectVoxelCount,
+);
+
+/**
  * ToolsPanel reducers
  */
 export const selectToolsPanelState = createFeatureSelector<State, fromToolsPanel.State>(
-  fromToolsPanel.toolsPanelFeatureKey,
+  fromToolsPanel.featureKey,
 );
 
 export const selectSelectedToolId = createSelector(

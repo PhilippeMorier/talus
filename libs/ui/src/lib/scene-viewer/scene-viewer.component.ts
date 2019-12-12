@@ -15,7 +15,6 @@ import { SceneViewerService } from './scene-viewer.service';
     <canvas #canvas></canvas>
   `,
   styleUrls: ['./scene-viewer.component.scss'],
-  providers: [SceneViewerService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerComponent implements OnInit {
