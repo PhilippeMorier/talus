@@ -18,7 +18,7 @@ import { selectTool } from './tools-panel.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolsPanelComponent {
-  private selectedToolId$: Observable<Tool>;
+  selectedToolId$: Observable<Tool>;
 
   tools: UiToolbarToolConfig<Tool>[] = [
     {
