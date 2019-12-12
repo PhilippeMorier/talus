@@ -17,7 +17,7 @@ export class GridService {
   }
 
   removeVoxel(xyz: Coord): void {
-    // this.accessor.setValueOff(xyz, this.grid.background);
+    this.accessor.setValueOff(xyz, this.grid.background);
   }
 
   computeMesh(): MeshData {
