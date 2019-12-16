@@ -126,6 +126,9 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
   installed in order to be able to run Cypress locally.
 - `yarn e2e <frontend-e2e>`
 
+When updating Cypress version in `package.json` the version in `.circleci/config.yml` needs to be
+updated as well.
+
 ## Nx
 
 ### Update
