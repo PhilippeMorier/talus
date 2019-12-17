@@ -17,6 +17,23 @@ describe('RootNode', () => {
 
       expect(root.getValue([1, 1, 1])).toEqual(-1);
     });
+
+    it('should set value when given float coordinates', () => {
+      const root = new RootNode(-1);
+
+      root.setValueOn([0, 0, 0.1], 1);
+      root.setValueOn([0, 1.5, 0], 5);
+      root.setValueOn([2.9, 0, 0], 9);
+
+      expect(root.getValue([0, 0, 0])).toEqual(1);
+      expect(root.getValue([0, 0, 1])).toEqual(-1);
+
+      expect(root.getValue([0, 1, 0])).toEqual(5);
+      expect(root.getValue([0, 2, 0])).toEqual(-1);
+
+      expect(root.getValue([2, 0, 0])).toEqual(9);
+      expect(root.getValue([3, 0, 0])).toEqual(-1);
+    });
   });
 
   describe('onVoxelCount()', () => {
