@@ -20,7 +20,7 @@ export class GridService {
     this.accessor.setValueOff(xyz, this.grid.background);
   }
 
-  computeMesh(): MeshData {
+  computeMesh(): MeshData | undefined {
     return gridToMesh(this.grid);
   }
 }

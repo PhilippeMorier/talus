@@ -86,18 +86,20 @@ export class SceneViewerService {
     this.engine.resize();
   }
 
-  updateGridMesh(mesh: MeshData): void {
+  updateGridMesh(mesh?: MeshData): void {
     this.scene.removeMesh(this.gridMesh);
 
-    this.gridMesh = new Mesh('grid', this.scene);
-    const data = new VertexData();
+    if (mesh) {
+      this.gridMesh = new Mesh('grid', this.scene);
+      const data = new VertexData();
 
-    data.colors = mesh.colors;
-    data.indices = mesh.indices;
-    data.positions = mesh.positions;
+      data.colors = mesh.colors;
+      data.indices = mesh.indices;
+      data.positions = mesh.positions;
 
-    data.applyToMesh(this.gridMesh);
-    this.gridMesh.convertToFlatShadedMesh();
+      data.applyToMesh(this.gridMesh);
+      this.gridMesh.convertToFlatShadedMesh();
+    }
   }
 
   private createCamera(): void {
@@ -121,7 +123,7 @@ export class SceneViewerService {
   }
 
   private createLight(): void {
-    this.light = new HemisphericLight('light', new Vector3(0, 1, -1), this.scene);
+    this.light = new HemisphericLight('light', new Vector3(0, 1, -2), this.scene);
   }
 
   private registerPointerPick(): void {
