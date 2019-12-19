@@ -19,4 +19,8 @@ module.exports = {
     'jest-preset-angular/AngularSnapshotSerializer.js',
     'jest-preset-angular/HTMLCommentSerializer.js',
   ],
+  // https://github.com/nrwl/nx/issues/1439#issuecomment-561268656
+  // When using `Run test` directly in WebStorm, change the used config to
+  // this file i.e. `./frontend/jest.config.js` and not `<rootDir>/jest.config.js`.
+  setupFilesAfterEnv: ['./src/test-setup.ts'],
 };
