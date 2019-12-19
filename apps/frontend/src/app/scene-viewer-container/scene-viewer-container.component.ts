@@ -57,14 +57,18 @@ export class SceneViewerContainerComponent {
   private calcVoxelToAddPosition(pickInfo: PointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
+    // VDB removes fractional-part of the coordinate, i.e. 0.54 -> 0.
+    // Therefore, positive numbers are getting rounded down (1.9 -> 1) and
+    // negative numbers are getting rounded up (-0.2 -> 0).
+    // Hence, the subtraction of 1 is needed.
     const newPoint: Coord = [
-      pickedIntegerPoint[0] < 0 || pickInfo.normal[0] < 0
+      pickInfo.normal[0] < 0 || (pickInfo.normal[0] === 0 && pickedIntegerPoint[0] < 0)
         ? pickedIntegerPoint[0] - 1
         : pickedIntegerPoint[0],
-      pickedIntegerPoint[1] < 0 || pickInfo.normal[1] < 0
+      pickInfo.normal[1] < 0 || (pickInfo.normal[1] === 0 && pickedIntegerPoint[1] < 0)
         ? pickedIntegerPoint[1] - 1
         : pickedIntegerPoint[1],
-      pickedIntegerPoint[2] < 0 || pickInfo.normal[2] < 0
+      pickInfo.normal[2] < 0 || (pickInfo.normal[2] === 0 && pickedIntegerPoint[2] < 0)
         ? pickedIntegerPoint[2] - 1
         : pickedIntegerPoint[2],
     ];

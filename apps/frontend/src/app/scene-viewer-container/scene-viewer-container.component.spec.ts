@@ -92,7 +92,7 @@ describe('SceneViewerContainerComponent', () => {
     ],
     [
       [0, 0, -0.999999],
-      [0, 0, -2],
+      [0, 0, -1],
       [0, 0, 1],
     ],
     [
@@ -104,6 +104,11 @@ describe('SceneViewerContainerComponent', () => {
       [-0, -2, 3],
       [-0, -3, 2],
       [0, 0, -1],
+    ],
+    [
+      [0.5, 1.4, -1],
+      [0.5, 1.4, -1],
+      [0, 0, 1],
     ],
   ])(
     'should dispatch `addVoxel` action for %j',
