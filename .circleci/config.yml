@@ -7,15 +7,16 @@ aliases:
   # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
   - &use_docker_node
     docker:
-      - image: circleci/node:13.2.0-stretch
+      - image: circleci/node:13.4.0-stretch
 
   - &use_docker_node_browsers
     docker:
-      - image: circleci/node:13.2.0-stretch-browsers
+      - image: circleci/node:13.4.0-stretch-browsers
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
+      # 3.8.0 fails with `Error: write EPIPE` when running `benchmark`!?
       - image: cypress/included:3.7.0
 
   - &workspace ~/talus

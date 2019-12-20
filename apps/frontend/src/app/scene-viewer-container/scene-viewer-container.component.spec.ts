@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { PointerButton, PointerPickInfo } from '@talus/ui';
+import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
@@ -68,31 +69,114 @@ describe('SceneViewerContainerComponent', () => {
     expect(mockStore.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should dispatch `addVoxel` action', () => {
-    const action = addVoxel({ position: [1, 1, 1], value: 42 });
+  it.each([
+    [
+      [1, 0.2, 0.9],
+      [1, 0.2, 0.9],
+      [1, 0, 0],
+    ],
+    [
+      [0.99999999, 0.2, 0.9],
+      [1, 0.2, 0.9],
+      [1, 0, 0],
+    ],
+    [
+      [0.2, 0.99999999, 0.9],
+      [0.2, 1, 0.9],
+      [0, 1, 0],
+    ],
+    [
+      [0.2, 0.9, 0.0000000001],
+      [0.2, 0.9, 0],
+      [0, 0, 1],
+    ],
+    [
+      [0, 0, -0.999999],
+      [0, 0, -1],
+      [0, 0, 1],
+    ],
+    [
+      [0, -2, -0.999999],
+      [0, -3, -2],
+      [0, 0, -1],
+    ],
+    [
+      [-0, -2, 3],
+      [-0, -3, 2],
+      [0, 0, -1],
+    ],
+    [
+      [0.5, 1.4, -1],
+      [0.5, 1.4, -1],
+      [0, 0, 1],
+    ],
+  ])(
+    'should dispatch `addVoxel` action for %j',
+    (pickedPoint: Coord, position: Coord, normal: Coord) => {
+      const action = addVoxel({ position, value: 42 });
 
-    stubComponent.pointerPick.next({
-      pickedPoint: [1, 1, 1],
-      pointerButton: PointerButton.Main,
-      normal: [0, 0, 1],
-    });
+      stubComponent.pointerPick.next({
+        pickedPoint,
+        pointerButton: PointerButton.Main,
+        normal,
+      });
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(action);
-  });
+      expect(mockStore.dispatch).toHaveBeenCalledWith(action);
+    },
+  );
 
-  it('should dispatch `removeVoxel` action', () => {
-    mockSelectedToolIdSelector.setResult(Tool.RemoveVoxel);
-    mockStore.refreshState();
-    fixture.detectChanges();
+  it.each([
+    [
+      [1.0000000000001, 0.5, 0.5],
+      [0, 0.5, 0.5],
+      [1, 0, 0],
+    ],
+    [
+      [0.999999999999, 0.5, 0.5],
+      [1, 0.5, 0.5],
+      [-1, 0, 0],
+    ],
+    [
+      [1.0000000000001, -0.5, 0.5],
+      [1, -1.5, 0.5],
+      [-1, 0, 0],
+    ],
+    [
+      [-0.999999999999, -0.5, 0.5],
+      [-1, -1.5, 0.5],
+      [-1, 0, 0],
+    ],
+    [
+      [-2.0000000000001, -0.5, 0.5],
+      [-3, -1.5, 0.5],
+      [1, 0, 0],
+    ],
+    [
+      [0.5, 0.999999999999, 0.5],
+      [0.5, 0, 0.5],
+      [0, 1, 0],
+    ],
+    [
+      [0.5461420538559825, 0.4841910809236776, -2],
+      [0.5461420538559825, 0.4841910809236776, -2],
+      [0, 0, -1],
+    ],
+  ])(
+    'should dispatch `removeVoxel` action for %j',
+    (pickedPoint: Coord, position: Coord, normal: Coord) => {
+      mockSelectedToolIdSelector.setResult(Tool.RemoveVoxel);
+      mockStore.refreshState();
+      fixture.detectChanges();
 
-    const action = removeVoxel({ position: [1, 1, 1] });
+      const action = removeVoxel({ position });
 
-    stubComponent.pointerPick.next({
-      pickedPoint: [1, 1, 1],
-      pointerButton: PointerButton.Main,
-      normal: [0, 0, 1],
-    });
+      stubComponent.pointerPick.next({
+        pickedPoint,
+        pointerButton: PointerButton.Main,
+        normal,
+      });
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(action);
-  });
+      expect(mockStore.dispatch).toHaveBeenCalledWith(action);
+    },
+  );
 });

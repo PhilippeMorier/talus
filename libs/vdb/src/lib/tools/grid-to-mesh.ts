@@ -23,11 +23,15 @@ export interface MeshData {
   positions: number[];
 }
 
-export function gridToMesh(grid: Grid): MeshData {
+/**
+ * Returns a mesh if there are any active voxels saved in the grid.
+ * Otherwise, returns `undefined` i.e. if there are no active voxels.
+ */
+export function gridToMesh(grid: Grid): MeshData | undefined {
   const mesh: MeshData = {
-    positions: [],
-    indices: [],
     colors: [],
+    indices: [],
+    positions: [],
     // normals: [],
   };
 
@@ -76,5 +80,5 @@ export function gridToMesh(grid: Grid): MeshData {
     mesh.colors.push(0, 1, 0, 1);
   }
 
-  return mesh;
+  return vertexCount !== 0 ? mesh : undefined;
 }

@@ -1,14 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule, MatIconModule, MatSidenavModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SidenavShellModule } from '@talus/ui';
 
-import {
-  SidenavShellComponent,
-  SidenavShellContentComponent,
-  SidenavShellLeftComponent,
-  SidenavShellRightComponent,
-} from './sidenav-shell.component';
+import { SidenavShellComponent } from './sidenav-shell.component';
+import { SidenavShellModule } from './sidenav-shell.module';
 
 describe('SidenavShellComponent', () => {
   let component: SidenavShellComponent;

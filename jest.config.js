@@ -1,5 +1,3 @@
-// const ignoreLibs = ['@babylonjs/core'];
-
 module.exports = {
   testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
   transform: {
@@ -11,5 +9,4 @@ module.exports = {
   moduleNameMapper: {
     '@babylonjs': 'babylonjs',
   },
-  // transformIgnorePatterns: [`/node_modules/(?!(${ignoreLibs.join('|')})/)`],
 };
