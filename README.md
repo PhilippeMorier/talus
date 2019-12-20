@@ -53,10 +53,17 @@ This project was generated using [Nx](https://nx.dev) with the following command
    - https://github.com/nvm-sh/nvm#installation-and-update
 2. Install (latest) `node`
    - `nvm install node`
-   - or add a version `nvm install 12.3.1`
-   - set a version as default `nvm alias default 12.3.1`
+   - or add a version `nvm install 13.4.0`
+   - set a version as default `nvm alias default 13.4.0`
 
 ### Yarn
+
+#### Manually
+
+1. Install `yarn`
+   - https://yarnpkg.com/lang/en/docs/install/#debian-stable
+
+#### With brew
 
 1. Install `yarn`
    - `brew install yarn`
@@ -94,17 +101,33 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
      - Working Dir: `$FileDir$`
      - Advanced Options: None, all deactivated
 
-2. Record macro in this order
+2. Record macro (Edit > Macros > Start Macro Recording) in this order
 
-   - Action: TsLintFileFixAction
+   - Action: TsLintFileFixAction (with opened \*.ts file)
    - Action: OptimizeImports
    - Action: ReformatWithPrettierAction
-   - Action: FileWatcher.runForFiles
+   - Action: FileWatcher.runForFiles (with opened \*.scss file)
    - Action: SaveAll
 
 3. Save macro as e.g. `Fix & Save`
 
-4. Assign Keyboard shortcut `Ctrl` + `S` to macro `Fix & Save`
+4. Assign Keyboard shortcut `Ctrl` + `S` to macro `Fix & Save` (search for macro)
+
+### Git
+
+1. Make sure that `git-completion` is working, otherwise run:
+   `sudo apt-get install git-core bash-completion`
+
+2. Add branch name to shell
+   - Download & save
+     [git-prompt.sh](https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh)
+   - Add in `.bashrc`:
+     ```
+     # GIT prompt
+     . ~/Projects/git-prompt.sh
+     export GIT_PS1_SHOWDIRTYSTATE=1
+     export PS1='\[\e[1;32m\]\u\[\e[m\]@\[\e[33m\]\h\[\e[m\]:\[\e[34m\]\w\[\e[m\]$(__git_ps1 " (%s)")\$ '
+     ```
 
 ## Build
 
