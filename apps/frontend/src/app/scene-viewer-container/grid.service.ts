@@ -16,6 +16,14 @@ export class GridService {
     this.accessor.setValue(xyz, value);
   }
 
+  addVoxels(coords: Coord[], values: number[]): void {
+    if (coords.length !== values.length) {
+      coords.forEach(xyz => this.accessor.setValue(xyz, values[0]));
+    } else {
+      coords.forEach((xyz, i) => this.accessor.setValue(xyz, values[i]));
+    }
+  }
+
   removeVoxel(xyz: Coord): void {
     this.accessor.setValueOff(xyz, this.grid.background);
   }

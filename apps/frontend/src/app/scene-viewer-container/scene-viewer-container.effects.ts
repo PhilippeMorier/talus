@@ -7,10 +7,13 @@ import { GridService } from './grid.service';
 import {
   addVoxel,
   addVoxelFailed,
+  addVoxels,
+  addVoxelsFailed,
   removeVoxel,
   removeVoxelFailed,
   voxelAdded,
   voxelRemoved,
+  voxelsAdded,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -27,11 +30,23 @@ export class SceneViewerContainerEffects {
       tap({
         next: ({ position, value }) => {
           this.gridService.addVoxel(position, value);
-          this.sceneViewerService.updateGridMesh(this.gridService.computeMesh());
         },
       }),
       map(() => voxelAdded()),
       catchError(() => of(addVoxelFailed())),
+    ),
+  );
+
+  addVoxels$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addVoxels),
+      tap({
+        next: ({ positions, values }) => {
+          this.gridService.addVoxels(positions, values);
+        },
+      }),
+      map(() => voxelsAdded()),
+      catchError(() => of(addVoxelsFailed())),
     ),
   );
 
@@ -41,11 +56,23 @@ export class SceneViewerContainerEffects {
       tap({
         next: ({ position }) => {
           this.gridService.removeVoxel(position);
-          this.sceneViewerService.updateGridMesh(this.gridService.computeMesh());
         },
       }),
       map(() => voxelRemoved()),
       catchError(() => of(removeVoxelFailed())),
     ),
+  );
+
+  updateGridMesh$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(voxelAdded, voxelsAdded, removeVoxel),
+        tap({
+          next: () => {
+            this.sceneViewerService.updateGridMesh(this.gridService.computeMesh());
+          },
+        }),
+      ),
+    { dispatch: false },
   );
 }
