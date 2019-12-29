@@ -1,4 +1,5 @@
 import { Coord } from '../math/coord';
+import { LeafNode } from './leaf-node';
 import { Node } from './node';
 import { RootNode } from './root-node';
 import { Voxel } from './voxel';
@@ -34,5 +35,9 @@ export class Tree<T> implements Node<T> {
 
   beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.root.beginVoxelOn();
+  }
+
+  beginLeafOn(): IterableIterator<LeafNode<T>> {
+    return this.root.beginLeafOn();
   }
 }

@@ -1,4 +1,5 @@
 import { Coord } from '../math/coord';
+import { LeafNode } from './leaf-node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
@@ -64,4 +65,9 @@ export interface IterableNode<T> {
    * and no values from tiles.
    */
   beginVoxelOn(): IterableIterator<Voxel<T>>;
+
+  /**
+   * Iterator for getting all `LeafNode`'s.
+   */
+  beginLeafOn(): IterableIterator<LeafNode<T>>;
 }

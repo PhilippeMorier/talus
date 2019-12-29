@@ -1,4 +1,4 @@
-import { ValueType } from './tree/leaf-node';
+import { LeafNode, ValueType } from './tree/leaf-node';
 import { IterableNode } from './tree/node';
 import { Tree } from './tree/tree';
 import { ValueAccessor3 } from './tree/value-accessor';
@@ -37,5 +37,9 @@ export class Grid<T = ValueType> implements IterableNode<T> {
 
   beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.tree.beginVoxelOn();
+  }
+
+  beginLeafOn(): IterableIterator<LeafNode<T>> {
+    return this.tree.beginLeafOn();
   }
 }

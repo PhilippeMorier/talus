@@ -173,6 +173,14 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
+  *beginLeafOn(): IterableIterator<LeafNode<T>> {
+    for (const index of this.childMask.beginOn()) {
+      const child = this.nodes[index].getChild();
+
+      yield* child.beginLeafOn();
+    }
+  }
+
   protected initializeInternalNode1(xyz: Coord, value?: T, active: boolean = false): void {
     this.initialize(
       InternalNode1.NUM_VALUES,

@@ -164,4 +164,8 @@ export class LeafNode<T> implements HashableNode<T> {
       };
     }
   }
+
+  *beginLeafOn(): IterableIterator<LeafNode<T>> {
+    yield this;
+  }
 }

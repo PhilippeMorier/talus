@@ -1,5 +1,6 @@
 import { Coord } from '../math/coord';
 import { InternalNode2 } from './internal-node';
+import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -168,6 +169,14 @@ export class RootNode<T> implements HashableNode<T> {
     for (const nodeStruct of this.table.values()) {
       if (nodeStruct.isChild()) {
         yield* nodeStruct.getChild().beginVoxelOn();
+      }
+    }
+  }
+
+  *beginLeafOn(): IterableIterator<LeafNode<T>> {
+    for (const nodeStruct of this.table.values()) {
+      if (nodeStruct.isChild()) {
+        yield* nodeStruct.getChild().beginLeafOn();
       }
     }
   }
