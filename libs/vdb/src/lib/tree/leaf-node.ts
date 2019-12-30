@@ -121,10 +121,6 @@ export class LeafNode<T> implements HashableNode<T> {
     return this.getValue(xyz);
   }
 
-  getLeafNodeAndCache(xyz: Coord, _: ValueAccessor3<T>): this | undefined {
-    return this;
-  }
-
   getInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
     throw new Error(`Shouldn't be called on LeafNode`);
   }
@@ -173,9 +169,5 @@ export class LeafNode<T> implements HashableNode<T> {
         value: this.buffer.getValue(index),
       };
     }
-  }
-
-  *beginLeafOn(): IterableIterator<LeafNode<T>> {
-    yield this;
   }
 }

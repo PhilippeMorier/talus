@@ -93,27 +93,4 @@ describe('RootNode', () => {
       expect(counter).toEqual(expectedValues.length);
     });
   });
-
-  describe('beginLeafOn()', () => {
-    it('should iterate over all leaf nodes', () => {
-      const root = new RootNode(-1);
-      const expectedValues = [0, 1, 2, 3, 4];
-
-      root.setValueOn([0, 0, 0], expectedValues[0]);
-      root.setValueOn([0, 0, 1], expectedValues[0]);
-
-      root.setValueOn([0, 0, InternalNode2.DIM], expectedValues[1]);
-      root.setValueOn([0, InternalNode2.DIM, 0], expectedValues[2]);
-      root.setValueOn([InternalNode2.DIM, 0, 0], expectedValues[3]);
-      root.setValueOn([2 * InternalNode2.DIM, 0, 0], expectedValues[4]);
-
-      let counter = 0;
-      for (const leaf of root.beginLeafOn()) {
-        expect(leaf.getValue([0, 0, 0])).toEqual(expectedValues[counter]);
-        counter++;
-      }
-
-      expect(counter).toEqual(expectedValues.length);
-    });
-  });
 });

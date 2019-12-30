@@ -9,7 +9,7 @@ describe('gridToMesh()', () => {
     accessor.setValue([0, 0, 0], 1);
     accessor.setValue([0, 0, 1], 1);
 
-    const meshData = gridToMesh(grid);
+    const meshData = gridToMesh(grid.beginVoxelOn());
 
     const voxels = 2;
 
