@@ -104,7 +104,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return undefined;
   }
 
-  setValueOn(xyz: Coord, value: T): LeafNode<T> {
+  setValueOn(xyz: Coord, value: T): void {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
     let hasChild = this.childMask.isOn(i);
@@ -122,11 +122,11 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      return node.getChild().setValueOn(xyz, value);
+      node.getChild().setValueOn(xyz, value);
     }
   }
 
-  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): LeafNode<T> {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
     let hasChild = this.childMask.isOn(i);
@@ -145,7 +145,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
     if (hasChild) {
       accessor.insert(xyz, node.getChild());
-      return node.getChild().setValueAndCache(xyz, value, accessor);
+      node.getChild().setValueAndCache(xyz, value, accessor);
     }
   }
 

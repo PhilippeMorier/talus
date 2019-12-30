@@ -8,7 +8,7 @@ export interface Node<T> extends IterableNode<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValueOn(xyz: Coord, value: T): LeafNode<T>;
+  setValueOn(xyz: Coord, value: T): void;
 
   /**
    * Return the value of the voxel at the given coordinates.
@@ -46,7 +46,7 @@ export interface HashableNode<T> extends Node<T> {
    * @note Used internally by ValueAccessor.
    * @return The affected `LeafNode` in which a value was set.
    */
-  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): LeafNode<T>;
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void;
 
   /**
    * Change the value of the voxel at the given coordinates and mark it as inactive.

@@ -81,13 +81,11 @@ export class LeafNode<T> implements HashableNode<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValueOn(xyz: Coord, value: T): LeafNode<T> {
+  setValueOn(xyz: Coord, value: T): void {
     const offset = LeafNode.coordToOffset(xyz);
 
     this.buffer.setValue(offset, value);
     this.valueMask.setOn(offset);
-
-    return this;
   }
 
   /**

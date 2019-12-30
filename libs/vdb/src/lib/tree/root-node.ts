@@ -88,7 +88,7 @@ export class RootNode<T> implements HashableNode<T> {
     return undefined;
   }
 
-  setValueOn(xyz: Coord, value: T): LeafNode<T> {
+  setValueOn(xyz: Coord, value: T): void {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
 
@@ -103,11 +103,11 @@ export class RootNode<T> implements HashableNode<T> {
     }
 
     if (child) {
-      return child.setValueOn(xyz, value);
+      child.setValueOn(xyz, value);
     }
   }
 
-  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): LeafNode<T> {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
     let child: HashableNode<T>;
     const struct = this.findCoord(xyz);
 
@@ -123,7 +123,7 @@ export class RootNode<T> implements HashableNode<T> {
 
     if (child) {
       accessor.insert(xyz, child);
-      return child.setValueAndCache(xyz, value, accessor);
+      child.setValueAndCache(xyz, value, accessor);
     }
   }
 

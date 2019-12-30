@@ -86,19 +86,19 @@ export class ValueAccessor3<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValue(xyz: Coord, value: T): LeafNode<T> {
+  setValue(xyz: Coord, value: T): void {
     if (this.isHashed0(xyz)) {
-      return this.leafNode.setValueAndCache(xyz, value, this);
+      this.leafNode.setValueAndCache(xyz, value, this);
     } else if (this.isHashed1(xyz)) {
-      return this.internalNode1.setValueAndCache(xyz, value, this);
+      this.internalNode1.setValueAndCache(xyz, value, this);
     } else if (this.isHashed2(xyz)) {
-      return this.internalNode2.setValueAndCache(xyz, value, this);
+      this.internalNode2.setValueAndCache(xyz, value, this);
     } else {
-      return this.tree.root.setValueAndCache(xyz, value, this);
+      this.tree.root.setValueAndCache(xyz, value, this);
     }
   }
-  setValueOn(xyz: Coord, value: T): LeafNode<T> {
-    return this.setValue(xyz, value);
+  setValueOn(xyz: Coord, value: T): void {
+    this.setValue(xyz, value);
   }
 
   /**
