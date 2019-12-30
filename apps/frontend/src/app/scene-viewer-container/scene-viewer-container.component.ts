@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
+import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
@@ -7,7 +9,7 @@ import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { addVoxel, addVoxels, removeVoxel } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -19,7 +21,7 @@ import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerContainerComponent {
+export class SceneViewerContainerComponent implements AfterViewInit {
   @ViewChild(SceneViewerComponent, { static: false })
   private sceneViewerComponent: SceneViewerComponent;
 
@@ -27,6 +29,36 @@ export class SceneViewerContainerComponent {
   voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
 
   constructor(private store: Store<fromApp.State>) {}
+
+  ngAfterViewInit(): void {
+    SceneLoader.LoadAssetContainer(
+      // 'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/Playground/scenes/',
+      // 'StanfordBunny.obj',
+      './assets/',
+      'Project-2018-04-07_simplified_3d_mesh.obj',
+      // 'Buddha.obj',
+      // 'warship.obj',
+      undefined,
+      container => {
+        const positions = container.meshes[0].getVerticesData(VertexBuffer.PositionKind);
+        const colors = container.meshes[0].getVerticesData(VertexBuffer.ColorKind);
+        console.log('colors', colors);
+
+        const scaleFactor = 40;
+
+        const scaledPositions: Coord[] = [];
+        for (let i = 0; i < positions.length; i += 3) {
+          scaledPositions.push([
+            positions[i] * scaleFactor,
+            positions[i + 1] * scaleFactor,
+            positions[i + 2] * scaleFactor,
+          ]);
+        }
+
+        this.store.dispatch(addVoxels({ positions: scaledPositions, values: [42] }));
+      },
+    );
+  }
 
   onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);

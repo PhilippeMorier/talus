@@ -29,8 +29,8 @@ export class Tree<T> implements Node<T> {
     return this.root.onVoxelCount();
   }
 
-  setValueOn(xyz: Coord, value: T): void {
-    this.root.setValueOn(xyz, value);
+  setValueOn(xyz: Coord, value: T): LeafNode<T> {
+    return this.root.setValueOn(xyz, value);
   }
 
   beginVoxelOn(): IterableIterator<Voxel<T>> {

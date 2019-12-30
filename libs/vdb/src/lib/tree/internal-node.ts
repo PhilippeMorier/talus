@@ -8,9 +8,9 @@ import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
 abstract class InternalNode<T> implements HashableNode<T> {
+  origin: Coord;
   protected childMask: NodeMask;
   protected valueMask: NodeMask;
-  protected origin: Coord;
 
   protected nodes: NodeUnion<T, HashableNode<T>>[];
 
@@ -78,7 +78,33 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return node.getValue();
   }
 
-  setValueOn(xyz: Coord, value: T): void {
+  getLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+
+    if (this.childMask.isOn(i)) {
+      accessor.insert(xyz, node.getChild());
+      return node.getChild().getLeafNodeAndCache(xyz, accessor);
+    }
+
+    return undefined;
+  }
+
+  getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+
+    if (this.childMask.isOn(i)) {
+      const child = node.getChild();
+      accessor.insert(xyz, child);
+
+      return child instanceof InternalNode1 ? child : child.getInternalNode1AndCache(xyz, accessor);
+    }
+
+    return undefined;
+  }
+
+  setValueOn(xyz: Coord, value: T): LeafNode<T> {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
     let hasChild = this.childMask.isOn(i);
@@ -96,11 +122,11 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      node.getChild().setValueOn(xyz, value);
+      return node.getChild().setValueOn(xyz, value);
     }
   }
 
-  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): LeafNode<T> {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
     let hasChild = this.childMask.isOn(i);
@@ -119,7 +145,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
     if (hasChild) {
       accessor.insert(xyz, node.getChild());
-      node.getChild().setValueAndCache(xyz, value, accessor);
+      return node.getChild().setValueAndCache(xyz, value, accessor);
     }
   }
 

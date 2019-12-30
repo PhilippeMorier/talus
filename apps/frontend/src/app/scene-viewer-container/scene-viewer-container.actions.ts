@@ -8,14 +8,20 @@ export const addVoxel = createAction(
   props<{ position: Coord; value: number }>(),
 );
 export const addVoxelFailed = createAction(`${actionTypePrefix} Add voxel failed`);
-export const voxelAdded = createAction(`${actionTypePrefix} Voxel added`);
+export const voxelAdded = createAction(
+  `${actionTypePrefix} Voxel added`,
+  props<{ affectedOrigins: Coord[] }>(),
+);
 
 export const addVoxels = createAction(
   `${actionTypePrefix} Add voxels`,
   props<{ positions: Coord[]; values: number[] }>(),
 );
 export const addVoxelsFailed = createAction(`${actionTypePrefix} Add voxels failed`);
-export const voxelsAdded = createAction(`${actionTypePrefix} Voxels added`);
+export const voxelsAdded = createAction(
+  `${actionTypePrefix} Voxels added`,
+  props<{ affectedOrigins: Coord[] }>(),
+);
 
 export const removeVoxel = createAction(
   `${actionTypePrefix} Remove voxel`,

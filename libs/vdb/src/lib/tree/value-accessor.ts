@@ -30,13 +30,13 @@ import { Tree } from './tree';
 export class ValueAccessor3<T> {
   constructor(private tree: Tree<T>) {}
 
-  private leafKey: Coord = createMaxCoord();
-  private leafNode: LeafNode<T>;
+  readonly leafKey: Coord = createMaxCoord();
+  leafNode: LeafNode<T>;
 
-  private internalKey1: Coord = createMaxCoord();
+  readonly internalKey1: Coord = createMaxCoord();
   private internalNode1: InternalNode1<T>;
 
-  private internalKey2: Coord = createMaxCoord();
+  readonly internalKey2: Coord = createMaxCoord();
   private internalNode2: InternalNode2<T>;
 
   /**
@@ -44,6 +44,28 @@ export class ValueAccessor3<T> {
    */
   isCached(xyz: Coord): boolean {
     return this.isHashed2(xyz) || this.isHashed1(xyz) || this.isHashed0(xyz);
+  }
+
+  getLeafNode(xyz: Coord): LeafNode<T> | undefined {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode;
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.getLeafNodeAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.getLeafNodeAndCache(xyz, this);
+    } else {
+      return this.tree.root.getLeafNodeAndCache(xyz, this);
+    }
+  }
+
+  getInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
+    if (this.isHashed1(xyz)) {
+      return this.internalNode1;
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.getInternalNode1AndCache(xyz, this);
+    } else {
+      return this.tree.root.getInternalNode1AndCache(xyz, this);
+    }
   }
 
   /**
@@ -64,19 +86,19 @@ export class ValueAccessor3<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValue(xyz: Coord, value: T): void {
+  setValue(xyz: Coord, value: T): LeafNode<T> {
     if (this.isHashed0(xyz)) {
-      this.leafNode.setValueAndCache(xyz, value, this);
+      return this.leafNode.setValueAndCache(xyz, value, this);
     } else if (this.isHashed1(xyz)) {
-      this.internalNode1.setValueAndCache(xyz, value, this);
+      return this.internalNode1.setValueAndCache(xyz, value, this);
     } else if (this.isHashed2(xyz)) {
-      this.internalNode2.setValueAndCache(xyz, value, this);
+      return this.internalNode2.setValueAndCache(xyz, value, this);
     } else {
-      this.tree.root.setValueAndCache(xyz, value, this);
+      return this.tree.root.setValueAndCache(xyz, value, this);
     }
   }
-  setValueOn(xyz: Coord, value: T): void {
-    this.setValue(xyz, value);
+  setValueOn(xyz: Coord, value: T): LeafNode<T> {
+    return this.setValue(xyz, value);
   }
 
   /**

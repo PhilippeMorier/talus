@@ -1,5 +1,5 @@
 import { Coord } from '../math/coord';
-import { InternalNode2 } from './internal-node';
+import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
@@ -58,7 +58,37 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.getTile().value;
   }
 
-  setValueOn(xyz: Coord, value: T): void {
+  getLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      return undefined;
+    }
+
+    if (struct.isChild()) {
+      accessor.insert(xyz, struct.getChild());
+      return struct.getChild().getLeafNodeAndCache(xyz, accessor);
+    }
+
+    return undefined;
+  }
+
+  getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined {
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      return undefined;
+    }
+
+    if (struct.isChild()) {
+      accessor.insert(xyz, struct.getChild());
+      return struct.getChild().getInternalNode1AndCache(xyz, accessor);
+    }
+
+    return undefined;
+  }
+
+  setValueOn(xyz: Coord, value: T): LeafNode<T> {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
 
@@ -73,11 +103,11 @@ export class RootNode<T> implements HashableNode<T> {
     }
 
     if (child) {
-      child.setValueOn(xyz, value);
+      return child.setValueOn(xyz, value);
     }
   }
 
-  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
+  setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): LeafNode<T> {
     let child: HashableNode<T>;
     const struct = this.findCoord(xyz);
 
@@ -93,7 +123,7 @@ export class RootNode<T> implements HashableNode<T> {
 
     if (child) {
       accessor.insert(xyz, child);
-      child.setValueOn(xyz, value);
+      return child.setValueAndCache(xyz, value, accessor);
     }
   }
 

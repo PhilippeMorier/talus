@@ -14,12 +14,14 @@
  *           0--- X                   0-------1
  */
 
-import { Grid } from '../grid';
+import { Coord } from '../math';
+import { Voxel } from '../tree/voxel';
 
 export interface MeshData {
   colors: number[];
   indices: number[];
   // normals: number[];
+  origin?: Coord;
   positions: number[];
 }
 
@@ -27,7 +29,7 @@ export interface MeshData {
  * Returns a mesh if there are any active voxels saved in the grid.
  * Otherwise, returns `undefined` i.e. if there are no active voxels.
  */
-export function gridToMesh(grid: Grid): MeshData | undefined {
+export function gridToMesh<T>(voxelIterator: IterableIterator<Voxel<T>>): MeshData | undefined {
   const mesh: MeshData = {
     colors: [],
     indices: [],
@@ -35,8 +37,12 @@ export function gridToMesh(grid: Grid): MeshData | undefined {
     // normals: [],
   };
 
+  const r = Math.random();
+  const g = Math.random();
+  const b = Math.random();
+
   let vertexCount = 0;
-  for (const voxel of grid.beginVoxelOn()) {
+  for (const voxel of voxelIterator) {
     const [x, y, z] = voxel.globalCoord;
 
     mesh.indices.push(...[5, 0, 3, 3, 6, 5].map(i => i + vertexCount)); // Left
@@ -69,15 +75,15 @@ export function gridToMesh(grid: Grid): MeshData | undefined {
 
     vertexCount += 8;
 
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
 
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
-    mesh.colors.push(0, 1, 0, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
+    mesh.colors.push(r, g, b, 1);
   }
 
   return vertexCount !== 0 ? mesh : undefined;

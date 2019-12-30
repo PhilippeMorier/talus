@@ -5,13 +5,17 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
+// import '@babylonjs/loaders/glTF/glTFFileLoader';
+import '@babylonjs/loaders/OBJ/objFileLoader';
 import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { PointerButton } from './pointer-button';
@@ -52,8 +56,8 @@ export class CameraFactory {
  */
 @Injectable()
 export class SceneViewerService {
+  constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
   scene: Scene;
-  gridMesh: Mesh;
 
   pointerPick$ = new Subject<PointerPickInfo>();
 
@@ -61,7 +65,7 @@ export class SceneViewerService {
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
 
-  constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
+  meshes = new Map<string, Mesh>();
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
@@ -76,6 +80,11 @@ export class SceneViewerService {
     box.position.x = 0.5;
     box.position.y = 0.5;
     box.position.z = 0.5;
+
+    // this.loadObjFile(
+    //   'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/Playground/scenes/',
+    //   'StanfordBunny.obj',
+    // );
   }
 
   startRendering(): void {
@@ -84,21 +93,28 @@ export class SceneViewerService {
 
   resizeView(): void {
     this.engine.resize();
+
+    // const meshes = Array.from(this.meshes.values());
+    // Mesh.MergeMeshes(meshes, true, true);
   }
 
   updateGridMesh(mesh?: MeshData): void {
-    this.scene.removeMesh(this.gridMesh);
+    const meshName = `grid[${mesh.origin}]`;
+
+    this.scene.removeMesh(this.scene.getMeshByName(meshName));
 
     if (mesh) {
-      this.gridMesh = new Mesh('grid', this.scene);
+      const gridMesh = new Mesh(meshName, this.scene);
       const data = new VertexData();
 
       data.colors = mesh.colors;
       data.indices = mesh.indices;
       data.positions = mesh.positions;
 
-      data.applyToMesh(this.gridMesh);
-      this.gridMesh.convertToFlatShadedMesh();
+      data.applyToMesh(gridMesh);
+      gridMesh.convertToFlatShadedMesh();
+
+      this.meshes.set(meshName, gridMesh);
     }
   }
 
@@ -113,13 +129,14 @@ export class SceneViewerService {
     );
     camera.inertia = 0;
     camera.panningInertia = 0;
+    camera.wheelPrecision = 0.1;
 
-    camera.panningSensibility = 20;
+    camera.panningSensibility = 5;
     camera.angularSensibilityX = 200;
     camera.angularSensibilityY = 100;
 
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(20, 20, -20));
+    camera.setPosition(new Vector3(400, 400, -400));
   }
 
   private createLight(): void {
@@ -136,6 +153,12 @@ export class SceneViewerService {
 
       this.pointerPick$.next(info);
     };
+  }
+
+  private loadObjFile(filePath: string, fileName: string): void {
+    SceneLoader.LoadAssetContainer(filePath, fileName, this.scene, container => {
+      console.log('container', container.meshes[0].getVerticesData(VertexBuffer.PositionKind));
+    });
   }
 }
 

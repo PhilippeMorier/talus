@@ -1,5 +1,6 @@
 import { Coord } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
+import { InternalNode1 } from './internal-node';
 import { LeafBuffer } from './leaf-buffer';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
@@ -21,12 +22,13 @@ export class LeafNode<T> implements HashableNode<T> {
   static readonly LEVEL: Index = 0; // level 0 = leaf
   // tslint:enable:no-bitwise
 
+  // Global grid index coordinates (x,y,z) of the local origin of this node
+  readonly origin: Coord;
+
   // Buffer containing the actual data values
   private buffer: LeafBuffer<T>;
   // Bitmask that determines which voxels are active
   private valueMask: NodeMask;
-  // Global grid index coordinates (x,y,z) of the local origin of this node
-  private readonly origin: Coord;
 
   /**
    * Return the linear table offset of the given global or local coordinates.
@@ -79,11 +81,13 @@ export class LeafNode<T> implements HashableNode<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValueOn(xyz: Coord, value: T): void {
+  setValueOn(xyz: Coord, value: T): LeafNode<T> {
     const offset = LeafNode.coordToOffset(xyz);
 
     this.buffer.setValue(offset, value);
     this.valueMask.setOn(offset);
+
+    return this;
   }
 
   /**
@@ -119,12 +123,22 @@ export class LeafNode<T> implements HashableNode<T> {
     return this.getValue(xyz);
   }
 
+  getLeafNodeAndCache(xyz: Coord, _: ValueAccessor3<T>): this | undefined {
+    return this;
+  }
+
+  getInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
+    throw new Error(`Shouldn't be called on LeafNode`);
+  }
+
   /**
    * @brief Change the value of the voxel at the given coordinates and mark it as active.
    * @note Used internally by ValueAccessor.
    */
-  setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+  setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): LeafNode<T> {
     this.setValueOn(xyz, value);
+
+    return this;
   }
 
   /**
