@@ -12,6 +12,7 @@ import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
 import '@babylonjs/inspector';
@@ -61,7 +62,7 @@ export class SceneViewerService {
 
   private engine: Engine;
   private scene: Scene;
-  private gridMesh: Mesh;
+  private gridNode: TransformNode;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
 
@@ -69,10 +70,7 @@ export class SceneViewerService {
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
-    this.scene = new Scene(this.engine);
-    this.scene.debugLayer.show();
-    this.gridMesh = new Mesh('grid', this.scene);
-
+    this.createScene();
     this.createCamera();
     this.createLight();
 
@@ -103,7 +101,7 @@ export class SceneViewerService {
     this.deleteMesh(meshName);
 
     if (mesh) {
-      const nodeMesh = new Mesh(meshName, this.scene, this.gridMesh);
+      const nodeMesh = new Mesh(meshName, this.scene, this.gridNode);
       const data = new VertexData();
 
       data.colors = mesh.colors;
@@ -112,7 +110,24 @@ export class SceneViewerService {
 
       data.applyToMesh(nodeMesh);
       nodeMesh.convertToFlatShadedMesh();
+
+      // https://doc.babylonjs.com/how_to/optimizing_your_scene
+      nodeMesh.freezeNormals();
+      nodeMesh.freezeWorldMatrix();
     }
+  }
+
+  private createScene(): void {
+    // Used only as parent to have all nodes grouped together
+    this.gridNode = new TransformNode('grid', this.scene);
+
+    // https://doc.babylonjs.com/how_to/optimizing_your_scene
+    this.scene = new Scene(this.engine, {
+      useGeometryUniqueIdsMap: true,
+      useClonedMeshhMap: true,
+    });
+    this.scene.freezeMaterials();
+    this.scene.debugLayer.show();
   }
 
   private createCamera(): void {
