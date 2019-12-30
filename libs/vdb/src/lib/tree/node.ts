@@ -35,8 +35,6 @@ export interface HashableNode<T> extends Node<T> {
    */
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T;
 
-  getLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined;
-
   getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined;
 
   /**

@@ -50,18 +50,6 @@ export class ValueAccessor3<T> {
     return this.isHashed2(xyz) || this.isHashed1(xyz) || this.isHashed0(xyz);
   }
 
-  getLeafNode(xyz: Coord): LeafNode<T> | undefined {
-    if (this.isHashed0(xyz)) {
-      return this.leafNode;
-    } else if (this.isHashed1(xyz)) {
-      return this.internalNode1.getLeafNodeAndCache(xyz, this);
-    } else if (this.isHashed2(xyz)) {
-      return this.internalNode2.getLeafNodeAndCache(xyz, this);
-    } else {
-      return this.tree.root.getLeafNodeAndCache(xyz, this);
-    }
-  }
-
   getInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
     if (this.isHashed1(xyz)) {
       return this.internalNode1;

@@ -58,21 +58,6 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.getTile().value;
   }
 
-  getLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
-    const struct = this.findCoord(xyz);
-
-    if (!struct) {
-      return undefined;
-    }
-
-    if (struct.isChild()) {
-      accessor.insert(xyz, struct.getChild());
-      return struct.getChild().getLeafNodeAndCache(xyz, accessor);
-    }
-
-    return undefined;
-  }
-
   getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined {
     const struct = this.findCoord(xyz);
 

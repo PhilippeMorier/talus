@@ -46,15 +46,6 @@ export class GridService {
     return gridToMesh(this.grid.beginVoxelOn());
   }
 
-  computeLeafNodeMesh(origin: Coord): MeshData | undefined {
-    const leaf = this.accessor.getLeafNode(origin);
-
-    const mesh = gridToMesh(leaf.beginVoxelOn());
-    mesh.origin = leaf.origin;
-
-    return mesh;
-  }
-
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
     const internal1 = this.accessor.getInternalNode1(origin);
 
