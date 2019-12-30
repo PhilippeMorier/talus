@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import '@babylonjs/loaders/OBJ/objFileLoader';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';

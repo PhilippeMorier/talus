@@ -5,10 +5,8 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -16,8 +14,6 @@ import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
 import '@babylonjs/inspector';
-// import '@babylonjs/loaders/glTF/glTFFileLoader';
-import '@babylonjs/loaders/OBJ/objFileLoader';
 import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { PointerButton } from './pointer-button';
@@ -80,11 +76,6 @@ export class SceneViewerService {
     box.position.x = 0.5;
     box.position.y = 0.5;
     box.position.z = 0.5;
-
-    // this.loadObjFile(
-    //   'https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/Playground/scenes/',
-    //   'StanfordBunny.obj',
-    // );
   }
 
   startRendering(): void {
@@ -118,9 +109,6 @@ export class SceneViewerService {
   }
 
   private createScene(): void {
-    // Used only as parent to have all nodes grouped together
-    this.gridNode = new TransformNode('grid', this.scene);
-
     // https://doc.babylonjs.com/how_to/optimizing_your_scene
     this.scene = new Scene(this.engine, {
       useGeometryUniqueIdsMap: true,
@@ -128,6 +116,9 @@ export class SceneViewerService {
     });
     this.scene.freezeMaterials();
     this.scene.debugLayer.show();
+
+    // Used only as parent to have all nodes grouped together
+    this.gridNode = new TransformNode('grid', this.scene);
   }
 
   private createCamera(): void {
@@ -165,12 +156,6 @@ export class SceneViewerService {
 
       this.pointerPick$.next(info);
     };
-  }
-
-  private loadObjFile(filePath: string, fileName: string): void {
-    SceneLoader.LoadAssetContainer(filePath, fileName, this.scene, container => {
-      console.log('container', container.meshes[0].getVerticesData(VertexBuffer.PositionKind));
-    });
   }
 
   private deleteMesh(name: string): void {
