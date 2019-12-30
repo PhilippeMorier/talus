@@ -13,7 +13,6 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
-import '@babylonjs/inspector';
 import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { PointerButton } from './pointer-button';
@@ -103,6 +102,7 @@ export class SceneViewerService {
       nodeMesh.convertToFlatShadedMesh();
 
       // https://doc.babylonjs.com/how_to/optimizing_your_scene
+      // https://www.html5gamedevs.com/topic/12504-performancedraw-calls/
       nodeMesh.freezeNormals();
       nodeMesh.freezeWorldMatrix();
     }
@@ -115,7 +115,6 @@ export class SceneViewerService {
       useClonedMeshhMap: true,
     });
     this.scene.freezeMaterials();
-    this.scene.debugLayer.show();
 
     // Used only as parent to have all nodes grouped together
     this.gridNode = new TransformNode('grid', this.scene);
