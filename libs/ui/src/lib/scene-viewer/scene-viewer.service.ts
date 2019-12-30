@@ -14,6 +14,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
+import '@babylonjs/inspector';
 // import '@babylonjs/loaders/glTF/glTFFileLoader';
 import '@babylonjs/loaders/OBJ/objFileLoader';
 import { Coord, MeshData } from '@talus/vdb';
@@ -56,18 +57,21 @@ export class CameraFactory {
  */
 @Injectable()
 export class SceneViewerService {
-  constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
-  scene: Scene;
-
   pointerPick$ = new Subject<PointerPickInfo>();
 
   private engine: Engine;
+  private scene: Scene;
+  private gridMesh: Mesh;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
+
+  constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
 
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
     this.scene = new Scene(this.engine);
+    this.scene.debugLayer.show();
+    this.gridMesh = new Mesh('grid', this.scene);
 
     this.createCamera();
     this.createLight();
@@ -94,20 +98,20 @@ export class SceneViewerService {
   }
 
   updateGridMesh(mesh?: MeshData): void {
-    const meshName = `grid[${mesh.origin}]`;
+    const meshName = `node1 [${mesh.origin}]`;
 
-    this.scene.removeMesh(this.scene.getMeshByName(meshName));
+    this.deleteMesh(meshName);
 
     if (mesh) {
-      const gridMesh = new Mesh(meshName, this.scene);
+      const nodeMesh = new Mesh(meshName, this.scene, this.gridMesh);
       const data = new VertexData();
 
       data.colors = mesh.colors;
       data.indices = mesh.indices;
       data.positions = mesh.positions;
 
-      data.applyToMesh(gridMesh);
-      gridMesh.convertToFlatShadedMesh();
+      data.applyToMesh(nodeMesh);
+      nodeMesh.convertToFlatShadedMesh();
     }
   }
 
@@ -152,6 +156,14 @@ export class SceneViewerService {
     SceneLoader.LoadAssetContainer(filePath, fileName, this.scene, container => {
       console.log('container', container.meshes[0].getVerticesData(VertexBuffer.PositionKind));
     });
+  }
+
+  private deleteMesh(name: string): void {
+    const oldMesh = this.scene.getMeshByName(name);
+
+    if (oldMesh) {
+      oldMesh.dispose();
+    }
   }
 }
 
