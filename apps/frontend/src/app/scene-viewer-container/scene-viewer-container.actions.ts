@@ -28,4 +28,7 @@ export const removeVoxel = createAction(
   props<{ position: Coord }>(),
 );
 export const removeVoxelFailed = createAction(`${actionTypePrefix} Remove voxel failed`);
-export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`);
+export const voxelRemoved = createAction(
+  `${actionTypePrefix} Voxel removed`,
+  props<{ affectedOrigins: Coord[] }>(),
+);

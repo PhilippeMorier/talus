@@ -1,4 +1,4 @@
-import { Coord, createMaxCoord } from '../math/coord';
+import { clone, Coord, createMaxCoord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -28,16 +28,20 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  constructor(private tree: Tree<T>) {}
+  get key(): Coord {
+    return clone(this.internalKey1);
+  }
 
-  readonly leafKey: Coord = createMaxCoord();
-  leafNode: LeafNode<T>;
+  private leafKey: Coord = createMaxCoord();
+  private leafNode: LeafNode<T>;
 
-  readonly internalKey1: Coord = createMaxCoord();
+  private internalKey1: Coord = createMaxCoord();
   private internalNode1: InternalNode1<T>;
 
-  readonly internalKey2: Coord = createMaxCoord();
+  private internalKey2: Coord = createMaxCoord();
   private internalNode2: InternalNode2<T>;
+
+  constructor(private tree: Tree<T>) {}
 
   /**
    * Return true if any of the nodes along the path to the given voxel have been cached.

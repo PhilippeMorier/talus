@@ -28,7 +28,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(addVoxel),
       map(({ position, value }) => this.gridService.addVoxel(position, value)),
-      map(path => voxelAdded({ affectedOrigins: path.internalNode1Origins })),
+      map(affectedOrigin => voxelAdded({ affectedOrigins: [affectedOrigin] })),
       catchError(() => of(addVoxelFailed())),
     ),
   );
@@ -37,7 +37,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(addVoxels),
       map(({ positions, values }) => this.gridService.addVoxels(positions, values)),
-      map(path => voxelsAdded({ affectedOrigins: path.internalNode1Origins })),
+      map(affectedOrigins => voxelsAdded({ affectedOrigins })),
       catchError(() => of(addVoxelsFailed())),
     ),
   );
@@ -45,12 +45,8 @@ export class SceneViewerContainerEffects {
   removeVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeVoxel),
-      tap({
-        next: ({ position }) => {
-          this.gridService.removeVoxel(position);
-        },
-      }),
-      map(() => voxelRemoved()),
+      map(({ position }) => this.gridService.removeVoxel(position)),
+      map(affectedOrigin => voxelRemoved({ affectedOrigins: [affectedOrigin] })),
       catchError(() => of(removeVoxelFailed())),
     ),
   );
@@ -58,17 +54,13 @@ export class SceneViewerContainerEffects {
   updateGridMesh$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelAdded, voxelsAdded /*, removeVoxel*/),
+        ofType(voxelAdded, voxelsAdded, voxelRemoved),
         tap({
           next: ({ affectedOrigins }) => {
             affectedOrigins.map(origin => {
               const mesh = this.gridService.computeInternalNode1Mesh(origin);
               this.sceneViewerService.updateGridMesh(mesh);
             });
-
-            // this.sceneViewerService.updateGridMesh(
-            //   this.gridService.computeLastAccessedLeafNodeMesh(),
-            // );
           },
         }),
       ),
