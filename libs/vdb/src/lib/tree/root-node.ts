@@ -188,14 +188,6 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
-  *beginLeafOn(): IterableIterator<LeafNode<T>> {
-    for (const nodeStruct of this.table.values()) {
-      if (nodeStruct.isChild()) {
-        yield* nodeStruct.getChild().beginLeafOn();
-      }
-    }
-  }
-
   /**
    * Convert the given coordinates to a key and look the key up in this node's table.
    */

@@ -65,8 +65,6 @@ export class SceneViewerService {
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
 
-  meshes = new Map<string, Mesh>();
-
   initialize(canvas: HTMLCanvasElement): void {
     this.engine = this.engineFactory.create(canvas);
     this.scene = new Scene(this.engine);
@@ -93,9 +91,6 @@ export class SceneViewerService {
 
   resizeView(): void {
     this.engine.resize();
-
-    // const meshes = Array.from(this.meshes.values());
-    // Mesh.MergeMeshes(meshes, true, true);
   }
 
   updateGridMesh(mesh?: MeshData): void {
@@ -113,8 +108,6 @@ export class SceneViewerService {
 
       data.applyToMesh(gridMesh);
       gridMesh.convertToFlatShadedMesh();
-
-      this.meshes.set(meshName, gridMesh);
     }
   }
 
