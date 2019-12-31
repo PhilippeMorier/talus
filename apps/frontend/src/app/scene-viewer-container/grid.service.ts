@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { clone, Coord, Grid, gridToMesh, MeshData } from '@talus/vdb';
+import { Coord, Grid, gridToMesh, MeshData } from '@talus/vdb';
 
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
@@ -24,12 +24,12 @@ export class GridService {
     if (coords.length !== values.length) {
       coords.forEach(xyz => {
         const affected = this.addVoxel(xyz, values[0]);
-        affectedOrigins.set(affected.toString(), clone(affected));
+        affectedOrigins.set(affected.toString(), affected);
       });
     } else {
       coords.forEach((xyz, i) => {
         const affected = this.addVoxel(xyz, values[i]);
-        affectedOrigins.set(affected.toString(), clone(affected));
+        affectedOrigins.set(affected.toString(), affected);
       });
     }
 
@@ -47,7 +47,7 @@ export class GridService {
   }
 
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
-    const internal1 = this.accessor.getInternalNode1(origin);
+    const internal1 = this.accessor.probeInternalNode1(origin);
 
     const mesh = gridToMesh(internal1.beginVoxelOn());
     mesh.origin = internal1.origin;

@@ -50,13 +50,17 @@ export class ValueAccessor3<T> {
     return this.isHashed2(xyz) || this.isHashed1(xyz) || this.isHashed0(xyz);
   }
 
-  getInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
+  /**
+   * @returns Returns the node that contains voxel (x, y, z)
+   * and if it doesn't exist, return undefined.
+   */
+  probeInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
     if (this.isHashed1(xyz)) {
       return this.internalNode1;
     } else if (this.isHashed2(xyz)) {
-      return this.internalNode2.getInternalNode1AndCache(xyz, this);
+      return this.internalNode2.probeInternalNode1AndCache(xyz, this);
     } else {
-      return this.tree.root.getInternalNode1AndCache(xyz, this);
+      return this.tree.root.probeInternalNode1AndCache(xyz, this);
     }
   }
 

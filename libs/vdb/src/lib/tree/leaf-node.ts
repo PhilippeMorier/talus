@@ -121,7 +121,7 @@ export class LeafNode<T> implements HashableNode<T> {
     return this.getValue(xyz);
   }
 
-  getInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
+  probeInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
     throw new Error(`Shouldn't be called on LeafNode`);
   }
 

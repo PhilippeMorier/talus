@@ -78,18 +78,21 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return node.getValue();
   }
 
-  getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined {
+  probeInternalNode1AndCache(
+    xyz: Coord,
+    accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
     const i: Index = this.coordToOffset(xyz);
     const node = this.nodes[i];
 
-    if (this.childMask.isOn(i)) {
-      const child = node.getChild();
-      accessor.insert(xyz, child);
-
-      return child instanceof InternalNode1 ? child : child.getInternalNode1AndCache(xyz, accessor);
+    if (this.childMask.isOff(i)) {
+      return undefined;
     }
 
-    return undefined;
+    const child = node.getChild();
+    accessor.insert(xyz, child);
+
+    return child instanceof InternalNode1 ? child : child.probeInternalNode1AndCache(xyz, accessor);
   }
 
   setValueOn(xyz: Coord, value: T): void {

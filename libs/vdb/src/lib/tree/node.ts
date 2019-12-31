@@ -34,7 +34,11 @@ export interface HashableNode<T> extends Node<T> {
    */
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T;
 
-  getInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined;
+  /**
+   * Same as probeNode() except, if necessary, update the accessor with pointers
+   * to the nodes along the path from the root node to the node containing (x, y, z).
+   */
+  probeInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined;
 
   /**
    * Change the value of the voxel at the given coordinates and mark it as active.
