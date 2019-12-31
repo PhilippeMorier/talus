@@ -19,8 +19,7 @@ import { HashableNode } from '../tree/node';
 
 export interface MeshData {
   colors: number[];
-  indices: number[];
-  // normals: number[];
+  normals: number[];
   origin?: Coord;
   positions: number[];
 }
@@ -28,63 +27,425 @@ export interface MeshData {
 /**
  * Returns a mesh if there are any active voxels saved in the grid.
  * Otherwise, returns `undefined` i.e. if there are no active voxels.
+ *
+ * Doesn't use indices, since it is more efficient to send 32 positions
+ * instead of 24 positions and 32 indices for a cube.
+ * See: https://doc.babylonjs.com/how_to/optimizing_your_scene#using-unindexed-meshes
  */
 export function nodeToMesh<T>(node: HashableNode<T>): MeshData | undefined {
   const mesh: MeshData = {
     colors: [],
-    indices: [],
     positions: [],
-    // normals: [],
+    normals: [],
   };
 
   const r = Math.random();
   const g = Math.random();
   const b = Math.random();
 
-  let vertexCount = 0;
   for (const voxel of node.beginVoxelOn()) {
     const [x, y, z] = voxel.globalCoord;
 
-    mesh.indices.push(...[5, 0, 3, 3, 6, 5].map(i => i + vertexCount)); // Left
-    mesh.indices.push(...[1, 4, 7, 7, 2, 1].map(i => i + vertexCount)); // Right
+    const v0 = [x, y, z];
+    const v1 = [x + 1, y, z];
+    const v2 = [x + 1, y + 1, z];
+    const v3 = [x, y + 1, z];
+    const v4 = [x + 1, y, z + 1];
+    const v5 = [x, y, z + 1];
+    const v6 = [x, y + 1, z + 1];
+    const v7 = [x + 1, y + 1, z + 1];
 
-    mesh.indices.push(...[5, 4, 1, 1, 0, 5].map(i => i + vertexCount)); // Bottom
-    mesh.indices.push(...[7, 6, 3, 3, 2, 7].map(i => i + vertexCount)); // Top
+    mesh.positions.push(
+      // Front
+      v4[0],
+      v4[1],
+      v4[2],
+      v5[0],
+      v5[1],
+      v5[2],
+      v6[0],
+      v6[1],
+      v6[2],
+      v4[0],
+      v4[1],
+      v4[2],
+      v6[0],
+      v6[1],
+      v6[2],
+      v7[0],
+      v7[1],
+      v7[2],
 
-    mesh.indices.push(...[0, 1, 2, 2, 3, 0].map(i => i + vertexCount)); // Front
-    mesh.indices.push(...[4, 5, 6, 6, 7, 4].map(i => i + vertexCount)); // Back
+      // Back
+      v0[0],
+      v0[1],
+      v0[2],
+      v1[0],
+      v1[1],
+      v1[2],
+      v2[0],
+      v2[1],
+      v2[2],
+      v0[0],
+      v0[1],
+      v0[2],
+      v2[0],
+      v2[1],
+      v2[2],
+      v3[0],
+      v3[1],
+      v3[2],
 
-    // mesh.normals.push(-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0); // Left
-    // mesh.normals.push(1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0); // Right
+      // Left
+      v5[0],
+      v5[1],
+      v5[2],
+      v0[0],
+      v0[1],
+      v0[2],
+      v3[0],
+      v3[1],
+      v3[2],
+      v5[0],
+      v5[1],
+      v5[2],
+      v3[0],
+      v3[1],
+      v3[2],
+      v6[0],
+      v6[1],
+      v6[2],
 
-    // mesh.normals.push(0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0); // Bottom
-    // mesh.normals.push(0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0); // Top
+      // Right
+      v1[0],
+      v1[1],
+      v1[2],
+      v4[0],
+      v4[1],
+      v4[2],
+      v7[0],
+      v7[1],
+      v7[2],
+      v1[0],
+      v1[1],
+      v1[2],
+      v7[0],
+      v7[1],
+      v7[2],
+      v2[0],
+      v2[1],
+      v2[2],
 
-    // mesh.normals.push(0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1); // Front
-    // mesh.normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1); // Back
+      // Top
+      v3[0],
+      v3[1],
+      v3[2],
+      v2[0],
+      v2[1],
+      v2[2],
+      v7[0],
+      v7[1],
+      v7[2],
+      v3[0],
+      v3[1],
+      v3[2],
+      v7[0],
+      v7[1],
+      v7[2],
+      v6[0],
+      v6[1],
+      v6[2],
 
-    mesh.positions.push(x, y, z); // 0
-    mesh.positions.push(x + 1, y, z); // 1
-    mesh.positions.push(x + 1, y + 1, z); // 2
-    mesh.positions.push(x, y + 1, z); // 3
+      // Bottom
+      v5[0],
+      v5[1],
+      v5[2],
+      v4[0],
+      v4[1],
+      v4[2],
+      v1[0],
+      v1[1],
+      v1[2],
+      v5[0],
+      v5[1],
+      v5[2],
+      v1[0],
+      v1[1],
+      v1[2],
+      v0[0],
+      v0[1],
+      v0[2],
+    );
 
-    mesh.positions.push(x + 1, y, z + 1); // 4
-    mesh.positions.push(x, y, z + 1); // 5
-    mesh.positions.push(x, y + 1, z + 1); // 6
-    mesh.positions.push(x + 1, y + 1, z + 1); // 7
+    // Front
+    mesh.normals.push(
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
 
-    vertexCount += 8;
+      // Back
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
 
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
+      // Left
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
 
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
-    mesh.colors.push(r, g, b, 1);
+      // Right
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+
+      // Top
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+
+      // Bottom
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+      0,
+      -1,
+      0,
+    );
+
+    mesh.colors.push(
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+      r,
+      g,
+      b,
+      1,
+    );
   }
 
-  return vertexCount !== 0 ? mesh : undefined;
+  return mesh.positions.length !== 0 ? mesh : undefined;
 }

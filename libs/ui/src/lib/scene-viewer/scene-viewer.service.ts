@@ -91,15 +91,17 @@ export class SceneViewerService {
     this.deleteMesh(meshName);
 
     if (mesh) {
-      const nodeMesh = new Mesh(meshName, this.scene, this.gridNode);
       const data = new VertexData();
+      const nodeMesh = new Mesh(meshName, this.scene, this.gridNode);
+      // https://www.html5gamedevs.com/topic/31617-mesh-without-indices/?tab=comments#comment-181659
+      // https://doc.babylonjs.com/how_to/optimizing_your_scene#using-unindexed-meshes
+      nodeMesh._unIndexed = true;
 
       data.colors = mesh.colors;
-      data.indices = mesh.indices;
+      data.normals = mesh.normals;
       data.positions = mesh.positions;
 
       data.applyToMesh(nodeMesh);
-      nodeMesh.convertToFlatShadedMesh();
 
       // https://doc.babylonjs.com/how_to/optimizing_your_scene
       // https://www.html5gamedevs.com/topic/12504-performancedraw-calls/
