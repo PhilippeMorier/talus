@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Coord, Grid, gridToMesh, MeshData } from '@talus/vdb';
+import { Coord, Grid, MeshData, nodeToMesh } from '@talus/vdb';
 
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
@@ -42,14 +42,10 @@ export class GridService {
     return this.accessor.key;
   }
 
-  computeMesh(): MeshData | undefined {
-    return gridToMesh(this.grid.beginVoxelOn());
-  }
-
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
     const internal1 = this.accessor.probeInternalNode1(origin);
 
-    const mesh = gridToMesh(internal1.beginVoxelOn());
+    const mesh = nodeToMesh(internal1);
     mesh.origin = internal1.origin;
 
     return mesh;

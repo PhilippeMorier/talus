@@ -15,7 +15,7 @@
  */
 
 import { Coord } from '../math';
-import { Voxel } from '../tree/voxel';
+import { HashableNode } from '../tree/node';
 
 export interface MeshData {
   colors: number[];
@@ -29,7 +29,7 @@ export interface MeshData {
  * Returns a mesh if there are any active voxels saved in the grid.
  * Otherwise, returns `undefined` i.e. if there are no active voxels.
  */
-export function gridToMesh<T>(voxelIterator: IterableIterator<Voxel<T>>): MeshData | undefined {
+export function nodeToMesh<T>(node: HashableNode<T>): MeshData | undefined {
   const mesh: MeshData = {
     colors: [],
     indices: [],
@@ -42,7 +42,7 @@ export function gridToMesh<T>(voxelIterator: IterableIterator<Voxel<T>>): MeshDa
   const b = Math.random();
 
   let vertexCount = 0;
-  for (const voxel of voxelIterator) {
+  for (const voxel of node.beginVoxelOn()) {
     const [x, y, z] = voxel.globalCoord;
 
     mesh.indices.push(...[5, 0, 3, 3, 6, 5].map(i => i + vertexCount)); // Left

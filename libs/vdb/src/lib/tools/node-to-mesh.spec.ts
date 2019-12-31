@@ -1,7 +1,7 @@
 import { Grid } from '../grid';
-import { gridToMesh } from './grid-to-mesh';
+import { nodeToMesh } from './node-to-mesh';
 
-describe('gridToMesh()', () => {
+describe('nodeToMesh()', () => {
   it('should generate the mesh', () => {
     const grid = new Grid(0);
     const accessor = grid.getAccessor();
@@ -9,7 +9,7 @@ describe('gridToMesh()', () => {
     accessor.setValue([0, 0, 0], 1);
     accessor.setValue([0, 0, 1], 1);
 
-    const meshData = gridToMesh(grid.beginVoxelOn());
+    const meshData = nodeToMesh(grid.tree.root);
 
     const voxels = 2;
 
