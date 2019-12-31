@@ -7,6 +7,7 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -152,11 +153,27 @@ export class SceneViewerService {
       const info: PointerPickInfo = {
         pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
         pointerButton: event.button,
-        normal: vector3ToCoord(pickInfo.getNormal()),
+        normal: this.getNormal(pickInfo),
       };
 
       this.pointerPick$.next(info);
     };
+  }
+
+  /**
+   * PickingInfo.getNormal() requires to have indices which are not available
+   * for an unindexed custom mesh. Therefore, read normals directly from picked mesh.
+   *
+   * https://github.com/BabylonJS/Babylon.js/blob/master/src/Collisions/pickingInfo.ts#L65
+   */
+  private getNormal(pickInfo: PickingInfo): Coord {
+    const normals = pickInfo.pickedMesh.getVerticesData(VertexBuffer.NormalKind);
+
+    return [
+      normals[pickInfo.faceId * 9],
+      normals[pickInfo.faceId * 9 + 1],
+      normals[pickInfo.faceId * 9 + 2],
+    ];
   }
 
   private deleteMesh(name: string): void {

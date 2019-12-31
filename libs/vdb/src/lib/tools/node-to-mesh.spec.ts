@@ -13,14 +13,14 @@ describe('nodeToMesh()', () => {
 
     const voxels = 2;
 
-    const corners = 8;
     const triangles = 12;
+    const triangleCorners = triangles * 3;
 
     const xyz = 3;
     const rgba = 4;
 
-    expect(meshData.positions.length).toEqual(voxels * corners * xyz);
-    expect(meshData.colors.length).toEqual(voxels * corners * rgba);
-    expect(meshData.indices.length).toEqual(voxels * triangles * xyz);
+    expect(meshData.positions.length).toEqual(voxels * triangleCorners * xyz);
+    expect(meshData.colors.length).toEqual(voxels * triangleCorners * rgba);
+    expect(meshData.normals.length).toEqual(meshData.positions.length);
   });
 });
