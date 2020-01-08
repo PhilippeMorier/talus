@@ -12,10 +12,14 @@ export class GridService {
   grid = new Grid(0);
   accessor = this.grid.getAccessor();
 
+  /**
+   * Adds a new voxel via accessor to share access path.
+   * @returns origin of `InternalNode1` of affected node (node containing added voxel).
+   */
   addVoxel(xyz: Coord, value: number): Coord {
     this.accessor.setValue(xyz, value);
 
-    return this.accessor.key;
+    return this.accessor.internalNode1Origin;
   }
 
   addVoxels(coords: Coord[], values: number[]): Coord[] {
@@ -39,7 +43,7 @@ export class GridService {
   removeVoxel(xyz: Coord): Coord {
     this.accessor.setValueOff(xyz, this.grid.background);
 
-    return this.accessor.key;
+    return this.accessor.internalNode1Origin;
   }
 
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {

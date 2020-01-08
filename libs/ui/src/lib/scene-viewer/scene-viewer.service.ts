@@ -86,7 +86,7 @@ export class SceneViewerService {
     this.engine.resize();
   }
 
-  updateGridMesh(mesh?: MeshData): void {
+  updateNodeMesh(mesh?: MeshData): void {
     const meshName = `node1 [${mesh.origin}]`;
 
     this.deleteMesh(meshName);
@@ -134,14 +134,14 @@ export class SceneViewerService {
     );
     camera.inertia = 0;
     camera.panningInertia = 0;
-    camera.wheelPrecision = 0.1;
+    camera.wheelPrecision = 1.0;
 
-    camera.panningSensibility = 5;
+    camera.panningSensibility = 10;
     camera.angularSensibilityX = 200;
     camera.angularSensibilityY = 100;
 
     camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
-    camera.setPosition(new Vector3(400, 400, -400));
+    camera.setPosition(new Vector3(20, 20, -20));
   }
 
   private createLight(): void {

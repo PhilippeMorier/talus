@@ -28,7 +28,7 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  get key(): Coord {
+  get internalNode1Origin(): Coord {
     return clone(this.internalKey1);
   }
 
