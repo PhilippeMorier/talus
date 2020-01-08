@@ -8,9 +8,9 @@ import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
 abstract class InternalNode<T> implements HashableNode<T> {
+  origin: Coord;
   protected childMask: NodeMask;
   protected valueMask: NodeMask;
-  protected origin: Coord;
 
   protected nodes: NodeUnion<T, HashableNode<T>>[];
 
@@ -76,6 +76,23 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     return node.getValue();
+  }
+
+  probeInternalNode1AndCache(
+    xyz: Coord,
+    accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+
+    if (this.childMask.isOff(i)) {
+      return undefined;
+    }
+
+    const child = node.getChild();
+    accessor.insert(xyz, child);
+
+    return child instanceof InternalNode1 ? child : child.probeInternalNode1AndCache(xyz, accessor);
   }
 
   setValueOn(xyz: Coord, value: T): void {
@@ -242,7 +259,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
 export class InternalNode1<T> extends InternalNode<T> {
   // tslint:disable:no-bitwise
-  static readonly LOG2DIM = 2; // log2 of tile count in one dimension
+  static readonly LOG2DIM = 3; // log2 of tile count in one dimension
   static readonly TOTAL = InternalNode1.LOG2DIM + LeafNode.TOTAL; // log2 of voxel count in one dimension
   static readonly DIM = 1 << InternalNode1.TOTAL; // total voxel count in one dimension
   static readonly DIM_MAX_INDEX_INVERTED: Index = ~(InternalNode1.DIM - 1); // Performance: max index

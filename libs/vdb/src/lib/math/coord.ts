@@ -24,3 +24,11 @@ export function createMaxCoord(): Coord {
 export function createMinCoord(): Coord {
   return [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
 }
+
+export function areEqual(c1: Coord, c2: Coord): boolean {
+  return c1[0] === c2[0] && c1[1] === c2[1] && c1[2] === c2[2];
+}
+
+export function clone(c: Coord): Coord {
+  return [c[0], c[1], c[2]];
+}

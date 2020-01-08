@@ -7,10 +7,13 @@ import { GridService } from './grid.service';
 import {
   addVoxel,
   addVoxelFailed,
+  addVoxels,
+  addVoxelsFailed,
   removeVoxel,
   removeVoxelFailed,
   voxelAdded,
   voxelRemoved,
+  voxelsAdded,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -24,28 +27,43 @@ export class SceneViewerContainerEffects {
   addVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addVoxel),
-      tap({
-        next: ({ position, value }) => {
-          this.gridService.addVoxel(position, value);
-          this.sceneViewerService.updateGridMesh(this.gridService.computeMesh());
-        },
-      }),
-      map(() => voxelAdded()),
+      map(({ position, value }) => this.gridService.addVoxel(position, value)),
+      map(affectedOrigin => voxelAdded({ affectedOrigins: [affectedOrigin] })),
       catchError(() => of(addVoxelFailed())),
+    ),
+  );
+
+  addVoxels$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addVoxels),
+      map(({ positions, values }) => this.gridService.addVoxels(positions, values)),
+      map(affectedOrigins => voxelsAdded({ affectedOrigins })),
+      catchError(() => of(addVoxelsFailed())),
     ),
   );
 
   removeVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeVoxel),
-      tap({
-        next: ({ position }) => {
-          this.gridService.removeVoxel(position);
-          this.sceneViewerService.updateGridMesh(this.gridService.computeMesh());
-        },
-      }),
-      map(() => voxelRemoved()),
+      map(({ position }) => this.gridService.removeVoxel(position)),
+      map(affectedOrigin => voxelRemoved({ affectedOrigins: [affectedOrigin] })),
       catchError(() => of(removeVoxelFailed())),
     ),
+  );
+
+  updateGridMesh$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(voxelAdded, voxelsAdded, voxelRemoved),
+        tap({
+          next: ({ affectedOrigins }) => {
+            affectedOrigins.map(origin => {
+              const mesh = this.gridService.computeInternalNode1Mesh(origin);
+              this.sceneViewerService.updateNodeMesh(mesh);
+            });
+          },
+        }),
+      ),
+    { dispatch: false },
   );
 }

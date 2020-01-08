@@ -1,5 +1,5 @@
 import { Coord } from '../math/coord';
-import { InternalNode2 } from './internal-node';
+import { InternalNode1, InternalNode2 } from './internal-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -57,6 +57,22 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.getTile().value;
   }
 
+  probeInternalNode1AndCache(
+    xyz: Coord,
+    accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
+    const struct = this.findCoord(xyz);
+
+    if (!struct || struct.isTile()) {
+      return undefined;
+    }
+
+    const child = struct.getChild();
+    accessor.insert(xyz, child);
+
+    return child.probeInternalNode1AndCache(xyz, accessor);
+  }
+
   setValueOn(xyz: Coord, value: T): void {
     const struct = this.findCoord(xyz);
     let child: HashableNode<T>;
@@ -92,7 +108,7 @@ export class RootNode<T> implements HashableNode<T> {
 
     if (child) {
       accessor.insert(xyz, child);
-      child.setValueOn(xyz, value);
+      child.setValueAndCache(xyz, value, accessor);
     }
   }
 

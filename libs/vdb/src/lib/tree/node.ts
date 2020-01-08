@@ -1,3 +1,4 @@
+import { InternalNode1 } from '@talus/vdb';
 import { Coord } from '../math/coord';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -34,10 +35,17 @@ export interface HashableNode<T> extends Node<T> {
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T;
 
   /**
+   * Same as probeNode() except, if necessary, update the accessor with pointers
+   * to the nodes along the path from the root node to the node containing (x, y, z).
+   */
+  probeInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined;
+
+  /**
    * Change the value of the voxel at the given coordinates and mark it as active.
    * If necessary, update the accessor with pointers to the nodes along the path
    * from the root node to the node containing the voxel.
    * @note Used internally by ValueAccessor.
+   * @return The affected `LeafNode` in which a value was set.
    */
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void;
 

@@ -5,12 +5,12 @@ import { LeafNode } from './leaf-node';
 describe('InternalNode', () => {
   describe('InternalNode1', () => {
     describe('static config values', () => {
-      expect(InternalNode1.LOG2DIM).toEqual(2);
-      expect(InternalNode1.TOTAL).toEqual(5);
-      expect(InternalNode1.DIM).toEqual(32);
-      expect(InternalNode1.NUM_VALUES).toEqual(64);
+      expect(InternalNode1.LOG2DIM).toEqual(3);
+      expect(InternalNode1.TOTAL).toEqual(3 + 3);
+      expect(InternalNode1.DIM).toEqual(64);
+      expect(InternalNode1.NUM_VALUES).toEqual(512);
       expect(InternalNode1.LEVEL).toEqual(1);
-      expect(InternalNode1.NUM_VOXELS).toEqual(32_768);
+      expect(InternalNode1.NUM_VOXELS).toEqual(262_144);
     });
 
     describe('setValueOn()', () => {
@@ -50,28 +50,28 @@ describe('InternalNode', () => {
     describe('coordToOffset()', () => {
       it.each([
         [[0, 0, LeafNode.DIM], 1],
-        [[0, LeafNode.DIM, LeafNode.DIM], 4 + 1],
-        [[LeafNode.DIM, LeafNode.DIM, LeafNode.DIM], 16 + 4 + 1],
+        [[0, LeafNode.DIM, LeafNode.DIM], 8 + 1],
+        [[LeafNode.DIM, LeafNode.DIM, LeafNode.DIM], 64 + 8 + 1],
 
         [[0, 0, LeafNode.DIM * 0], 0],
         [[0, 0, LeafNode.DIM * 1], 1],
         [[0, 0, LeafNode.DIM * 2], 2],
         [[0, 0, LeafNode.DIM * 3], 3],
 
-        [[0, LeafNode.DIM * 0, 0], 0 * 4],
-        [[0, LeafNode.DIM * 1, 0], 1 * 4],
-        [[0, LeafNode.DIM * 2, 0], 2 * 4],
-        [[0, LeafNode.DIM * 3, 0], 3 * 4],
+        [[0, LeafNode.DIM * 0, 0], 0 * 8],
+        [[0, LeafNode.DIM * 1, 0], 1 * 8],
+        [[0, LeafNode.DIM * 2, 0], 2 * 8],
+        [[0, LeafNode.DIM * 3, 0], 3 * 8],
 
-        [[LeafNode.DIM * 0, 0, 0], 0 * 16],
-        [[LeafNode.DIM * 1, 0, 0], 1 * 16],
-        [[LeafNode.DIM * 2, 0, 0], 2 * 16],
-        [[LeafNode.DIM * 3, 0, 0], 3 * 16],
+        [[LeafNode.DIM * 0, 0, 0], 0 * 64],
+        [[LeafNode.DIM * 1, 0, 0], 1 * 64],
+        [[LeafNode.DIM * 2, 0, 0], 2 * 64],
+        [[LeafNode.DIM * 3, 0, 0], 3 * 64],
 
-        // 24 / 8 = 3 -> 3 x 16 = 48  ╮
-        // 9  / 8 = 1 -> 1 x 4  = 4   ├─> 48 + 4 + 2 = 54
-        // 17 / 8 = 2 -> 2 x 1  = 2   ╯
-        [[24, 9, 17], 54],
+        // 24 / 8 = 3 -> 3 x 64 = 192  ╮
+        // 9  / 8 = 1 -> 1 x 8  = 8    ├─> 192 + 8 + 2 = 202
+        // 17 / 8 = 2 -> 2 x 1  = 2    ╯
+        [[24, 9, 17], 202],
       ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
         const child = new InternalNode1<number>([0, 0, 0]);
 
@@ -82,11 +82,12 @@ describe('InternalNode', () => {
     describe('isValueOn()', () => {
       it('should set each voxel', () => {
         const node1 = new InternalNode1<number>([0, 0, 0]);
+        const maxDim = InternalNode1.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
-        for (let x = 0; x < InternalNode1.DIM; x++) {
-          for (let y = 0; y < InternalNode1.DIM; y++) {
-            for (let z = 0; z < InternalNode1.DIM; z++) {
+        for (let x = 0; x < maxDim; x++) {
+          for (let y = 0; y < maxDim; y++) {
+            for (let z = 0; z < maxDim; z++) {
               node1.setValueOn([x, y, z], onCounter);
 
               expect(node1.getValue([x, y, z])).toEqual(onCounter);
@@ -95,18 +96,19 @@ describe('InternalNode', () => {
           }
         }
 
-        expect(onCounter).toEqual(Math.pow(InternalNode1.DIM, 3));
+        expect(onCounter).toEqual(Math.pow(maxDim, 3));
       });
     });
 
     describe('onVoxelCount()', () => {
       it('should count all activated voxels', () => {
         const node1 = new InternalNode1<number>([0, 0, 0]);
+        const maxDim = InternalNode1.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
-        for (let x = 0; x < InternalNode1.DIM; x++) {
-          for (let y = 0; y < InternalNode1.DIM; y++) {
-            for (let z = 0; z < InternalNode1.DIM; z++) {
+        for (let x = 0; x < maxDim; x++) {
+          for (let y = 0; y < maxDim; y++) {
+            for (let z = 0; z < maxDim; z++) {
               node1.setValueOn([x, y, z], 42);
               onCounter++;
 
@@ -115,7 +117,7 @@ describe('InternalNode', () => {
           }
         }
 
-        expect(onCounter).toEqual(Math.pow(InternalNode1.DIM, 3));
+        expect(onCounter).toEqual(Math.pow(maxDim, 3));
       });
     });
 
@@ -143,11 +145,11 @@ describe('InternalNode', () => {
   describe('InternalNode2', () => {
     describe('static config values', () => {
       expect(InternalNode2.LOG2DIM).toEqual(2);
-      expect(InternalNode2.TOTAL).toEqual(7);
-      expect(InternalNode2.DIM).toEqual(128);
+      expect(InternalNode2.TOTAL).toEqual(2 + 3 + 3);
+      expect(InternalNode2.DIM).toEqual(256);
       expect(InternalNode2.NUM_VALUES).toEqual(64);
       expect(InternalNode2.LEVEL).toEqual(2);
-      expect(InternalNode2.NUM_VOXELS).toEqual(2_097_152);
+      expect(InternalNode2.NUM_VOXELS).toEqual(16_777_216);
     });
 
     describe('setValueOn()', () => {
@@ -176,14 +178,14 @@ describe('InternalNode', () => {
     describe('coordToOffset()', () => {
       it.each([
         [[0, 0, 0], 0],
-        [[0, 0, 128], 0],
-        [[0, 0, 32], 1],
-        [[0, 0, 64], 2],
-        [[0, 0, 96], 3],
+        [[0, 0, 256], 0],
+        [[0, 0, 64], 1],
+        [[0, 0, 128], 2],
+        [[0, 0, 192], 3],
 
-        [[0, 0, 32], 1],
-        [[0, 32, 0], 4],
-        [[32, 0, 0], 16],
+        [[0, 0, 64], 1],
+        [[0, 64, 0], 4],
+        [[64, 0, 0], 16],
       ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
         const child = new InternalNode2<number>([0, 0, 0]);
 
@@ -194,18 +196,19 @@ describe('InternalNode', () => {
     describe('onVoxelCount()', () => {
       it('should count all activated voxels', () => {
         const node2 = new InternalNode2<number>([0, 0, 0]);
+        const maxDim = InternalNode2.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
-        for (let x = 0; x < InternalNode2.DIM; x++) {
-          for (let y = 0; y < InternalNode2.DIM; y++) {
-            for (let z = 0; z < InternalNode2.DIM; z++) {
+        for (let x = 0; x < maxDim; x++) {
+          for (let y = 0; y < maxDim; y++) {
+            for (let z = 0; z < maxDim; z++) {
               node2.setValueOn([x, y, z], 42);
               onCounter++;
             }
           }
         }
 
-        expect(onCounter).toEqual(Math.pow(InternalNode2.DIM, 3));
+        expect(onCounter).toEqual(Math.pow(maxDim, 3));
       });
     });
 

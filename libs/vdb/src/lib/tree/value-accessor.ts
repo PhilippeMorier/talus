@@ -1,4 +1,4 @@
-import { Coord, createMaxCoord } from '../math/coord';
+import { clone, Coord, createMaxCoord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -28,7 +28,9 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  constructor(private tree: Tree<T>) {}
+  get internalNode1Origin(): Coord {
+    return clone(this.internalKey1);
+  }
 
   private leafKey: Coord = createMaxCoord();
   private leafNode: LeafNode<T>;
@@ -39,11 +41,27 @@ export class ValueAccessor3<T> {
   private internalKey2: Coord = createMaxCoord();
   private internalNode2: InternalNode2<T>;
 
+  constructor(private tree: Tree<T>) {}
+
   /**
    * Return true if any of the nodes along the path to the given voxel have been cached.
    */
   isCached(xyz: Coord): boolean {
     return this.isHashed2(xyz) || this.isHashed1(xyz) || this.isHashed0(xyz);
+  }
+
+  /**
+   * @returns Returns the node that contains voxel (x, y, z)
+   * and if it doesn't exist, return undefined.
+   */
+  probeInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
+    if (this.isHashed1(xyz)) {
+      return this.internalNode1;
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.probeInternalNode1AndCache(xyz, this);
+    } else {
+      return this.tree.root.probeInternalNode1AndCache(xyz, this);
+    }
   }
 
   /**
