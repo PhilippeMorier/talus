@@ -115,7 +115,7 @@ export class SceneViewerService {
     // https://doc.babylonjs.com/how_to/optimizing_your_scene
     this.scene = new Scene(this.engine, {
       useGeometryUniqueIdsMap: true,
-      useClonedMeshhMap: true,
+      useClonedMeshMap: true,
     });
     this.scene.freezeMaterials();
 
