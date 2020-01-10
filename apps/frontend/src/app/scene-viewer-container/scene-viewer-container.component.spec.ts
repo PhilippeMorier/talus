@@ -66,7 +66,8 @@ describe('SceneViewerContainerComponent', () => {
       normal: [0, 0, 0],
     });
 
-    expect(mockStore.dispatch).not.toHaveBeenCalled();
+    // Only once called due to first initial added voxel at [0, 0, 0]
+    expect(mockStore.dispatch).toHaveBeenCalledTimes(1);
   });
 
   it.each([
