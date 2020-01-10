@@ -43,4 +43,12 @@ export class UndoRedoEffects {
       map(([redoAction, undoAction]) => addUndo({ redoAction, undoAction })),
     ),
   );
+
+  addUndoActionForRemoveVoxel$ = createEffect(() =>
+    this.userTriggeredActions$.pipe(
+      ofType(removeVoxel),
+      map(action => [action, addVoxel({ position: action.position, value: 42 })]),
+      map(([redoAction, undoAction]) => addUndo({ redoAction, undoAction })),
+    ),
+  );
 }

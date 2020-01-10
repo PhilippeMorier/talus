@@ -28,6 +28,7 @@ const maxBufferIndex = maxBufferSize - 1;
 
 export const reducer = createReducer(
   initialState,
+
   on(addUndo, (state, { redoAction, undoAction }) => {
     const newIndex = state.currentIndex + 1;
 
@@ -38,12 +39,14 @@ export const reducer = createReducer(
       undoActions: [...state.undoActions.slice(-maxBufferIndex), undoAction],
     };
   }),
+
   on(undo, redo, state => {
     return {
       ...state,
       isUndoRedoing: true,
     };
   }),
+
   on(undone, state => {
     const newIndex = state.currentIndex - 1;
 
@@ -53,13 +56,15 @@ export const reducer = createReducer(
       currentIndex: newIndex < 0 ? -1 : newIndex,
     };
   }),
+
   on(redone, state => {
     const newIndex = state.currentIndex + 1;
+    const maxRedoIndex = state.redoActions.length - 1;
 
     return {
       ...state,
       isUndoRedoing: false,
-      currentIndex: newIndex > maxBufferIndex ? maxBufferIndex : newIndex,
+      currentIndex: newIndex > maxRedoIndex ? maxRedoIndex : newIndex,
     };
   }),
 );
