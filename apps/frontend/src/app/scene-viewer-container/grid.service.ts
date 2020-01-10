@@ -49,9 +49,10 @@ export class GridService {
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
     const internal1 = this.accessor.probeInternalNode1(origin);
 
-    const mesh = nodeToMesh(internal1);
-    mesh.origin = internal1.origin;
+    if (!internal1) {
+      return undefined;
+    }
 
-    return mesh;
+    return nodeToMesh(internal1);
   }
 }

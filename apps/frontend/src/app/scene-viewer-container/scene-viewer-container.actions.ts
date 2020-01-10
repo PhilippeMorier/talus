@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
 
-const actionTypePrefix = '[SceneViewerContainer]';
+const actionTypePrefix = `[sceneViewerContainer]`;
 
 export const addVoxel = createAction(
   `${actionTypePrefix} Add voxel`,

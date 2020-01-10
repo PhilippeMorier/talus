@@ -74,8 +74,8 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   setValueOn(xyz: Coord, value: T): void {
+    let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);
-    let child: HashableNode<T>;
 
     if (!struct) {
       child = new InternalNode2(xyz, this._background);
@@ -93,7 +93,7 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
-    let child: HashableNode<T>;
+    let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);
 
     if (!struct) {
@@ -113,7 +113,7 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   setValueOffAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
-    let child: HashableNode<T>;
+    let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);
 
     if (!struct) {
@@ -202,6 +202,10 @@ class NodeStruct<T> {
   constructor(private child?: HashableNode<T>) {}
 
   getChild(): HashableNode<T> {
+    if (!this.child) {
+      throw new Error('Access undefined child.');
+    }
+
     return this.child;
   }
 

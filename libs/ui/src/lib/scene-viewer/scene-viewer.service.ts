@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AbstractMesh } from '@babylonjs/core';
 // Babylon.js needs to target individual files to fully benefit from tree shaking.
 // See: https://doc.babylonjs.com/features/es6_support#tree-shaking
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
@@ -10,7 +11,6 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
-import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
@@ -71,11 +71,6 @@ export class SceneViewerService {
     this.createLight();
 
     this.registerPointerPick();
-
-    const box = MeshBuilder.CreateBox('box', {}, this.scene);
-    box.position.x = 0.5;
-    box.position.y = 0.5;
-    box.position.z = 0.5;
   }
 
   startRendering(): void {
@@ -86,8 +81,8 @@ export class SceneViewerService {
     this.engine.resize();
   }
 
-  updateNodeMesh(mesh?: MeshData): void {
-    const meshName = `node1 [${mesh.origin}]`;
+  updateNodeMesh(mesh: MeshData | undefined, origin: Coord): void {
+    const meshName = `node1 [${origin}]`;
 
     this.deleteMesh(meshName);
 
@@ -140,7 +135,10 @@ export class SceneViewerService {
     camera.angularSensibilityX = 200;
     camera.angularSensibilityY = 100;
 
-    camera.attachControl(this.engine.getRenderingCanvas(), true, false, 2);
+    const renderingCanvas = this.engine.getRenderingCanvas();
+    if (renderingCanvas) {
+      camera.attachControl(renderingCanvas, true, false, 2);
+    }
     camera.setPosition(new Vector3(20, 20, -20));
   }
 
@@ -150,30 +148,34 @@ export class SceneViewerService {
 
   private registerPointerPick(): void {
     this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
-      const info: PointerPickInfo = {
-        pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
-        pointerButton: event.button,
-        normal: this.getNormal(pickInfo),
-      };
+      if (pickInfo.pickedMesh && pickInfo.pickedPoint) {
+        const info: PointerPickInfo = {
+          pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
+          pointerButton: event.button,
+          normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
+        };
 
-      this.pointerPick$.next(info);
+        this.pointerPick$.next(info);
+      }
     };
   }
 
   /**
    * PickingInfo.getNormal() requires to have indices which are not available
-   * for an unindexed custom mesh. Therefore, read normals directly from picked mesh.
+   * for an un-indexed custom mesh. Therefore, read normals directly from picked mesh.
    *
    * https://github.com/BabylonJS/Babylon.js/blob/master/src/Collisions/pickingInfo.ts#L65
    */
-  private getNormal(pickInfo: PickingInfo): Coord {
-    const normals = pickInfo.pickedMesh.getVerticesData(VertexBuffer.NormalKind);
+  private getNormal(pickedMesh: AbstractMesh, faceId: number): Coord {
+    const normals = pickedMesh.getVerticesData(VertexBuffer.NormalKind);
 
-    return [
-      normals[pickInfo.faceId * 9],
-      normals[pickInfo.faceId * 9 + 1],
-      normals[pickInfo.faceId * 9 + 2],
-    ];
+    if (!normals) {
+      throw new Error('Could not get normals from picked mesh.');
+    }
+
+    const faceIndex = faceId * 9;
+
+    return [normals[faceIndex], normals[faceIndex + 1], normals[faceIndex + 2]];
   }
 
   private deleteMesh(name: string): void {

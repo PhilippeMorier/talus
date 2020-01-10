@@ -10,8 +10,10 @@ import {
 import { environment } from '../environments/environment';
 import * as fromSceneViewerContainer from './scene-viewer-container/scene-viewer-container.reducer';
 import * as fromToolsPanel from './tools-panel/tools-panel.reducer';
+import * as fromUndoRedo from './undo-redo/undo-redo.reducer';
 
 export interface State {
+  [fromUndoRedo.featureKey]: fromUndoRedo.State;
   [fromToolsPanel.featureKey]: fromToolsPanel.State;
   [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.State;
 }
@@ -27,8 +29,9 @@ export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<State, Action>>
   'Root reducers token',
   {
     factory: () => ({
-      [fromToolsPanel.featureKey]: fromToolsPanel.reducer,
       [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.reducer,
+      [fromToolsPanel.featureKey]: fromToolsPanel.reducer,
+      [fromUndoRedo.featureKey]: fromUndoRedo.reducer,
     }),
   },
 );
@@ -77,4 +80,16 @@ export const selectToolsPanelState = createFeatureSelector<State, fromToolsPanel
 export const selectSelectedToolId = createSelector(
   selectToolsPanelState,
   fromToolsPanel.selectSelectedToolId,
+);
+
+/**
+ * UndoRedo reducers
+ */
+export const selectUndoRedoState = createFeatureSelector<State, fromUndoRedo.State>(
+  fromUndoRedo.featureKey,
+);
+
+export const selectNewestUndoAction = createSelector(
+  selectUndoRedoState,
+  fromUndoRedo.selectNewestUndoAction,
 );
