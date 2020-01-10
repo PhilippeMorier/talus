@@ -89,7 +89,12 @@ export const selectUndoRedoState = createFeatureSelector<State, fromUndoRedo.Sta
   fromUndoRedo.featureKey,
 );
 
-export const selectNewestUndoAction = createSelector(
+export const selectCurrentUndoAction = createSelector(
   selectUndoRedoState,
-  fromUndoRedo.selectNewestUndoAction,
+  fromUndoRedo.selectCurrentUndoAction,
+);
+
+export const selectCurrentRedoAction = createSelector(
+  selectUndoRedoState,
+  fromUndoRedo.selectCurrentRedoAction,
 );
