@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store } from '@ngrx/store';
+import { Action, select, Store } from '@ngrx/store';
 import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import { addVoxel, removeVoxel } from '../scene-viewer-container/scene-viewer-container.actions';
@@ -40,7 +40,7 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(addVoxel),
       map(action => [action, removeVoxel({ position: action.position })]),
-      map(([redoAction, undoAction]) => addUndo({ redoAction, undoAction })),
+      map(this.createAddUndo),
     ),
   );
 
@@ -48,7 +48,11 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(removeVoxel),
       map(action => [action, addVoxel({ position: action.position, value: 42 })]),
-      map(([redoAction, undoAction]) => addUndo({ redoAction, undoAction })),
+      map(this.createAddUndo),
     ),
   );
+
+  createAddUndo([redoAction, undoAction]: Action[]): Action {
+    return addUndo({ redoAction, undoAction });
+  }
 }
