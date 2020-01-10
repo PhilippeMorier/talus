@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
@@ -19,7 +19,7 @@ import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerContainerComponent {
+export class SceneViewerContainerComponent implements AfterViewInit {
   @ViewChild(SceneViewerComponent, { static: false })
   private sceneViewerComponent: SceneViewerComponent;
 
@@ -27,6 +27,10 @@ export class SceneViewerContainerComponent {
   voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
 
   constructor(private store: Store<fromApp.State>) {}
+
+  ngAfterViewInit(): void {
+    this.store.dispatch(addVoxel({ position: [0, 0, 0], value: 42 }));
+  }
 
   onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);
