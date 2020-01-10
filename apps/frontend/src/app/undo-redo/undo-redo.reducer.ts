@@ -32,11 +32,14 @@ export const reducer = createReducer(
   on(addUndo, (state, { redoAction, undoAction }) => {
     const newIndex = state.currentIndex + 1;
 
+    const redoActions = state.redoActions.slice(0, newIndex);
+    const undoActions = state.undoActions.slice(0, newIndex);
+
     return {
       ...state,
       currentIndex: newIndex > maxBufferIndex ? maxBufferIndex : newIndex,
-      redoActions: [...state.redoActions.slice(-maxBufferIndex), redoAction],
-      undoActions: [...state.undoActions.slice(-maxBufferIndex), undoAction],
+      redoActions: [...redoActions.slice(-maxBufferIndex), redoAction],
+      undoActions: [...undoActions.slice(-maxBufferIndex), undoAction],
     };
   }),
 
