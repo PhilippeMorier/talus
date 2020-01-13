@@ -51,4 +51,8 @@ export class NodeMask {
   isOff(i: Index): boolean {
     return this.mask.test(i) === false;
   }
+
+  set(i: Index, on: boolean): void {
+    on ? this.setOn(i) : this.setOff(i);
+  }
 }

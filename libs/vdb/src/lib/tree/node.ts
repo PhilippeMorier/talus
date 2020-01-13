@@ -64,6 +64,14 @@ export interface HashableNode<T> extends Node<T> {
    * @note Used internally by ValueAccessor.
    */
   isValueOnAndCache(xyz: Coord, accessor: ValueAccessor3<T>): boolean;
+
+  /**
+   * Set the active state of the voxel at the given coordinates without changing its value.
+   * If necessary, update the accessor with pointers to the nodes along the path
+   * from the root node to the node containing the voxel.
+   * @note Used internally by ValueAccessor.
+   */
+  setActiveStateAndCache(xyz: Coord, on: boolean, accessor: ValueAccessor3<T>): void;
 }
 
 export interface IterableNode<T> {

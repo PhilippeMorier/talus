@@ -126,6 +126,20 @@ export class ValueAccessor3<T> {
     return this.tree.root.isValueOnAndCache(xyz, this);
   }
 
+  /**
+   * Set the active state of the voxel at the given coordinates without changing its value.
+   */
+  setActiveState(xyz: Coord, on: boolean): void {
+    if (this.isHashed0(xyz)) {
+      this.leafNode.setActiveStateAndCache(xyz, on, this);
+    } else if (this.isHashed1(xyz)) {
+      this.internalNode1.setActiveStateAndCache(xyz, on, this);
+    } else if (this.isHashed2(xyz)) {
+      this.internalNode2.setActiveStateAndCache(xyz, on, this);
+    }
+    this.tree.root.setActiveStateAndCache(xyz, on, this);
+  }
+
   // tslint:disable:no-bitwise
   insert(xyz: Coord, node: HashableNode<T>): void {
     if (node instanceof LeafNode) {

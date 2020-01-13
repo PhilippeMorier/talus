@@ -134,6 +134,30 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
+  setActiveStateAndCache(xyz: Coord, on: boolean, accessor: ValueAccessor3<T>): void {
+    let child: HashableNode<T> | undefined;
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      if (on) {
+        child = new InternalNode2(xyz, this._background);
+        this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+      } /*else {
+        // Nothing to do; (x, y, z) is background and therefore already inactive.
+      }*/
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else if (on !== struct.getTile().active) {
+      child = new InternalNode2(xyz, struct.getTile().value, !on);
+      struct.setChild(child);
+    }
+
+    if (child) {
+      accessor.insert(xyz, child);
+      child.setActiveStateAndCache(xyz, on, accessor);
+    }
+  }
+
   isValueOn(xyz: Coord): boolean {
     const struct = this.findCoord(xyz);
 

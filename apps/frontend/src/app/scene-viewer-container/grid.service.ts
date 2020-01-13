@@ -41,7 +41,7 @@ export class GridService {
   }
 
   removeVoxel(xyz: Coord): Coord {
-    this.accessor.setValueOff(xyz, this.grid.background);
+    this.accessor.setActiveState(xyz, false);
 
     return this.accessor.internalNode1Origin;
   }

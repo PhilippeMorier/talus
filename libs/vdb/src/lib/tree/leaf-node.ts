@@ -99,6 +99,13 @@ export class LeafNode<T> implements HashableNode<T> {
   }
 
   /**
+   * Set the active state of the voxel at the given coordinates but don't change its value.
+   */
+  setActiveState(xyz: Coord, on: boolean): void {
+    this.valueMask.set(LeafNode.coordToOffset(xyz), on);
+  }
+
+  /**
    * Return the value of the voxel at the given coordinates.
    */
   getValue(xyz: Coord): T {
@@ -147,6 +154,14 @@ export class LeafNode<T> implements HashableNode<T> {
    */
   isValueOnAndCache(xyz: Coord, _: ValueAccessor3<T>): boolean {
     return this.isValueOn(xyz);
+  }
+
+  /**
+   * @brief Set the active state of the voxel at the given coordinates without changing its value.
+   * @note Used internally by ValueAccessor.
+   */
+  setActiveStateAndCache(xyz: Coord, on: boolean, _: ValueAccessor3<T>): void {
+    return this.setActiveState(xyz, on);
   }
 
   /**
