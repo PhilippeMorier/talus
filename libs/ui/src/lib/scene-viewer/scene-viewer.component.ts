@@ -51,7 +51,7 @@ export class SceneViewerComponent implements OnInit {
 
   // Source: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
   private getFiles(event: DragEvent): File[] {
-    return event.dataTransfer.items
+    return event.dataTransfer && event.dataTransfer.items
       ? this.getFilesFromDataTransferItemList(event)
       : this.getFilesFromDataTransfer(event);
   }
@@ -59,11 +59,19 @@ export class SceneViewerComponent implements OnInit {
   private getFilesFromDataTransferItemList(event: DragEvent): File[] {
     const files: File[] = [];
 
+    if (!event.dataTransfer) {
+      return files;
+    }
+
     // Use DataTransferItemList interface to access the file(s)
     for (let i = 0; i < event.dataTransfer.items.length; i++) {
       // If dropped items aren't files, reject them
       if (event.dataTransfer.items[i].kind === 'file') {
-        files.push(event.dataTransfer.items[i].getAsFile());
+        const file = event.dataTransfer.items[i].getAsFile();
+
+        if (file) {
+          files.push(file);
+        }
       }
     }
 
@@ -72,6 +80,10 @@ export class SceneViewerComponent implements OnInit {
 
   private getFilesFromDataTransfer(event: DragEvent): File[] {
     const files: File[] = [];
+
+    if (!event.dataTransfer) {
+      return files;
+    }
 
     // Use DataTransfer interface to access the file(s)
     for (let i = 0; i < event.dataTransfer.files.length; i++) {

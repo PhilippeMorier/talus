@@ -19,8 +19,11 @@ describe('nodeToMesh()', () => {
     const xyz = 3;
     const rgba = 4;
 
-    expect(meshData.positions.length).toEqual(voxels * triangleCorners * xyz);
-    expect(meshData.colors.length).toEqual(voxels * triangleCorners * rgba);
-    expect(meshData.normals.length).toEqual(meshData.positions.length);
+    expect(meshData).toBeDefined();
+    if (meshData) {
+      expect(meshData.positions.length).toEqual(voxels * triangleCorners * xyz);
+      expect(meshData.colors.length).toEqual(voxels * triangleCorners * rgba);
+      expect(meshData.normals.length).toEqual(meshData.positions.length);
+    }
   });
 });

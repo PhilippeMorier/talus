@@ -14,13 +14,11 @@
  *           0--- X                   0-------1
  */
 
-import { Coord } from '../math';
 import { HashableNode } from '../tree/node';
 
 export interface MeshData {
   colors: number[];
   normals: number[];
-  origin?: Coord;
   positions: number[];
 }
 

@@ -59,7 +59,7 @@ export class SceneViewerContainerEffects {
           next: ({ affectedOrigins }) => {
             affectedOrigins.map(origin => {
               const mesh = this.gridService.computeInternalNode1Mesh(origin);
-              this.sceneViewerService.updateNodeMesh(mesh);
+              this.sceneViewerService.updateNodeMesh(mesh, origin);
             });
           },
         }),
