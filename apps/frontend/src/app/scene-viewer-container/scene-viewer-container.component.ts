@@ -7,6 +7,7 @@ import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
+import { redo, undo } from '../undo-redo/undo-redo.actions';
 import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
 
 @Component({
@@ -49,13 +50,20 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     switch (selectedToolId) {
       case Tool.AddVoxel:
         this.store.dispatch(
-          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 42 }),
+          addVoxel({
+            position: this.calcVoxelToAddPosition(pickInfo),
+            value: this.getRandomInt(8),
+          }),
         );
         break;
       case Tool.RemoveVoxel:
         this.store.dispatch(removeVoxel({ position: this.calcVoxelToRemovePosition(pickInfo) }));
         break;
     }
+  }
+
+  private getRandomInt(excludedMax: number): number {
+    return Math.floor(Math.random() * Math.floor(excludedMax));
   }
 
   private calcVoxelToAddPosition(pickInfo: PointerPickInfo): Coord {
