@@ -9,7 +9,7 @@ describe('nodeToMesh()', () => {
     accessor.setValue([0, 0, 0], 1);
     accessor.setValue([0, 0, 1], 1);
 
-    const meshData = nodeToMesh(grid.tree.root);
+    const meshData = nodeToMesh(grid.tree.root, () => [0, 0, 0, 1]);
 
     const voxels = 2;
 
