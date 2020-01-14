@@ -64,6 +64,27 @@ describe('ValueAccessor', () => {
     });
   });
 
+  describe('setActiveState()', () => {
+    it('should set state', () => {
+      const tree = new Tree(0);
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 1496);
+      expect(accessor.getValue([0, 0, 0])).toEqual(1496);
+      expect(accessor.isValueOn([0, 0, 0])).toEqual(true);
+
+      accessor.setActiveState([0, 0, 0], false);
+      expect(accessor.getValue([0, 0, 0])).toEqual(1496);
+      expect(accessor.isValueOn([0, 0, 0])).toBeFalsy();
+
+      accessor.setActiveState([0, 0, 0], true);
+      expect(accessor.getValue([0, 0, 0])).toEqual(1496);
+      expect(accessor.isValueOn([0, 0, 0])).toBeTruthy();
+
+      expect(accessor.isCached([0, 0, 0])).toBeTruthy();
+    });
+  });
+
   describe('isValueOn()', () => {
     it('should set value and (de)activate voxel', () => {
       const tree = new Tree(0);

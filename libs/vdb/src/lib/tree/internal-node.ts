@@ -163,6 +163,27 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
+  setActiveStateAndCache(xyz: Coord, on: boolean, accessor: ValueAccessor3<T>): void {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+    let hasChild = this.childMask.isOn(i);
+
+    if (!hasChild) {
+      if (on !== this.valueMask.isOn(i)) {
+        // If the voxel belongs to a tile with the wrong active state,
+        // then a child subtree must be constructed.
+        // 'on' is the voxel's new state, therefore '!on' is the tile's current state
+        hasChild = true;
+        this.setChildNode(i, this.createChildNode(xyz, node.getValue(), !on));
+      }
+    }
+
+    if (hasChild) {
+      accessor.insert(xyz, node.getChild());
+      node.getChild().setActiveStateAndCache(xyz, on, accessor);
+    }
+  }
+
   isValueOn(xyz: Coord): boolean {
     const i: Index = this.coordToOffset(xyz);
     if (this.childMask.isOff(i)) {
