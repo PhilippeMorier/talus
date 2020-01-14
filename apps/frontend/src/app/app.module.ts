@@ -8,6 +8,7 @@ import { SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 import { AppEffects } from './app.effects';
 import { metaReducers, ROOT_REDUCERS } from './app.reducer';
+import { MenuBarModule } from './menu-bar/menu-bar.module';
 import { SceneViewerContainerModule } from './scene-viewer-container';
 import { ToolsPanelModule } from './tools-panel/tools-panel.module';
 import { UndoRedoModule } from './undo-redo/undo-redo.module';
@@ -36,6 +37,7 @@ import { UndoRedoModule } from './undo-redo/undo-redo.module';
       },
     }),
 
+    MenuBarModule,
     SceneViewerContainerModule,
     SidenavShellModule,
     ToolsPanelModule,
