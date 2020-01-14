@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SceneViewerService } from '@talus/ui';
+import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { GridService } from './grid.service';
@@ -28,7 +29,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(addVoxel),
       map(({ position, value }) => this.gridService.addVoxel(position, value)),
-      map(affectedOrigin => voxelAdded({ affectedOrigins: [affectedOrigin] })),
+      map(voxelChange => voxelAdded({ voxelChange })),
       catchError(() => of(addVoxelFailed())),
     ),
   );
@@ -37,7 +38,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(addVoxels),
       map(({ positions, values }) => this.gridService.addVoxels(positions, values)),
-      map(affectedOrigins => voxelsAdded({ affectedOrigins })),
+      map(voxelChanges => voxelsAdded({ voxelChanges })),
       catchError(() => of(addVoxelsFailed())),
     ),
   );
@@ -46,7 +47,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(removeVoxel),
       map(({ position }) => this.gridService.removeVoxel(position)),
-      map(affectedOrigin => voxelRemoved({ affectedOrigins: [affectedOrigin] })),
+      map(voxelChange => voxelRemoved({ voxelChange })),
       catchError(() => of(removeVoxelFailed())),
     ),
   );
@@ -54,16 +55,33 @@ export class SceneViewerContainerEffects {
   updateGridMesh$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelAdded, voxelsAdded, voxelRemoved),
+        ofType(voxelAdded, voxelRemoved),
         tap({
-          next: ({ affectedOrigins }) => {
-            affectedOrigins.map(origin => {
-              const mesh = this.gridService.computeInternalNode1Mesh(origin);
-              this.sceneViewerService.updateNodeMesh(mesh, origin);
+          next: ({ voxelChange }) => {
+            this.computeAndUpdateNodeMesh(voxelChange.affectedNodeOrigin);
+          },
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  updateGridMeshMultiple$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(voxelsAdded),
+        tap({
+          next: ({ voxelChanges }) => {
+            voxelChanges.map(change => {
+              this.computeAndUpdateNodeMesh(change.affectedNodeOrigin);
             });
           },
         }),
       ),
     { dispatch: false },
   );
+
+  private computeAndUpdateNodeMesh(affectedNodeOrigin: Coord): void {
+    const mesh = this.gridService.computeInternalNode1Mesh(affectedNodeOrigin);
+    this.sceneViewerService.updateNodeMesh(mesh, affectedNodeOrigin);
+  }
 }
