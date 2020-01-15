@@ -41,16 +41,13 @@ export class GridService {
     const changes = new Map<string, VoxelChange>();
 
     if (coords.length !== values.length) {
-      coords.forEach(xyz => {
-        const change = this.addVoxel(xyz, values[0]);
-        changes.set(change.affectedNodeOrigin.toString(), change);
-      });
-    } else {
-      coords.forEach((xyz, i) => {
-        const change = this.addVoxel(xyz, values[i]);
-        changes.set(change.affectedNodeOrigin.toString(), change);
-      });
+      throw new Error(`Coordinates and values don't have the same length.`);
     }
+
+    coords.forEach((xyz, i) => {
+      const change = this.addVoxel(xyz, values[i]);
+      changes.set(change.affectedNodeOrigin.toString(), change);
+    });
 
     return Array.from(changes.values());
   }
