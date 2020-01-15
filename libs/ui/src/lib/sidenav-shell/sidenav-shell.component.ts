@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'ui-sidenav-shell-content',
@@ -57,8 +57,4 @@ export class SidenavShellRightComponent {}
   styleUrls: ['./sidenav-shell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavShellComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class SidenavShellComponent {}
