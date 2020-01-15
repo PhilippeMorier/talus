@@ -114,7 +114,8 @@ describe('SceneViewerContainerComponent', () => {
   ])(
     'should dispatch `addVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const action = addVoxel({ position, value: 42 });
+      const initialAction = addVoxel({ position: [0, 0, 0], value: 42 });
+      const action = addVoxel({ position, value: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -122,6 +123,7 @@ describe('SceneViewerContainerComponent', () => {
         normal,
       });
 
+      expect(mockStore.dispatch).toHaveBeenCalledWith(initialAction);
       expect(mockStore.dispatch).toHaveBeenCalledWith(action);
     },
   );

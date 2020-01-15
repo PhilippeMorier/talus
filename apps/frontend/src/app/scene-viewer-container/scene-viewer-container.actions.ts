@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
+import { VoxelChange } from './grid.service';
 
 const actionTypePrefix = `[sceneViewerContainer]`;
 
@@ -8,10 +9,7 @@ export const addVoxel = createAction(
   props<{ position: Coord; value: number }>(),
 );
 export const addVoxelFailed = createAction(`${actionTypePrefix} Add voxel failed`);
-export const voxelAdded = createAction(
-  `${actionTypePrefix} Voxel added`,
-  props<{ affectedOrigins: Coord[] }>(),
-);
+export const voxelAdded = createAction(`${actionTypePrefix} Voxel added`, props<VoxelChange>());
 
 export const addVoxels = createAction(
   `${actionTypePrefix} Add voxels`,
@@ -20,7 +18,7 @@ export const addVoxels = createAction(
 export const addVoxelsFailed = createAction(`${actionTypePrefix} Add voxels failed`);
 export const voxelsAdded = createAction(
   `${actionTypePrefix} Voxels added`,
-  props<{ affectedOrigins: Coord[] }>(),
+  props<{ voxelChanges: VoxelChange[] }>(),
 );
 
 export const removeVoxel = createAction(
@@ -28,7 +26,4 @@ export const removeVoxel = createAction(
   props<{ position: Coord }>(),
 );
 export const removeVoxelFailed = createAction(`${actionTypePrefix} Remove voxel failed`);
-export const voxelRemoved = createAction(
-  `${actionTypePrefix} Voxel removed`,
-  props<{ affectedOrigins: Coord[] }>(),
-);
+export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, props<VoxelChange>());

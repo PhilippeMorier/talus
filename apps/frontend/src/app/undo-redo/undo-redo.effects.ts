@@ -4,7 +4,12 @@ import { Action, select, Store } from '@ngrx/store';
 import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
-import { addVoxel, removeVoxel } from '../scene-viewer-container/scene-viewer-container.actions';
+import {
+  addVoxel,
+  removeVoxel,
+  voxelAdded,
+  voxelRemoved,
+} from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
 @Injectable()
@@ -14,9 +19,9 @@ export class UndoRedoEffects {
   undo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(undo, menuBarContainerActions.undo),
-      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentUndoAction))),
+      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentUndoStartAction))),
       switchMap(([action, currentUndoAction]) =>
-        currentUndoAction ? [currentUndoAction, undone()] : [undone()],
+        currentUndoAction ? [currentUndoAction] : [undone()],
       ),
     ),
   );
@@ -24,36 +29,83 @@ export class UndoRedoEffects {
   redo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(redo, menuBarContainerActions.redo),
-      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentRedoAction))),
+      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentRedoStartAction))),
       switchMap(([action, currentRedoAction]) =>
-        currentRedoAction ? [currentRedoAction, redone()] : [redone()],
+        currentRedoAction ? [currentRedoAction] : [redone()],
       ),
+    ),
+  );
+
+  undoTriggeredActions$ = this.actions$.pipe(
+    withLatestFrom(this.store.pipe(select(fromApp.selectUndoRedoState))),
+    filter(([action, state]) => state.isUndoing),
+    map(([action, state]) => action),
+  );
+
+  undone$ = createEffect(() =>
+    this.undoTriggeredActions$.pipe(
+      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentUndoEndAction))),
+      filter(([action, undoEndAction]) => action.type === undoEndAction),
+      map(() => undone()),
+    ),
+  );
+
+  redoTriggeredActions$ = this.actions$.pipe(
+    withLatestFrom(this.store.pipe(select(fromApp.selectUndoRedoState))),
+    filter(([action, state]) => state.isRedoing),
+    map(([action, state]) => action),
+  );
+
+  redone$ = createEffect(() =>
+    this.redoTriggeredActions$.pipe(
+      withLatestFrom(this.store.pipe(select(fromApp.selectCurrentRedoEndAction))),
+      filter(([action, redoEndAction]) => action.type === redoEndAction),
+      map(() => redone()),
     ),
   );
 
   userTriggeredActions$ = this.actions$.pipe(
     withLatestFrom(this.store.pipe(select(fromApp.selectUndoRedoState))),
-    filter(([action, state]) => !state.isUndoRedoing),
+    filter(([action, state]) => !state.isUndoing && !state.isRedoing),
     map(([action, state]) => action),
   );
 
   addUndoActionForAddVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
-      ofType(addVoxel),
-      map(action => [action, removeVoxel({ position: action.position })]),
-      map(this.createAddUndo),
+      ofType(voxelAdded),
+      map(voxelChange => ({
+        redoStartAction: addVoxel(voxelChange),
+        redoEndAction: voxelAdded.type,
+        undoStartAction: removeVoxel({ position: voxelChange.position }),
+        undoEndActionType: voxelRemoved.type,
+      })),
+      map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>
+        this.createAddUndo(redoStartAction, redoEndAction, undoStartAction, undoEndActionType),
+      ),
     ),
   );
 
   addUndoActionForRemoveVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
-      ofType(removeVoxel),
-      map(action => [action, addVoxel({ position: action.position, value: 42 })]),
-      map(this.createAddUndo),
+      ofType(voxelRemoved),
+      map(voxelChange => ({
+        redoStartAction: removeVoxel({ position: voxelChange.position }),
+        redoEndAction: voxelRemoved.type,
+        undoStartAction: addVoxel(voxelChange),
+        undoEndActionType: voxelAdded.type,
+      })),
+      map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>
+        this.createAddUndo(redoStartAction, redoEndAction, undoStartAction, undoEndActionType),
+      ),
     ),
   );
 
-  createAddUndo([redoAction, undoAction]: Action[]): Action {
-    return addUndo({ redoAction, undoAction });
+  createAddUndo(
+    redoStartAction: Action,
+    redoEndActionType: string,
+    undoStartAction: Action,
+    undoEndActionType: string,
+  ): Action {
+    return addUndo({ redoStartAction, redoEndActionType, undoStartAction, undoEndActionType });
   }
 }

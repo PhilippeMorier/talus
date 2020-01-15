@@ -4,7 +4,12 @@ const actionTypePrefix = `[undoRedo]`;
 
 export const addUndo = createAction(
   `${actionTypePrefix} Add undo`,
-  props<{ redoAction: Action; undoAction: Action }>(),
+  props<{
+    redoStartAction: Action;
+    redoEndActionType: string;
+    undoStartAction: Action;
+    undoEndActionType: string;
+  }>(),
 );
 
 export const undo = createAction(`${actionTypePrefix} Undo`);

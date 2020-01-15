@@ -12,38 +12,54 @@ export class GridService {
   grid = new Grid(0);
   accessor = this.grid.getAccessor();
 
+  colors = {
+    0: [0, 0, 0, 1],
+    1: [0, 0, 1, 1],
+    2: [0, 1, 0, 1],
+    3: [0, 1, 1, 1],
+    4: [1, 0, 0, 1],
+    5: [1, 0, 1, 1],
+    6: [1, 1, 0, 1],
+    7: [1, 1, 1, 1],
+  };
+
   /**
    * Adds a new voxel via accessor to share access path.
    * @returns origin of `InternalNode1` of affected node (node containing added voxel).
    */
-  addVoxel(xyz: Coord, value: number): Coord {
+  addVoxel(xyz: Coord, value: number): VoxelChange {
     this.accessor.setValue(xyz, value);
 
-    return this.accessor.internalNode1Origin;
+    return {
+      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      value,
+      position: xyz,
+    };
   }
 
-  addVoxels(coords: Coord[], values: number[]): Coord[] {
-    const affectedOrigins = new Map<string, Coord>();
+  addVoxels(coords: Coord[], values: number[]): VoxelChange[] {
+    const changes = new Map<string, VoxelChange>();
 
     if (coords.length !== values.length) {
-      coords.forEach(xyz => {
-        const affected = this.addVoxel(xyz, values[0]);
-        affectedOrigins.set(affected.toString(), affected);
-      });
-    } else {
-      coords.forEach((xyz, i) => {
-        const affected = this.addVoxel(xyz, values[i]);
-        affectedOrigins.set(affected.toString(), affected);
-      });
+      throw new Error(`Coordinates and values don't have the same length.`);
     }
 
-    return Array.from(affectedOrigins.values());
+    coords.forEach((xyz, i) => {
+      const change = this.addVoxel(xyz, values[i]);
+      changes.set(change.affectedNodeOrigin.toString(), change);
+    });
+
+    return Array.from(changes.values());
   }
 
-  removeVoxel(xyz: Coord): Coord {
+  removeVoxel(xyz: Coord): VoxelChange {
     this.accessor.setActiveState(xyz, false);
 
-    return this.accessor.internalNode1Origin;
+    return {
+      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      value: this.accessor.getValue(xyz),
+      position: xyz,
+    };
   }
 
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
@@ -53,6 +69,16 @@ export class GridService {
       return undefined;
     }
 
-    return nodeToMesh(internal1);
+    return nodeToMesh(internal1, this.valueToColor);
   }
+
+  private valueToColor = (value: number): [number, number, number, number] => {
+    return this.colors[value % 8];
+  };
+}
+
+export interface VoxelChange {
+  affectedNodeOrigin: Coord;
+  value: number;
+  position: Coord;
 }

@@ -12,16 +12,22 @@ export const featureKey = 'undoRedo';
 
 export interface State {
   currentIndex: number;
-  isUndoRedoing: boolean;
-  redoActions: Action[];
-  undoActions: Action[];
+  isRedoing: boolean;
+  isUndoing: boolean;
+  redoEndActionTypes: string[];
+  redoStartActions: Action[];
+  undoEndActionTypes: string[];
+  undoStartActions: Action[];
 }
 
 export const initialState: State = {
   currentIndex: -1,
-  isUndoRedoing: false,
-  redoActions: [],
-  undoActions: [],
+  isRedoing: false,
+  isUndoing: false,
+  redoEndActionTypes: [],
+  redoStartActions: [],
+  undoEndActionTypes: [],
+  undoStartActions: [],
 };
 
 const maxBufferSize = 10;
@@ -30,24 +36,38 @@ const maxBufferIndex = maxBufferSize - 1;
 export const reducer = createReducer(
   initialState,
 
-  on(addUndo, (state, { redoAction, undoAction }) => {
-    const newIndex = state.currentIndex + 1;
+  on(
+    addUndo,
+    (state, { redoStartAction, redoEndActionType, undoStartAction, undoEndActionType }) => {
+      const newIndex = state.currentIndex + 1;
 
-    const redoActions = state.redoActions.slice(0, newIndex);
-    const undoActions = state.undoActions.slice(0, newIndex);
+      const redoStartActions = state.redoStartActions.slice(0, newIndex);
+      const redoEndActionTypes = state.redoEndActionTypes.slice(0, newIndex);
+      const undoStartActions = state.undoStartActions.slice(0, newIndex);
+      const undoEndActionTypes = state.undoEndActionTypes.slice(0, newIndex);
 
+      return {
+        ...state,
+        currentIndex: newIndex > maxBufferIndex ? maxBufferIndex : newIndex,
+        redoStartActions: [...redoStartActions.slice(-maxBufferIndex), redoStartAction],
+        redoEndActionTypes: [...redoEndActionTypes.slice(-maxBufferIndex), redoEndActionType],
+        undoStartActions: [...undoStartActions.slice(-maxBufferIndex), undoStartAction],
+        undoEndActionTypes: [...undoEndActionTypes.slice(-maxBufferIndex), undoEndActionType],
+      };
+    },
+  ),
+
+  on(undo, menuBarContainerActions.undo, state => {
     return {
       ...state,
-      currentIndex: newIndex > maxBufferIndex ? maxBufferIndex : newIndex,
-      redoActions: [...redoActions.slice(-maxBufferIndex), redoAction],
-      undoActions: [...undoActions.slice(-maxBufferIndex), undoAction],
+      isUndoing: true,
     };
   }),
 
-  on(undo, menuBarContainerActions.undo, redo, menuBarContainerActions.redo, state => {
+  on(redo, menuBarContainerActions.redo, state => {
     return {
       ...state,
-      isUndoRedoing: true,
+      isRedoing: true,
     };
   }),
 
@@ -56,22 +76,28 @@ export const reducer = createReducer(
 
     return {
       ...state,
-      isUndoRedoing: false,
+      isUndoing: false,
       currentIndex: newIndex < 0 ? -1 : newIndex,
     };
   }),
 
   on(redone, state => {
     const newIndex = state.currentIndex + 1;
-    const maxRedoIndex = state.redoActions.length - 1;
+    const maxRedoIndex = state.redoStartActions.length - 1;
 
     return {
       ...state,
-      isUndoRedoing: false,
+      isRedoing: false,
       currentIndex: newIndex > maxRedoIndex ? maxRedoIndex : newIndex,
     };
   }),
 );
 
-export const selectCurrentUndoAction = (state: State) => state.undoActions[state.currentIndex];
-export const selectCurrentRedoAction = (state: State) => state.redoActions[state.currentIndex + 1];
+export const selectCurrentRedoStartAction = (state: State) =>
+  state.redoStartActions[state.currentIndex + 1];
+export const selectCurrentRedoEndAction = (state: State) =>
+  state.redoEndActionTypes[state.currentIndex + 1];
+export const selectCurrentUndoStartAction = (state: State) =>
+  state.undoStartActions[state.currentIndex];
+export const selectCurrentUndoEndAction = (state: State) =>
+  state.undoEndActionTypes[state.currentIndex];

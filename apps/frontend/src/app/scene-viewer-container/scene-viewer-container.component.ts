@@ -49,7 +49,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     switch (selectedToolId) {
       case Tool.AddVoxel:
         this.store.dispatch(
-          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 42 }),
+          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
         );
         break;
       case Tool.RemoveVoxel:
