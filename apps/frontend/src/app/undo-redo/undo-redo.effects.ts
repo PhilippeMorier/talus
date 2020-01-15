@@ -73,15 +73,10 @@ export class UndoRedoEffects {
   addUndoActionForAddVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
       ofType(voxelAdded),
-      map(action => ({
-        redoStartAction: addVoxel({
-          position: action.voxelChange.position,
-          value: action.voxelChange.value,
-        }),
+      map(voxelChange => ({
+        redoStartAction: addVoxel(voxelChange),
         redoEndAction: voxelAdded.type,
-        undoStartAction: removeVoxel({
-          position: action.voxelChange.position,
-        }),
+        undoStartAction: removeVoxel({ position: voxelChange.position }),
         undoEndActionType: voxelRemoved.type,
       })),
       map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>
@@ -93,13 +88,10 @@ export class UndoRedoEffects {
   addUndoActionForRemoveVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
       ofType(voxelRemoved),
-      map(action => ({
-        redoStartAction: removeVoxel({ position: action.voxelChange.position }),
+      map(voxelChange => ({
+        redoStartAction: removeVoxel({ position: voxelChange.position }),
         redoEndAction: voxelRemoved.type,
-        undoStartAction: addVoxel({
-          position: action.voxelChange.position,
-          value: action.voxelChange.value,
-        }),
+        undoStartAction: addVoxel(voxelChange),
         undoEndActionType: voxelAdded.type,
       })),
       map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>

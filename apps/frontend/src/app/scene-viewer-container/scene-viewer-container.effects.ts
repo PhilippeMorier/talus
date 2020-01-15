@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { GridService } from './grid.service';
 import {
   addVoxel,
@@ -29,7 +29,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(addVoxel),
       map(({ position, value }) => this.gridService.addVoxel(position, value)),
-      map(voxelChange => voxelAdded({ voxelChange })),
+      map(voxelAdded),
       catchError(() => of(addVoxelFailed())),
     ),
   );
@@ -47,7 +47,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(removeVoxel),
       map(({ position }) => this.gridService.removeVoxel(position)),
-      map(voxelChange => voxelRemoved({ voxelChange })),
+      map(voxelRemoved),
       catchError(() => of(removeVoxelFailed())),
     ),
   );
@@ -56,11 +56,7 @@ export class SceneViewerContainerEffects {
     () =>
       this.actions$.pipe(
         ofType(voxelAdded, voxelRemoved),
-        tap({
-          next: ({ voxelChange }) => {
-            this.computeAndUpdateNodeMesh(voxelChange.affectedNodeOrigin);
-          },
-        }),
+        map(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
       ),
     { dispatch: false },
   );
@@ -69,13 +65,11 @@ export class SceneViewerContainerEffects {
     () =>
       this.actions$.pipe(
         ofType(voxelsAdded),
-        tap({
-          next: ({ voxelChanges }) => {
-            voxelChanges.map(change => {
-              this.computeAndUpdateNodeMesh(change.affectedNodeOrigin);
-            });
-          },
-        }),
+        map(({ voxelChanges }) =>
+          voxelChanges.map(change => {
+            this.computeAndUpdateNodeMesh(change.affectedNodeOrigin);
+          }),
+        ),
       ),
     { dispatch: false },
   );
