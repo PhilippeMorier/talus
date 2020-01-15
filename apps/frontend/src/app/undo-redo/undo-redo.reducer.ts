@@ -1,4 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
+import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
 /**
@@ -43,7 +44,7 @@ export const reducer = createReducer(
     };
   }),
 
-  on(undo, redo, state => {
+  on(undo, menuBarContainerActions.undo, redo, menuBarContainerActions.redo, state => {
     return {
       ...state,
       isUndoRedoing: true,
