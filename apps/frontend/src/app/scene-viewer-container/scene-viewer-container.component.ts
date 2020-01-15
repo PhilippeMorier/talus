@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { PointerButton, PointerPickInfo, SceneViewerComponent } from '@talus/ui';
+import { PointerButton, PointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -20,8 +20,8 @@ import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerContainerComponent implements AfterViewInit {
-  @ViewChild(SceneViewerComponent, { static: false })
-  private sceneViewerComponent: SceneViewerComponent;
+  @ViewChild(UiSceneViewerComponent, { static: false })
+  private sceneViewerComponent: UiSceneViewerComponent;
 
   selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
   voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));

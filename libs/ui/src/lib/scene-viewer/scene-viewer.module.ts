@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SceneViewerComponent } from './scene-viewer.component';
+import { UiSceneViewerComponent } from './scene-viewer.component';
 import { CameraFactory, EngineFactory, SceneViewerService } from './scene-viewer.service';
 
 @NgModule({
-  declarations: [SceneViewerComponent],
+  declarations: [UiSceneViewerComponent],
   imports: [CommonModule],
-  exports: [SceneViewerComponent],
+  exports: [UiSceneViewerComponent],
   providers: [CameraFactory, EngineFactory, SceneViewerService],
 })
-export class SceneViewerModule {}
+export class UiSceneViewerModule {}

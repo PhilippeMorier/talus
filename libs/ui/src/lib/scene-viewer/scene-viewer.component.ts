@@ -18,7 +18,7 @@ import { SceneViewerService } from './scene-viewer.service';
   styleUrls: ['./scene-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerComponent implements OnInit {
+export class UiSceneViewerComponent implements OnInit {
   constructor(private sceneViewerService: SceneViewerService) {}
 
   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>;
