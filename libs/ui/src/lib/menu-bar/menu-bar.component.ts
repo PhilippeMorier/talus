@@ -38,7 +38,7 @@ interface UiMenuBarMenuItem<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuBarComponent {
-  @Input() menuConfig: UiMenuBarConfig<any>;
+  @Input() menuConfig: UiMenuBarConfig<any> = { menus: [] };
 
   @Output() menuItemClick = new EventEmitter();
 
