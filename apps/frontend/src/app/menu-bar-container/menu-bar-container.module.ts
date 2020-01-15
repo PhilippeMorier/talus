@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { MenuBarModule } from '@talus/ui';
+import { UiMenuBarModule } from '@talus/ui';
 import { MenuBarContainerComponent } from './menu-bar-container.component';
 
 @NgModule({
   declarations: [MenuBarContainerComponent],
-  imports: [MenuBarModule],
+  imports: [UiMenuBarModule],
   exports: [MenuBarContainerComponent],
 })
 export class MenuBarContainerModule {}
