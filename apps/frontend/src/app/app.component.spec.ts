@@ -6,6 +6,13 @@ import { SceneViewerTestModule, SidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
 @Component({
+  selector: 'fe-menu-bar-container',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class MenuBarContainerStubComponent {}
+
+@Component({
   selector: 'fe-scene-viewer-container',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +29,12 @@ class ToolsPanelStubComponent {}
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent, SceneViewerContainerStubComponent, ToolsPanelStubComponent],
+      declarations: [
+        AppComponent,
+        MenuBarContainerStubComponent,
+        SceneViewerContainerStubComponent,
+        ToolsPanelStubComponent,
+      ],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
