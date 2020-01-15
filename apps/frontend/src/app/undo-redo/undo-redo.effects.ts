@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, select, Store } from '@ngrx/store';
 import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
+import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { addVoxel, removeVoxel } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
@@ -12,7 +13,7 @@ export class UndoRedoEffects {
 
   undo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(undo),
+      ofType(undo, menuBarContainerActions.undo),
       withLatestFrom(this.store.pipe(select(fromApp.selectCurrentUndoAction))),
       switchMap(([action, currentUndoAction]) =>
         currentUndoAction ? [currentUndoAction, undone()] : [undone()],
@@ -22,7 +23,7 @@ export class UndoRedoEffects {
 
   redo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(redo),
+      ofType(redo, menuBarContainerActions.redo),
       withLatestFrom(this.store.pipe(select(fromApp.selectCurrentRedoAction))),
       switchMap(([action, currentRedoAction]) =>
         currentRedoAction ? [currentRedoAction, redone()] : [redone()],

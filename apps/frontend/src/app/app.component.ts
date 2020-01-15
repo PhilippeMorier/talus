@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'fe-root',
   template: `
     <header>
-      <fe-menu-bar></fe-menu-bar>
+      <fe-menu-bar-container></fe-menu-bar-container>
     </header>
 
     <main>
