@@ -21,11 +21,11 @@ module.exports = {
   ],
   // https://github.com/nrwl/nx/issues/1439#issuecomment-561268656
   // When using `Run test` directly in WebStorm, change the used config to
-  // this file i.e. `./ui/jest.config.js` and not `<rootDir>/jest.config.js`.
+  // this file i.e. `./ui/jest.config.js` and not `<Project Root>/jest.config.js`.
   // Otherwise, following error might occur:
   // - Cannot find module '@talus/ui'
   // - Zone is needed for the async() test helper but could not be found.
-  setupFilesAfterEnv: ['./src/test-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 
   // https://github.com/thymikee/jest-preset-angular/issues/293#issuecomment-513544717
   // When using `Run test` directly in WebStorm, the scss couldn't be loaded.
