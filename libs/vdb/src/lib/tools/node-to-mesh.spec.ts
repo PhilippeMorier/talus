@@ -26,4 +26,12 @@ describe('nodeToMesh()', () => {
       expect(meshData.normals.length).toEqual(meshData.positions.length);
     }
   });
+
+  it('should return undefined if there are no data', () => {
+    const grid = new Grid(0);
+
+    const meshData = nodeToMesh(grid.tree.root, () => [0, 0, 0, 1]);
+
+    expect(meshData).toBeUndefined();
+  });
 });
