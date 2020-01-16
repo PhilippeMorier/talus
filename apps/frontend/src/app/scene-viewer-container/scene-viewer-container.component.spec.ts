@@ -36,12 +36,15 @@ describe('SceneViewerContainerComponent', () => {
     }).compileComponents();
 
     mockStore = TestBed.get(Store);
-    spyOn(mockStore, 'dispatch');
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
       Tool.AddVoxel,
     );
+  }));
+
+  beforeEach(async(() => {
+    spyOn(mockStore, 'dispatch');
   }));
 
   beforeEach(() => {

@@ -48,7 +48,9 @@ describe('UiMenuBarComponent', () => {
     // Don't call `detectChanges()`, because of `OnPush`
     // See: https://github.com/angular/angular/issues/12313#issuecomment-301848232
     // fixture.detectChanges();
+  });
 
+  beforeEach(() => {
     spyOn(component.menuItemClick, 'emit');
   });
 

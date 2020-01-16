@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { MockStore } from '@ngrx/store/testing';
 import { ROOT_REDUCERS, State } from '../app.reducer';
+import { undo } from './menu-bar-container.actions';
 import { MenuBarContainerComponent } from './menu-bar-container.component';
 import { MenuBarContainerModule } from './menu-bar-container.module';
 
@@ -31,6 +32,10 @@ describe('MenuBarComponent', () => {
   }));
 
   beforeEach(() => {
+    spyOn(store, 'dispatch');
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(MenuBarContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -38,5 +43,11 @@ describe('MenuBarComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dispatch action', () => {
+    component.onMenuItemClick(undo());
+
+    expect(store.dispatch).toHaveBeenCalledWith(undo());
   });
 });
