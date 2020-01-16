@@ -4,7 +4,7 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { NullEngine } from '@babylonjs/core/Engines/nullEngine';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Scene } from '@babylonjs/core/scene';
-import { CameraFactory, EngineFactory, SceneViewerService } from './scene-viewer.service';
+import { CameraFactory, EngineFactory, UiSceneViewerService } from './scene-viewer.service';
 
 function testCameraFactory(): any {
   return {
@@ -56,7 +56,7 @@ export class SceneViewerStubComponent {}
   providers: [
     { provide: CameraFactory, useValue: testCameraFactory() },
     { provide: EngineFactory, useValue: testEngineFactor() },
-    SceneViewerService,
+    UiSceneViewerService,
   ],
 })
 export class SceneViewerTestModule {}

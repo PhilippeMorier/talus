@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { SceneViewerService } from '@talus/ui';
+import { UiSceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class SceneViewerContainerEffects {
   constructor(
     private actions$: Actions,
     private gridService: GridService,
-    private sceneViewerService: SceneViewerService,
+    private sceneViewerService: UiSceneViewerService,
   ) {}
 
   addVoxel$ = createEffect(() =>

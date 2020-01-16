@@ -53,7 +53,7 @@ export class CameraFactory {
  * provided on module level. Therefore, only one `SceneViewerComponent` at the time is supported.
  */
 @Injectable()
-export class SceneViewerService {
+export class UiSceneViewerService {
   pointerPick$ = new Subject<PointerPickInfo>();
 
   private engine: Engine;
