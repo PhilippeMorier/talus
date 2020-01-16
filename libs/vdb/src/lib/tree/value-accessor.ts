@@ -82,7 +82,7 @@ export class ValueAccessor3<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValue(xyz: Coord, value: T): void {
+  setValueOn(xyz: Coord, value: T): void {
     if (this.isHashed0(xyz)) {
       this.leafNode.setValueAndCache(xyz, value, this);
     } else if (this.isHashed1(xyz)) {
@@ -92,9 +92,6 @@ export class ValueAccessor3<T> {
     } else {
       this.tree.root.setValueAndCache(xyz, value, this);
     }
-  }
-  setValueOn(xyz: Coord, value: T): void {
-    this.setValue(xyz, value);
   }
 
   /**

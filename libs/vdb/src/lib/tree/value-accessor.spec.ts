@@ -1,8 +1,16 @@
-import { InternalNode2 } from './internal-node';
+import { LeafNode } from '@talus/vdb';
+import { InternalNode1, InternalNode2 } from './internal-node';
 import { Tree } from './tree';
 import { ValueAccessor3 } from './value-accessor';
 
 describe('ValueAccessor', () => {
+  it('should return background', () => {
+    const tree = new Tree(-1);
+    const accessor = new ValueAccessor3(tree);
+
+    expect(accessor.getValue([111, 222, 333])).toEqual(-1);
+  });
+
   describe('getValue()', () => {
     it('should cache coordinate', () => {
       const tree = new Tree(0);
@@ -22,12 +30,12 @@ describe('ValueAccessor', () => {
     });
   });
 
-  describe('setValue()', () => {
+  describe('setValueOn()', () => {
     it('should cache coordinate', () => {
       const tree = new Tree(0);
       const accessor = new ValueAccessor3(tree);
 
-      accessor.setValue([0, 0, 0], 1496);
+      accessor.setValueOn([0, 0, 0], 1496);
       const value = accessor.getValue([0, 0, 0]);
 
       expect(value).toEqual(1496);
@@ -101,6 +109,44 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOff([0, 0, 1], 1);
       expect(accessor.isValueOn([0, 0, 1])).toBeFalsy();
+    });
+  });
+
+  describe('probeInternalNode1()', () => {
+    const tree = new Tree(-1);
+
+    it('should return undefined if no internal node 1', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.probeInternalNode1([111, 222, 333])).toBeUndefined();
+    });
+
+    it('should hit no cache and return internal node 1', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache miss (go over root)
+      accessor.setValueOn([InternalNode2.DIM, 0, 0], 42);
+
+      expect(accessor.probeInternalNode1([32, 0, 0])).toBeInstanceOf(InternalNode1);
+    });
+
+    it('should hit cache L2 and return internal node 1', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache miss (go over InternalNode2)
+      accessor.setValueOn([InternalNode1.DIM, 0, 0], 42);
+
+      expect(accessor.probeInternalNode1([32, 0, 0])).toBeInstanceOf(InternalNode1);
+    });
+
+    it('should hit cache L1 and return internal node 1', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+
+      expect(accessor.probeInternalNode1([LeafNode.DIM, 0, 0])).toBeInstanceOf(InternalNode1);
     });
   });
 });

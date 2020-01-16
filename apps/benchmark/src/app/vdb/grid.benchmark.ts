@@ -46,7 +46,7 @@ suite('[Grid] setValue()', () => {
     for (let x = 0; x < i; x++) {
       for (let y = 0; y < i; y++) {
         for (let z = 0; z < i; z++) {
-          accessor.setValue([x, y, z], i);
+          accessor.setValueOn([x, y, z], i);
         }
       }
     }

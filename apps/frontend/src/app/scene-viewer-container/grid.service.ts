@@ -28,7 +28,7 @@ export class GridService {
    * @returns origin of `InternalNode1` of affected node (node containing added voxel).
    */
   addVoxel(xyz: Coord, value: number): VoxelChange {
-    this.accessor.setValue(xyz, value);
+    this.accessor.setValueOn(xyz, value);
 
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,
