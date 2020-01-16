@@ -12,3 +12,7 @@ Run `ng test ui` to execute the unit tests.
   `nx g @nrwl/angular:storybook-configuration ui`.
 
 - Run it with `nx run ui:storybook`
+
+- Run E2E it with `nx run ui-e2e:e2e`
+
+- Watch E2E it with `nx run ui-e2e:e2e --watch`
