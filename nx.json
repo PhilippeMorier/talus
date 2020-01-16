@@ -24,6 +24,10 @@
       "tags": ["scope:libs"],
       "implicitDependencies": []
     },
+    "ui-e2e": {
+      "tags": ["scope:frontend"],
+      "implicitDependencies": []
+    },
     "vdb": {
       "tags": ["scope:libs"],
       "implicitDependencies": []
