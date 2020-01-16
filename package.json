@@ -73,6 +73,7 @@
     "cypress": "3.8.2",
     "dotenv": "8.2.0",
     "gh-pages": "2.2.0",
+    "handlebars": "4.7.2",
     "jasmine-marbles": "0.6.0",
     "jest": "24.9.0",
     "jest-junit": "10.0.0",
