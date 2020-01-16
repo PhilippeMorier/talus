@@ -86,7 +86,9 @@ function convertToTestSuite(suiteName: string, currentSuite: Benchmark.Suite): T
 }
 
 function sumUpTotalTime(): void {
-  report.time = report.suites.map(s => s.time).reduce((previous, current) => previous + current, 0);
+  report.time = report.suites
+    .map(s => s.time)
+    .reduce((previous, current) => (previous && current ? previous + current : 0), 0);
 }
 
 function everySuiteFinished(): boolean {

@@ -2,8 +2,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SceneViewerTestModule, SidenavShellModule } from '@talus/ui';
+import { UiSceneViewerTestModule, UiSidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
+
+@Component({
+  selector: 'fe-menu-bar-container',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class MenuBarContainerStubComponent {}
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -22,12 +29,17 @@ class ToolsPanelStubComponent {}
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent, SceneViewerContainerStubComponent, ToolsPanelStubComponent],
+      declarations: [
+        AppComponent,
+        MenuBarContainerStubComponent,
+        SceneViewerContainerStubComponent,
+        ToolsPanelStubComponent,
+      ],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
-        SidenavShellModule,
-        SceneViewerTestModule,
+        UiSceneViewerTestModule,
+        UiSidenavShellModule,
       ],
     }).compileComponents();
   }));

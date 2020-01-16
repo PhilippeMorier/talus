@@ -28,7 +28,7 @@ export interface UiToolbarToolChange<T> extends MatButtonToggleChange {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToolbarComponent {
+export class UiToolbarComponent {
   @Input() tools: UiToolbarToolConfig<any>[];
 
   @Input() selectedToolId: any;

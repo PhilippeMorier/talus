@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+main {
+  flex-grow: 1;
+  // https://stackoverflow.com/a/38383437
+  min-height: 0;
+}

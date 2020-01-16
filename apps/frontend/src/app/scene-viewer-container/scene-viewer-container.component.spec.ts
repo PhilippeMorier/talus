@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { PointerButton, PointerPickInfo } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -18,7 +18,7 @@ import { SceneViewerContainerComponent } from './scene-viewer-container.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class SceneViewerStubComponent {
-  @Output() pointerPick = new Subject<PointerPickInfo>();
+  @Output() pointerPick = new Subject<UiPointerPickInfo>();
 }
 
 describe('SceneViewerContainerComponent', () => {
@@ -36,12 +36,15 @@ describe('SceneViewerContainerComponent', () => {
     }).compileComponents();
 
     mockStore = TestBed.get(Store);
-    spyOn(mockStore, 'dispatch');
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
       Tool.AddVoxel,
     );
+  }));
+
+  beforeEach(async(() => {
+    spyOn(mockStore, 'dispatch');
   }));
 
   beforeEach(() => {
@@ -62,11 +65,12 @@ describe('SceneViewerContainerComponent', () => {
   it('should dispatch no action if not PointerButton.Main', () => {
     stubComponent.pointerPick.next({
       pickedPoint: [0, 0, 0],
-      pointerButton: PointerButton.Secondary,
+      pointerButton: UiPointerButton.Secondary,
       normal: [0, 0, 0],
     });
 
-    expect(mockStore.dispatch).not.toHaveBeenCalled();
+    // Only once called due to first initial added voxel at [0, 0, 0]
+    expect(mockStore.dispatch).toHaveBeenCalledTimes(1);
   });
 
   it.each([
@@ -113,14 +117,16 @@ describe('SceneViewerContainerComponent', () => {
   ])(
     'should dispatch `addVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const action = addVoxel({ position, value: 42 });
+      const initialAction = addVoxel({ position: [0, 0, 0], value: 42 });
+      const action = addVoxel({ position, value: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
-        pointerButton: PointerButton.Main,
+        pointerButton: UiPointerButton.Main,
         normal,
       });
 
+      expect(mockStore.dispatch).toHaveBeenCalledWith(initialAction);
       expect(mockStore.dispatch).toHaveBeenCalledWith(action);
     },
   );
@@ -172,7 +178,7 @@ describe('SceneViewerContainerComponent', () => {
 
       stubComponent.pointerPick.next({
         pickedPoint,
-        pointerButton: PointerButton.Main,
+        pointerButton: UiPointerButton.Main,
         normal,
       });
 

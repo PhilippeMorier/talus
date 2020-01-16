@@ -1,0 +1,2 @@
+# Hack for getting benchmark app (generated with ng g @nrwl/node:application) through linting
+/apps/benchmark

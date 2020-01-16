@@ -1,4 +1,4 @@
-import { Coord, createMaxCoord } from '../math/coord';
+import { clone, Coord, createMaxCoord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -28,7 +28,9 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  constructor(private tree: Tree<T>) {}
+  get internalNode1Origin(): Coord {
+    return clone(this.internalKey1);
+  }
 
   private leafKey: Coord = createMaxCoord();
   private leafNode: LeafNode<T>;
@@ -39,11 +41,27 @@ export class ValueAccessor3<T> {
   private internalKey2: Coord = createMaxCoord();
   private internalNode2: InternalNode2<T>;
 
+  constructor(private tree: Tree<T>) {}
+
   /**
    * Return true if any of the nodes along the path to the given voxel have been cached.
    */
   isCached(xyz: Coord): boolean {
     return this.isHashed2(xyz) || this.isHashed1(xyz) || this.isHashed0(xyz);
+  }
+
+  /**
+   * @returns Returns the node that contains voxel (x, y, z)
+   * and if it doesn't exist, return undefined.
+   */
+  probeInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
+    if (this.isHashed1(xyz)) {
+      return this.internalNode1;
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.probeInternalNode1AndCache(xyz, this);
+    } else {
+      return this.tree.root.probeInternalNode1AndCache(xyz, this);
+    }
   }
 
   /**
@@ -64,7 +82,7 @@ export class ValueAccessor3<T> {
   /**
    * Set the value of the voxel at the given coordinates and mark the voxel as active.
    */
-  setValue(xyz: Coord, value: T): void {
+  setValueOn(xyz: Coord, value: T): void {
     if (this.isHashed0(xyz)) {
       this.leafNode.setValueAndCache(xyz, value, this);
     } else if (this.isHashed1(xyz)) {
@@ -74,9 +92,6 @@ export class ValueAccessor3<T> {
     } else {
       this.tree.root.setValueAndCache(xyz, value, this);
     }
-  }
-  setValueOn(xyz: Coord, value: T): void {
-    this.setValue(xyz, value);
   }
 
   /**
@@ -106,6 +121,20 @@ export class ValueAccessor3<T> {
       return this.internalNode2.isValueOnAndCache(xyz, this);
     }
     return this.tree.root.isValueOnAndCache(xyz, this);
+  }
+
+  /**
+   * Set the active state of the voxel at the given coordinates without changing its value.
+   */
+  setActiveState(xyz: Coord, on: boolean): void {
+    if (this.isHashed0(xyz)) {
+      this.leafNode.setActiveStateAndCache(xyz, on, this);
+    } else if (this.isHashed1(xyz)) {
+      this.internalNode1.setActiveStateAndCache(xyz, on, this);
+    } else if (this.isHashed2(xyz)) {
+      this.internalNode2.setActiveStateAndCache(xyz, on, this);
+    }
+    this.tree.root.setActiveStateAndCache(xyz, on, this);
   }
 
   // tslint:disable:no-bitwise

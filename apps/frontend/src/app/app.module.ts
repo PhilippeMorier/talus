@@ -4,12 +4,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SidenavShellModule } from '@talus/ui';
+import { UiSidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 import { AppEffects } from './app.effects';
 import { metaReducers, ROOT_REDUCERS } from './app.reducer';
+import { MenuBarContainerModule } from './menu-bar-container/menu-bar-container.module';
 import { SceneViewerContainerModule } from './scene-viewer-container';
 import { ToolsPanelModule } from './tools-panel/tools-panel.module';
+import { UndoRedoModule } from './undo-redo/undo-redo.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,9 +37,11 @@ import { ToolsPanelModule } from './tools-panel/tools-panel.module';
       },
     }),
 
+    MenuBarContainerModule,
     SceneViewerContainerModule,
-    SidenavShellModule,
+    UiSidenavShellModule,
     ToolsPanelModule,
+    UndoRedoModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

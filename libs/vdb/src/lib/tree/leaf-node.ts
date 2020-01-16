@@ -1,5 +1,6 @@
 import { Coord } from '../math/coord';
 import { NodeMask } from '../util/node-mask';
+import { InternalNode1 } from './internal-node';
 import { LeafBuffer } from './leaf-buffer';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
@@ -21,12 +22,13 @@ export class LeafNode<T> implements HashableNode<T> {
   static readonly LEVEL: Index = 0; // level 0 = leaf
   // tslint:enable:no-bitwise
 
+  // Global grid index coordinates (x,y,z) of the local origin of this node
+  readonly origin: Coord;
+
   // Buffer containing the actual data values
   private buffer: LeafBuffer<T>;
   // Bitmask that determines which voxels are active
   private valueMask: NodeMask;
-  // Global grid index coordinates (x,y,z) of the local origin of this node
-  private readonly origin: Coord;
 
   /**
    * Return the linear table offset of the given global or local coordinates.
@@ -97,6 +99,13 @@ export class LeafNode<T> implements HashableNode<T> {
   }
 
   /**
+   * Set the active state of the voxel at the given coordinates but don't change its value.
+   */
+  setActiveState(xyz: Coord, on: boolean): void {
+    this.valueMask.set(LeafNode.coordToOffset(xyz), on);
+  }
+
+  /**
    * Return the value of the voxel at the given coordinates.
    */
   getValue(xyz: Coord): T {
@@ -117,6 +126,10 @@ export class LeafNode<T> implements HashableNode<T> {
    */
   getValueAndCache(xyz: Coord, _: ValueAccessor3<T>): T {
     return this.getValue(xyz);
+  }
+
+  probeInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
+    throw new Error(`Shouldn't be called on LeafNode`);
   }
 
   /**
@@ -141,6 +154,14 @@ export class LeafNode<T> implements HashableNode<T> {
    */
   isValueOnAndCache(xyz: Coord, _: ValueAccessor3<T>): boolean {
     return this.isValueOn(xyz);
+  }
+
+  /**
+   * @brief Set the active state of the voxel at the given coordinates without changing its value.
+   * @note Used internally by ValueAccessor.
+   */
+  setActiveStateAndCache(xyz: Coord, on: boolean, _: ValueAccessor3<T>): void {
+    return this.setActiveState(xyz, on);
   }
 
   /**

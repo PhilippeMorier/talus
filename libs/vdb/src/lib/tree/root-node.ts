@@ -1,5 +1,5 @@
 import { Coord } from '../math/coord';
-import { InternalNode2 } from './internal-node';
+import { InternalNode1, InternalNode2 } from './internal-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -57,9 +57,25 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.getTile().value;
   }
 
-  setValueOn(xyz: Coord, value: T): void {
+  probeInternalNode1AndCache(
+    xyz: Coord,
+    accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
     const struct = this.findCoord(xyz);
-    let child: HashableNode<T>;
+
+    if (!struct || struct.isTile()) {
+      return undefined;
+    }
+
+    const child = struct.getChild();
+    accessor.insert(xyz, child);
+
+    return child.probeInternalNode1AndCache(xyz, accessor);
+  }
+
+  setValueOn(xyz: Coord, value: T): void {
+    let child: HashableNode<T> | undefined;
+    const struct = this.findCoord(xyz);
 
     if (!struct) {
       child = new InternalNode2(xyz, this._background);
@@ -77,7 +93,7 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   setValueAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
-    let child: HashableNode<T>;
+    let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);
 
     if (!struct) {
@@ -92,12 +108,12 @@ export class RootNode<T> implements HashableNode<T> {
 
     if (child) {
       accessor.insert(xyz, child);
-      child.setValueOn(xyz, value);
+      child.setValueAndCache(xyz, value, accessor);
     }
   }
 
   setValueOffAndCache(xyz: Coord, value: T, accessor: ValueAccessor3<T>): void {
-    let child: HashableNode<T>;
+    let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);
 
     if (!struct) {
@@ -115,6 +131,30 @@ export class RootNode<T> implements HashableNode<T> {
     if (child) {
       accessor.insert(xyz, child);
       child.setValueOffAndCache(xyz, value, accessor);
+    }
+  }
+
+  setActiveStateAndCache(xyz: Coord, on: boolean, accessor: ValueAccessor3<T>): void {
+    let child: HashableNode<T> | undefined;
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      if (on) {
+        child = new InternalNode2(xyz, this._background);
+        this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+      } /*else {
+        // Nothing to do; (x, y, z) is background and therefore already inactive.
+      }*/
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else if (on !== struct.getTile().active) {
+      child = new InternalNode2(xyz, struct.getTile().value, !on);
+      struct.setChild(child);
+    }
+
+    if (child) {
+      accessor.insert(xyz, child);
+      child.setActiveStateAndCache(xyz, on, accessor);
     }
   }
 
@@ -186,6 +226,10 @@ class NodeStruct<T> {
   constructor(private child?: HashableNode<T>) {}
 
   getChild(): HashableNode<T> {
+    if (!this.child) {
+      throw new Error('Access undefined child.');
+    }
+
     return this.child;
   }
 

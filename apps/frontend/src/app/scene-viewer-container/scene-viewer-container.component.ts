@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { PointerButton, PointerPickInfo, SceneViewerComponent } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -19,16 +19,20 @@ import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerContainerComponent {
-  @ViewChild(SceneViewerComponent, { static: false })
-  private sceneViewerComponent: SceneViewerComponent;
+export class SceneViewerContainerComponent implements AfterViewInit {
+  @ViewChild(UiSceneViewerComponent, { static: false })
+  private sceneViewerComponent: UiSceneViewerComponent;
 
   selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
   voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
 
   constructor(private store: Store<fromApp.State>) {}
 
-  onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
+  ngAfterViewInit(): void {
+    this.store.dispatch(addVoxel({ position: [0, 0, 0], value: 42 }));
+  }
+
+  onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);
   }
 
@@ -37,15 +41,15 @@ export class SceneViewerContainerComponent {
   //   mesh.renderOutline = !mesh.renderOutline;
   // }
 
-  private dispatchPickAction(pickInfo: PointerPickInfo, selectedToolId: Tool): void {
-    if (pickInfo.pointerButton !== PointerButton.Main) {
+  private dispatchPickAction(pickInfo: UiPointerPickInfo, selectedToolId: Tool): void {
+    if (pickInfo.pointerButton !== UiPointerButton.Main) {
       return;
     }
 
     switch (selectedToolId) {
       case Tool.AddVoxel:
         this.store.dispatch(
-          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 42 }),
+          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
         );
         break;
       case Tool.RemoveVoxel:
@@ -54,7 +58,7 @@ export class SceneViewerContainerComponent {
     }
   }
 
-  private calcVoxelToAddPosition(pickInfo: PointerPickInfo): Coord {
+  private calcVoxelToAddPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     // VDB removes fractional-part of the coordinate, i.e. 0.54 -> 0.
@@ -76,7 +80,7 @@ export class SceneViewerContainerComponent {
     return newPoint;
   }
 
-  private calcVoxelToRemovePosition(pickInfo: PointerPickInfo): Coord {
+  private calcVoxelToRemovePosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [
@@ -103,7 +107,7 @@ export class SceneViewerContainerComponent {
    * Since all the voxels are placed on integer positions the dimension of the picked point
    * needs to be rounded.
    */
-  private roundDimensionAlongNormal(pickInfo: PointerPickInfo): Coord {
+  private roundDimensionAlongNormal(pickInfo: UiPointerPickInfo): Coord {
     return [
       pickInfo.normal[0] !== 0 ? Math.round(pickInfo.pickedPoint[0]) : pickInfo.pickedPoint[0],
       pickInfo.normal[1] !== 0 ? Math.round(pickInfo.pickedPoint[1]) : pickInfo.pickedPoint[1],
