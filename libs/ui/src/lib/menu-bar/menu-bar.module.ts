@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule, MatIconModule, MatMenuModule, MatToolbarModule } from '@angular/material';
-import { MenuBarComponent } from './menu-bar.component';
+import { UiMenuBarComponent } from './menu-bar.component';
 
 @NgModule({
-  declarations: [MenuBarComponent],
+  declarations: [UiMenuBarComponent],
   imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatToolbarModule],
-  exports: [MenuBarComponent],
+  exports: [UiMenuBarComponent],
 })
-export class MenuBarModule {}
+export class UiMenuBarModule {}

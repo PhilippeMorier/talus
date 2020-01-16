@@ -37,7 +37,7 @@ interface UiMenuBarMenuItem<T> {
   styleUrls: ['./menu-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MenuBarComponent {
+export class UiMenuBarComponent {
   @Input() menuConfig: UiMenuBarConfig<any> = { menus: [] };
 
   @Output() menuItemClick = new EventEmitter();

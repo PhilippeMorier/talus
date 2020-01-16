@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'ui-sidenav-shell-content',
@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavShellContentComponent {}
+export class UiSidenavShellContentComponent {}
 
 @Component({
   selector: 'ui-sidenav-shell-left',
@@ -16,7 +16,7 @@ export class SidenavShellContentComponent {}
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavShellLeftComponent {}
+export class UiSidenavShellLeftComponent {}
 
 @Component({
   selector: 'ui-sidenav-shell-right',
@@ -25,7 +25,7 @@ export class SidenavShellLeftComponent {}
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavShellRightComponent {}
+export class UiSidenavShellRightComponent {}
 
 @Component({
   selector: 'ui-sidenav-shell',
@@ -57,8 +57,4 @@ export class SidenavShellRightComponent {}
   styleUrls: ['./sidenav-shell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavShellComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class UiSidenavShellComponent {}

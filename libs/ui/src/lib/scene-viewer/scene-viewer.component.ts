@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { SceneViewerService } from './scene-viewer.service';
+import { UiSceneViewerService } from './scene-viewer.service';
 
 @Component({
   selector: 'ui-scene-viewer',
@@ -18,8 +18,8 @@ import { SceneViewerService } from './scene-viewer.service';
   styleUrls: ['./scene-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerComponent implements OnInit {
-  constructor(private sceneViewerService: SceneViewerService) {}
+export class UiSceneViewerComponent implements OnInit {
+  constructor(private sceneViewerService: UiSceneViewerService) {}
 
   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>;
 
