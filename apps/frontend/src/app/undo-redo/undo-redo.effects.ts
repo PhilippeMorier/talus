@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Action, select, Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
@@ -75,13 +75,11 @@ export class UndoRedoEffects {
       ofType(voxelAdded),
       map(voxelChange => ({
         redoStartAction: addVoxel(voxelChange),
-        redoEndAction: voxelAdded.type,
+        redoEndActionType: voxelAdded.type,
         undoStartAction: removeVoxel({ position: voxelChange.position }),
         undoEndActionType: voxelRemoved.type,
       })),
-      map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>
-        this.createAddUndo(redoStartAction, redoEndAction, undoStartAction, undoEndActionType),
-      ),
+      map(addUndo),
     ),
   );
 
@@ -90,22 +88,11 @@ export class UndoRedoEffects {
       ofType(voxelRemoved),
       map(voxelChange => ({
         redoStartAction: removeVoxel({ position: voxelChange.position }),
-        redoEndAction: voxelRemoved.type,
+        redoEndActionType: voxelRemoved.type,
         undoStartAction: addVoxel(voxelChange),
         undoEndActionType: voxelAdded.type,
       })),
-      map(({ redoStartAction, redoEndAction, undoStartAction, undoEndActionType }) =>
-        this.createAddUndo(redoStartAction, redoEndAction, undoStartAction, undoEndActionType),
-      ),
+      map(addUndo),
     ),
   );
-
-  createAddUndo(
-    redoStartAction: Action,
-    redoEndActionType: string,
-    undoStartAction: Action,
-    undoEndActionType: string,
-  ): Action {
-    return addUndo({ redoStartAction, redoEndActionType, undoStartAction, undoEndActionType });
-  }
 }
