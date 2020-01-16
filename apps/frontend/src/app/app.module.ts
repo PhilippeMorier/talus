@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SidenavShellModule } from '@talus/ui';
+import { UiSidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 import { AppEffects } from './app.effects';
 import { metaReducers, ROOT_REDUCERS } from './app.reducer';
@@ -39,7 +39,7 @@ import { UndoRedoModule } from './undo-redo/undo-redo.module';
 
     MenuBarContainerModule,
     SceneViewerContainerModule,
-    SidenavShellModule,
+    UiSidenavShellModule,
     ToolsPanelModule,
     UndoRedoModule,
   ],

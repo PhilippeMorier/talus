@@ -3,18 +3,18 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule, MatIconModule, MatSidenavModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  SidenavShellComponent,
-  SidenavShellContentComponent,
-  SidenavShellLeftComponent,
-  SidenavShellRightComponent,
+  UiSidenavShellComponent,
+  UiSidenavShellContentComponent,
+  UiSidenavShellLeftComponent,
+  UiSidenavShellRightComponent,
 } from './sidenav-shell.component';
 
 @NgModule({
   declarations: [
-    SidenavShellComponent,
-    SidenavShellContentComponent,
-    SidenavShellLeftComponent,
-    SidenavShellRightComponent,
+    UiSidenavShellComponent,
+    UiSidenavShellContentComponent,
+    UiSidenavShellLeftComponent,
+    UiSidenavShellRightComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -24,10 +24,10 @@ import {
     MatSidenavModule,
   ],
   exports: [
-    SidenavShellComponent,
-    SidenavShellContentComponent,
-    SidenavShellLeftComponent,
-    SidenavShellRightComponent,
+    UiSidenavShellComponent,
+    UiSidenavShellContentComponent,
+    UiSidenavShellLeftComponent,
+    UiSidenavShellRightComponent,
   ],
 })
-export class SidenavShellModule {}
+export class UiSidenavShellModule {}
