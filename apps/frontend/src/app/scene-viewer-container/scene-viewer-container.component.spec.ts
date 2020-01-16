@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { PointerButton, PointerPickInfo } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -18,7 +18,7 @@ import { SceneViewerContainerComponent } from './scene-viewer-container.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class SceneViewerStubComponent {
-  @Output() pointerPick = new Subject<PointerPickInfo>();
+  @Output() pointerPick = new Subject<UiPointerPickInfo>();
 }
 
 describe('SceneViewerContainerComponent', () => {
@@ -62,7 +62,7 @@ describe('SceneViewerContainerComponent', () => {
   it('should dispatch no action if not PointerButton.Main', () => {
     stubComponent.pointerPick.next({
       pickedPoint: [0, 0, 0],
-      pointerButton: PointerButton.Secondary,
+      pointerButton: UiPointerButton.Secondary,
       normal: [0, 0, 0],
     });
 
@@ -119,7 +119,7 @@ describe('SceneViewerContainerComponent', () => {
 
       stubComponent.pointerPick.next({
         pickedPoint,
-        pointerButton: PointerButton.Main,
+        pointerButton: UiPointerButton.Main,
         normal,
       });
 
@@ -175,7 +175,7 @@ describe('SceneViewerContainerComponent', () => {
 
       stubComponent.pointerPick.next({
         pickedPoint,
-        pointerButton: PointerButton.Main,
+        pointerButton: UiPointerButton.Main,
         normal,
       });
 

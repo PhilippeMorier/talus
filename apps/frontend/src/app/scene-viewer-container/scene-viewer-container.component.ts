@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { PointerButton, PointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -32,7 +32,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     this.store.dispatch(addVoxel({ position: [0, 0, 0], value: 42 }));
   }
 
-  onPointerPick(event: PointerPickInfo, selectedToolId: Tool): void {
+  onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
     this.dispatchPickAction(event, selectedToolId);
   }
 
@@ -41,8 +41,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   //   mesh.renderOutline = !mesh.renderOutline;
   // }
 
-  private dispatchPickAction(pickInfo: PointerPickInfo, selectedToolId: Tool): void {
-    if (pickInfo.pointerButton !== PointerButton.Main) {
+  private dispatchPickAction(pickInfo: UiPointerPickInfo, selectedToolId: Tool): void {
+    if (pickInfo.pointerButton !== UiPointerButton.Main) {
       return;
     }
 
@@ -58,7 +58,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     }
   }
 
-  private calcVoxelToAddPosition(pickInfo: PointerPickInfo): Coord {
+  private calcVoxelToAddPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     // VDB removes fractional-part of the coordinate, i.e. 0.54 -> 0.
@@ -80,7 +80,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     return newPoint;
   }
 
-  private calcVoxelToRemovePosition(pickInfo: PointerPickInfo): Coord {
+  private calcVoxelToRemovePosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [
@@ -107,7 +107,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
    * Since all the voxels are placed on integer positions the dimension of the picked point
    * needs to be rounded.
    */
-  private roundDimensionAlongNormal(pickInfo: PointerPickInfo): Coord {
+  private roundDimensionAlongNormal(pickInfo: UiPointerPickInfo): Coord {
     return [
       pickInfo.normal[0] !== 0 ? Math.round(pickInfo.pickedPoint[0]) : pickInfo.pickedPoint[0],
       pickInfo.normal[1] !== 0 ? Math.round(pickInfo.pickedPoint[1]) : pickInfo.pickedPoint[1],

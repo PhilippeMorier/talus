@@ -16,7 +16,7 @@ import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
 import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
-import { PointerButton } from './pointer-button';
+import { UiPointerButton } from './pointer-button';
 
 @Injectable()
 export class EngineFactory {
@@ -54,7 +54,7 @@ export class CameraFactory {
  */
 @Injectable()
 export class UiSceneViewerService {
-  pointerPick$ = new Subject<PointerPickInfo>();
+  pointerPick$ = new Subject<UiPointerPickInfo>();
 
   private engine: Engine;
   private scene: Scene;
@@ -149,7 +149,7 @@ export class UiSceneViewerService {
   private registerPointerPick(): void {
     this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
       if (pickInfo.pickedMesh && pickInfo.pickedPoint) {
-        const info: PointerPickInfo = {
+        const info: UiPointerPickInfo = {
           pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
           pointerButton: event.button,
           normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
@@ -191,8 +191,8 @@ function vector3ToCoord(vector: Vector3): Coord {
   return [vector.x, vector.y, vector.z];
 }
 
-export interface PointerPickInfo {
+export interface UiPointerPickInfo {
   pickedPoint: Coord;
-  pointerButton: PointerButton;
+  pointerButton: UiPointerButton;
   normal: Coord;
 }
