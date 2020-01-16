@@ -48,6 +48,8 @@ describe('UiMenuBarComponent', () => {
     // Don't call `detectChanges()`, because of `OnPush`
     // See: https://github.com/angular/angular/issues/12313#issuecomment-301848232
     // fixture.detectChanges();
+
+    spyOn(component.menuItemClick, 'emit');
   });
 
   it('should create', () => {
@@ -85,5 +87,24 @@ describe('UiMenuBarComponent', () => {
     menuItemButtons.forEach((menuItemButton, j) => {
       expect(menuItemButton.nativeElement.textContent).toEqual(expectedMenus[1].menuItems[j].label);
     });
+  });
+
+  it('should emit value of clicked menu items', () => {
+    component.menuConfig = {
+      menus: expectedMenus,
+    };
+    fixture.detectChanges();
+
+    const menuButtons = fixture.debugElement.queryAll(By.css('button'));
+    menuButtons[1].nativeElement.click();
+    fixture.detectChanges();
+
+    const menuItemButtons = fixture.debugElement.queryAll(By.css('button.mat-menu-item > span'));
+
+    menuItemButtons[0].nativeElement.click();
+    expect(component.menuItemClick.emit).toBeCalledWith('Value 2.1');
+
+    menuItemButtons[1].nativeElement.click();
+    expect(component.menuItemClick.emit).toBeCalledWith('Value 2.2');
   });
 });
