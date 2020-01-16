@@ -47,11 +47,11 @@ function testEngineFactor(): any {
   template: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SceneViewerStubComponent {}
+export class UiSceneViewerStubComponent {}
 
 @NgModule({
-  declarations: [SceneViewerStubComponent],
-  exports: [SceneViewerStubComponent],
+  declarations: [UiSceneViewerStubComponent],
+  exports: [UiSceneViewerStubComponent],
   imports: [CommonModule],
   providers: [
     { provide: CameraFactory, useValue: testCameraFactory() },
@@ -59,4 +59,4 @@ export class SceneViewerStubComponent {}
     UiSceneViewerService,
   ],
 })
-export class SceneViewerTestModule {}
+export class UiSceneViewerTestModule {}

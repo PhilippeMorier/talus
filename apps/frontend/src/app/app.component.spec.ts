@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SceneViewerTestModule, UiSidenavShellModule } from '@talus/ui';
+import { UiSceneViewerTestModule, UiSidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 
 @Component({
@@ -38,8 +38,8 @@ describe('AppComponent', () => {
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
+        UiSceneViewerTestModule,
         UiSidenavShellModule,
-        SceneViewerTestModule,
       ],
     }).compileComponents();
   }));

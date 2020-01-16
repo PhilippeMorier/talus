@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UiSceneViewerComponent } from './scene-viewer.component';
-import { SceneViewerTestModule } from './scene-viewer.module.testing';
+import { UiSceneViewerTestModule } from './scene-viewer.module.testing';
 
 describe('UiSceneViewerComponent', () => {
   let component: UiSceneViewerComponent;
@@ -9,7 +9,7 @@ describe('UiSceneViewerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [UiSceneViewerComponent],
-      imports: [SceneViewerTestModule],
+      imports: [UiSceneViewerTestModule],
     }).compileComponents();
   }));
 
