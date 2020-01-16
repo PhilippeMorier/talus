@@ -1,37 +1,29 @@
+import { Action } from '@ngrx/store';
+import { Coord } from '@talus/vdb';
 import { VoxelChange } from '../scene-viewer-container/grid.service';
-import { addVoxel, removeVoxel, voxelAdded, voxelRemoved } from '../scene-viewer-container/scene-viewer-container.actions';
-import { addUndo, redo, undo, undone } from './undo-redo.actions';
+import {
+  addVoxel,
+  removeVoxel,
+  voxelAdded,
+  voxelRemoved,
+} from '../scene-viewer-container/scene-viewer-container.actions';
+import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 import {
   reducer,
   selectCurrentRedoEndAction,
   selectCurrentRedoStartAction,
   selectCurrentUndoEndAction,
   selectCurrentUndoStartAction,
+  State,
 } from './undo-redo.reducer';
 
 describe('UndoRedoReducer', () => {
-  const voxelChange: VoxelChange = {
-    position: [0, 0, 0],
-    affectedNodeOrigin: [0, 0, 0],
-    value: 42,
-  };
-  const lastVoxelChange: VoxelChange = {
-    position: [1, 1, 1],
-    affectedNodeOrigin: [1, 1, 1],
-    value: 24,
-  };
-  const undoStep = {
-    redoStartAction: addVoxel(voxelChange),
-    redoEndActionType: voxelAdded.type,
-    undoStartAction: removeVoxel({ position: voxelChange.position }),
-    undoEndActionType: voxelRemoved.type,
-  };
-  const lastUndoStep = {
-    redoStartAction: addVoxel(lastVoxelChange),
-    redoEndActionType: voxelAdded.type,
-    undoStartAction: removeVoxel({ position: lastVoxelChange.position }),
-    undoEndActionType: voxelRemoved.type,
-  };
+  const voxelChange0 = createVoxelChange([0, 0, 0]);
+  const step0 = createStep(voxelChange0);
+  const voxelChange1 = createVoxelChange([1, 1, 1]);
+  const step1 = createStep(voxelChange1);
+  const voxelChange2 = createVoxelChange([2, 2, 2]);
+  const step2 = createStep(voxelChange2);
 
   it('should be undoing', () => {
     const newState = reducer(undefined, undo());
@@ -46,59 +38,94 @@ describe('UndoRedoReducer', () => {
   });
 
   it('should add undo step', () => {
-    let newState = reducer(undefined, addUndo(undoStep));
-    newState = reducer(newState, addUndo(undoStep));
-    newState = reducer(newState, addUndo(undoStep));
+    let newState = reducer(undefined, addUndo(step0));
+    newState = reducer(newState, addUndo(step1));
+    newState = reducer(newState, addUndo(step2));
 
-    expect(newState.redoStartActions.length).toEqual(3);
-    expect(newState.redoEndActionTypes.length).toEqual(3);
-    expect(newState.undoStartActions.length).toEqual(3);
-    expect(newState.undoEndActionTypes.length).toEqual(3);
+    expectActionLengthToEqual(newState, 3);
   });
 
   it('should update current index', () => {
-    let newState = reducer(undefined, addUndo(undoStep));
-    newState = reducer(newState, addUndo(undoStep));
-    newState = reducer(newState, addUndo(lastUndoStep));
+    let newState = reducer(undefined, addUndo(step0));
+    newState = reducer(newState, addUndo(step1));
+    newState = reducer(newState, addUndo(step2));
 
     expect(newState.currentIndex).toEqual(2);
-    expect(newState.redoEndActionTypes.length).toEqual(3);
-    expect(newState.undoStartActions.length).toEqual(3);
-    expect(newState.undoEndActionTypes.length).toEqual(3);
-
-    expect(selectCurrentUndoStartAction(newState)).toEqual(lastUndoStep.undoStartAction);
-    expect(selectCurrentUndoEndAction(newState)).toEqual(lastUndoStep.undoEndActionType);
-    expect(selectCurrentRedoStartAction(newState)).toBeUndefined();
-    expect(selectCurrentRedoEndAction(newState)).toBeUndefined();
+    expectActionLengthToEqual(newState, 3);
   });
 
   it('should select current undo/redo', () => {
-    let newState = reducer(undefined, addUndo(undoStep));
-    newState = reducer(newState, addUndo(undoStep));
-    newState = reducer(newState, addUndo(lastUndoStep));
+    let newState = reducer(undefined, addUndo(step0));
+    newState = reducer(newState, addUndo(step1));
+    newState = reducer(newState, addUndo(step2));
 
-    expect(selectCurrentUndoStartAction(newState)).toEqual(lastUndoStep.undoStartAction);
-    expect(selectCurrentUndoEndAction(newState)).toEqual(lastUndoStep.undoEndActionType);
+    expect(selectCurrentUndoStartAction(newState)).toEqual(step2.undoStartAction);
+    expect(selectCurrentUndoEndAction(newState)).toEqual(step2.undoEndActionType);
     expect(selectCurrentRedoStartAction(newState)).toBeUndefined();
     expect(selectCurrentRedoEndAction(newState)).toBeUndefined();
   });
 
   it('should select current undo/redo after one undone', () => {
-    let newState = reducer(undefined, addUndo(undoStep));
-    newState = reducer(newState, addUndo(undoStep));
-    newState = reducer(newState, addUndo(lastUndoStep));
+    let newState = reducer(undefined, addUndo(step0));
+    newState = reducer(newState, addUndo(step1));
+    newState = reducer(newState, addUndo(step2));
     newState = reducer(newState, undone());
 
     expect(newState.currentIndex).toEqual(1);
+    expectActionLengthToEqual(newState, 3);
 
-    expect(newState.redoStartActions.length).toEqual(3);
-    expect(newState.redoEndActionTypes.length).toEqual(3);
-    expect(newState.undoStartActions.length).toEqual(3);
-    expect(newState.undoEndActionTypes.length).toEqual(3);
+    expect(selectCurrentUndoStartAction(newState)).toEqual(step1.undoStartAction);
+    expect(selectCurrentUndoEndAction(newState)).toEqual(step1.undoEndActionType);
+    expect(selectCurrentRedoStartAction(newState)).toEqual(step2.redoStartAction);
+    expect(selectCurrentRedoEndAction(newState)).toEqual(step2.redoEndActionType);
+  });
 
-    expect(selectCurrentUndoStartAction(newState)).toEqual(undoStep.undoStartAction);
-    expect(selectCurrentUndoEndAction(newState)).toEqual(undoStep.undoEndActionType);
-    expect(selectCurrentRedoStartAction(newState)).toEqual(lastUndoStep.redoStartAction);
-    expect(selectCurrentRedoEndAction(newState)).toEqual(lastUndoStep.redoEndActionType);
+  it('should select current undo/redo after three undone & one redo', () => {
+    let newState = reducer(undefined, addUndo(step0));
+    newState = reducer(newState, addUndo(step1));
+    newState = reducer(newState, addUndo(step2));
+    newState = reducer(newState, undone());
+    newState = reducer(newState, undone());
+    newState = reducer(newState, undone());
+    newState = reducer(newState, redone());
+
+    expect(newState.currentIndex).toEqual(0);
+    expectActionLengthToEqual(newState, 3);
+
+    expect(selectCurrentUndoStartAction(newState)).toEqual(step0.undoStartAction);
+    expect(selectCurrentUndoEndAction(newState)).toEqual(step0.undoEndActionType);
+    expect(selectCurrentRedoStartAction(newState)).toEqual(step1.redoStartAction);
+    expect(selectCurrentRedoEndAction(newState)).toEqual(step1.redoEndActionType);
   });
 });
+
+function createVoxelChange(xyz: Coord): VoxelChange {
+  return {
+    position: xyz,
+    affectedNodeOrigin: xyz,
+    value: 42,
+  };
+}
+
+function createStep(
+  voxelChange: VoxelChange,
+): {
+  redoEndActionType: string;
+  redoStartAction: Action;
+  undoEndActionType: string;
+  undoStartAction: Action;
+} {
+  return {
+    redoStartAction: addVoxel(voxelChange),
+    redoEndActionType: voxelAdded.type,
+    undoStartAction: removeVoxel({ position: voxelChange.position }),
+    undoEndActionType: voxelRemoved.type,
+  };
+}
+
+function expectActionLengthToEqual(state: State, length: number): void {
+  expect(state.redoStartActions.length).toEqual(length);
+  expect(state.redoEndActionTypes.length).toEqual(length);
+  expect(state.undoStartActions.length).toEqual(length);
+  expect(state.undoEndActionTypes.length).toEqual(length);
+}
