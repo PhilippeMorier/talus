@@ -385,9 +385,16 @@ workflows:
             - 'frontend e2e'
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - develop
 
       - 'ui deploy':
           requires:
             - 'ui build'
             - 'ui e2e'
+          filters:
+            branches:
+              only:
+                - master
+                - develop
