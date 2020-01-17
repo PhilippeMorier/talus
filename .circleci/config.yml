@@ -189,6 +189,24 @@ jobs:
           path: ./test-results/cypress
           destination: cypress
 
+  'ui e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run ui-e2e
+          command: yarn ng run ui-e2e:e2e --headless
+
+      - *store_test_results
+
+      - store_artifacts:
+          path: ./test-results/cypress
+          destination: cypress
+
   'frontend build':
     <<: *use_docker_node
 
@@ -234,7 +252,7 @@ jobs:
           root: .
           paths: dist/apps/frontend
 
-  'storybook build':
+  'ui build':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -287,7 +305,7 @@ jobs:
 
       - *log_deploy_url
 
-  'storybook deploy':
+  'ui deploy':
     <<: *use_docker_node
     <<: *set_working_directory
     steps:
@@ -347,7 +365,14 @@ workflows:
             - 'unit'
             - 'benchmark'
 
-      - 'storybook build':
+      - 'ui build':
+          requires:
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
+
+      - 'ui e2e':
           requires:
             - 'linting'
             - 'prettier'
@@ -362,7 +387,7 @@ workflows:
             branches:
               only: master
 
-      - 'storybook deploy':
+      - 'ui deploy':
           requires:
-            - 'storybook build'
-#            - 'storybook e2e'
+            - 'ui build'
+            - 'ui e2e'
