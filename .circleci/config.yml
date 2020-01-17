@@ -28,9 +28,29 @@ aliases:
     attach_workspace:
       at: *workspace
 
-#  - &store_test_results
-#    store_test_results:
-#      path: ./projects/editor/reports/test-results
+  - &configure_git_user
+    run:
+      name: Configure Git user
+      command: |
+        git config user.email 'morier.dev@outlook.com'
+        git config user.name 'Circle CI'
+
+  - &add_github_ssh_key
+    add_ssh_keys:
+      fingerprints:
+        - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
+
+  - &add_github_to_known_hosts
+    run:
+      name: Add github.com to known hosts
+      command:
+        echo 'github.com ssh-rsa
+        AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+        >> ~/.ssh/known_hosts
+
+  - &store_test_results
+    store_test_results:
+      path: ./test-results
 
 version: 2
 
@@ -102,8 +122,7 @@ jobs:
           name: Run unit tests
           command: yarn test:code-coverage
 
-      - store_test_results:
-          path: ./test-results
+      - *store_test_results
 
       - store_artifacts:
           path: ./coverage
@@ -125,8 +144,7 @@ jobs:
           name: Run benchmarks
           command: node ./dist/apps/benchmark/main.js
 
-      - store_test_results:
-          path: ./test-results
+      - *store_test_results
 
   'frontend e2e':
     <<: *use_docker_cypress_included
@@ -140,8 +158,7 @@ jobs:
           name: Run frontend-e2e
           command: yarn e2e:ci frontend-e2e
 
-      - store_test_results:
-          path: ./test-results
+      - *store_test_results
 
       - store_artifacts:
           path: ./test-results/cypress
@@ -219,22 +236,11 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run:
-          name: Configure Git user
-          command: |
-            git config user.email 'morier.dev@outlook.com'
-            git config user.name 'Circle CI'
+      - *configure_git_user
 
-      - add_ssh_keys:
-          fingerprints:
-            - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
+      - *add_github_ssh_key
 
-      - run:
-          name: Add github.com to known hosts
-          command:
-            echo 'github.com ssh-rsa
-            AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-            >> ~/.ssh/known_hosts
+      - *add_github_to_known_hosts
 
       - run:
           name: Delete CircleCI index
@@ -263,7 +269,7 @@ jobs:
 
       - run:
           name: Log deploy URL
-          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/frontend/'
+          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/frontend/index.html'
 
   'storybook deploy':
     <<: *use_docker_node
@@ -271,22 +277,11 @@ jobs:
     steps:
       - *attach_workspace
 
-      - run:
-          name: Configure Git user
-          command: |
-            git config user.email 'morier.dev@outlook.com'
-            git config user.name 'Circle CI'
+      - *configure_git_user
 
-      - add_ssh_keys:
-          fingerprints:
-            - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
+      - *add_github_ssh_key
 
-      - run:
-          name: Add github.com to known hosts
-          command:
-            echo 'github.com ssh-rsa
-            AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-            >> ~/.ssh/known_hosts
+      - *add_github_to_known_hosts
 
       - run:
           name: Prepare deployment variables
@@ -307,7 +302,7 @@ jobs:
 
       - run:
           name: Log deploy URL
-          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/ui/'
+          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/ui/index.html'
 
 workflows:
   version: 2
