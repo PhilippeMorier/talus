@@ -109,25 +109,6 @@ jobs:
           path: ./coverage
           destination: coverage
 
-  'frontend-e2e':
-    <<: *use_docker_cypress_included
-
-    <<: *set_working_directory
-
-    steps:
-      - *attach_workspace
-
-      - run:
-          name: Run frontend-e2e
-          command: yarn e2e:ci frontend-e2e
-
-      - store_test_results:
-          path: ./test-results
-
-      - store_artifacts:
-          path: ./test-results/cypress
-          destination: cypress
-
   'benchmark':
     <<: *use_docker_node_browsers
 
@@ -146,6 +127,25 @@ jobs:
 
       - store_test_results:
           path: ./test-results
+
+  'frontend e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run frontend-e2e
+          command: yarn e2e:ci frontend-e2e
+
+      - store_test_results:
+          path: ./test-results
+
+      - store_artifacts:
+          path: ./test-results/cypress
+          destination: cypress
 
   'frontend build':
     <<: *use_docker_node
@@ -286,7 +286,7 @@ workflows:
             - 'unit'
             - 'benchmark'
 
-      - 'frontend-e2e':
+      - 'frontend e2e':
           requires:
             - 'linting'
             - 'prettier'
@@ -303,7 +303,7 @@ workflows:
       - 'frontend deploy':
           requires:
             - 'frontend build'
-            - 'frontend-e2e'
+            - 'frontend e2e'
           filters:
             branches:
               only: master
