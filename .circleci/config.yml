@@ -28,9 +28,9 @@ aliases:
     attach_workspace:
       at: *workspace
 
-  - &store_test_results
-    store_test_results:
-      path: ./projects/editor/reports/test-results
+#  - &store_test_results
+#    store_test_results:
+#      path: ./projects/editor/reports/test-results
 
 version: 2
 
@@ -88,8 +88,7 @@ jobs:
 
       - run:
           name: Run prettier
-          command: |
-            yarn prettier:check
+          command: yarn prettier:check
 
   'unit':
     <<: *use_docker_node_browsers
@@ -148,7 +147,7 @@ jobs:
       - store_test_results:
           path: ./test-results
 
-  'build':
+  'frontend build':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -193,8 +192,20 @@ jobs:
           root: .
           paths: dist/apps/frontend
 
+  'storybook build':
+    <<: *use_docker_node
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Build storybook
+          command: yarn ng run ui:build-storybook
+
   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
-  'deploy':
+  'frontend deploy':
     <<: *use_docker_node
     <<: *set_working_directory
     steps:
@@ -268,7 +279,7 @@ workflows:
           requires:
             - 'dependencies'
 
-      - 'build':
+      - 'frontend build':
           requires:
             - 'linting'
             - 'prettier'
@@ -282,9 +293,16 @@ workflows:
             - 'unit'
             - 'benchmark'
 
-      - 'deploy':
+      - 'storybook build':
           requires:
-            - 'build'
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
+
+      - 'frontend deploy':
+          requires:
+            - 'frontend build'
             - 'frontend-e2e'
           filters:
             branches:
