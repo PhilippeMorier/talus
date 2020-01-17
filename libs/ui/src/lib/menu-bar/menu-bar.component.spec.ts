@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UiMenuBarModule } from '@talus/ui';
 import { UiMenuBarComponent } from './menu-bar.component';
 
@@ -38,7 +37,7 @@ describe('UiMenuBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiMenuBarModule, BrowserAnimationsModule],
+      imports: [UiMenuBarModule],
     }).compileComponents();
   }));
 
