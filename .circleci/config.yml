@@ -28,9 +28,54 @@ aliases:
     attach_workspace:
       at: *workspace
 
+  - &configure_git_user
+    run:
+      name: Configure Git user
+      command: |
+        git config user.email 'morier.dev@outlook.com'
+        git config user.name 'Circle CI'
+
+  - &add_github_ssh_key
+    add_ssh_keys:
+      fingerprints:
+        - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
+
+  - &add_github_to_known_hosts
+    run:
+      name: Add github.com to known hosts
+      command:
+        echo 'github.com ssh-rsa
+        AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+        >> ~/.ssh/known_hosts
+
+  - &prepare_github_pages_variables
+    run:
+      name: Prepare github pages variables
+      command: |
+        echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+
+        echo 'export COMMIT_MESSAGE="[skip ci] Deploy: $DEPLOY_CONTEXT (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
+        echo 'export DIST_PATH="dist/$DEPLOY_CONTEXT"' >> $BASH_ENV
+        echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
+
+  - &deploy_to_github_pages
+    run:
+      name: Deploy to Github pages
+      command: |
+        yarn gh-pages \
+        --dotfiles \
+        --message "$COMMIT_MESSAGE" \
+        --dist "$DIST_PATH" \
+        --dest "$DEST_PATH"
+
+  - &log_deploy_url
+    run:
+      name: Log deploy URL
+      command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/'$PROJECT_NAME'/'
+
   - &store_test_results
     store_test_results:
-      path: ./projects/editor/reports/test-results
+      path: ./test-results
 
 version: 2
 
@@ -88,8 +133,7 @@ jobs:
 
       - run:
           name: Run prettier
-          command: |
-            yarn prettier:check
+          command: yarn prettier:check
 
   'unit':
     <<: *use_docker_node_browsers
@@ -103,31 +147,11 @@ jobs:
           name: Run unit tests
           command: yarn test:code-coverage
 
-      - store_test_results:
-          path: ./test-results
+      - *store_test_results
 
       - store_artifacts:
           path: ./coverage
           destination: coverage
-
-  'frontend-e2e':
-    <<: *use_docker_cypress_included
-
-    <<: *set_working_directory
-
-    steps:
-      - *attach_workspace
-
-      - run:
-          name: Run frontend-e2e
-          command: yarn e2e:ci frontend-e2e
-
-      - store_test_results:
-          path: ./test-results
-
-      - store_artifacts:
-          path: ./test-results/cypress
-          destination: cypress
 
   'benchmark':
     <<: *use_docker_node_browsers
@@ -145,10 +169,45 @@ jobs:
           name: Run benchmarks
           command: node ./dist/apps/benchmark/main.js
 
-      - store_test_results:
-          path: ./test-results
+      - *store_test_results
 
-  'build':
+  'frontend e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run frontend-e2e
+          command: yarn e2e:ci frontend-e2e
+
+      - *store_test_results
+
+      - store_artifacts:
+          path: ./test-results/cypress
+          destination: cypress
+
+  'ui e2e':
+    <<: *use_docker_cypress_included
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Run ui-e2e
+          command: yarn ng run ui-e2e:e2e --headless
+
+      - *store_test_results
+
+      - store_artifacts:
+          path: ./test-results/cypress
+          destination: cypress
+
+  'frontend build':
     <<: *use_docker_node
 
     <<: *set_working_directory
@@ -193,29 +252,38 @@ jobs:
           root: .
           paths: dist/apps/frontend
 
+  'ui build':
+    <<: *use_docker_node
+
+    <<: *set_working_directory
+
+    steps:
+      - *attach_workspace
+
+      - run:
+          name: Build storybook
+          command: yarn ng run ui:build-storybook
+
+      - store_artifacts:
+          path: ./dist/storybook/ui
+          destination: dist/storybook/ui
+
+      - persist_to_workspace:
+          root: .
+          paths: dist/storybook/ui
+
   # https://circleci.com/blog/deploying-documentation-to-github-pages-with-continuous-integration/
-  'deploy':
+  'frontend deploy':
     <<: *use_docker_node
     <<: *set_working_directory
     steps:
       - *attach_workspace
 
-      - run:
-          name: Configure Git user
-          command: |
-            git config user.email 'morier.dev@outlook.com'
-            git config user.name 'Circle CI'
+      - *configure_git_user
 
-      - add_ssh_keys:
-          fingerprints:
-            - '6b:2b:a3:64:1d:a3:5c:b6:03:7a:b7:b9:39:10:8f:43'
+      - *add_github_ssh_key
 
-      - run:
-          name: Add github.com to known hosts
-          command:
-            echo 'github.com ssh-rsa
-            AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-            >> ~/.ssh/known_hosts
+      - *add_github_to_known_hosts
 
       - run:
           name: Delete CircleCI index
@@ -226,25 +294,40 @@ jobs:
           command: mv dist/apps/frontend/index-github.html dist/apps/frontend/index.html
 
       - run:
-          name: Prepare deployment variables
+          name: Set deploy context & project variables
           command: |
-            echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+            echo 'export DEPLOY_CONTEXT="apps"' >> $BASH_ENV
+            echo 'export PROJECT_NAME="frontend"' >> $BASH_ENV
 
-            echo 'export COMMIT_MESSAGE="[skip ci] Deploy: apps (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
-            echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
+      - *prepare_github_pages_variables
+
+      - *deploy_to_github_pages
+
+      - *log_deploy_url
+
+  'ui deploy':
+    <<: *use_docker_node
+    <<: *set_working_directory
+    steps:
+      - *attach_workspace
+
+      - *configure_git_user
+
+      - *add_github_ssh_key
+
+      - *add_github_to_known_hosts
 
       - run:
-          name: Deploy to Github pages
+          name: Set deploy context & project variables
           command: |
-            yarn gh-pages \
-            --dotfiles \
-            --message "$COMMIT_MESSAGE" \
-            --dist dist/apps \
-            --dest "$DEST_PATH"
+            echo 'export DEPLOY_CONTEXT="storybook"' >> $BASH_ENV
+            echo 'export PROJECT_NAME="ui"' >> $BASH_ENV
 
-      - run:
-          name: Log deploy URL
-          command: echo 'https://philippemorier.github.io/talus/'$DEST_PATH'/frontend/'
+      - *prepare_github_pages_variables
+
+      - *deploy_to_github_pages
+
+      - *log_deploy_url
 
 workflows:
   version: 2
@@ -268,24 +351,50 @@ workflows:
           requires:
             - 'dependencies'
 
-      - 'build':
+      - 'frontend build':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
             - 'benchmark'
 
-      - 'frontend-e2e':
+      - 'frontend e2e':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
             - 'benchmark'
 
-      - 'deploy':
+      - 'ui build':
           requires:
-            - 'build'
-            - 'frontend-e2e'
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
+
+      - 'ui e2e':
+          requires:
+            - 'linting'
+            - 'prettier'
+            - 'unit'
+            - 'benchmark'
+
+      - 'frontend deploy':
+          requires:
+            - 'frontend build'
+            - 'frontend e2e'
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - develop
+
+      - 'ui deploy':
+          requires:
+            - 'ui build'
+            - 'ui e2e'
+          filters:
+            branches:
+              only:
+                - master
+                - develop

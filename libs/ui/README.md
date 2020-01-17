@@ -13,6 +13,8 @@ Run `ng test ui` to execute the unit tests.
 
 - Run it with `nx run ui:storybook`
 
+- Build it with `nx run ui:build-storybook`
+
 - Run E2E it with `nx run ui-e2e:e2e`
 
 - Watch E2E it with `nx run ui-e2e:e2e --watch`

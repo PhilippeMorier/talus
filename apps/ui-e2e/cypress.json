@@ -6,8 +6,15 @@
   "integrationFolder": "./src/integration",
   "modifyObstructiveCode": false,
   "pluginsFile": "./src/plugins/index",
-  "screenshotsFolder": "../../dist/cypress/apps/ui-e2e/screenshots",
+  "reporter": "junit",
+  "reporterOptions": {
+    "jenkinsMode": true,
+    "mochaFile": "../../test-results/mocha/apps-ui-e2e.[hash].junit.xml",
+    "testCaseSwitchClassnameAndName": true,
+    "toConsole": true
+  },
+  "screenshotsFolder": "../../test-results/cypress/apps/ui-e2e/screenshots",
   "supportFile": "./src/support/index.ts",
   "video": true,
-  "videosFolder": "../../dist/cypress/apps/ui-e2e/videos"
+  "videosFolder": "../../test-results/cypress/apps/ui-e2e/videos"
 }
