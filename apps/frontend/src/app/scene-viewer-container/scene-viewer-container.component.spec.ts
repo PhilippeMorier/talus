@@ -116,9 +116,9 @@ describe('SceneViewerContainerComponent', () => {
     ],
   ])(
     'should dispatch `setVoxel` action for %j',
-    (pickedPoint: Coord, position: Coord, normal: Coord) => {
+    (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
       const initialAction = setVoxel({ xyz: [0, 0, 0], newValue: 42 });
-      const action = setVoxel({ xyz: position, newValue: 1 });
+      const action = setVoxel({ xyz, newValue: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -169,12 +169,12 @@ describe('SceneViewerContainerComponent', () => {
     ],
   ])(
     'should dispatch `removeVoxel` action for %j',
-    (pickedPoint: Coord, position: Coord, normal: Coord) => {
+    (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
       mockSelectedToolIdSelector.setResult(Tool.RemoveVoxel);
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ xyz: position });
+      const action = removeVoxel({ xyz });
 
       stubComponent.pointerPick.next({
         pickedPoint,
