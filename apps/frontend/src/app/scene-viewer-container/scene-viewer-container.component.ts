@@ -7,7 +7,7 @@ import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { addVoxel, paintVoxel, removeVoxel } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -53,7 +53,10 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         );
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ position: this.calcVoxelToRemovePosition(pickInfo) }));
+        this.store.dispatch(removeVoxel({ position: this.calcClickedVoxelPosition(pickInfo) }));
+        break;
+      case Tool.PaintVoxel:
+        this.store.dispatch(paintVoxel({ position: this.calcClickedVoxelPosition(pickInfo) }));
         break;
     }
   }
@@ -80,7 +83,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     return newPoint;
   }
 
-  private calcVoxelToRemovePosition(pickInfo: UiPointerPickInfo): Coord {
+  private calcClickedVoxelPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [

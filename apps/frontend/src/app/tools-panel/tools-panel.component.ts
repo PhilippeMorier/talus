@@ -31,6 +31,11 @@ export class ToolsPanelComponent {
       tooltip: '@@@ Remove voxel',
       value: Tool.RemoveVoxel,
     },
+    {
+      icon: 'brush',
+      tooltip: '@@@ Paint voxel',
+      value: Tool.PaintVoxel,
+    },
   ];
 
   constructor(private store: Store<fromApp.State>) {
