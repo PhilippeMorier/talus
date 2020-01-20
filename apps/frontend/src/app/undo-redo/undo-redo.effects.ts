@@ -5,8 +5,10 @@ import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import {
+  paintVoxel,
   removeVoxel,
   setVoxel,
+  voxelPainted,
   voxelRemoved,
   voxelSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
@@ -76,7 +78,7 @@ export class UndoRedoEffects {
       map(voxelChange => ({
         redoStartAction: setVoxel(voxelChange),
         redoEndActionType: voxelSet.type,
-        undoStartAction: removeVoxel({ position: voxelChange.position }),
+        undoStartAction: removeVoxel(voxelChange),
         undoEndActionType: voxelRemoved.type,
       })),
       map(addUndo),
@@ -87,10 +89,23 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelRemoved),
       map(voxelChange => ({
-        redoStartAction: removeVoxel({ position: voxelChange.position }),
+        redoStartAction: removeVoxel(voxelChange),
         redoEndActionType: voxelRemoved.type,
         undoStartAction: setVoxel(voxelChange),
         undoEndActionType: voxelSet.type,
+      })),
+      map(addUndo),
+    ),
+  );
+
+  addUndoActionForPaintVoxel$ = createEffect(() =>
+    this.userTriggeredActions$.pipe(
+      ofType(voxelPainted),
+      map(voxelChange => ({
+        redoStartAction: paintVoxel(voxelChange),
+        redoEndActionType: voxelPainted.type,
+        undoStartAction: paintVoxel({ xyz: voxelChange.xyz, newValue: voxelChange.oldValue }),
+        undoEndActionType: voxelPainted.type,
       })),
       map(addUndo),
     ),

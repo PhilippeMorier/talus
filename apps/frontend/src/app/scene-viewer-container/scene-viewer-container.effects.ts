@@ -6,17 +6,17 @@ import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { GridService } from './grid.service';
 import {
-  setVoxel,
-  setVoxelFailed,
-  setVoxels,
-  setVoxelsFailed,
   paintVoxel,
   paintVoxelFailed,
   removeVoxel,
   removeVoxelFailed,
-  voxelSet,
+  setVoxel,
+  setVoxelFailed,
+  setVoxels,
+  setVoxelsFailed,
   voxelPainted,
   voxelRemoved,
+  voxelSet,
   voxelsSet,
 } from './scene-viewer-container.actions';
 
@@ -31,7 +31,7 @@ export class SceneViewerContainerEffects {
   setVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(setVoxel),
-      map(({ position, value }) => this.gridService.setVoxel(position, value)),
+      map(({ xyz, newValue }) => this.gridService.setVoxel(xyz, newValue)),
       map(voxelSet),
       catchError(() => of(setVoxelFailed())),
     ),
@@ -40,7 +40,7 @@ export class SceneViewerContainerEffects {
   setVoxels$ = createEffect(() =>
     this.actions$.pipe(
       ofType(setVoxels),
-      map(({ positions, values }) => this.gridService.setVoxels(positions, values)),
+      map(({ positions, newValues }) => this.gridService.setVoxels(positions, newValues)),
       map(voxelChanges => voxelsSet({ voxelChanges })),
       catchError(() => of(setVoxelsFailed())),
     ),
@@ -49,7 +49,7 @@ export class SceneViewerContainerEffects {
   removeVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeVoxel),
-      map(({ position }) => this.gridService.removeVoxel(position)),
+      map(({ xyz }) => this.gridService.removeVoxel(xyz)),
       map(voxelRemoved),
       catchError(() => of(removeVoxelFailed())),
     ),
@@ -58,7 +58,7 @@ export class SceneViewerContainerEffects {
   paintVoxel$ = createEffect(() =>
     this.actions$.pipe(
       ofType(paintVoxel),
-      map(({ position }) => this.gridService.paintVoxel(position)),
+      map(({ xyz, newValue }) => this.gridService.paintVoxel(xyz, newValue)),
       map(voxelPainted),
       catchError(() => of(paintVoxelFailed())),
     ),

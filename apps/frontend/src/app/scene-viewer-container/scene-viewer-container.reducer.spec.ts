@@ -1,12 +1,13 @@
 import { VoxelChange } from './grid.service';
-import { voxelSet, voxelRemoved } from './scene-viewer-container.actions';
+import { voxelRemoved, voxelSet } from './scene-viewer-container.actions';
 import { reducer, selectVoxelCount } from './scene-viewer-container.reducer';
 
 describe('SceneViewerContainerReducer', () => {
   const voxelChange: VoxelChange = {
-    position: [0, 0, 0],
+    xyz: [0, 0, 0],
     affectedNodeOrigin: [0, 0, 0],
-    value: 42,
+    oldValue: 24,
+    newValue: 42,
   };
 
   it('should increment counter', () => {

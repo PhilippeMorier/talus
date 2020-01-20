@@ -27,25 +27,28 @@ export class GridService {
    * Sets a new voxel via accessor to share access path.
    * @returns origin of `InternalNode1` of affected node (node containing added voxel).
    */
-  setVoxel(xyz: Coord, value: number): VoxelChange {
-    this.accessor.setValueOn(xyz, value);
+  setVoxel(xyz: Coord, newValue: number): VoxelChange {
+    const oldValue = this.accessor.getValue(xyz);
+
+    this.accessor.setValueOn(xyz, newValue);
 
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,
-      value,
-      position: xyz,
+      newValue,
+      oldValue,
+      xyz,
     };
   }
 
-  setVoxels(coords: Coord[], values: number[]): VoxelChange[] {
+  setVoxels(coords: Coord[], newValues: number[]): VoxelChange[] {
     const changes = new Map<string, VoxelChange>();
 
-    if (coords.length !== values.length) {
-      throw new Error(`Coordinates and values don't have the same length.`);
+    if (coords.length !== newValues.length) {
+      throw new Error(`Coordinates and new values don't have the same length.`);
     }
 
     coords.forEach((xyz, i) => {
-      const change = this.setVoxel(xyz, values[i]);
+      const change = this.setVoxel(xyz, newValues[i]);
       changes.set(change.affectedNodeOrigin.toString(), change);
     });
 
@@ -53,25 +56,20 @@ export class GridService {
   }
 
   removeVoxel(xyz: Coord): VoxelChange {
+    const oldValue = this.accessor.getValue(xyz);
+
     this.accessor.setActiveState(xyz, false);
 
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,
-      value: this.accessor.getValue(xyz),
-      position: xyz,
+      oldValue,
+      newValue: oldValue,
+      xyz,
     };
   }
 
-  paintVoxel(xyz: Coord): VoxelChange {
-    const oldValue = this.accessor.getValue(xyz);
-
-    this.setVoxel(xyz, 3);
-
-    return {
-      affectedNodeOrigin: this.accessor.internalNode1Origin,
-      value: oldValue,
-      position: xyz,
-    };
+  paintVoxel(xyz: Coord, newValue: number): VoxelChange {
+    return this.setVoxel(xyz, newValue);
   }
 
   computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
@@ -91,6 +89,7 @@ export class GridService {
 
 export interface VoxelChange {
   affectedNodeOrigin: Coord;
-  value: number;
-  position: Coord;
+  newValue: number;
+  oldValue: number;
+  xyz: Coord;
 }

@@ -7,7 +7,7 @@ const actionTypePrefix = `[sceneViewerContainer]`;
 // Set voxel
 export const setVoxel = createAction(
   `${actionTypePrefix} Set voxel`,
-  props<{ position: Coord; value: number }>(),
+  props<{ xyz: Coord; newValue: number }>(),
 );
 export const setVoxelFailed = createAction(`${actionTypePrefix} Set voxel failed`);
 export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<VoxelChange>());
@@ -15,7 +15,7 @@ export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<Voxe
 // Set voxels
 export const setVoxels = createAction(
   `${actionTypePrefix} Set voxels`,
-  props<{ positions: Coord[]; values: number[] }>(),
+  props<{ positions: Coord[]; newValues: number[] }>(),
 );
 export const setVoxelsFailed = createAction(`${actionTypePrefix} Set voxels failed`);
 export const voxelsSet = createAction(
@@ -26,7 +26,7 @@ export const voxelsSet = createAction(
 // Remove voxel
 export const removeVoxel = createAction(
   `${actionTypePrefix} Remove voxel`,
-  props<{ position: Coord }>(),
+  props<{ xyz: Coord }>(),
 );
 export const removeVoxelFailed = createAction(`${actionTypePrefix} Remove voxel failed`);
 export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, props<VoxelChange>());
@@ -34,7 +34,7 @@ export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, pr
 // Paint voxel
 export const paintVoxel = createAction(
   `${actionTypePrefix} Paint voxel`,
-  props<{ position: Coord }>(),
+  props<{ xyz: Coord; newValue: number }>(),
 );
 export const paintVoxelFailed = createAction(`${actionTypePrefix} Paint voxel failed`);
 export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, props<VoxelChange>());

@@ -29,7 +29,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   constructor(private store: Store<fromApp.State>) {}
 
   ngAfterViewInit(): void {
-    this.store.dispatch(setVoxel({ position: [0, 0, 0], value: 42 }));
+    this.store.dispatch(setVoxel({ xyz: [0, 0, 0], newValue: 42 }));
   }
 
   onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
@@ -49,14 +49,16 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     switch (selectedToolId) {
       case Tool.SetVoxel:
         this.store.dispatch(
-          setVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
+          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: 1 }),
         );
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ position: this.calcClickedVoxelPosition(pickInfo) }));
+        this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
         break;
       case Tool.PaintVoxel:
-        this.store.dispatch(paintVoxel({ position: this.calcClickedVoxelPosition(pickInfo) }));
+        this.store.dispatch(
+          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: 4 }),
+        );
         break;
     }
   }

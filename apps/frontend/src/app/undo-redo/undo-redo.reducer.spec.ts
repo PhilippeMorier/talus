@@ -2,10 +2,10 @@ import { Action } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
 import { VoxelChange } from '../scene-viewer-container/grid.service';
 import {
-  setVoxel,
   removeVoxel,
-  voxelSet,
+  setVoxel,
   voxelRemoved,
+  voxelSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 import {
@@ -169,9 +169,10 @@ describe('UndoRedoReducer', () => {
 
 function createVoxelChange(xyz: Coord): VoxelChange {
   return {
-    position: xyz,
+    xyz,
     affectedNodeOrigin: xyz,
-    value: 42,
+    oldValue: 24,
+    newValue: 42,
   };
 }
 
@@ -186,7 +187,7 @@ function createStep(
   return {
     redoStartAction: setVoxel(voxelChange),
     redoEndActionType: voxelSet.type,
-    undoStartAction: removeVoxel({ position: voxelChange.position }),
+    undoStartAction: removeVoxel({ xyz: voxelChange.xyz }),
     undoEndActionType: voxelRemoved.type,
   };
 }

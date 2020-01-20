@@ -117,8 +117,8 @@ describe('SceneViewerContainerComponent', () => {
   ])(
     'should dispatch `setVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const initialAction = setVoxel({ position: [0, 0, 0], value: 42 });
-      const action = setVoxel({ position, value: 1 });
+      const initialAction = setVoxel({ xyz: [0, 0, 0], newValue: 42 });
+      const action = setVoxel({ xyz: position, newValue: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -174,7 +174,7 @@ describe('SceneViewerContainerComponent', () => {
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ position });
+      const action = removeVoxel({ xyz: position });
 
       stubComponent.pointerPick.next({
         pickedPoint,
