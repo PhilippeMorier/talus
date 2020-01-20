@@ -40,7 +40,7 @@ export class SceneViewerContainerEffects {
   setVoxels$ = createEffect(() =>
     this.actions$.pipe(
       ofType(setVoxels),
-      map(({ positions, newValues }) => this.gridService.setVoxels(positions, newValues)),
+      map(({ coords, newValues }) => this.gridService.setVoxels(coords, newValues)),
       map(voxelChanges => voxelsSet({ voxelChanges })),
       catchError(() => of(setVoxelsFailed())),
     ),

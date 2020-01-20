@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { voxelSet, voxelRemoved } from './scene-viewer-container.actions';
+import { voxelRemoved, voxelSet } from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
 
