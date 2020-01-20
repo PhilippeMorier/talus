@@ -1,5 +1,5 @@
 export enum Tool {
-  AddVoxel = 'AddVoxel',
+  SetVoxel = 'SetVoxel',
   RemoveVoxel = 'RemoveVoxel',
   PaintVoxel = 'PaintVoxel',
 }

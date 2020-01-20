@@ -23,8 +23,8 @@ export class ToolsPanelComponent {
   tools: UiToolbarToolConfig<Tool>[] = [
     {
       icon: 'add_circle_outline',
-      tooltip: '@@@ Add voxel',
-      value: Tool.AddVoxel,
+      tooltip: '@@@ Set voxel',
+      value: Tool.SetVoxel,
     },
     {
       icon: 'remove_circle_outline',

@@ -5,10 +5,10 @@ import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import {
-  setVoxel,
   removeVoxel,
-  voxelSet,
+  setVoxel,
   voxelRemoved,
+  voxelSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
@@ -70,7 +70,7 @@ export class UndoRedoEffects {
     map(([action, state]) => action),
   );
 
-  addUndoActionForAddVoxel$ = createEffect(() =>
+  addUndoActionForSetVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
       ofType(voxelSet),
       map(voxelChange => ({

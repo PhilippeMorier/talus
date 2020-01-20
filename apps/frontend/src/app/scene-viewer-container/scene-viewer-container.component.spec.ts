@@ -8,7 +8,7 @@ import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { setVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
 @Component({
@@ -39,7 +39,7 @@ describe('SceneViewerContainerComponent', () => {
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
-      Tool.AddVoxel,
+      Tool.SetVoxel,
     );
   }));
 
@@ -115,7 +115,7 @@ describe('SceneViewerContainerComponent', () => {
       [0, 0, 1],
     ],
   ])(
-    'should dispatch `addVoxel` action for %j',
+    'should dispatch `setVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
       const initialAction = setVoxel({ position: [0, 0, 0], value: 42 });
       const action = setVoxel({ position, value: 1 });
