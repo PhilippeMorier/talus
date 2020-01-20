@@ -7,7 +7,7 @@ import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -29,7 +29,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   constructor(private store: Store<fromApp.State>) {}
 
   ngAfterViewInit(): void {
-    this.store.dispatch(addVoxel({ position: [0, 0, 0], value: 42 }));
+    this.store.dispatch(setVoxel({ xyz: [0, 0, 0], newValue: 42 }));
   }
 
   onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
@@ -47,13 +47,16 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     }
 
     switch (selectedToolId) {
-      case Tool.AddVoxel:
-        this.store.dispatch(
-          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
-        );
+      case Tool.SetVoxel:
+        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: 1 }));
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ position: this.calcVoxelToRemovePosition(pickInfo) }));
+        this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
+        break;
+      case Tool.PaintVoxel:
+        this.store.dispatch(
+          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: 4 }),
+        );
         break;
     }
   }
@@ -80,7 +83,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     return newPoint;
   }
 
-  private calcVoxelToRemovePosition(pickInfo: UiPointerPickInfo): Coord {
+  private calcClickedVoxelPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [

@@ -8,7 +8,7 @@ import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
 @Component({
@@ -39,7 +39,7 @@ describe('SceneViewerContainerComponent', () => {
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
-      Tool.AddVoxel,
+      Tool.SetVoxel,
     );
   }));
 
@@ -115,10 +115,10 @@ describe('SceneViewerContainerComponent', () => {
       [0, 0, 1],
     ],
   ])(
-    'should dispatch `addVoxel` action for %j',
+    'should dispatch `setVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const initialAction = addVoxel({ position: [0, 0, 0], value: 42 });
-      const action = addVoxel({ position, value: 1 });
+      const initialAction = setVoxel({ xyz: [0, 0, 0], newValue: 42 });
+      const action = setVoxel({ xyz: position, newValue: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -174,7 +174,7 @@ describe('SceneViewerContainerComponent', () => {
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ position });
+      const action = removeVoxel({ xyz: position });
 
       stubComponent.pointerPick.next({
         pickedPoint,

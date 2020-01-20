@@ -9,7 +9,7 @@ export interface State {
 }
 
 export const initialState: State = {
-  selectedToolId: Tool.AddVoxel,
+  selectedToolId: Tool.SetVoxel,
 };
 
 /** Provide reducer in AoT-compilation happy way */

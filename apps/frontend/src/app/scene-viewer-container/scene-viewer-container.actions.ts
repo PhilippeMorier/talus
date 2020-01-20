@@ -4,26 +4,37 @@ import { VoxelChange } from './grid.service';
 
 const actionTypePrefix = `[sceneViewerContainer]`;
 
-export const addVoxel = createAction(
-  `${actionTypePrefix} Add voxel`,
-  props<{ position: Coord; value: number }>(),
+// Set voxel
+export const setVoxel = createAction(
+  `${actionTypePrefix} Set voxel`,
+  props<{ xyz: Coord; newValue: number }>(),
 );
-export const addVoxelFailed = createAction(`${actionTypePrefix} Add voxel failed`);
-export const voxelAdded = createAction(`${actionTypePrefix} Voxel added`, props<VoxelChange>());
+export const setVoxelFailed = createAction(`${actionTypePrefix} Set voxel failed`);
+export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<VoxelChange>());
 
-export const addVoxels = createAction(
-  `${actionTypePrefix} Add voxels`,
-  props<{ positions: Coord[]; values: number[] }>(),
+// Set voxels
+export const setVoxels = createAction(
+  `${actionTypePrefix} Set voxels`,
+  props<{ coords: Coord[]; newValues: number[] }>(),
 );
-export const addVoxelsFailed = createAction(`${actionTypePrefix} Add voxels failed`);
-export const voxelsAdded = createAction(
-  `${actionTypePrefix} Voxels added`,
+export const setVoxelsFailed = createAction(`${actionTypePrefix} Set voxels failed`);
+export const voxelsSet = createAction(
+  `${actionTypePrefix} Voxels set`,
   props<{ voxelChanges: VoxelChange[] }>(),
 );
 
+// Remove voxel
 export const removeVoxel = createAction(
   `${actionTypePrefix} Remove voxel`,
-  props<{ position: Coord }>(),
+  props<{ xyz: Coord }>(),
 );
 export const removeVoxelFailed = createAction(`${actionTypePrefix} Remove voxel failed`);
 export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, props<VoxelChange>());
+
+// Paint voxel
+export const paintVoxel = createAction(
+  `${actionTypePrefix} Paint voxel`,
+  props<{ xyz: Coord; newValue: number }>(),
+);
+export const paintVoxelFailed = createAction(`${actionTypePrefix} Paint voxel failed`);
+export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, props<VoxelChange>());
