@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { text } from '@storybook/addon-knobs';
 import { UiColorDialogComponent } from './color-dialog.component';
@@ -11,10 +11,14 @@ import { UiColorDialogModule } from './color-dialog.module';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class UiDraggableDialogTestComponent {
+class UiDraggableDialogTestComponent implements AfterViewInit {
   result: string;
 
   constructor(public dialog: MatDialog) {}
+
+  ngAfterViewInit(): void {
+    this.openDialog();
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(UiColorDialogComponent, {
