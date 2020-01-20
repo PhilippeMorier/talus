@@ -4,22 +4,22 @@ import { VoxelChange } from './grid.service';
 
 const actionTypePrefix = `[sceneViewerContainer]`;
 
-// Add voxel
-export const addVoxel = createAction(
-  `${actionTypePrefix} Add voxel`,
+// Set voxel
+export const setVoxel = createAction(
+  `${actionTypePrefix} Set voxel`,
   props<{ position: Coord; value: number }>(),
 );
-export const addVoxelFailed = createAction(`${actionTypePrefix} Add voxel failed`);
-export const voxelAdded = createAction(`${actionTypePrefix} Voxel added`, props<VoxelChange>());
+export const setVoxelFailed = createAction(`${actionTypePrefix} Set voxel failed`);
+export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<VoxelChange>());
 
-// Add voxels
-export const addVoxels = createAction(
-  `${actionTypePrefix} Add voxels`,
+// Set voxels
+export const setVoxels = createAction(
+  `${actionTypePrefix} Set voxels`,
   props<{ positions: Coord[]; values: number[] }>(),
 );
-export const addVoxelsFailed = createAction(`${actionTypePrefix} Add voxels failed`);
-export const voxelsAdded = createAction(
-  `${actionTypePrefix} Voxels added`,
+export const setVoxelsFailed = createAction(`${actionTypePrefix} Set voxels failed`);
+export const voxelsSet = createAction(
+  `${actionTypePrefix} Voxels set`,
   props<{ voxelChanges: VoxelChange[] }>(),
 );
 

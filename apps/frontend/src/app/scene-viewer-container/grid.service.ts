@@ -24,10 +24,10 @@ export class GridService {
   };
 
   /**
-   * Adds a new voxel via accessor to share access path.
+   * Sets a new voxel via accessor to share access path.
    * @returns origin of `InternalNode1` of affected node (node containing added voxel).
    */
-  addVoxel(xyz: Coord, value: number): VoxelChange {
+  setVoxel(xyz: Coord, value: number): VoxelChange {
     this.accessor.setValueOn(xyz, value);
 
     return {
@@ -37,7 +37,7 @@ export class GridService {
     };
   }
 
-  addVoxels(coords: Coord[], values: number[]): VoxelChange[] {
+  setVoxels(coords: Coord[], values: number[]): VoxelChange[] {
     const changes = new Map<string, VoxelChange>();
 
     if (coords.length !== values.length) {
@@ -45,7 +45,7 @@ export class GridService {
     }
 
     coords.forEach((xyz, i) => {
-      const change = this.addVoxel(xyz, values[i]);
+      const change = this.setVoxel(xyz, values[i]);
       changes.set(change.affectedNodeOrigin.toString(), change);
     });
 
@@ -58,6 +58,18 @@ export class GridService {
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,
       value: this.accessor.getValue(xyz),
+      position: xyz,
+    };
+  }
+
+  paintVoxel(xyz: Coord): VoxelChange {
+    const oldValue = this.accessor.getValue(xyz);
+
+    this.setVoxel(xyz, 3);
+
+    return {
+      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      value: oldValue,
       position: xyz,
     };
   }

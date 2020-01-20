@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { voxelAdded, voxelRemoved } from './scene-viewer-container.actions';
+import { voxelSet, voxelRemoved } from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
 
@@ -13,7 +13,7 @@ export const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  on(voxelAdded, state => {
+  on(voxelSet, state => {
     return {
       ...state,
       voxelCount: state.voxelCount + 1,

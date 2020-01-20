@@ -6,15 +6,18 @@ import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { GridService } from './grid.service';
 import {
-  addVoxel,
-  addVoxelFailed,
-  addVoxels,
-  addVoxelsFailed,
+  setVoxel,
+  setVoxelFailed,
+  setVoxels,
+  setVoxelsFailed,
+  paintVoxel,
+  paintVoxelFailed,
   removeVoxel,
   removeVoxelFailed,
-  voxelAdded,
+  voxelSet,
+  voxelPainted,
   voxelRemoved,
-  voxelsAdded,
+  voxelsSet,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -25,21 +28,21 @@ export class SceneViewerContainerEffects {
     private sceneViewerService: UiSceneViewerService,
   ) {}
 
-  addVoxel$ = createEffect(() =>
+  setVoxel$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(addVoxel),
-      map(({ position, value }) => this.gridService.addVoxel(position, value)),
-      map(voxelAdded),
-      catchError(() => of(addVoxelFailed())),
+      ofType(setVoxel),
+      map(({ position, value }) => this.gridService.setVoxel(position, value)),
+      map(voxelSet),
+      catchError(() => of(setVoxelFailed())),
     ),
   );
 
-  addVoxels$ = createEffect(() =>
+  setVoxels$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(addVoxels),
-      map(({ positions, values }) => this.gridService.addVoxels(positions, values)),
-      map(voxelChanges => voxelsAdded({ voxelChanges })),
-      catchError(() => of(addVoxelsFailed())),
+      ofType(setVoxels),
+      map(({ positions, values }) => this.gridService.setVoxels(positions, values)),
+      map(voxelChanges => voxelsSet({ voxelChanges })),
+      catchError(() => of(setVoxelsFailed())),
     ),
   );
 
@@ -52,10 +55,19 @@ export class SceneViewerContainerEffects {
     ),
   );
 
+  paintVoxel$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(paintVoxel),
+      map(({ position }) => this.gridService.paintVoxel(position)),
+      map(voxelPainted),
+      catchError(() => of(paintVoxelFailed())),
+    ),
+  );
+
   updateGridMesh$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelAdded, voxelRemoved),
+        ofType(voxelSet, voxelRemoved, voxelPainted),
         map(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
       ),
     { dispatch: false },
@@ -64,7 +76,7 @@ export class SceneViewerContainerEffects {
   updateGridMeshMultiple$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelsAdded),
+        ofType(voxelsSet),
         map(({ voxelChanges }) =>
           voxelChanges.map(change => {
             this.computeAndUpdateNodeMesh(change.affectedNodeOrigin);

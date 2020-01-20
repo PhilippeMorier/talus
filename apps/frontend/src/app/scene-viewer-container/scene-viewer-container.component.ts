@@ -7,7 +7,7 @@ import { Coord } from '@talus/vdb';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, paintVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -29,7 +29,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   constructor(private store: Store<fromApp.State>) {}
 
   ngAfterViewInit(): void {
-    this.store.dispatch(addVoxel({ position: [0, 0, 0], value: 42 }));
+    this.store.dispatch(setVoxel({ position: [0, 0, 0], value: 42 }));
   }
 
   onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
@@ -49,7 +49,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     switch (selectedToolId) {
       case Tool.AddVoxel:
         this.store.dispatch(
-          addVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
+          setVoxel({ position: this.calcVoxelToAddPosition(pickInfo), value: 1 }),
         );
         break;
       case Tool.RemoveVoxel:

@@ -8,7 +8,7 @@ import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { setVoxel, removeVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
 @Component({
@@ -117,8 +117,8 @@ describe('SceneViewerContainerComponent', () => {
   ])(
     'should dispatch `addVoxel` action for %j',
     (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const initialAction = addVoxel({ position: [0, 0, 0], value: 42 });
-      const action = addVoxel({ position, value: 1 });
+      const initialAction = setVoxel({ position: [0, 0, 0], value: 42 });
+      const action = setVoxel({ position, value: 1 });
 
       stubComponent.pointerPick.next({
         pickedPoint,
