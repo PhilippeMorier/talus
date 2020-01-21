@@ -1,43 +1,35 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { object } from '@storybook/addon-knobs';
-import {
-  UiColorDialogColor,
-  UiColorDialogComponent,
-  UiColorDialogData,
-} from './color-dialog.component';
+import { Observable } from 'rxjs';
+import { UiColorDialogColor, UiColorDialogComponent } from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
+import { UiColorDialogService } from './color-dialog.service';
 
 // noinspection AngularMissingOrInvalidDeclarationInModule
 @Component({
   template: `
-    <button mat-button (click)="openDialog()">Open</button>
+    <button mat-button (click)="onOpenClick()">Open</button>
+
+    <div>Result: {{ results$ | async | json }}</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class UiColorDialogTestComponent implements AfterViewInit {
+class UiColorDialogTestComponent implements OnInit {
   @Input() colors: UiColorDialogColor[];
 
-  constructor(public dialog: MatDialog) {}
+  results$: Observable<UiColorDialogColor | undefined>;
 
-  ngAfterViewInit(): void {
-    this.openDialog();
+  constructor(public dialogService: UiColorDialogService) {}
+
+  ngOnInit(): void {
+    this.onOpenClick();
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open<
-      UiColorDialogComponent,
-      UiColorDialogData,
-      UiColorDialogColor
-    >(UiColorDialogComponent, {
-      autoFocus: false,
-      data: { colors: this.colors },
-      width: '350px',
-    });
+  onOpenClick(): void {
+    const dialogRef = this.dialogService.open(this.colors);
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed with result: ', result);
-    });
+    this.results$ = dialogRef.afterClosed();
   }
 }
 
@@ -48,7 +40,7 @@ export default {
 export const primary = () => ({
   moduleMetadata: {
     declarations: [UiColorDialogTestComponent],
-    imports: [UiColorDialogModule],
+    imports: [CommonModule, UiColorDialogModule],
   },
   component: UiColorDialogTestComponent,
   props: {
