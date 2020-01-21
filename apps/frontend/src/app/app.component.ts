@@ -10,7 +10,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     <main>
       <ui-sidenav-shell>
         <ui-sidenav-shell-left>
+          <h5>Tools</h5>
           <fe-tools-panel></fe-tools-panel>
+
+          <h5>Options</h5>
+          <fe-options-panel></fe-options-panel>
         </ui-sidenav-shell-left>
 
         <ui-sidenav-shell-right>
