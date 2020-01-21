@@ -8,12 +8,14 @@ import {
   MetaReducer,
 } from '@ngrx/store';
 import { environment } from '../environments/environment';
+import * as fromOptionsPanel from './options-panel/options-panel.reducer';
 import * as fromSceneViewerContainer from './scene-viewer-container/scene-viewer-container.reducer';
 import * as fromToolsPanel from './tools-panel/tools-panel.reducer';
 import * as fromUndoRedo from './undo-redo/undo-redo.reducer';
 
 export interface State {
   [fromUndoRedo.featureKey]: fromUndoRedo.State;
+  [fromOptionsPanel.featureKey]: fromOptionsPanel.State;
   [fromToolsPanel.featureKey]: fromToolsPanel.State;
   [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.State;
 }
@@ -30,6 +32,7 @@ export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<State, Action>>
   {
     factory: () => ({
       [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.reducer,
+      [fromOptionsPanel.featureKey]: fromOptionsPanel.reducer,
       [fromToolsPanel.featureKey]: fromToolsPanel.reducer,
       [fromUndoRedo.featureKey]: fromUndoRedo.reducer,
     }),
