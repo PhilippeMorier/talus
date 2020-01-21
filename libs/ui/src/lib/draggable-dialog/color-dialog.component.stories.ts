@@ -1,7 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { text } from '@storybook/addon-knobs';
-import { UiColorDialogComponent } from './color-dialog.component';
+import { object } from '@storybook/addon-knobs';
+import { UiColorDialogColor, UiColorDialogComponent } from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
 
 // noinspection AngularMissingOrInvalidDeclarationInModule
@@ -11,8 +11,8 @@ import { UiColorDialogModule } from './color-dialog.module';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class UiDraggableDialogTestComponent implements AfterViewInit {
-  result: string;
+class UiColorDialogTestComponent implements AfterViewInit {
+  @Input() colors: UiColorDialogColor[];
 
   constructor(public dialog: MatDialog) {}
 
@@ -21,31 +21,36 @@ class UiDraggableDialogTestComponent implements AfterViewInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(UiColorDialogComponent, {
-      autoFocus: false,
-      data: { result: this.result },
-      width: '350px',
-    });
+    const dialogRef = this.dialog.open<UiColorDialogComponent, { colors: UiColorDialogColor[] }>(
+      UiColorDialogComponent,
+      {
+        autoFocus: false,
+        data: { colors: this.colors },
+        width: '350px',
+      },
+    );
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.result = result;
+      console.log('The dialog was closed with result: ', result);
     });
   }
 }
 
 export default {
-  title: 'UiDraggableDialogComponent',
+  title: 'UiColorDialogComponent',
 };
 
 export const primary = () => ({
   moduleMetadata: {
-    declarations: [UiDraggableDialogTestComponent],
+    declarations: [UiColorDialogTestComponent],
     imports: [UiColorDialogModule],
   },
-  // template: `<button>Hello</button>`,
-  component: UiDraggableDialogTestComponent,
+  component: UiColorDialogTestComponent,
   props: {
-    result: text('result', 'Result text'),
+    colors: object<UiColorDialogColor[]>('colors', [
+      { r: 255, g: 0, b: 0, a: 0.8 },
+      { r: 0, g: 255, b: 0, a: 0.6 },
+      { r: 0, g: 0, b: 255, a: 0.4 },
+    ]),
   },
 });
