@@ -12,7 +12,7 @@ export class UiColorDialogService {
 
   open(
     colors: UiColorDialogColor[],
-    selectedColorIndex: number,
+    selectedColorIndex?: number,
   ): MatDialogRef<UiColorDialogComponent, UiColorDialogColor> {
     const dialogRef = this.dialog.open<
       UiColorDialogComponent,
