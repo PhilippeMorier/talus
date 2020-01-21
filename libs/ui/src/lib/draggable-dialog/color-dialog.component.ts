@@ -32,13 +32,13 @@ export interface UiColorDialogColor {
             class="color"
             *ngFor="let color of data.colors"
             [style.background-color]="getRgbaString(color)"
+            [mat-dialog-close]="color"
           ></div>
         </div>
       </div>
 
       <div mat-dialog-actions align="end">
         <button mat-button (click)="onCancelClick()">Cancel</button>
-        <button mat-button mat-dialog-close="Test answer">Select</button>
       </div>
     </div>
   `,
@@ -47,7 +47,7 @@ export interface UiColorDialogColor {
 })
 export class UiColorDialogComponent {
   constructor(
-    public dialogRef: MatDialogRef<UiColorDialogComponent>,
+    public dialogRef: MatDialogRef<UiColorDialogComponent, UiColorDialogColor>,
     @Inject(MAT_DIALOG_DATA) public data: { colors: UiColorDialogColor[] },
   ) {}
 

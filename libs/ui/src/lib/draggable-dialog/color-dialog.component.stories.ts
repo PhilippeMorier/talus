@@ -21,14 +21,15 @@ class UiColorDialogTestComponent implements AfterViewInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open<UiColorDialogComponent, { colors: UiColorDialogColor[] }>(
+    const dialogRef = this.dialog.open<
       UiColorDialogComponent,
-      {
-        autoFocus: false,
-        data: { colors: this.colors },
-        width: '350px',
-      },
-    );
+      { colors: UiColorDialogColor[] },
+      UiColorDialogColor
+    >(UiColorDialogComponent, {
+      autoFocus: false,
+      data: { colors: this.colors },
+      width: '350px',
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed with result: ', result);
