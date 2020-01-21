@@ -8,6 +8,10 @@ export interface UiColorDialogColor {
   a: number;
 }
 
+export interface UiColorDialogData {
+  colors: UiColorDialogColor[];
+}
+
 @Component({
   template: `
     <div class="dialog-content">

@@ -1,7 +1,11 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { object } from '@storybook/addon-knobs';
-import { UiColorDialogColor, UiColorDialogComponent } from './color-dialog.component';
+import {
+  UiColorDialogColor,
+  UiColorDialogComponent,
+  UiColorDialogData,
+} from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
 
 // noinspection AngularMissingOrInvalidDeclarationInModule
@@ -23,7 +27,7 @@ class UiColorDialogTestComponent implements AfterViewInit {
   openDialog(): void {
     const dialogRef = this.dialog.open<
       UiColorDialogComponent,
-      { colors: UiColorDialogColor[] },
+      UiColorDialogData,
       UiColorDialogColor
     >(UiColorDialogComponent, {
       autoFocus: false,
