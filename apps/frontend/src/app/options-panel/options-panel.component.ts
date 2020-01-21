@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { UiColorDialogService } from '@talus/ui';
+import { UiColorDialogColor, UiColorDialogService } from '@talus/ui';
 
 @Component({
   selector: 'fe-options-panel',
@@ -14,9 +14,42 @@ import { UiColorDialogService } from '@talus/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsPanelComponent {
+  readonly colors: UiColorDialogColor[] = [
+    {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 0,
+      b: 255,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 255,
+      b: 0,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 255,
+      b: 255,
+      a: 1,
+    },
+    {
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    },
+  ];
+
   constructor(public colorDialogService: UiColorDialogService) {}
 
   onClick(): void {
-    this.colorDialogService.open([]);
+    this.colorDialogService.open(this.colors);
   }
 }
