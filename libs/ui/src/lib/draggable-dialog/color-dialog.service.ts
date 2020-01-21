@@ -10,14 +10,17 @@ import {
 export class UiColorDialogService {
   constructor(public dialog: MatDialog) {}
 
-  open(colors: UiColorDialogColor[]): MatDialogRef<UiColorDialogComponent, UiColorDialogColor> {
+  open(
+    colors: UiColorDialogColor[],
+    selectedColorIndex: number,
+  ): MatDialogRef<UiColorDialogComponent, UiColorDialogColor> {
     const dialogRef = this.dialog.open<
       UiColorDialogComponent,
       UiColorDialogData,
       UiColorDialogColor
     >(UiColorDialogComponent, {
       autoFocus: false,
-      data: { colors },
+      data: { colors, selectedColorIndex },
       width: '350px',
     });
 

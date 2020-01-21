@@ -10,6 +10,7 @@ export interface UiColorDialogColor {
 
 export interface UiColorDialogData {
   colors: UiColorDialogColor[];
+  selectedColorIndex?: number;
 }
 
 @Component({
@@ -33,11 +34,15 @@ export interface UiColorDialogData {
 
         <div class="color-container">
           <div
-            class="color"
-            *ngFor="let color of data.colors"
+            class="color mat-elevation-z1"
+            *ngFor="let color of data.colors; let i = index"
             [style.background-color]="getRgbaString(color)"
             [mat-dialog-close]="color"
-          ></div>
+          >
+            <mat-icon *ngIf="i === data.selectedColorIndex">
+              check_circle_outline
+            </mat-icon>
+          </div>
         </div>
       </div>
 
@@ -52,7 +57,7 @@ export interface UiColorDialogData {
 export class UiColorDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<UiColorDialogComponent, UiColorDialogColor>,
-    @Inject(MAT_DIALOG_DATA) public data: { colors: UiColorDialogColor[] },
+    @Inject(MAT_DIALOG_DATA) public data: UiColorDialogData,
   ) {}
 
   onCancelClick(): void {

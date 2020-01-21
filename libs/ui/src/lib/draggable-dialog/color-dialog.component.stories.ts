@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { object } from '@storybook/addon-knobs';
+import { number, object } from '@storybook/addon-knobs';
 import { Observable } from 'rxjs';
 import { UiColorDialogColor, UiColorDialogComponent } from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
@@ -17,6 +17,7 @@ import { UiColorDialogService } from './color-dialog.service';
 })
 class UiColorDialogTestComponent implements OnInit {
   @Input() colors: UiColorDialogColor[];
+  @Input() selectedColorIndex: number;
 
   results$: Observable<UiColorDialogColor | undefined>;
 
@@ -27,7 +28,7 @@ class UiColorDialogTestComponent implements OnInit {
   }
 
   onOpenClick(): void {
-    const dialogRef = this.dialogService.open(this.colors);
+    const dialogRef = this.dialogService.open(this.colors, this.selectedColorIndex);
 
     this.results$ = dialogRef.afterClosed();
   }
@@ -44,6 +45,7 @@ export const primary = () => ({
   },
   component: UiColorDialogTestComponent,
   props: {
+    selectedColorIndex: number('selectedColorIndex', 0),
     colors: object<UiColorDialogColor[]>('colors', [
       { r: 255, g: 0, b: 0, a: 0.8 },
       { r: 0, g: 255, b: 0, a: 0.6 },

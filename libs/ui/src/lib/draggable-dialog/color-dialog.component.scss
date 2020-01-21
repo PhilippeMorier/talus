@@ -19,8 +19,17 @@ h1 {
 
   .color {
     cursor: pointer;
+    border-radius: 0.25rem;
     margin: 0.5rem;
     height: 2rem;
     width: 2rem;
+
+    mat-icon {
+      font-size: 1rem;
+      margin-left: 1rem;
+      margin-top: 1rem;
+      height: 1rem;
+      width: 1rem;
+    }
   }
 }
