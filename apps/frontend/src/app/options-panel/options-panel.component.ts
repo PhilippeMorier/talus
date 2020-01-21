@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { UiColorDialogColor, UiColorDialogService } from '@talus/ui';
+import { Store } from '@ngrx/store';
+import { UiColorDialogColor } from '@talus/ui';
+import * as fromApp from '../app.reducer';
+import { openColorDialog } from './options-panel.actions';
 
 @Component({
   selector: 'fe-options-panel',
@@ -47,9 +50,9 @@ export class OptionsPanelComponent {
     },
   ];
 
-  constructor(public colorDialogService: UiColorDialogService) {}
+  constructor(public store: Store<fromApp.State>) {}
 
   onClick(): void {
-    this.colorDialogService.open(this.colors);
+    this.store.dispatch(openColorDialog({ colors: this.colors }));
   }
 }
