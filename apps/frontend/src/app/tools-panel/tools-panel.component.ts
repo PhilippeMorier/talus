@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { UiToolbarToolChange, UiToolbarToolConfig } from '@talus/ui';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Tool } from './tool.model';
+import { Tool } from '../model/tool.model';
 import { selectTool } from './tools-panel.actions';
 
 @Component({

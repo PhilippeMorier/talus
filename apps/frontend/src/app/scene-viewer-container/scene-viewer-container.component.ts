@@ -11,7 +11,7 @@ import {
 import { Coord } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Tool } from '../tools-panel/tool.model';
+import { Tool } from '../model/tool.model';
 import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
 
 @Component({

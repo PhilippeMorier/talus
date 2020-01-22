@@ -7,7 +7,7 @@ import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Tool } from '../tools-panel/tool.model';
+import { Tool } from '../model/tool.model';
 import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
