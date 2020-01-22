@@ -1,5 +1,12 @@
 import { InjectionToken } from '@angular/core';
-import { Action, ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer } from '@ngrx/store';
+import {
+  Action,
+  ActionReducer,
+  ActionReducerMap,
+  createFeatureSelector,
+  createSelector,
+  MetaReducer,
+} from '@ngrx/store';
 import { environment } from '../environments/environment';
 import * as fromOptionsPanel from './options-panel/options-panel.reducer';
 import * as fromSceneViewerContainer from './scene-viewer-container/scene-viewer-container.reducer';
