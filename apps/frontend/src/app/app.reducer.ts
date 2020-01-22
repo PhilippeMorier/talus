@@ -120,10 +120,16 @@ export const selectOptionsPanelState = createFeatureSelector<State, fromOptionsP
 );
 
 export const selectColors = createSelector(selectOptionsPanelState, fromOptionsPanel.selectColors);
+export const selectCssColors = createSelector(selectOptionsPanelState, fromOptionsPanel.selectCssColors);
 
 export const selectSelectedColor = createSelector(
   selectOptionsPanelState,
   fromOptionsPanel.selectSelectedColor,
+);
+
+export const selectSelectedCssColor = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedCssColor,
 );
 
 export const selectSelectedColorIndex = createSelector(

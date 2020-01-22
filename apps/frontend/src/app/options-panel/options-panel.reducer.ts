@@ -1,4 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
+import { UiColorDialogColor } from '@talus/ui';
 import { Rgba } from '../model/rgba.value';
 import { selectColor } from './options-panel.actions';
 
@@ -62,5 +63,18 @@ export const reducer = createReducer(
 );
 
 export const selectColors = (state: State) => state.colors;
+export const selectCssColors = (state: State) => {
+  return selectColors(state).map(convertRgbaToCssRgba);
+};
+
 export const selectSelectedColor = (state: State) => state.colors[state.selectedColorIndex];
+export const selectSelectedCssColor = (state: State) => {
+  return convertRgbaToCssRgba(selectSelectedColor(state));
+};
+
 export const selectSelectedColorIndex = (state: State) => state.selectedColorIndex;
+
+const ALPHA_FACTOR = 1 / 255;
+function convertRgbaToCssRgba(color: Rgba): UiColorDialogColor {
+  return { ...color, a: color.a * ALPHA_FACTOR };
+}

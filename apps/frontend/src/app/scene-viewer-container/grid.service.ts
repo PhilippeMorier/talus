@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Coord, Grid, MeshData, nodeToMesh } from '@talus/vdb';
+import { intToRgba } from '../model/rgba.value';
 
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
@@ -22,6 +23,8 @@ export class GridService {
     6: [1, 1, 0, 1],
     7: [1, 1, 1, 1],
   };
+
+  private readonly alphaFactor = 1 / 255;
 
   /**
    * Sets a new voxel via accessor to share access path.
@@ -81,9 +84,15 @@ export class GridService {
 
     return nodeToMesh(internal1, this.valueToColor);
   }
-
   private valueToColor = (value: number): [number, number, number, number] => {
-    return this.colors[value % 8];
+    const rgba = intToRgba(value);
+
+    return [
+      rgba.r * this.alphaFactor,
+      rgba.g * this.alphaFactor,
+      rgba.b * this.alphaFactor,
+      rgba.a * this.alphaFactor,
+    ];
   };
 }
 
