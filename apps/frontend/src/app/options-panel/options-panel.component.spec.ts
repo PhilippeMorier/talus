@@ -8,9 +8,8 @@ describe('OptionsPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptionsPanelComponent ]
-    })
-    .compileComponents();
+      declarations: [OptionsPanelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
