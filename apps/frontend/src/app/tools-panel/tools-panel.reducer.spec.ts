@@ -1,4 +1,4 @@
-import { Tool } from '../model/tool.model';
+import { Tool } from '../model/tool.value';
 import { selectTool } from './tools-panel.actions';
 import { reducer } from './tools-panel.reducer';
 

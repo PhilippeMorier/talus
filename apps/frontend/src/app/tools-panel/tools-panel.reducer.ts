@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { Tool } from '../model/tool.model';
+import { Tool } from '../model/tool.value';
 import { selectTool } from './tools-panel.actions';
 
 export const featureKey = 'toolsPanel';
