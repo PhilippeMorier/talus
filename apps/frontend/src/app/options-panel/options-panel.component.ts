@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { UiColorDialogColor } from '@talus/ui';
+import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { openColorDialog } from './options-panel.actions';
 
@@ -10,7 +11,9 @@ import { openColorDialog } from './options-panel.actions';
     <button mat-icon-button (click)="onClick()">
       <mat-icon>color_lens</mat-icon>
       <mat-icon id="more-caret-icon">signal_cellular_4_bar</mat-icon>
-      <mat-icon id="color-icon">fiber_manual_record</mat-icon>
+      <mat-icon id="color-icon" [style.color]="getRgbaString(selectedColor$ | async)">
+        fiber_manual_record
+      </mat-icon>
     </button>
   `,
   styleUrls: ['./options-panel.component.scss'],
@@ -18,6 +21,12 @@ import { openColorDialog } from './options-panel.actions';
 })
 export class OptionsPanelComponent {
   readonly colors: UiColorDialogColor[] = [
+    {
+      r: 255,
+      g: 255,
+      b: 255,
+      a: 1,
+    },
     {
       r: 0,
       g: 0,
@@ -50,9 +59,17 @@ export class OptionsPanelComponent {
     },
   ];
 
+  selectedColor$: Observable<UiColorDialogColor> = this.store.pipe(
+    select(fromApp.selectSelectedColor),
+  );
+
   constructor(public store: Store<fromApp.State>) {}
 
   onClick(): void {
     this.store.dispatch(openColorDialog({ colors: this.colors }));
+  }
+
+  getRgbaString(color: UiColorDialogColor): string {
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a} )`;
   }
 }

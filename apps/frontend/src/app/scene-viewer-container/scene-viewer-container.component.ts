@@ -2,9 +2,14 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
+import {
+  UiColorDialogColor,
+  UiPointerButton,
+  UiPointerPickInfo,
+  UiSceneViewerComponent,
+} from '@talus/ui';
 import { Coord } from '@talus/vdb';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { Tool } from '../tools-panel/tool.model';
 import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
@@ -13,8 +18,8 @@ import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.acti
   selector: 'fe-scene-viewer-container',
   template: `
     <ui-scene-viewer
-      *ngIf="selectedToolId$ | async as selectedToolId"
-      (pointerPick)="onPointerPick($event, selectedToolId)"
+      *ngIf="selectedToolIdAndColor$ | async as selected"
+      (pointerPick)="onPointerPick($event, selected[0], selected[1])"
     ></ui-scene-viewer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,8 +28,11 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   @ViewChild(UiSceneViewerComponent, { static: false })
   private sceneViewerComponent: UiSceneViewerComponent;
 
-  selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
-  voxelCount$: Observable<number> = this.store.pipe(select(fromApp.selectVoxelCount));
+  private selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
+  private selectedColor$: Observable<UiColorDialogColor> = this.store.pipe(
+    select(fromApp.selectSelectedColor),
+  );
+  selectedToolIdAndColor$ = combineLatest([this.selectedToolId$, this.selectedColor$]);
 
   constructor(private store: Store<fromApp.State>) {}
 
@@ -32,8 +40,12 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     this.store.dispatch(setVoxel({ xyz: [0, 0, 0], newValue: 42 }));
   }
 
-  onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool): void {
-    this.dispatchPickAction(event, selectedToolId);
+  onPointerPick(
+    event: UiPointerPickInfo,
+    selectedToolId: Tool,
+    selectedColor: UiColorDialogColor,
+  ): void {
+    this.dispatchPickAction(event, selectedToolId, selectedColor);
   }
 
   // onMeshPick(mesh: AbstractMesh): void {
@@ -41,21 +53,27 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   //   mesh.renderOutline = !mesh.renderOutline;
   // }
 
-  private dispatchPickAction(pickInfo: UiPointerPickInfo, selectedToolId: Tool): void {
+  private dispatchPickAction(
+    pickInfo: UiPointerPickInfo,
+    selectedToolId: Tool,
+    selectedColor: UiColorDialogColor,
+  ): void {
     if (pickInfo.pointerButton !== UiPointerButton.Main) {
       return;
     }
 
     switch (selectedToolId) {
       case Tool.SetVoxel:
-        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: 1 }));
+        this.store.dispatch(
+          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: selectedColor.r }),
+        );
         break;
       case Tool.RemoveVoxel:
         this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
         break;
       case Tool.PaintVoxel:
         this.store.dispatch(
-          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: 4 }),
+          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: selectedColor.r }),
         );
         break;
     }

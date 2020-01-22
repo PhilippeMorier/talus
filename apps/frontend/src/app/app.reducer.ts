@@ -21,7 +21,7 @@ export interface State {
 }
 
 /**
- * Our state is composed of a map of action reducer functions.
+ * The state is composed of a map of action reducer functions.
  * These reducer functions are called with each dispatched action
  * and the current or initial state and return a new immutable state.
  *
@@ -110,4 +110,16 @@ export const selectCurrentUndoEndAction = createSelector(
 export const selectCurrentRedoEndAction = createSelector(
   selectUndoRedoState,
   fromUndoRedo.selectCurrentRedoEndAction,
+);
+
+/**
+ * OptionsPanel reducers
+ */
+export const selectOptionsPanelState = createFeatureSelector<State, fromOptionsPanel.State>(
+  fromOptionsPanel.featureKey,
+);
+
+export const selectSelectedColor = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedColor,
 );
