@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptionsPanelComponent } from './options-panel.component';
+import { OptionsPanelModule } from './options-panel.module';
 
 describe('OptionsPanelComponent', () => {
   let component: OptionsPanelComponent;
@@ -8,7 +9,7 @@ describe('OptionsPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [OptionsPanelComponent],
+      imports: [OptionsPanelModule],
     }).compileComponents();
   }));
 
