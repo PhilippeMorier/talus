@@ -13,16 +13,15 @@ export class UiColorDialogService {
   open(
     colors: UiColorDialogColor[],
     selectedColorIndex?: number,
-  ): MatDialogRef<UiColorDialogComponent, UiColorDialogColor> {
-    const dialogRef = this.dialog.open<
+  ): MatDialogRef<UiColorDialogComponent, number> {
+    const dialogRef = this.dialog.open<UiColorDialogComponent, UiColorDialogData, number>(
       UiColorDialogComponent,
-      UiColorDialogData,
-      UiColorDialogColor
-    >(UiColorDialogComponent, {
-      autoFocus: false,
-      data: { colors, selectedColorIndex },
-      width: '350px',
-    });
+      {
+        autoFocus: false,
+        data: { colors, selectedColorIndex },
+        width: '350px',
+      },
+    );
 
     return dialogRef;
   }

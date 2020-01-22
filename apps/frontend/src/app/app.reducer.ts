@@ -119,7 +119,14 @@ export const selectOptionsPanelState = createFeatureSelector<State, fromOptionsP
   fromOptionsPanel.featureKey,
 );
 
+export const selectColors = createSelector(selectOptionsPanelState, fromOptionsPanel.selectColors);
+
 export const selectSelectedColor = createSelector(
   selectOptionsPanelState,
   fromOptionsPanel.selectSelectedColor,
+);
+
+export const selectSelectedColorIndex = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedColorIndex,
 );

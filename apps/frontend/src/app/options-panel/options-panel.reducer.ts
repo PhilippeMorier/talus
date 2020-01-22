@@ -6,7 +6,6 @@ export const featureKey = 'optionsPanel';
 
 export interface State {
   colors: UiColorDialogColor[];
-  selectedColor: UiColorDialogColor;
   selectedColorIndex: number;
 }
 
@@ -18,24 +17,50 @@ export const initialState: State = {
       b: 255,
       a: 1,
     },
+    {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 0,
+      b: 255,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 255,
+      b: 0,
+      a: 1,
+    },
+    {
+      r: 0,
+      g: 255,
+      b: 255,
+      a: 1,
+    },
+    {
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 1,
+    },
   ],
-  selectedColor: {
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 1,
-  },
-  selectedColorIndex: 0,
+  selectedColorIndex: 4,
 };
 
 export const reducer = createReducer(
   initialState,
-  on(selectColor, (state, { color }) => {
+  on(selectColor, (state, { colorIndex }) => {
     return {
       ...state,
-      ...(color && { selectedColor: color }),
+      selectedColorIndex: colorIndex,
     };
   }),
 );
 
-export const selectSelectedColor = (state: State) => state.selectedColor;
+export const selectColors = (state: State) => state.colors;
+export const selectSelectedColor = (state: State) => state.colors[state.selectedColorIndex];
+export const selectSelectedColorIndex = (state: State) => state.selectedColorIndex;

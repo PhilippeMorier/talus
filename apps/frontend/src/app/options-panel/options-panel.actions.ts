@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { UiColorDialogColor, UiColorDialogData } from '@talus/ui';
+import { UiColorDialogData } from '@talus/ui';
 
 const actionTypePrefix = `[optionsPanel]`;
 
@@ -11,5 +11,5 @@ export const openColorDialogFailed = createAction(`${actionTypePrefix} Open colo
 
 export const selectColor = createAction(
   `${actionTypePrefix} Select color`,
-  props<{ color?: UiColorDialogColor }>(),
+  props<{ colorIndex: number }>(),
 );
