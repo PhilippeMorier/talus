@@ -1,11 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
-import { UiColorDialogColor } from '@talus/ui';
+import { Rgba } from '../model/rgba.value';
 import { selectColor } from './options-panel.actions';
 
 export const featureKey = 'optionsPanel';
 
 export interface State {
-  colors: UiColorDialogColor[];
+  colors: Rgba[];
   selectedColorIndex: number;
 }
 
@@ -15,37 +15,37 @@ export const initialState: State = {
       r: 255,
       g: 255,
       b: 255,
-      a: 1,
+      a: 255,
     },
     {
       r: 0,
       g: 0,
       b: 0,
-      a: 1,
+      a: 255,
     },
     {
       r: 0,
       g: 0,
       b: 255,
-      a: 1,
+      a: 255,
     },
     {
       r: 0,
       g: 255,
       b: 0,
-      a: 1,
+      a: 255,
     },
     {
       r: 0,
       g: 255,
       b: 255,
-      a: 1,
+      a: 255,
     },
     {
       r: 255,
       g: 0,
       b: 0,
-      a: 1,
+      a: 255,
     },
   ],
   selectedColorIndex: 4,
