@@ -37,7 +37,7 @@ export interface UiColorDialogData {
             class="color mat-elevation-z1"
             *ngFor="let color of data.colors; let i = index"
             [style.background-color]="getRgbaString(color)"
-            [mat-dialog-close]="color"
+            [mat-dialog-close]="i"
           >
             <mat-icon *ngIf="i === data.selectedColorIndex">
               check_circle_outline

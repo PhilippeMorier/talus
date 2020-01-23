@@ -175,8 +175,8 @@ export function nodeToMesh<T>(
       v0[2],
     );
 
-    // Front
     mesh.normals.push(
+      // Front
       0,
       0,
       1,

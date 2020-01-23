@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AbstractMesh } from '@babylonjs/core';
 // Babylon.js needs to target individual files to fully benefit from tree shaking.
 // See: https://doc.babylonjs.com/features/es6_support#tree-shaking
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import '@babylonjs/core/Materials/standardMaterial';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
@@ -54,13 +54,15 @@ export class CameraFactory {
  */
 @Injectable()
 export class UiSceneViewerService {
-  pointerPick$ = new Subject<UiPointerPickInfo>();
-
   private engine: Engine;
   private scene: Scene;
+  private standardMaterial: StandardMaterial;
   private gridNode: TransformNode;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
+
+  private pointerPickSubject$ = new Subject<UiPointerPickInfo>();
+  pointerPick$ = this.pointerPickSubject$.asObservable();
 
   constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
 
@@ -88,21 +90,12 @@ export class UiSceneViewerService {
 
     if (mesh) {
       const data = new VertexData();
-      const nodeMesh = new Mesh(meshName, this.scene, this.gridNode);
-      // https://www.html5gamedevs.com/topic/31617-mesh-without-indices/?tab=comments#comment-181659
-      // https://doc.babylonjs.com/how_to/optimizing_your_scene#using-unindexed-meshes
-      nodeMesh._unIndexed = true;
-
       data.colors = mesh.colors;
       data.normals = mesh.normals;
       data.positions = mesh.positions;
 
-      data.applyToMesh(nodeMesh);
-
-      // https://doc.babylonjs.com/how_to/optimizing_your_scene
-      // https://www.html5gamedevs.com/topic/12504-performancedraw-calls/
-      nodeMesh.freezeNormals();
-      nodeMesh.freezeWorldMatrix();
+      const nodeMesh = this.createUnIndexedAlphaMesh(meshName);
+      data.applyToMesh(nodeMesh, false);
     }
   }
 
@@ -112,6 +105,13 @@ export class UiSceneViewerService {
       useGeometryUniqueIdsMap: true,
       useClonedMeshMap: true,
     });
+
+    // An as transparent flagged mesh does not write to the depth buffer when rendering.
+    // This can lead to potential artifacts.
+    // https://forum.babylonjs.com/t/hasvertexalpha-causes-problems-when-unindexed-is-used-directly
+    this.standardMaterial = new StandardMaterial('standardMaterial', this.scene);
+    this.standardMaterial.forceDepthWrite = true;
+
     this.scene.freezeMaterials();
 
     // Used only as parent to have all nodes grouped together
@@ -155,9 +155,28 @@ export class UiSceneViewerService {
           normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
         };
 
-        this.pointerPick$.next(info);
+        this.pointerPickSubject$.next(info);
       }
     };
+  }
+
+  private createUnIndexedAlphaMesh(name: string): Mesh {
+    const mesh = new Mesh(name, this.scene, this.gridNode);
+
+    // https://www.html5gamedevs.com/topic/31617-mesh-without-indices/?tab=comments#comment-181659
+    // https://doc.babylonjs.com/how_to/optimizing_your_scene#using-unindexed-meshes
+    mesh.isUnIndexed = true;
+
+    // https://forum.babylonjs.com/t/hasvertexalpha-causes-problems-when-unindexed-is-used-directly
+    mesh.hasVertexAlpha = true;
+    mesh.material = this.standardMaterial;
+
+    // https://doc.babylonjs.com/how_to/optimizing_your_scene
+    // https://www.html5gamedevs.com/topic/12504-performancedraw-calls/
+    mesh.freezeNormals();
+    mesh.freezeWorldMatrix();
+
+    return mesh;
   }
 
   /**
