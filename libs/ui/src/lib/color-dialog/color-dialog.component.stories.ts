@@ -11,7 +11,7 @@ import { UiColorDialogService } from './color-dialog.service';
   template: `
     <button mat-button (click)="onOpenClick()">Open</button>
 
-    <div>Result: {{ results$ | async | json }}</div>
+    <div>Selected color index: {{ results$ | async | json }}</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,7 +19,7 @@ class UiColorDialogTestComponent implements OnInit {
   @Input() colors: UiColorDialogColor[];
   @Input() selectedColorIndex: number;
 
-  results$: Observable<UiColorDialogColor | undefined>;
+  results$: Observable<number | undefined>;
 
   constructor(public dialogService: UiColorDialogService) {}
 
