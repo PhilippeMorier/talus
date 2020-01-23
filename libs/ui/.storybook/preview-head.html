@@ -1,1 +1,38 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<style>
+  i.theme-icon {
+    background-color: white;
+    border-radius: 6px;
+    color: #999;
+    cursor: pointer;
+    font-size: 16px !important;
+    height: 16px;
+    margin: 14px;
+    position: absolute;
+    right: 0;
+    width: 16px;
+  }
+</style>
+
+<script>
+  let IS_DARK_THEME_ENABLED = true;
+
+  function toggleTheme() {
+    IS_DARK_THEME_ENABLED = !IS_DARK_THEME_ENABLED;
+
+    setTheme(IS_DARK_THEME_ENABLED);
+  }
+
+  function setTheme(dark) {
+    const toAddClass = dark ? 'app-dark-theme' : 'app-light-theme';
+    const toRemoveClass = dark ? 'app-light-theme' : 'app-dark-theme';
+
+    document.body.classList.add(toAddClass);
+    document.body.classList.remove(toRemoveClass);
+
+    document.querySelector('i').innerText = dark ? 'brightness_2' : 'brightness_5';
+  }
+
+  window.onload = () => setTheme(IS_DARK_THEME_ENABLED);
+</script>
