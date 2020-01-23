@@ -2,8 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { UiSceneViewerTestModule, UiSidenavShellModule } from '@talus/ui';
 import { AppComponent } from './app.component';
+import * as fromApp from './app.reducer';
+import { initialMockState } from './testing';
 
 @Component({
   selector: 'fe-menu-bar-container',
@@ -48,6 +51,11 @@ describe('AppComponent', () => {
         RouterTestingModule,
         UiSceneViewerTestModule,
         UiSidenavShellModule,
+      ],
+      providers: [
+        provideMockStore<fromApp.State>({
+          initialState: initialMockState,
+        }),
       ],
     }).compileComponents();
   }));

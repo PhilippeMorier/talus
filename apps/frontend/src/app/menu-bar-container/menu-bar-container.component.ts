@@ -1,18 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Action, Store } from '@ngrx/store';
+import { Action, select, Store } from '@ngrx/store';
 import { UiMenuBarMenu } from '@talus/ui';
+import { map } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
-import { redo, undo } from './menu-bar-container.actions';
+import { redo, setDarkTheme, setLightTheme, undo } from './menu-bar-container.actions';
 
 @Component({
   selector: 'fe-menu-bar-container',
   template: `
-    <ui-menu-bar (menuItemClick)="onMenuItemClick($event)" [menus]="menus"></ui-menu-bar>
+    <ui-menu-bar (menuItemClick)="onMenuItemClick($event)" [menus]="menus$ | async"></ui-menu-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuBarContainerComponent {
-  menus: UiMenuBarMenu<Action>[] = [
+  private readonly menus: UiMenuBarMenu<Action>[] = [
     {
       label: 'Edit',
       menuItems: [
@@ -29,6 +30,34 @@ export class MenuBarContainerComponent {
       ],
     },
   ];
+
+  menus$ = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.isDarkTheme),
+    map(isDarkTheme => [
+      ...this.menus,
+      {
+        label: 'View',
+        menuItems: [
+          ...(isDarkTheme
+            ? [
+                {
+                  icon: 'brightness_5',
+                  label: 'Light',
+                  value: setLightTheme(),
+                },
+              ]
+            : [
+                {
+                  icon: 'brightness_2',
+                  label: 'Dark',
+                  value: setDarkTheme(),
+                },
+              ]),
+        ],
+      },
+    ]),
+  );
 
   constructor(private store: Store<fromApp.State>) {}
 
