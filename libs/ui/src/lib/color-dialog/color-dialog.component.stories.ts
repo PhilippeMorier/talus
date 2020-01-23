@@ -9,7 +9,7 @@ import { UiColorDialogService } from './color-dialog.service';
 // noinspection AngularMissingOrInvalidDeclarationInModule
 @Component({
   template: `
-    <button mat-button (click)="onOpenClick()">Open</button>
+    <button (click)="onOpenClick()">Open</button>
 
     <div>Selected color index: {{ results$ | async | json }}</div>
   `,
