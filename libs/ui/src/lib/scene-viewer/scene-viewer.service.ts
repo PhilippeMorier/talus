@@ -54,14 +54,15 @@ export class CameraFactory {
  */
 @Injectable()
 export class UiSceneViewerService {
-  pointerPick$ = new Subject<UiPointerPickInfo>();
-
   private engine: Engine;
   private scene: Scene;
   private standardMaterial: StandardMaterial;
   private gridNode: TransformNode;
   // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
+
+  private pointerPickSubject$ = new Subject<UiPointerPickInfo>();
+  pointerPick$ = this.pointerPickSubject$.asObservable();
 
   constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
 
@@ -154,7 +155,7 @@ export class UiSceneViewerService {
           normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
         };
 
-        this.pointerPick$.next(info);
+        this.pointerPickSubject$.next(info);
       }
     };
   }
