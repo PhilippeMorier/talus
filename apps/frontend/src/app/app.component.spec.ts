@@ -26,12 +26,20 @@ class SceneViewerContainerStubComponent {}
 })
 class ToolsPanelStubComponent {}
 
+@Component({
+  selector: 'fe-options-panel',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class OptionsPanelStubComponent {}
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
         MenuBarContainerStubComponent,
+        OptionsPanelStubComponent,
         SceneViewerContainerStubComponent,
         ToolsPanelStubComponent,
       ],
