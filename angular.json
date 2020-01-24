@@ -224,8 +224,10 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:lint",
           "options": {
+            "linter": "eslint",
+            "config": "libs/vdb/.eslintrc",
             "tsConfig": ["libs/vdb/tsconfig.lib.json", "libs/vdb/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!libs/vdb/**"]
           }

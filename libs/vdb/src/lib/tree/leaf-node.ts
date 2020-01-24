@@ -124,11 +124,14 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Return the value of the voxel at the given coordinates.
    * @note Used internally by ValueAccessor.
    */
-  getValueAndCache(xyz: Coord, _: ValueAccessor3<T>): T {
+  getValueAndCache(xyz: Coord, _accessor: ValueAccessor3<T>): T {
     return this.getValue(xyz);
   }
 
-  probeInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
+  probeInternalNode1AndCache(
+    _xyz: Coord,
+    _accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
     throw new Error(`Shouldn't be called on LeafNode`);
   }
 
@@ -136,7 +139,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Change the value of the voxel at the given coordinates and mark it as active.
    * @note Used internally by ValueAccessor.
    */
-  setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+  setValueAndCache(xyz: Coord, value: T, _accessor: ValueAccessor3<T>): void {
     this.setValueOn(xyz, value);
   }
 
@@ -144,7 +147,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Change the value of the voxel at the given coordinates and mark it as inactive.
    * @note Used internally by ValueAccessor.
    */
-  setValueOffAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+  setValueOffAndCache(xyz: Coord, value: T, _accessor: ValueAccessor3<T>): void {
     this.setValueOff(xyz, value);
   }
 
@@ -152,7 +155,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Return `true` if the voxel at the given coordinates is active.
    * @note Used internally by ValueAccessor.
    */
-  isValueOnAndCache(xyz: Coord, _: ValueAccessor3<T>): boolean {
+  isValueOnAndCache(xyz: Coord, _accessor: ValueAccessor3<T>): boolean {
     return this.isValueOn(xyz);
   }
 
@@ -160,7 +163,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Set the active state of the voxel at the given coordinates without changing its value.
    * @note Used internally by ValueAccessor.
    */
-  setActiveStateAndCache(xyz: Coord, on: boolean, _: ValueAccessor3<T>): void {
+  setActiveStateAndCache(xyz: Coord, on: boolean, _accessor: ValueAccessor3<T>): void {
     return this.setActiveState(xyz, on);
   }
 
