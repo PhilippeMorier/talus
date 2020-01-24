@@ -1,10 +1,10 @@
-import * as benchmarkjs from 'benchmark';
+import * as Benchmark from 'benchmark';
 import * as fs from 'fs';
 import { getJunitXml, TestSuite, TestSuiteReport } from 'junit-xml';
 
 import config from '../benchmark.config';
 
-const suites: benchmarkjs.Suite[] = [];
+const suites: Benchmark.Suite[] = [];
 const report: TestSuiteReport = {
   name: config.suiteName,
   time: 0,
@@ -12,7 +12,7 @@ const report: TestSuiteReport = {
 };
 
 export function suite(name: string, benchmarksFn: () => void): void {
-  const newSuite = new benchmarkjs.Suite(name);
+  const newSuite = new Benchmark.Suite(name);
   suites.push(newSuite);
 
   newSuite.on('complete', event => {
@@ -36,7 +36,7 @@ export function benchmark(name: string, fn: () => void): void {
   suites[suites.length - 1].add(name, fn);
 }
 
-function logSummary(suiteToLog: benchmarkjs.Suite): void {
+function logSummary(suiteToLog: Benchmark.Suite): void {
   logFastestBenchmarkNames(suiteToLog);
 
   const benchmarks = Array.from({ length: suiteToLog.length }, (x, i) => suiteToLog[i]);
@@ -48,7 +48,7 @@ function logSummary(suiteToLog: benchmarkjs.Suite): void {
   });
 }
 
-function logFastestBenchmarkNames(suiteToLog: benchmarkjs.Suite): void {
+function logFastestBenchmarkNames(suiteToLog: Benchmark.Suite): void {
   const fastestBenchmarkNames = suiteToLog.filter('fastest').map(bm => bm.name);
   const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
@@ -56,7 +56,7 @@ function logFastestBenchmarkNames(suiteToLog: benchmarkjs.Suite): void {
   console.log(`  Fastest ${conjugatedVerbBe} "${fastestBenchmarkNames.join(', ')}"`);
 }
 
-function logBenchmarkBar(highestHz: number, bm: benchmarkjs): void {
+function logBenchmarkBar(highestHz: number, bm: Benchmark): void {
   const barPercentage = (100 / highestHz) * bm.hz;
   const charsPerOnePercentage = 4;
 
@@ -70,7 +70,7 @@ function logBenchmarkBar(highestHz: number, bm: benchmarkjs): void {
   console.log(`  |${filledBar}${emptyBar}| ${bm}`);
 }
 
-function convertToTestSuite(suiteName: string, currentSuite: benchmarkjs.Suite): TestSuite {
+function convertToTestSuite(suiteName: string, currentSuite: Benchmark.Suite): TestSuite {
   const benchmarks = Array.from({ length: currentSuite.length }, (x, i) => currentSuite[i]);
 
   return {
