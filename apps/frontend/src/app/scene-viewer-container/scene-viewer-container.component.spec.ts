@@ -7,8 +7,10 @@ import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Tool } from '../tools-panel/tool.model';
-import { addVoxel, removeVoxel } from './scene-viewer-container.actions';
+import { rgbaToInt } from '../model/rgba.value';
+import { Tool } from '../model/tool.value';
+import { initialMockState } from '../testing';
+import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
 @Component({
@@ -32,14 +34,18 @@ describe('SceneViewerContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
-      providers: [provideMockStore()],
+      providers: [
+        provideMockStore<fromApp.State>({
+          initialState: initialMockState,
+        }),
+      ],
     }).compileComponents();
 
     mockStore = TestBed.get(Store);
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
-      Tool.AddVoxel,
+      Tool.SetVoxel,
     );
   }));
 
@@ -115,10 +121,21 @@ describe('SceneViewerContainerComponent', () => {
       [0, 0, 1],
     ],
   ])(
-    'should dispatch `addVoxel` action for %j',
-    (pickedPoint: Coord, position: Coord, normal: Coord) => {
-      const initialAction = addVoxel({ position: [0, 0, 0], value: 42 });
-      const action = addVoxel({ position, value: 1 });
+    'should dispatch `setVoxel` action for %j',
+    (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
+      const initialAction = setVoxel({
+        xyz: [0, 0, 0],
+        newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
+      });
+      const action = setVoxel({
+        xyz,
+        newValue: rgbaToInt({
+          r: 0,
+          g: 255,
+          b: 255,
+          a: 255,
+        }),
+      });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -169,12 +186,12 @@ describe('SceneViewerContainerComponent', () => {
     ],
   ])(
     'should dispatch `removeVoxel` action for %j',
-    (pickedPoint: Coord, position: Coord, normal: Coord) => {
+    (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
       mockSelectedToolIdSelector.setResult(Tool.RemoveVoxel);
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ position });
+      const action = removeVoxel({ xyz });
 
       stubComponent.pointerPick.next({
         pickedPoint,

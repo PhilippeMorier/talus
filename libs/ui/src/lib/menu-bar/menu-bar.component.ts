@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
-export interface UiMenuBarConfig<T> {
-  menus: UiMenuBarMenu<T>[];
-}
-
-interface UiMenuBarMenu<T> {
+export interface UiMenuBarMenu<T> {
   label: string;
   menuItems: UiMenuBarMenuItem<T>[];
 }
@@ -19,7 +15,7 @@ interface UiMenuBarMenuItem<T> {
   selector: 'ui-menu-bar',
   template: `
     <mat-toolbar>
-      <ng-container *ngFor="let menu of menuConfig.menus">
+      <ng-container *ngFor="let menu of menus">
         <button mat-button [matMenuTriggerFor]="mainMenu">{{ menu.label }}</button>
         <mat-menu #mainMenu="matMenu">
           <button
@@ -38,7 +34,7 @@ interface UiMenuBarMenuItem<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiMenuBarComponent {
-  @Input() menuConfig: UiMenuBarConfig<any> = { menus: [] };
+  @Input() menus: UiMenuBarMenu<any>[] = [];
 
   @Output() menuItemClick = new EventEmitter();
 

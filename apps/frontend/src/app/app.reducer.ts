@@ -8,18 +8,20 @@ import {
   MetaReducer,
 } from '@ngrx/store';
 import { environment } from '../environments/environment';
+import * as fromOptionsPanel from './options-panel/options-panel.reducer';
 import * as fromSceneViewerContainer from './scene-viewer-container/scene-viewer-container.reducer';
 import * as fromToolsPanel from './tools-panel/tools-panel.reducer';
 import * as fromUndoRedo from './undo-redo/undo-redo.reducer';
 
 export interface State {
   [fromUndoRedo.featureKey]: fromUndoRedo.State;
+  [fromOptionsPanel.featureKey]: fromOptionsPanel.State;
   [fromToolsPanel.featureKey]: fromToolsPanel.State;
   [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.State;
 }
 
 /**
- * Our state is composed of a map of action reducer functions.
+ * The state is composed of a map of action reducer functions.
  * These reducer functions are called with each dispatched action
  * and the current or initial state and return a new immutable state.
  *
@@ -30,6 +32,7 @@ export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<State, Action>>
   {
     factory: () => ({
       [fromSceneViewerContainer.featureKey]: fromSceneViewerContainer.reducer,
+      [fromOptionsPanel.featureKey]: fromOptionsPanel.reducer,
       [fromToolsPanel.featureKey]: fromToolsPanel.reducer,
       [fromUndoRedo.featureKey]: fromUndoRedo.reducer,
     }),
@@ -107,4 +110,32 @@ export const selectCurrentUndoEndAction = createSelector(
 export const selectCurrentRedoEndAction = createSelector(
   selectUndoRedoState,
   fromUndoRedo.selectCurrentRedoEndAction,
+);
+
+/**
+ * OptionsPanel reducers
+ */
+export const selectOptionsPanelState = createFeatureSelector<State, fromOptionsPanel.State>(
+  fromOptionsPanel.featureKey,
+);
+
+export const selectColors = createSelector(selectOptionsPanelState, fromOptionsPanel.selectColors);
+export const selectCssColors = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectCssColors,
+);
+
+export const selectSelectedColor = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedColor,
+);
+
+export const selectSelectedCssColor = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedCssColor,
+);
+
+export const selectSelectedColorIndex = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedColorIndex,
 );

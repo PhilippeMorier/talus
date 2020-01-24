@@ -14,6 +14,15 @@ export class UiSidenavShellContentComponent {}
   template: `
     <ng-content></ng-content>
   `,
+  styles: [
+    `
+      :host {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiSidenavShellLeftComponent {}

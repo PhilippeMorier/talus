@@ -1,14 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UiMenuBarModule } from '@talus/ui';
-import { UiMenuBarComponent } from './menu-bar.component';
+import { UiMenuBarComponent, UiMenuBarMenu } from './menu-bar.component';
+import { UiMenuBarModule } from './menu-bar.module';
 
 describe('UiMenuBarComponent', () => {
   let component: UiMenuBarComponent;
   let fixture: ComponentFixture<UiMenuBarComponent>;
 
-  const expectedMenus = [
+  const expectedMenus: UiMenuBarMenu<string>[] = [
     {
       label: 'Menu 1',
       menuItems: [
@@ -38,7 +37,7 @@ describe('UiMenuBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiMenuBarModule, BrowserAnimationsModule],
+      imports: [UiMenuBarModule],
     }).compileComponents();
   }));
 
@@ -59,9 +58,7 @@ describe('UiMenuBarComponent', () => {
   });
 
   it('should add all menus', () => {
-    component.menuConfig = {
-      menus: expectedMenus,
-    };
+    component.menus = expectedMenus;
     fixture.detectChanges();
 
     const menus = fixture.debugElement.queryAll(By.css('mat-menu'));
@@ -74,9 +71,7 @@ describe('UiMenuBarComponent', () => {
   });
 
   it('should add all menu-items for second menu', () => {
-    component.menuConfig = {
-      menus: expectedMenus,
-    };
+    component.menus = expectedMenus;
     fixture.detectChanges();
 
     const menuButtons = fixture.debugElement.queryAll(By.css('button'));
@@ -92,9 +87,7 @@ describe('UiMenuBarComponent', () => {
   });
 
   it('should emit value of clicked menu items', () => {
-    component.menuConfig = {
-      menus: expectedMenus,
-    };
+    component.menus = expectedMenus;
     fixture.detectChanges();
 
     const menuButtons = fixture.debugElement.queryAll(By.css('button'));

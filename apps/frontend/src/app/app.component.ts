@@ -1,8 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import * as fromApp from './app.reducer';
 
 @Component({
   selector: 'fe-root',
   template: `
+    <ng-container *ngIf="setTheme(isDarkTheme$ | async)"></ng-container>
+
     <header>
       <fe-menu-bar-container></fe-menu-bar-container>
     </header>
@@ -10,7 +16,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     <main>
       <ui-sidenav-shell>
         <ui-sidenav-shell-left>
+          <h5>Tools</h5>
           <fe-tools-panel></fe-tools-panel>
+
+          <h5>Options</h5>
+          <fe-options-panel></fe-options-panel>
         </ui-sidenav-shell-left>
 
         <ui-sidenav-shell-right>
@@ -30,4 +40,19 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'frontend';
+
+  isDarkTheme$: Observable<boolean> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.isDarkTheme),
+  );
+
+  constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}
+
+  setTheme(isDarkTheme: boolean): void {
+    const toAddClass = isDarkTheme ? 'app-dark-theme' : 'app-light-theme';
+    const toRemoveClass = isDarkTheme ? 'app-light-theme' : 'app-dark-theme';
+
+    this.renderer.addClass(document.body, toAddClass);
+    this.renderer.removeClass(document.body, toRemoveClass);
+  }
 }

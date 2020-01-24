@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { Tool } from './tool.model';
+import { Tool } from '../model/tool.value';
 import { selectTool } from './tools-panel.actions';
 
 export const featureKey = 'toolsPanel';
@@ -9,7 +9,7 @@ export interface State {
 }
 
 export const initialState: State = {
-  selectedToolId: Tool.AddVoxel,
+  selectedToolId: Tool.SetVoxel,
 };
 
 /** Provide reducer in AoT-compilation happy way */

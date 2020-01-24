@@ -164,6 +164,12 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 - `yarn nx --help`
 
+## Ng
+
+### Update
+
+- `ng update @angular/cli @angular/core`
+
 ## Github Pages
 
 CircleCI pushes every build onto the

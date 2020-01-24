@@ -1,4 +1,5 @@
 canvas {
+  display: block; // otherwise canvas is 4px too high
   height: 100%;
   width: 100%;
 }

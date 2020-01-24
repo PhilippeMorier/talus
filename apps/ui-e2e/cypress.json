@@ -1,0 +1,20 @@
+{
+  "baseUrl": "http://localhost:4400",
+  "chromeWebSecurity": false,
+  "fileServerFolder": ".",
+  "fixturesFolder": "./src/fixtures",
+  "integrationFolder": "./src/integration",
+  "modifyObstructiveCode": false,
+  "pluginsFile": "./src/plugins/index",
+  "reporter": "junit",
+  "reporterOptions": {
+    "jenkinsMode": true,
+    "mochaFile": "../../test-results/mocha/apps-ui-e2e.[hash].junit.xml",
+    "testCaseSwitchClassnameAndName": true,
+    "toConsole": true
+  },
+  "screenshotsFolder": "../../test-results/cypress/apps/ui-e2e/screenshots",
+  "supportFile": "./src/support/index.ts",
+  "video": true,
+  "videosFolder": "../../test-results/cypress/apps/ui-e2e/videos"
+}

@@ -5,10 +5,12 @@ import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import {
-  addVoxel,
+  paintVoxel,
   removeVoxel,
-  voxelAdded,
+  setVoxel,
+  voxelPainted,
   voxelRemoved,
+  voxelSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
@@ -70,13 +72,13 @@ export class UndoRedoEffects {
     map(([action, state]) => action),
   );
 
-  addUndoActionForAddVoxel$ = createEffect(() =>
+  addUndoActionForSetVoxel$ = createEffect(() =>
     this.userTriggeredActions$.pipe(
-      ofType(voxelAdded),
+      ofType(voxelSet),
       map(voxelChange => ({
-        redoStartAction: addVoxel(voxelChange),
-        redoEndActionType: voxelAdded.type,
-        undoStartAction: removeVoxel({ position: voxelChange.position }),
+        redoStartAction: setVoxel(voxelChange),
+        redoEndActionType: voxelSet.type,
+        undoStartAction: removeVoxel(voxelChange),
         undoEndActionType: voxelRemoved.type,
       })),
       map(addUndo),
@@ -87,10 +89,23 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelRemoved),
       map(voxelChange => ({
-        redoStartAction: removeVoxel({ position: voxelChange.position }),
+        redoStartAction: removeVoxel(voxelChange),
         redoEndActionType: voxelRemoved.type,
-        undoStartAction: addVoxel(voxelChange),
-        undoEndActionType: voxelAdded.type,
+        undoStartAction: setVoxel(voxelChange),
+        undoEndActionType: voxelSet.type,
+      })),
+      map(addUndo),
+    ),
+  );
+
+  addUndoActionForPaintVoxel$ = createEffect(() =>
+    this.userTriggeredActions$.pipe(
+      ofType(voxelPainted),
+      map(voxelChange => ({
+        redoStartAction: paintVoxel(voxelChange),
+        redoEndActionType: voxelPainted.type,
+        undoStartAction: paintVoxel({ xyz: voxelChange.xyz, newValue: voxelChange.oldValue }),
+        undoEndActionType: voxelPainted.type,
       })),
       map(addUndo),
     ),
