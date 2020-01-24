@@ -1,5 +1,5 @@
-module.exports = {
+export default {
   suiteName: 'Benchmark.js tests',
   outputDirectory: './test-results/benchmark',
-  outputName: 'all.junit.xml',
+  outputName: 'apps-benchmark.junit.xml',
 };

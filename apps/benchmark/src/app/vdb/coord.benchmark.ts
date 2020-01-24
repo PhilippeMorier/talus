@@ -25,22 +25,22 @@ suite('[Coord] write', () => {
 suite('[Coord] read', () => {
   const coord: Coord = [0, 0, 0];
   benchmark('coord[0]', () => {
-    const x = coord[0];
-    const y = coord[1];
-    const z = coord[2];
+    const _x = coord[0];
+    const _y = coord[1];
+    const _z = coord[2];
   });
 
   benchmark('coord[X]', () => {
-    const x = coord[X];
-    const y = coord[Y];
-    const z = coord[Z];
+    const _x = coord[X];
+    const _y = coord[Y];
+    const _z = coord[Z];
   });
 
   const coordObj = { x: 0, y: 0, z: 0 };
   benchmark('coordObj.x', () => {
-    const x = coordObj.x;
-    const y = coordObj.y;
-    const z = coordObj.z;
+    const _x = coordObj.x;
+    const _y = coordObj.y;
+    const _z = coordObj.z;
   });
 });
 
@@ -48,9 +48,9 @@ suite('[Coord] function parameter', () => {
   const coord: Coord = [0, 1, 2];
 
   function oneParameter(xyz: Coord): void {
-    const x = xyz[0];
-    const y = xyz[1];
-    const z = xyz[2];
+    const _x = xyz[0];
+    const _y = xyz[1];
+    const _z = xyz[2];
   }
 
   function deconstruct([x, y, z]: Coord): void {

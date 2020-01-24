@@ -45,7 +45,9 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 8. `ng generate @nrwl/angular:component sidenav-shell --project=ui --module=sidenav-shell --export`
 
-9. `ng generate @nrwl/workspace:library model --linter=eslint`
+9. `nx g @nrwl/node:application benchmark --linter=eslint`
+
+10. `ng generate @nrwl/workspace:library model --linter=eslint`
 
 ## Installations
 
