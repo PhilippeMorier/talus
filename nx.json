@@ -26,11 +26,14 @@
     },
     "ui-e2e": {
       "tags": ["scope:frontend"],
-      "implicitDependencies": []
+      "implicitDependencies": ["ui"]
     },
     "vdb": {
       "tags": ["scope:libs"],
       "implicitDependencies": []
+    },
+    "model": {
+      "tags": ["scope:libs"]
     }
   }
 }

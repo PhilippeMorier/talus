@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { intToRgba } from '@talus/model';
 import { Coord, Grid, MeshData, nodeToMesh } from '@talus/vdb';
-import { intToRgba } from '../model/rgba.value';
 
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
