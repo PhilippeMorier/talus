@@ -2,12 +2,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
+import { Rgba, rgbaToInt, Tool } from '@talus/model';
 import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Rgba, rgbaToInt } from '../model/rgba.value';
-import { Tool } from '../model/tool.value';
 import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
 
 @Component({

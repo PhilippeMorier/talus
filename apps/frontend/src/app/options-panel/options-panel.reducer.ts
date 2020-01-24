@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
+import { Rgba } from '@talus/model';
 import { UiColorDialogColor } from '@talus/ui';
-import { Rgba } from '../model/rgba.value';
 import { selectColor } from './options-panel.actions';
 
 export const featureKey = 'optionsPanel';

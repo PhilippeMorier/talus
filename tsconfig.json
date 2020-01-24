@@ -11,8 +11,8 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
+      "@talus/model": ["libs/model/src/index.ts"],
       "@talus/ui": ["libs/ui/src/index.ts"],
-      "@talus/math": ["libs/math/src/index.ts"],
       "@talus/vdb": ["libs/vdb/src/index.ts"]
     },
     "rootDir": ".",

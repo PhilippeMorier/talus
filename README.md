@@ -45,6 +45,8 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 8. `ng generate @nrwl/angular:component sidenav-shell --project=ui --module=sidenav-shell --export`
 
+9. `ng generate @nrwl/workspace:library model --linter=eslint`
+
 ## Installations
 
 ### Node
@@ -163,6 +165,8 @@ updated as well.
 See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 - `yarn nx --help`
+
+- `yarn run affected:dep-graph`
 
 ## Ng
 
