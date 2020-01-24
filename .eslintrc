@@ -18,7 +18,10 @@
     "@typescript-eslint/explicit-member-accessibility": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
     "@typescript-eslint/no-use-before-define": "off",
     "@nrwl/nx/enforce-module-boundaries": [
       "error",

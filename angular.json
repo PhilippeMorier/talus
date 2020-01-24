@@ -209,8 +209,10 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:lint",
           "options": {
+            "linter": "eslint",
+            "config": "apps/benchmark/.eslintrc",
             "tsConfig": ["apps/benchmark/tsconfig.app.json"],
             "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
           }
