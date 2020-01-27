@@ -54,11 +54,11 @@ export class CameraFactory {
  */
 @Injectable()
 export class UiSceneViewerService {
+  private camera: ArcRotateCamera;
   private engine: Engine;
   private scene: Scene;
   private standardMaterial: StandardMaterial;
   private gridNode: TransformNode;
-  // @ts-ignore: noUnusedLocals
   private light: HemisphericLight;
 
   private pointerPickSubject$ = new Subject<UiPointerPickInfo>();
@@ -72,7 +72,7 @@ export class UiSceneViewerService {
     this.createCamera();
     this.createLight();
 
-    this.registerPointerPick();
+    this.registerPointerEvents();
   }
 
   startRendering(): void {
@@ -119,7 +119,7 @@ export class UiSceneViewerService {
   }
 
   private createCamera(): void {
-    const camera: ArcRotateCamera = this.cameraFactory.create(
+    this.camera = this.cameraFactory.create(
       'camera',
       Math.PI / 2,
       Math.PI / 2,
@@ -127,38 +127,52 @@ export class UiSceneViewerService {
       new Vector3(0, 0, 0),
       this.scene,
     );
-    camera.inertia = 0;
-    camera.panningInertia = 0;
-    camera.wheelPrecision = 1.0;
+    this.camera.inertia = 0;
+    this.camera.panningInertia = 0;
+    this.camera.wheelPrecision = 1.0;
 
-    camera.panningSensibility = 10;
-    camera.angularSensibilityX = 200;
-    camera.angularSensibilityY = 100;
+    this.camera.panningSensibility = 10;
+    this.camera.angularSensibilityX = 200;
+    this.camera.angularSensibilityY = 100;
 
+    this.camera.setPosition(new Vector3(20, 20, -20));
+
+    this.attachCameraControl();
+  }
+
+  private attachCameraControl(): void {
     const renderingCanvas = this.engine.getRenderingCanvas();
     if (renderingCanvas) {
-      camera.attachControl(renderingCanvas, true, false, 2);
+      this.camera.attachControl(renderingCanvas, true, false, 2);
     }
-    camera.setPosition(new Vector3(20, 20, -20));
+  }
+
+  private detachCameraControl(): void {
+    const renderingCanvas = this.engine.getRenderingCanvas();
+    if (renderingCanvas) {
+      this.camera.detachControl(renderingCanvas);
+    }
   }
 
   private createLight(): void {
     this.light = new HemisphericLight('light', new Vector3(0, 1, -2), this.scene);
   }
 
-  private registerPointerPick(): void {
-    this.scene.onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
-      if (pickInfo.pickedMesh && pickInfo.pickedPoint) {
-        const info: UiPointerPickInfo = {
-          pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
-          pointerButton: event.button,
-          normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
-        };
-
-        this.pointerPickSubject$.next(info);
-      }
-    };
+  private registerPointerEvents(): void {
+    this.scene.onPointerPick = this.onPointerPick;
   }
+
+  private onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
+    if (pickInfo.pickedMesh && pickInfo.pickedPoint) {
+      const info: UiPointerPickInfo = {
+        pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
+        pointerButton: event.button,
+        normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
+      };
+
+      this.pointerPickSubject$.next(info);
+    }
+  };
 
   private createUnIndexedAlphaMesh(name: string): Mesh {
     const mesh = new Mesh(name, this.scene, this.gridNode);
