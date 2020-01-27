@@ -85,6 +85,14 @@ This project was generated using [Nx](https://nx.dev) with the following command
 3. Run single job
    - `circleci local execute --job 'dependencies'`
 
+#### Debug via `ssh`
+
+CircleCI allows to connect to a job via `ssh`. In order to be able to connect via `ssh` a failed job
+needs to be rerun via the option 'Rerun job with SSH' in the CircleCI-UI in the top right corner.
+
+If the public key of your GitHub account is on your system you should be able to connect to the
+running job via e.g. `ssh -p 64537 3.89.247.61`.
+
 ### WebStorm
 
 #### Plugin: Awesome Console
