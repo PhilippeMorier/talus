@@ -28,4 +28,19 @@ describe('Vec3', () => {
     expect(vec3[1]).toEqual(vec3.y);
     expect(vec3[2]).toEqual(vec3.z);
   });
+
+  it.each([
+    [new Vec3(-1, 2, 0), 0],
+    [new Vec3(-1, -2, 0), 1],
+    [new Vec3(5, 2, 0), 2],
+    [new Vec3(0, 0, 1), 1],
+    [new Vec3(1, 0, 0), 2],
+    [new Vec3(0, 1, 0), 2],
+    [new Vec3(1, 1, 0), 2],
+    [new Vec3(1, 0, 1), 1],
+    [new Vec3(0, 1, 1), 0],
+    [new Vec3(1, 1, 1), 2],
+  ])('should return index of smallest value', (vec3, minIndex) => {
+    expect(vec3.minIndex()).toEqual(minIndex);
+  });
 });
