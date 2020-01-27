@@ -7,7 +7,7 @@ import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@tal
 import { Coord } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
+import { paintVoxel, removeVoxel, setVoxel, setVoxels } from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -43,6 +43,23 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   //   mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
   //   mesh.renderOutline = !mesh.renderOutline;
   // }
+
+  private initializeChessboard(): void {
+    const white = rgbaToInt({ r: 255, g: 255, b: 255, a: 255 });
+    const grey = rgbaToInt({ r: 200, g: 200, b: 200, a: 255 });
+    const coords: Coord[] = [];
+    const newValues: number[] = [];
+
+    const diameter = 10;
+    for (let x = -diameter; x < diameter; x++) {
+      for (let z = -diameter; z < diameter; z++) {
+        coords.push([x, 0, z]);
+        newValues.push((x + z) % 2 === 0 ? white : grey);
+      }
+    }
+
+    this.store.dispatch(setVoxels({ coords, newValues }));
+  }
 
   private dispatchPickAction(
     pickInfo: UiPointerPickInfo,
