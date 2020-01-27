@@ -151,7 +151,8 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 - Ensure that all
   [dependencies](https://docs.cypress.io/guides/guides/continuous-integration.html#Dependencies) are
   installed in order to be able to run Cypress locally.
-- `yarn e2e <frontend-e2e>`
+- `yarn e2e frontend-e2e`
+- `nx run ui-e2e:e2e`
 
 When updating Cypress version in `package.json` the version in `.circleci/config.yml` needs to be
 updated as well.
@@ -183,4 +184,4 @@ CircleCI pushes every build onto the
 GitHub under:
 
 - Schema: `https://philippemorier.github.io/talus/<branch>/<commit-hash>/frontend/`
-- Example: `https://philippemorier.github.io/talus/convert-to-nx/9cff96f/frontend/`
+- Example: `https://philippemorier.github.io/talus/develop/56c699a/frontend/`
