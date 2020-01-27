@@ -22,8 +22,30 @@ export class Ray {
   calcPositionAlongRayAtTime(time: number): Vec3 {
     return this.eye.multiply(this.dir).multiplyByScalar(time);
   }
+
+  /**
+   * @brief Return @c true if t1 is larger than t0 by at least eps.
+   */
+  valid(eps: number = DELTA): boolean {
+    return this.timeSpan.valid(eps);
+  }
 }
 
-class TimeSpan {
+export class TimeSpan {
   constructor(public t0: number, public t1: number) {}
+
+  /**
+   * @brief Return @c true if t1 is larger than t0 by at least eps.
+   */
+  valid(eps: number = DELTA): boolean {
+    return this.t1 - this.t0 > eps;
+  }
+
+  /**
+   * @brief Set both times
+   */
+  set(t0: number, t1: number): void {
+    this.t0 = t0;
+    this.t1 = t1;
+  }
 }
