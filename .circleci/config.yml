@@ -145,7 +145,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn test:code-coverage
+          command: yarn nx test --code-coverage
 
       - *store_test_results
 
@@ -185,7 +185,7 @@ jobs:
 
       - run:
           name: Run frontend-e2e
-          command: yarn e2e:ci frontend-e2e
+          command: yarn nx e2e frontend-e2e --headless
 
       - *store_test_results
 
@@ -203,7 +203,7 @@ jobs:
 
       - run:
           name: Run ui-e2e
-          command: yarn ng run ui-e2e:e2e --headless
+          command: yarn nx e2e ui-e2e --headless
 
       - *store_test_results
 
@@ -222,7 +222,7 @@ jobs:
       - run:
           name: Build app
           command:
-            yarn ng run frontend:build:production --base-href BASE_PATH_PLACEHOLDER --progress=false
+            yarn nx build frontend --prod=true --base-href=BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
@@ -266,7 +266,7 @@ jobs:
 
       - run:
           name: Build storybook
-          command: yarn ng run ui:build-storybook
+          command: yarn nx run ui:build-storybook
 
       - store_artifacts:
           path: ./dist/storybook/ui

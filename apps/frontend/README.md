@@ -5,8 +5,10 @@
 - `nx test frontend`
   - `--watch`
   - `--codeCoverage`
-- `nx e2e frontend-e2e`
+- `nx e2e frontend-e2e` (see
+  [builder](https://github.com/nrwl/nx/blob/master/docs/angular/api-cypress/builders/cypress.md))
   - `--watch`
+  - `--headless`
 - `nx lint frontend`
 
 ## NgRx
