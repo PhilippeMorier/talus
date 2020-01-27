@@ -49,6 +49,8 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 10. `ng generate @nrwl/workspace:library model --linter=eslint`
 
+11. `nx g @nrwl/angular:storybook-configuration ui`
+
 ## Installations
 
 ### Node
