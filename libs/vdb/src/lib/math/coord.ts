@@ -32,3 +32,7 @@ export function areEqual(c1: Coord, c2: Coord): boolean {
 export function clone(c: Coord): Coord {
   return [c[0], c[1], c[2]];
 }
+
+export function floor(c: Coord): Coord {
+  return [Math.floor(c[0]), Math.floor(c[1]), Math.floor(c[2])];
+}
