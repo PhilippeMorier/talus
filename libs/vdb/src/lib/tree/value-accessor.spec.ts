@@ -164,7 +164,7 @@ describe('ValueAccessor', () => {
       spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
 
       accessor.setValueOn([0, 0, 0], 42);
-      // Produce a cache miss (go over root)
+      // Produce a cache L2 miss by accessing neighbouring InternalNode2
       accessor.setValueOn([InternalNode2.DIM, 0, 0], 42);
 
       expect(accessor.probeLeafNode([LeafNode.DIM - 1, 0, 0])).toBeInstanceOf(LeafNode);
@@ -176,8 +176,8 @@ describe('ValueAccessor', () => {
       spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
 
       accessor.setValueOn([0, 0, 0], 42);
-      // Produce a cache miss (go over InternalNode2)
-      accessor.setValueOn([InternalNode2.DIM - 1, 0, 0], 42);
+      // Produce a cache L1 miss by accessing neighbouring InternalNode1
+      accessor.setValueOn([InternalNode1.DIM, 0, 0], 42);
 
       expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
       expect(tree.root.probeLeafNodeAndCache).not.toHaveBeenCalled();
@@ -187,8 +187,8 @@ describe('ValueAccessor', () => {
       const accessor = new ValueAccessor3(tree);
 
       accessor.setValueOn([0, 0, 0], 42);
-      // Produce a cache miss (go over InternalNode1)
-      accessor.setValueOn([InternalNode1.DIM - 1, 0, 0], 42);
+      // Produce a cache L0 miss by accessing neighbouring LeafNode
+      accessor.setValueOn([LeafNode.DIM, 0, 0], 42);
 
       const isHashed2Spy = spyOn<any>(accessor, 'isHashed2').and.callThrough();
       expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
