@@ -163,7 +163,7 @@ jobs:
 
       - run:
           name: Build benchmarks
-          command: yarn build benchmark
+          command: yarn nx build benchmark
 
       - run:
           name: Run benchmarks
