@@ -149,4 +149,60 @@ describe('ValueAccessor', () => {
       expect(accessor.probeInternalNode1([LeafNode.DIM, 0, 0])).toBeInstanceOf(InternalNode1);
     });
   });
+
+  describe('probeLeafNode()', () => {
+    const tree = new Tree(-1);
+
+    it('should return undefined if no leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.probeLeafNode([111, 222, 333])).toBeUndefined();
+    });
+
+    it('should hit no cache and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache miss (go over root)
+      accessor.setValueOn([InternalNode2.DIM, 0, 0], 42);
+
+      expect(accessor.probeLeafNode([LeafNode.DIM - 1, 0, 0])).toBeInstanceOf(LeafNode);
+      expect(tree.root.probeLeafNodeAndCache).toBeCalledTimes(1);
+    });
+
+    it('should hit cache L2 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache miss (go over InternalNode2)
+      accessor.setValueOn([InternalNode2.DIM - 1, 0, 0], 42);
+
+      expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
+      expect(tree.root.probeLeafNodeAndCache).not.toHaveBeenCalled();
+    });
+
+    it('should hit cache L1 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache miss (go over InternalNode1)
+      accessor.setValueOn([InternalNode1.DIM - 1, 0, 0], 42);
+
+      const isHashed2Spy = spyOn<any>(accessor, 'isHashed2').and.callThrough();
+      expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
+      expect(isHashed2Spy.calls.count()).toEqual(0);
+    });
+
+    it('should hit cache L0 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+
+      const isHashed1Spy = spyOn<any>(accessor, 'isHashed1').and.callThrough();
+      expect(accessor.probeLeafNode([0, 0, LeafNode.DIM - 1])).toBeInstanceOf(LeafNode);
+      expect(isHashed1Spy.calls.count()).toEqual(0);
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import { Coord } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
+import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -55,6 +56,19 @@ export class RootNode<T> implements HashableNode<T> {
     }
 
     return struct.getTile().value;
+  }
+
+  probeLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    const struct = this.findCoord(xyz);
+
+    if (!struct || struct.isTile()) {
+      return undefined;
+    }
+
+    const child = struct.getChild();
+    accessor.insert(xyz, child);
+
+    return child.probeLeafNodeAndCache(xyz, accessor);
   }
 
   probeInternalNode1AndCache(

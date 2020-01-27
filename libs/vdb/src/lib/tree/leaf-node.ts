@@ -126,6 +126,10 @@ export class LeafNode<T> implements HashableNode<T> {
     return this.getValue(xyz);
   }
 
+  probeLeafNodeAndCache(_xyz: Coord, _accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    return this;
+  }
+
   probeInternalNode1AndCache(
     _xyz: Coord,
     _accessor: ValueAccessor3<T>,
