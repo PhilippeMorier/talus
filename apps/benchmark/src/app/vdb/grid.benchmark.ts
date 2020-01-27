@@ -2,7 +2,7 @@ import { Grid } from '@talus/vdb';
 import { benchmark, suite } from '../../main';
 
 suite('[Grid] getValue()', () => {
-  const i = 42;
+  const i = 16;
   const grid = initializeGrid(i);
   const accessor = grid.getAccessor();
 
@@ -28,7 +28,7 @@ suite('[Grid] getValue()', () => {
 });
 
 suite('[Grid] setValue()', () => {
-  const i = 42;
+  const i = 16;
   const grid = initializeGrid(i);
   const accessor = grid.getAccessor();
 
