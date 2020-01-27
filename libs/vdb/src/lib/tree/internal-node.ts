@@ -1,7 +1,8 @@
 import { Coord } from '../math/coord';
+import { Index } from '../types';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
-import { Index, LeafNode } from './leaf-node';
+import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
 import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';

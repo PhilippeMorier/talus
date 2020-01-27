@@ -1,5 +1,5 @@
+import { Index } from '../types';
 import { createDenseArray } from '../util/array';
-import { Index } from './leaf-node';
 
 export class LeafBuffer<T> {
   private data: T[] = createDenseArray(this.size);

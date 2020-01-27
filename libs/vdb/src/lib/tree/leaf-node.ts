@@ -1,13 +1,11 @@
 import { Coord } from '../math/coord';
+import { Index } from '../types';
 import { NodeMask } from '../util/node-mask';
 import { InternalNode1 } from './internal-node';
 import { LeafBuffer } from './leaf-buffer';
 import { HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
-
-export type ValueType = boolean | number | string;
-export type Index = number;
 
 export class LeafNode<T> implements HashableNode<T> {
   // tslint:disable:no-bitwise

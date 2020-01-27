@@ -1,5 +1,5 @@
 import { BitSet } from 'mnemonist';
-import { Index } from '../tree/leaf-node';
+import { Index } from '../types';
 
 export class NodeMask {
   private mask: BitSet;

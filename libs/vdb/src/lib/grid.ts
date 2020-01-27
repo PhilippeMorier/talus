@@ -1,8 +1,8 @@
-import { ValueType } from './tree/leaf-node';
 import { IterableNode } from './tree/node';
 import { Tree } from './tree/tree';
 import { ValueAccessor3 } from './tree/value-accessor';
 import { Voxel } from './tree/voxel';
+import { ValueType } from './types';
 
 /**
  *  Grid, a container that associates a Tree with a Transform and additional metadata.
