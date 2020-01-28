@@ -36,3 +36,28 @@ export function clone(c: Coord): Coord {
 export function floor(c: Coord): Coord {
   return [Math.floor(c[0]), Math.floor(c[1]), Math.floor(c[2])];
 }
+
+export function minComponent(c1: Coord, c2: Coord): Coord {
+  return [Math.min(c1[0], c2[0]), Math.min(c1[1], c2[1]), Math.min(c1[2], c2[2])];
+}
+
+export function maxComponent(c1: Coord, c2: Coord): Coord {
+  return [Math.max(c1[0], c2[0]), Math.max(c1[1], c2[1]), Math.max(c1[2], c2[2])];
+}
+
+export function offsetBy(c: Coord, n: number): Coord {
+  return [c[0] + n, c[1] + n, c[2] + n];
+}
+
+export class CoordBBox {
+  constructor(public min: Coord = createMaxCoord(), public max: Coord = createMinCoord()) {}
+
+  /**
+   * @brief Union this bounding box with the cubical bounding box
+   * of the given size and with the given minimum coordinates.
+   */
+  expand(min: Coord, dim: number): void {
+    this.min = minComponent(this.min, min);
+    this.max = maxComponent(this.max, offsetBy(min, dim - 1));
+  }
+}
