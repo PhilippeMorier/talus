@@ -29,6 +29,12 @@ export class RootNode<T> implements HashableNode<T> {
     return coord.join(',');
   }
 
+  static keyToCoord(key: string): Coord {
+    const xyz = key.split(',');
+
+    return [Number(xyz[0]), Number(xyz[1]), Number(xyz[2])];
+  }
+
   get background(): T {
     return this._background;
   }

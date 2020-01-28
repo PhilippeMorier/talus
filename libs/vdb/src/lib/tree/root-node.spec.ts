@@ -1,3 +1,4 @@
+import { Coord } from '../math/coord';
 import { InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { RootNode } from './root-node';
@@ -100,5 +101,13 @@ describe('RootNode', () => {
     root.setValueOn([0, 0, LeafNode.DIM], 42);
 
     expect(root.numBackgroundTiles()).toEqual(0);
+  });
+
+  it('should convert Coord to key and back', () => {
+    const coord: Coord = [InternalNode2.DIM, InternalNode2.DIM - 1, InternalNode2.DIM];
+    const key = RootNode.coordToKey(coord);
+
+    expect(key).toEqual(`256,0,256`);
+    expect(RootNode.keyToCoord(key)).toEqual([256, 0, 256]);
   });
 });
