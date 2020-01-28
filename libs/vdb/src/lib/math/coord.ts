@@ -49,15 +49,30 @@ export function offsetBy(c: Coord, n: number): Coord {
   return [c[0] + n, c[1] + n, c[2] + n];
 }
 
+/**
+ * Return true if any of the components of `a` are smaller than the
+ * corresponding components of `b`.
+ */
+export function lessThan(a: Coord, b: Coord): boolean {
+  return a[0] < b[0] || a[1] < b[1] || a[2] < b[2];
+}
+
 export class CoordBBox {
   constructor(public min: Coord = createMaxCoord(), public max: Coord = createMinCoord()) {}
 
   /**
-   * @brief Union this bounding box with the cubical bounding box
+   * Union this bounding box with the cubical bounding box
    * of the given size and with the given minimum coordinates.
    */
   expand(min: Coord, dim: number): void {
     this.min = minComponent(this.min, min);
     this.max = maxComponent(this.max, offsetBy(min, dim - 1));
+  }
+
+  /**
+   * Return true if the given bounding box is inside this bounding box.
+   */
+  isInside(box: CoordBBox): boolean {
+    return !(lessThan(box.min, this.min) || lessThan(this.max, box.max));
   }
 }

@@ -5,6 +5,7 @@ import {
   Coord,
   CoordBBox,
   createMinCoord,
+  lessThan,
   minComponent,
   offsetBy,
 } from './coord';
@@ -47,6 +48,14 @@ describe('Coord', () => {
 
     expect(offsetBy(coord, 10)).toEqual([11, 12, 13]);
   });
+
+  it.each([
+    [[0, 0, 0], [1, 1, 1], true],
+    [[0, 6, 6], [1, 1, 1], true],
+    [[3, 3, 3], [1, 1, 1], false],
+  ])('should check if less', (a: Coord, b: Coord, isLesser: boolean) => {
+    expect(lessThan(a, b)).toEqual(isLesser);
+  });
 });
 
 describe('CoordBBox', () => {
@@ -57,5 +66,19 @@ describe('CoordBBox', () => {
 
     expect(box.min).toEqual([0, 0, 0]);
     expect(box.max).toEqual([20, 10, 20]);
+  });
+
+  it.each([
+    [[3, 3, 3], [5, 5, 5], true], // complete inside
+    [[-1, 0, 0], [5, 5, 5], false], // min outside
+    [[0, 0, 0], [10, 10, 11], false], // max outside
+    [[0, 0, 0], [9, 10, 10], true], // same min
+    [[1, 0, 0], [10, 10, 10], true], // same max
+    [[0, 0, 0], [10, 10, 10], true], // same box
+  ])('should detect if box is inside or not', (min: Coord, max: Coord, inside: boolean) => {
+    const box = new CoordBBox([0, 0, 0], [10, 10, 10]);
+    const insideBox = new CoordBBox(min, max);
+
+    expect(box.isInside(insideBox)).toEqual(inside);
   });
 });
