@@ -1,4 +1,5 @@
 import { InternalNode2 } from './internal-node';
+import { LeafNode } from './leaf-node';
 import { RootNode } from './root-node';
 
 describe('RootNode', () => {
@@ -90,5 +91,14 @@ describe('RootNode', () => {
     }
 
     expect(counter).toEqual(expectedValues.length);
+  });
+
+  it('should have no background tiles', () => {
+    const root = new RootNode(-1);
+
+    root.setValueOn([0, 0, 0], 42);
+    root.setValueOn([0, 0, LeafNode.DIM], 42);
+
+    expect(root.numBackgroundTiles()).toEqual(0);
   });
 });

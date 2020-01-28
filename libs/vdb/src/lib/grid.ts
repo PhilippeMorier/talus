@@ -38,4 +38,8 @@ export class Grid<T = ValueType> implements IterableNode<T> {
   beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.tree.beginVoxelOn();
   }
+
+  empty(): boolean {
+    return this.tree.empty();
+  }
 }

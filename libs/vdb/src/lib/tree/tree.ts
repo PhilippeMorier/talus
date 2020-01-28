@@ -35,4 +35,8 @@ export class Tree<T> implements Node<T> {
   beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.root.beginVoxelOn();
   }
+
+  empty(): boolean {
+    return this.root.empty();
+  }
 }

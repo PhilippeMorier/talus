@@ -227,6 +227,31 @@ export class RootNode<T> implements HashableNode<T> {
   }
 
   /**
+   * Return true if this node's table is either empty or contains only background tiles.
+   */
+  empty(): boolean {
+    return this.table.size === this.numBackgroundTiles();
+  }
+
+  /**
+   * Return the number of background tiles.
+   */
+  numBackgroundTiles(): number {
+    let count = 0;
+    for (const nodeStruct of this.table.values()) {
+      if (this.isBackgroundTile(nodeStruct)) {
+        ++count;
+      }
+    }
+
+    return count;
+  }
+
+  isBackgroundTile(nodeStruct: NodeStruct<T>): boolean {
+    return nodeStruct.isTileOff() && nodeStruct.getTile().value === this._background;
+  }
+
+  /**
    * Convert the given coordinates to a key and look the key up in this node's table.
    */
   private findCoord(xyz: Coord): NodeStruct<T> | undefined {
