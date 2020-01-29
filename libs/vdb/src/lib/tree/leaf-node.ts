@@ -1,9 +1,9 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math/coord';
 import { Index } from '../types';
 import { NodeMask } from '../util/node-mask';
 import { InternalNode1 } from './internal-node';
 import { LeafBuffer } from './leaf-buffer';
-import { HashableNode } from './node';
+import { ChildNode, HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
@@ -182,6 +182,42 @@ export class LeafNode<T> implements HashableNode<T> {
     ];
   }
 
+  /**
+   * Expand the given bounding box so that it includes this leaf node's active voxels.
+   * If visitVoxels is false this LeafNode will be approximated as dense, i.e. with all
+   * voxels active. Else the individual active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    const thisBbox = this.getNodeBoundingBox();
+
+    // this LeafNode is already enclosed in the bbox
+    if (bbox.isInside(thisBbox)) {
+      return;
+    }
+
+    // any active values?
+    if (!this.beginVoxelOn().next().done) {
+      // use voxel granularity?
+      if (visitVoxels) {
+        thisBbox.reset();
+        for (const voxel of this.beginVoxelOn()) {
+          thisBbox.expand(voxel.globalCoord);
+        }
+        thisBbox.translate(this.origin);
+      }
+
+      bbox.expand(thisBbox);
+    }
+  }
+
+  /**
+   * Return the bounding box of this node, i.e., the full index space
+   * spanned by this leaf node.
+   */
+  getNodeBoundingBox(): CoordBBox {
+    return CoordBBox.createCube(this.origin, LeafNode.DIM);
+  }
+
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.valueMask.beginOn()) {
       yield {
@@ -189,5 +225,9 @@ export class LeafNode<T> implements HashableNode<T> {
         value: this.buffer.getValue(index),
       };
     }
+  }
+
+  beginValueOn(): IterableIterator<ChildNode<T>> {
+    throw new Error(`Shouldn't be called on LeafNode`);
   }
 }

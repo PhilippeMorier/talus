@@ -1,7 +1,7 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math/coord';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
-import { HashableNode } from './node';
+import { ChildNode, HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
@@ -62,6 +62,13 @@ export class RootNode<T> implements HashableNode<T> {
     }
 
     return struct.getTile().value;
+  }
+
+  /**
+   * Return the bounding box of this RootNode, i.e., an infinite bounding box.
+   */
+  getNodeBoundingBox(): CoordBBox {
+    return CoordBBox.inf();
   }
 
   probeLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
@@ -232,6 +239,14 @@ export class RootNode<T> implements HashableNode<T> {
     }
   }
 
+  *beginValueOn(): IterableIterator<ChildNode<T>> {
+    for (const nodeStruct of this.table.values()) {
+      if (nodeStruct.isChild()) {
+        yield* nodeStruct.getChild().beginValueOn();
+      }
+    }
+  }
+
   /**
    * Return true if this node's table is either empty or contains only background tiles.
    */
@@ -255,6 +270,24 @@ export class RootNode<T> implements HashableNode<T> {
 
   isBackgroundTile(nodeStruct: NodeStruct<T>): boolean {
     return nodeStruct.isTileOff() && nodeStruct.getTile().value === this._background;
+  }
+
+  /**
+   * @brief Expand the specified bbox so it includes the active tiles of
+   * this root node as well as all the active values in its child
+   * nodes. If visitVoxels is false LeafNodes will be approximated
+   * as dense, i.e. with all voxels active. Else the individual
+   * active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    for (const [key, nodeStruct] of this.table) {
+      const child = nodeStruct.isChild() && nodeStruct.getChild();
+      if (child) {
+        child.evalActiveBoundingBox(bbox, visitVoxels);
+      } else if (nodeStruct.isTileOn()) {
+        bbox.expand(RootNode.keyToCoord(key), InternalNode2.DIM);
+      }
+    }
   }
 
   /**

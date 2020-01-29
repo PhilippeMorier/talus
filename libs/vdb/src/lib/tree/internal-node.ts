@@ -1,9 +1,9 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math/coord';
 import { Index } from '../types';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
 import { LeafNode } from './leaf-node';
-import { HashableNode } from './node';
+import { ChildNode, HashableNode } from './node';
 import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -216,11 +216,46 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return this.nodes[i].getChild().isValueOnAndCache(xyz, accessor);
   }
 
+  /**
+   * @brief Expand the specified bounding box so that it includes the active tiles
+   * of this internal node as well as all the active values in its child nodes.
+   * If visitVoxels is false LeafNodes will be approximated as dense, i.e. with all
+   * voxels active. Else the individual active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    if (bbox.isInside(this.getNodeBoundingBox())) {
+      return;
+    }
+
+    const dim = this instanceof InternalNode2 ? InternalNode1.DIM : LeafNode.DIM;
+    for (const child of this.beginValueOn()) {
+      bbox.expand(child.origin, dim);
+    }
+
+    for (const child of this.beginChildOn()) {
+      child.evalActiveBoundingBox(bbox, visitVoxels);
+    }
+  }
+
+  getNodeBoundingBox(): CoordBBox {
+    const dim = this instanceof InternalNode2 ? InternalNode2.DIM : InternalNode1.DIM;
+
+    return CoordBBox.createCube(this.origin, dim);
+  }
+
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.childMask.beginOn()) {
       const child = this.nodes[index].getChild();
 
       yield* child.beginVoxelOn();
+    }
+  }
+
+  *beginValueOn(): IterableIterator<ChildNode<T>> {
+    for (const index of this.valueMask.beginOn()) {
+      const child = this.nodes[index].getChild();
+
+      yield* child.beginValueOn();
     }
   }
 
