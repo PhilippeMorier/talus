@@ -1,3 +1,4 @@
+import { CoordBBox } from '@talus/vdb';
 import { Ray, TimeSpan } from './ray';
 import { Vec3 } from './vec3';
 
@@ -7,7 +8,43 @@ describe('Ray', () => {
     const dir = new Vec3(4, 5, 6);
     const ray = new Ray(eye, dir);
 
-    expect(ray.calcPositionAlongRayAtTime(2)).toEqual(new Vec3(1 * 4 * 2, 2 * 5 * 2, 3 * 6 * 2));
+    const expected = new Vec3(41, 52, 63);
+
+    expect(ray.calcPositionAlongRayAtTime(10)).toEqual(expected);
+  });
+
+  it('should intersect with box', () => {
+    const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+    const eye = new Vec3(-1, 0, 0);
+    const dir = new Vec3(1, 0, 0);
+    const ray = new Ray(eye, dir);
+    const timeSpan = TimeSpan.inf();
+
+    expect(ray.intersects(box, timeSpan)).toBeTruthy();
+    expect(timeSpan.t0).toEqual(4);
+    expect(timeSpan.t1).toEqual(21);
+  });
+
+  it('should clip intersecting ray', () => {
+    const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+    const eye = new Vec3(-1, 0, 0);
+    const dir = new Vec3(1, 0, 0);
+    const ray = new Ray(eye, dir);
+
+    expect(ray.clip(box)).toBeTruthy();
+    expect(ray.t0).toEqual(4);
+    expect(ray.t1).toEqual(21);
+  });
+
+  it('should set timespan', () => {
+    const eye = new Vec3(-1, 0, 0);
+    const dir = new Vec3(1, 0, 0);
+    const ray = new Ray(eye, dir);
+
+    ray.setTimes(42, 24);
+
+    expect(ray.t0).toEqual(42);
+    expect(ray.t1).toEqual(24);
   });
 });
 
