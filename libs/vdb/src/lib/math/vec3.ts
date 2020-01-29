@@ -29,11 +29,15 @@ export class Vec3 {
   constructor(public x: number, public y: number, public z: number) {}
 
   divide(scalar: number): Vec3 {
-    return new Vec3(this.x / scalar, this.y / scalar, this.z / scalar);
+    return new Vec3(scalar / this.x, scalar / this.y, scalar / this.z);
   }
 
   multiply(vector: Vec3): Vec3 {
     return new Vec3(this.x * vector.x, this.y * vector.y, this.z * vector.z);
+  }
+
+  add(vector: Vec3): Vec3 {
+    return new Vec3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
   }
 
   multiplyByScalar(scalar: number): Vec3 {

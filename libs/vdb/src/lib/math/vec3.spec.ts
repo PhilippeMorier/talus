@@ -43,4 +43,17 @@ describe('Vec3', () => {
   ])('should return index of smallest value', (vec3, minIndex) => {
     expect(vec3.minIndex()).toEqual(minIndex);
   });
+
+  it('should add vector', () => {
+    const vec3 = new Vec3(1, 2, 5);
+    const toAdd = new Vec3(5, 2, 1);
+
+    expect(vec3.add(toAdd)).toEqual(new Vec3(6, 4, 6));
+  });
+
+  it(`should divide scalar by the vector's components`, () => {
+    const vec3 = new Vec3(1, 2, 5);
+
+    expect(vec3.divide(1)).toEqual(new Vec3(1, 0.5, 0.2));
+  });
 });
