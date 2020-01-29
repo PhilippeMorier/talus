@@ -137,7 +137,6 @@ export class VolumeHDDA<T> {
         // this is the first hit
         if (t.t0 < 0) {
           t.t0 = this.dda.getTime();
-          console.log(`First hit: ${t.t0}`);
         }
       } else if (t.t0 >= 0) {
         // hit an inactive tile after hitting active values
