@@ -20,7 +20,11 @@ describe('Coord', () => {
   });
 
   it('should create minimal coordinate', () => {
-    expect(createMinCoord()).toEqual([5e-324, 5e-324, 5e-324]);
+    expect(createMinCoord()).toEqual([
+      Number.MIN_SAFE_INTEGER,
+      Number.MIN_SAFE_INTEGER,
+      Number.MIN_SAFE_INTEGER,
+    ]);
   });
 
   it('should consider coordinates equal', () => {
