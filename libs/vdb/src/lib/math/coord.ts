@@ -22,7 +22,7 @@ export function createMaxCoord(): Coord {
 }
 
 export function createMinCoord(): Coord {
-  return [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
+  return [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
 }
 
 export function areEqual(c1: Coord, c2: Coord): boolean {
@@ -45,6 +45,12 @@ export function maxComponent(c1: Coord, c2: Coord): Coord {
   return [Math.max(c1[0], c2[0]), Math.max(c1[1], c2[1]), Math.max(c1[2], c2[2])];
 }
 
+export function offset(coordRef: Coord, n: number): void {
+  coordRef[0] += n;
+  coordRef[1] += n;
+  coordRef[2] += n;
+}
+
 export function offsetBy(c: Coord, n: number): Coord {
   return [c[0] + n, c[1] + n, c[2] + n];
 }
@@ -58,15 +64,34 @@ export function lessThan(a: Coord, b: Coord): boolean {
 }
 
 export class CoordBBox {
+  static createCube(min: Coord, dim: number): CoordBBox {
+    return new CoordBBox(min, offsetBy(min, dim - 1));
+  }
+
+  /**
+   * Return an "infinite" bounding box, as defined by the Coord value range.
+   */
+  static inf(): CoordBBox {
+    return new CoordBBox(createMinCoord(), createMaxCoord());
+  }
+
   constructor(public min: Coord = createMaxCoord(), public max: Coord = createMinCoord()) {}
 
   /**
    * Union this bounding box with the cubical bounding box
    * of the given size and with the given minimum coordinates.
    */
-  expand(min: Coord, dim: number): void {
-    this.min = minComponent(this.min, min);
-    this.max = maxComponent(this.max, offsetBy(min, dim - 1));
+  expand(coordOrBox: Coord | CoordBBox, dim?: number): void {
+    if (coordOrBox instanceof CoordBBox) {
+      this.min = minComponent(this.min, coordOrBox.min);
+      this.max = maxComponent(this.max, coordOrBox.max);
+    } else if (dim === undefined) {
+      this.min = minComponent(this.min, coordOrBox);
+      this.max = maxComponent(this.max, coordOrBox);
+    } else {
+      this.min = minComponent(this.min, coordOrBox);
+      this.max = maxComponent(this.max, offsetBy(coordOrBox, dim - 1));
+    }
   }
 
   /**
@@ -74,5 +99,17 @@ export class CoordBBox {
    */
   isInside(box: CoordBBox): boolean {
     return !(lessThan(box.min, this.min) || lessThan(this.max, box.max));
+  }
+
+  reset(): void {
+    this.min = createMaxCoord();
+    this.max = createMinCoord();
+  }
+  /**
+   * @brief Translate this bounding box by (t.x, t.y, t.z).
+   */
+  translate(t: Coord): void {
+    add(this.min, t);
+    add(this.max, t);
   }
 }

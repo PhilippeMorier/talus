@@ -7,6 +7,7 @@ import {
   createMinCoord,
   lessThan,
   minComponent,
+  offset,
   offsetBy,
 } from './coord';
 
@@ -49,6 +50,13 @@ describe('Coord', () => {
     expect(offsetBy(coord, 10)).toEqual([11, 12, 13]);
   });
 
+  it('should offset inline by 10', () => {
+    const coord: Coord = [1, 2, 3];
+    offset(coord, 10);
+
+    expect(coord).toEqual([11, 12, 13]);
+  });
+
   it.each([
     [[0, 0, 0], [1, 1, 1], true],
     [[0, 6, 6], [1, 1, 1], true],
@@ -59,13 +67,34 @@ describe('Coord', () => {
 });
 
 describe('CoordBBox', () => {
-  it('should expand', () => {
-    const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+  describe('expand()', () => {
+    it('should expand from coordinate with given dimension', () => {
+      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
 
-    box.expand([0, 1, 5], 10);
+      box.expand([0, 1, 5], 10);
 
-    expect(box.min).toEqual([0, 0, 0]);
-    expect(box.max).toEqual([20, 10, 20]);
+      expect(box.min).toEqual([0, 0, 0]);
+      expect(box.max).toEqual([20, 10, 20]);
+    });
+
+    it('should expand bounding box to enclose point (x, y, z)', () => {
+      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+
+      box.expand([0, 1, 5]);
+
+      expect(box.min).toEqual([0, 0, 0]);
+      expect(box.max).toEqual([20, 5, 20]);
+    });
+
+    it('should union bounding box with the given bounding box', () => {
+      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+      const otherBox = new CoordBBox([2, 1, 3], [30, 10, 40]);
+
+      box.expand(otherBox);
+
+      expect(box.min).toEqual([2, 0, 0]);
+      expect(box.max).toEqual([30, 10, 40]);
+    });
   });
 
   it.each([
