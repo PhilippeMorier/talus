@@ -150,6 +150,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn([0, 0, 0], 42);
 
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed2Spy = spyOn<any>(accessor, 'isHashed2');
       expect(accessor.probeInternalNode1([LeafNode.DIM, 0, 0])).toBeInstanceOf(InternalNode1);
       expect(isHashed2Spy.calls.count()).toEqual(0);
@@ -196,6 +197,7 @@ describe('ValueAccessor', () => {
       // Produce a cache L0 miss by accessing neighbouring LeafNode
       accessor.setValueOn([LeafNode.DIM, 0, 0], 42);
 
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed2Spy = spyOn<any>(accessor, 'isHashed2').and.callThrough();
       expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
       expect(isHashed2Spy.calls.count()).toEqual(0);
@@ -206,6 +208,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn([0, 0, 0], 42);
 
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed1Spy = spyOn<any>(accessor, 'isHashed1').and.callThrough();
       expect(accessor.probeLeafNode([0, 0, LeafNode.DIM - 1])).toBeInstanceOf(LeafNode);
       expect(isHashed1Spy.calls.count()).toEqual(0);
