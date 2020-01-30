@@ -84,6 +84,7 @@ export class GridService {
 
     return nodeToMesh(internal1, this.valueToColor);
   }
+
   private valueToColor = (value: number): [number, number, number, number] => {
     const rgba = intToRgba(value);
 

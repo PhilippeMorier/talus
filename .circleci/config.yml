@@ -7,11 +7,11 @@ aliases:
   # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
   - &use_docker_node
     docker:
-      - image: circleci/node:13.6.0-stretch
+      - image: circleci/node:13.7.0-stretch
 
   - &use_docker_node_browsers
     docker:
-      - image: circleci/node:13.6.0-stretch-browsers
+      - image: circleci/node:13.7.0-stretch-browsers
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
@@ -145,7 +145,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn test:code-coverage
+          command: yarn nx test --code-coverage
 
       - *store_test_results
 
@@ -163,7 +163,11 @@ jobs:
 
       - run:
           name: Build benchmarks
-          command: yarn build benchmark
+          # add `--maxWorkers=10` to avoid following two errors:
+          # 1. Too long with no output (exceeded 10m0s): context deadline exceeded
+          # 2. Killed
+          #    error Command failed with exit code 137.
+          command: yarn nx build benchmark --maxWorkers=10
 
       - run:
           name: Run benchmarks
@@ -181,7 +185,7 @@ jobs:
 
       - run:
           name: Run frontend-e2e
-          command: yarn e2e:ci frontend-e2e
+          command: yarn nx e2e frontend-e2e --headless
 
       - *store_test_results
 
@@ -199,7 +203,7 @@ jobs:
 
       - run:
           name: Run ui-e2e
-          command: yarn ng run ui-e2e:e2e --headless
+          command: yarn nx e2e ui-e2e --headless
 
       - *store_test_results
 
@@ -218,7 +222,7 @@ jobs:
       - run:
           name: Build app
           command:
-            yarn ng run frontend:build:production --base-href BASE_PATH_PLACEHOLDER --progress=false
+            yarn nx build frontend --prod=true --base-href=BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
@@ -262,7 +266,7 @@ jobs:
 
       - run:
           name: Build storybook
-          command: yarn ng run ui:build-storybook
+          command: yarn nx run ui:build-storybook
 
       - store_artifacts:
           path: ./dist/storybook/ui

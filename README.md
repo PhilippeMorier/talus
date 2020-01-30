@@ -85,6 +85,14 @@ This project was generated using [Nx](https://nx.dev) with the following command
 3. Run single job
    - `circleci local execute --job 'dependencies'`
 
+#### Debug via `ssh`
+
+CircleCI allows to connect to a job via `ssh`. In order to be able to connect via `ssh` a failed job
+needs to be rerun via the option 'Rerun job with SSH' in the CircleCI-UI in the top right corner.
+
+If the public key of your GitHub account is on your system you should be able to connect to the
+running job via e.g. `ssh -p 64537 3.89.247.61`.
+
 ### WebStorm
 
 #### Plugin: Awesome Console
@@ -153,8 +161,7 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 - Ensure that all
   [dependencies](https://docs.cypress.io/guides/guides/continuous-integration.html#Dependencies) are
   installed in order to be able to run Cypress locally.
-- `yarn e2e frontend-e2e`
-- `nx run ui-e2e:e2e`
+- `yarn nx e2e frontend-e2e`
 
 When updating Cypress version in `package.json` the version in `.circleci/config.yml` needs to be
 updated as well.

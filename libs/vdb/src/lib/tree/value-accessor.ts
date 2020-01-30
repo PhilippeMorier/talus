@@ -1,4 +1,4 @@
-import { clone, Coord, createMaxCoord } from '../math/coord';
+import { clone, Coord, createMaxCoord } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -51,7 +51,23 @@ export class ValueAccessor3<T> {
   }
 
   /**
-   * @returns Returns the node that contains voxel (x, y, z)
+   * @returns the leaf node that contains voxel (x, y, z)
+   * and if it doesn't exist, return undefined.
+   */
+  probeLeafNode(xyz: Coord): LeafNode<T> | undefined {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode;
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.probeLeafNodeAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.probeLeafNodeAndCache(xyz, this);
+    } else {
+      return this.tree.root.probeLeafNodeAndCache(xyz, this);
+    }
+  }
+
+  /**
+   * @returns the node that contains voxel (x, y, z)
    * and if it doesn't exist, return undefined.
    */
   probeInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
