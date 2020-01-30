@@ -44,7 +44,6 @@ export class VolumeRayIntersector<T> {
     // Dilate active voxels to better account for the size of interpolation kernels
     // tools::dilateVoxels(*mTree, dilationCount);
 
-    // mTree->root().evalActiveBoundingBox(mBBox, /*visit individual voxels*/false);
     this.grid.tree.root.evalActiveBoundingBox(this.bbox, false);
 
     // padding so the bbox of a node becomes (origin,origin + node_dim)

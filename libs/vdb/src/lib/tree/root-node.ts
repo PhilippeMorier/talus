@@ -14,6 +14,7 @@ export class RootNode<T> implements HashableNode<T> {
 
   /**
    * Return a MapType key for the given coordinates.
+   *
    * Can't use Coord directly since it's a reference type.
    * Convert it to a value type i.e. in a string in form of 'X,Y,Z'.
    */

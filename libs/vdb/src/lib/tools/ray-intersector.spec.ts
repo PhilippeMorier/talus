@@ -1,7 +1,10 @@
+import { Coord } from '@talus/vdb';
 import { Grid } from '../grid';
+import { DDA } from '../math/dda';
 import { DELTA } from '../math/math';
 import { Ray, TimeSpan } from '../math/ray';
 import { Vec3 } from '../math/vec3';
+import { Voxel } from '../tree/voxel';
 import { VolumeRayIntersector } from './ray-intersector';
 
 describe('VolumeRayIntersector', () => {
@@ -63,6 +66,62 @@ describe('VolumeRayIntersector', () => {
     expect(intersector.march(timeSpanRef)).toBeTruthy();
     expect(timeSpanRef.t0).toEqual(25);
     expect(timeSpanRef.t1).toEqual(33);
+    expect(intersector.march(timeSpanRef)).toBeFalsy();
+  });
+
+  it('should get all voxel coordinates', () => {
+    const expectedCoords: Coord[] = [
+      [0, 0, 0],
+      [1, 0, 0],
+      [1, 1, 0],
+      [2, 1, 0],
+      [2, 2, 0],
+      [3, 2, 0],
+      [3, 3, 0],
+      [4, 3, 0],
+      [5, 3, 0],
+      [5, 4, 0],
+      [6, 4, 0],
+      [6, 5, 0],
+      [7, 5, 0],
+      [7, 6, 0],
+      [8, 6, 0],
+    ];
+    // ...xx
+    // ..xx.
+    // .xx..
+    // xx...
+    grid.tree.setValueOn(expectedCoords[0], 42);
+    grid.tree.setValueOn(expectedCoords[1], 42);
+    grid.tree.setValueOn(expectedCoords[2], 42);
+    grid.tree.setValueOn(expectedCoords[3], 42);
+    grid.tree.setValueOn(expectedCoords[4], 42);
+    grid.tree.setValueOn(expectedCoords[5], 42);
+    grid.tree.setValueOn(expectedCoords[6], 42);
+    grid.tree.setValueOn(expectedCoords[7], 42);
+
+    const eye = new Vec3(-5, -4, 0);
+    const direction = new Vec3(5, 4, 0);
+    ray = new Ray(eye, direction);
+
+    const intersector = new VolumeRayIntersector(grid);
+    expect(intersector.setIndexRay(ray)).toBeTruthy();
+
+    const timeSpanRef = TimeSpan.inf();
+    expect(intersector.march(timeSpanRef)).toBeTruthy();
+    expect(timeSpanRef.t0).toEqual(1);
+    expect(timeSpanRef.t1).toEqual(2.6);
+
+    const dda = new DDA(Voxel.LOG2DIM);
+    dda.init(ray, timeSpanRef.t0, timeSpanRef.t1);
+
+    let counter = 0;
+    do {
+      expect(dda.getVoxel()).toEqual(expectedCoords[counter]);
+      counter++;
+    } while (dda.nextStep());
+    expect(counter).toEqual(expectedCoords.length);
+
     expect(intersector.march(timeSpanRef)).toBeFalsy();
   });
 });

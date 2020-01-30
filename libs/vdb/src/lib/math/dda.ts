@@ -1,5 +1,5 @@
-import { LeafNode } from '@talus/vdb';
-import { ValueAccessor3 } from '../tree/value-accessor';
+import { LeafNode, ValueAccessor3 } from '../tree';
+import { Index } from '../types';
 import { Coord, createMaxCoord, floor } from './coord';
 import { Ray, TimeSpan } from './ray';
 import { Vec3 } from './vec3';
@@ -15,7 +15,6 @@ import { Vec3 } from './vec3';
  * See the example Ray class above for their definition.
  */
 export class DDA {
-  private readonly log2Dim = LeafNode.TOTAL; // originally a configurable template parameter
   private readonly DIM = 1 << this.log2Dim;
 
   private t0: number;
@@ -26,6 +25,11 @@ export class DDA {
 
   private next: Vec3 = Vec3.Zero;
   private delta: Vec3 = Vec3.Zero;
+
+  /**
+   * @param log2Dim originally a configurable template parameter
+   */
+  constructor(private readonly log2Dim: Index) {}
 
   /**
    * @brief Return the time (parameterized along the Ray) of the
@@ -101,7 +105,7 @@ export class DDA {
  * class that intersects against the leafs or tiles of a generic volume.
  */
 export class VolumeHDDA<T> {
-  private dda = new DDA();
+  private dda = new DDA(LeafNode.LOG2DIM);
 
   marchStart(ray: Ray, acc: ValueAccessor3<T>): TimeSpan {
     const tRef = new TimeSpan(-1, -1);
