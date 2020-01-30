@@ -1,4 +1,4 @@
-import { Coord, CoordBBox } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { ChildNode, HashableNode } from './node';

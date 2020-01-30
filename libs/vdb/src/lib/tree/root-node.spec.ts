@@ -1,4 +1,4 @@
-import { Coord } from '../math/coord';
+import { Coord } from '../math';
 import { InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { RootNode } from './root-node';

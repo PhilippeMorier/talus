@@ -1,4 +1,4 @@
-import { Coord, CoordBBox } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
 import { Index } from '../types';
 import { NodeMask } from '../util/node-mask';
 import { InternalNode1 } from './internal-node';

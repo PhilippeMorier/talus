@@ -1,4 +1,4 @@
-import { Coord } from '../math/coord';
+import { Coord } from '../math';
 import { ChildNode } from './node';
 import { RootNode } from './root-node';
 import { Voxel } from './voxel';

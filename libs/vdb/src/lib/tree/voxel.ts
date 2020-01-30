@@ -1,4 +1,4 @@
-import { Coord } from '../math/coord';
+import { Coord } from '../math';
 import { Index } from '../types';
 
 export class Voxel<T> {

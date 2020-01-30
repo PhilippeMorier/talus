@@ -1,4 +1,4 @@
-import { Coord, CoordBBox } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
 import { Index } from '../types';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';

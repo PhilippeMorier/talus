@@ -1,4 +1,4 @@
-import { Coord, CoordBBox } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
 import { InternalNode1 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { ValueAccessor3 } from './value-accessor';

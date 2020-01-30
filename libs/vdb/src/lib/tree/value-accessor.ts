@@ -1,4 +1,4 @@
-import { clone, Coord, createMaxCoord } from '../math/coord';
+import { clone, Coord, createMaxCoord } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
