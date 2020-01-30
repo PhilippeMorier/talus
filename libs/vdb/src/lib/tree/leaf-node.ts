@@ -200,6 +200,7 @@ export class LeafNode<T> implements HashableNode<T> {
       // use voxel granularity?
       if (visitVoxels) {
         thisBbox.reset();
+        // Originally, `beginValueOn()` would be called
         for (const voxel of this.beginVoxelOn()) {
           thisBbox.expand(voxel.globalCoord);
         }
@@ -228,6 +229,8 @@ export class LeafNode<T> implements HashableNode<T> {
   }
 
   beginValueOn(): IterableIterator<ChildNode<T>> {
+    // In `evalActiveBoundingBox()` `beginVoxelOn()` is called instead of `beginValueOn()`
+    // to have `globalCoord` available.
     throw new Error(`Shouldn't be called on LeafNode`);
   }
 }

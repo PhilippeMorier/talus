@@ -13,17 +13,6 @@ export class GridService {
   grid = new Grid(0);
   accessor = this.grid.getAccessor();
 
-  colors = {
-    0: [0, 0, 0, 1],
-    1: [0, 0, 1, 1],
-    2: [0, 1, 0, 1],
-    3: [0, 1, 1, 1],
-    4: [1, 0, 0, 1],
-    5: [1, 0, 1, 1],
-    6: [1, 1, 0, 1],
-    7: [1, 1, 1, 1],
-  };
-
   private readonly alphaFactor = 1 / 255;
 
   /**
