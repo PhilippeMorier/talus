@@ -1,16 +1,21 @@
 import { createReducer, on } from '@ngrx/store';
+import { Coord } from '@talus/vdb';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
-import { voxelRemoved, voxelSet } from './scene-viewer-container.actions';
+import { selectLinePoint, voxelRemoved, voxelSet } from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
 
 export interface State {
   isDarkTheme: boolean;
+  selectedPoints: Coord[];
+  selectingPoints: boolean;
   voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
+  selectedPoints: [],
+  selectingPoints: false,
   voxelCount: 0,
 };
 
@@ -26,6 +31,14 @@ export const reducer = createReducer(
     return {
       ...state,
       voxelCount: state.voxelCount - 1,
+    };
+  }),
+
+  on(selectLinePoint, (state, { xyz }) => {
+    return {
+      ...state,
+      selectedPoints: state.selectingPoints ? [state.selectedPoints[0], xyz] : [xyz],
+      selectingPoints: !state.selectingPoints,
     };
   }),
 

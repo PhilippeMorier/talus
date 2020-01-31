@@ -38,3 +38,9 @@ export const paintVoxel = createAction(
 );
 export const paintVoxelFailed = createAction(`${actionTypePrefix} Paint voxel failed`);
 export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, props<VoxelChange>());
+
+// Select line point
+export const selectLinePoint = createAction(
+  `${actionTypePrefix} Select line point`,
+  props<{ xyz: Coord; newValue: number }>(),
+);

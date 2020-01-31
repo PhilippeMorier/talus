@@ -4,10 +4,16 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 import { select, Store } from '@ngrx/store';
 import { Rgba, rgbaToInt, Tool } from '@talus/model';
 import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
-import { Coord } from '@talus/vdb';
+import { Coord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { paintVoxel, removeVoxel, setVoxel, setVoxels } from './scene-viewer-container.actions';
+import {
+  paintVoxel,
+  removeVoxel,
+  selectLinePoint,
+  setVoxel,
+  setVoxels,
+} from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -70,21 +76,22 @@ export class SceneViewerContainerComponent implements AfterViewInit {
       return;
     }
 
-    const colorInt = rgbaToInt(selectedColor);
+    const newValue = rgbaToInt(selectedColor);
 
     switch (selectedToolId) {
-      case Tool.SetVoxel:
+      case Tool.SelectLinePoint:
         this.store.dispatch(
-          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: colorInt }),
+          selectLinePoint({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }),
         );
+        break;
+      case Tool.SetVoxel:
+        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
         break;
       case Tool.RemoveVoxel:
         this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
         break;
       case Tool.PaintVoxel:
-        this.store.dispatch(
-          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: colorInt }),
-        );
+        this.store.dispatch(paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue }));
         break;
     }
   }
@@ -108,6 +115,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         : pickedIntegerPoint[2],
     ];
 
+    removeFraction(newPoint);
+
     return newPoint;
   }
 
@@ -125,6 +134,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         ? pickedIntegerPoint[2] - 1
         : pickedIntegerPoint[2],
     ];
+
+    removeFraction(newPoint);
 
     return newPoint;
   }

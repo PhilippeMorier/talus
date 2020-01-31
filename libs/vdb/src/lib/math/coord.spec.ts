@@ -9,6 +9,7 @@ import {
   minComponent,
   offset,
   offsetBy,
+  removeFraction,
 } from './coord';
 
 describe('Coord', () => {
@@ -59,6 +60,13 @@ describe('Coord', () => {
     offset(coord, 10);
 
     expect(coord).toEqual([11, 12, 13]);
+  });
+
+  it('should remove fraction', () => {
+    const coord: Coord = [-0, +0, +55.9735458326445];
+    removeFraction(coord);
+
+    expect(coord).toEqual([0, 0, 55]);
   });
 
   it.each([

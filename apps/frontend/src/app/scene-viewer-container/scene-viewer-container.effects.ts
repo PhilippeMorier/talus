@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { select, Store } from '@ngrx/store';
 import { UiSceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, withLatestFrom } from 'rxjs/operators';
+import * as fromApp from '../app.reducer';
 import { GridService } from './grid.service';
 import {
   paintVoxel,
   paintVoxelFailed,
   removeVoxel,
   removeVoxelFailed,
+  selectLinePoint,
   setVoxel,
   setVoxelFailed,
   setVoxels,
@@ -26,6 +29,7 @@ export class SceneViewerContainerEffects {
     private actions$: Actions,
     private gridService: GridService,
     private sceneViewerService: UiSceneViewerService,
+    private store: Store<fromApp.State>,
   ) {}
 
   setVoxel$ = createEffect(() =>
@@ -61,6 +65,19 @@ export class SceneViewerContainerEffects {
       map(({ xyz, newValue }) => this.gridService.paintVoxel(xyz, newValue)),
       map(voxelPainted),
       catchError(() => of(paintVoxelFailed())),
+    ),
+  );
+
+  selectLinePoint$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(selectLinePoint),
+      withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+      map(([action, state]) =>
+        !state.selectingPoints
+          ? this.gridService.selectLine(state.selectedPoints, action.newValue)
+          : [],
+      ),
+      map(voxelChanges => voxelsSet({ voxelChanges })),
     ),
   );
 

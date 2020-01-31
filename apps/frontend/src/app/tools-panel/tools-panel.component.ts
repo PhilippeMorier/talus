@@ -22,6 +22,11 @@ export class ToolsPanelComponent {
 
   tools: UiToolbarToolConfig<Tool>[] = [
     {
+      icon: 'timeline',
+      tooltip: '@@@ Select line point',
+      value: Tool.SelectLinePoint,
+    },
+    {
       icon: 'add_circle_outline',
       tooltip: '@@@ Set voxel',
       value: Tool.SetVoxel,
