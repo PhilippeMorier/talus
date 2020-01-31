@@ -65,7 +65,7 @@ describe('Rgba', () => {
         a: 255,
       },
     ],
-  ])('should convert integer to `rgba` and back', (int: number, expectedRgba: Rgba) => {
+  ])('should convert integer (%i) to `rgba` %j and back', (int: number, expectedRgba: Rgba) => {
     const rgba = intToRgba(int);
 
     expect(rgba).toEqual(expectedRgba);
