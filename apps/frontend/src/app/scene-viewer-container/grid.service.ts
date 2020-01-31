@@ -28,8 +28,6 @@ export class GridService {
   grid = new Grid(0);
   accessor = this.grid.getAccessor();
 
-  private readonly dda = new DDA(Voxel.LOG2DIM);
-
   /**
    * Sets a new voxel via accessor to share access path.
    * @returns origin of `InternalNode1` of affected node (node containing added voxel).
@@ -138,20 +136,21 @@ export class GridService {
     lastVoxel: Coord,
     newValue: number,
   ): VoxelChange[] {
-    this.dda.init(ray, timeSpan.t0, timeSpan.t1);
+    const dda = new DDA(Voxel.LOG2DIM);
+    dda.init(ray, timeSpan.t0, timeSpan.t1);
 
     const coords: Coord[] = [];
     const values: number[] = [];
 
     do {
-      const voxelCoord = this.dda.getVoxel();
+      const voxelCoord = dda.getVoxel();
       coords.push(voxelCoord);
       values.push(newValue);
 
       if (areEqual(lastVoxel, voxelCoord)) {
         break;
       }
-    } while (this.dda.nextStep());
+    } while (dda.nextStep());
 
     return this.setVoxels(coords, values);
   }
