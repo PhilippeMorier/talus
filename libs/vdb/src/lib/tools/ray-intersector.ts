@@ -94,6 +94,23 @@ export class VolumeRayIntersector<T> {
     return timeSpanRef.valid();
   }
 
+  marchUntilEnd(timeSpanRef: TimeSpan): boolean {
+    if (!this.march(timeSpanRef)) {
+      return false;
+    }
+
+    const t0 = timeSpanRef.t0;
+    let t1 = timeSpanRef.t1;
+
+    while (this.march(timeSpanRef)) {
+      t1 = timeSpanRef.t1;
+    }
+
+    timeSpanRef.set(t0, t1);
+
+    return timeSpanRef.valid();
+  }
+
   private marchInternal(): TimeSpan {
     const t: TimeSpan = this.hdda.marchStart(this.ray, this.accessor);
 

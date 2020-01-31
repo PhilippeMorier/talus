@@ -47,7 +47,7 @@ export class DDA {
   }
 
   getVoxel(): Coord {
-    return this.voxel;
+    return [this.voxel[0], this.voxel[1], this.voxel[2]];
   }
 
   init(ray: Ray, startTime: number, maxTime: number): void {
