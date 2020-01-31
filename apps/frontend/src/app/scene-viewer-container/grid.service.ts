@@ -15,6 +15,8 @@ import {
   Voxel,
 } from '@talus/vdb';
 
+const COLOR_FACTOR = 1 / 255;
+
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
  * the possible big size of the grid. Creating a new copy for the next state is impracticable.
@@ -27,7 +29,6 @@ export class GridService {
   accessor = this.grid.getAccessor();
 
   private readonly dda = new DDA(Voxel.LOG2DIM);
-  private readonly alphaFactor = 1 / 255;
 
   /**
    * Sets a new voxel via accessor to share access path.
@@ -78,6 +79,16 @@ export class GridService {
     return this.setVoxel(xyz, newValue);
   }
 
+  computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
+    const internal1 = this.accessor.probeInternalNode1(origin);
+
+    if (!internal1) {
+      return undefined;
+    }
+
+    return nodeToMesh(internal1, this.valueToColor);
+  }
+
   selectLine(points: Coord[], newValue: number): VoxelChange[] {
     const start = points[0];
     const startCenter = add(start, [0.5, 0.5, 0.5]);
@@ -89,36 +100,55 @@ export class GridService {
     // doesn't yet exist and therefore doesn't cause any intersection.
     this.setVoxels(points, [newValue, newValue]);
 
-    const eye = new Vec3(startCenter[0], startCenter[1], startCenter[2]);
-    const direction = new Vec3(
-      endCenter[0] - startCenter[0],
-      endCenter[1] - startCenter[1],
-      endCenter[2] - startCenter[2],
-    );
-    const ray = new Ray(eye, direction);
+    const ray = this.createIntersectionRay(startCenter, endCenter);
 
+    const totalTimeSpan = TimeSpan.inf();
+    if (!this.findTotalTimeSpan(ray, totalTimeSpan)) {
+      return [];
+    }
+
+    return this.setVoxelsAlongRayUntilLastVoxel(ray, totalTimeSpan, end, newValue);
+  }
+
+  private createIntersectionRay(startXyz: Coord, endXyz: Coord): Ray {
+    const eye = new Vec3(startXyz[0], startXyz[1], startXyz[2]);
+    const direction = new Vec3(
+      endXyz[0] - startXyz[0],
+      endXyz[1] - startXyz[1],
+      endXyz[2] - startXyz[2],
+    );
+
+    return new Ray(eye, direction);
+  }
+
+  private findTotalTimeSpan(ray: Ray, timeSpanRef: TimeSpan): boolean {
     const intersector = new VolumeRayIntersector(this.grid);
-    const coords: Coord[] = [];
-    const values: number[] = [];
 
     // Does ray intersect
     if (!intersector.setIndexRay(ray)) {
-      return [];
+      return false;
     }
 
-    const totalTimeSpan = TimeSpan.inf();
-    if (!intersector.marchUntilEnd(totalTimeSpan)) {
-      return [];
-    }
+    return intersector.marchUntilEnd(timeSpanRef);
+  }
 
-    this.dda.init(ray, totalTimeSpan.t0, totalTimeSpan.t1);
+  private setVoxelsAlongRayUntilLastVoxel(
+    ray: Ray,
+    timeSpan: TimeSpan,
+    lastVoxel: Coord,
+    newValue: number,
+  ): VoxelChange[] {
+    this.dda.init(ray, timeSpan.t0, timeSpan.t1);
+
+    const coords: Coord[] = [];
+    const values: number[] = [];
 
     do {
       const voxelCoord = this.dda.getVoxel();
       coords.push(voxelCoord);
       values.push(newValue);
 
-      if (areEqual(end, voxelCoord)) {
+      if (areEqual(lastVoxel, voxelCoord)) {
         break;
       }
     } while (this.dda.nextStep());
@@ -126,24 +156,14 @@ export class GridService {
     return this.setVoxels(coords, values);
   }
 
-  computeInternalNode1Mesh(origin: Coord): MeshData | undefined {
-    const internal1 = this.accessor.probeInternalNode1(origin);
-
-    if (!internal1) {
-      return undefined;
-    }
-
-    return nodeToMesh(internal1, this.valueToColor);
-  }
-
   private valueToColor = (value: number): [number, number, number, number] => {
     const rgba = intToRgba(value);
 
     return [
-      rgba.r * this.alphaFactor,
-      rgba.g * this.alphaFactor,
-      rgba.b * this.alphaFactor,
-      rgba.a * this.alphaFactor,
+      rgba.r * COLOR_FACTOR,
+      rgba.g * COLOR_FACTOR,
+      rgba.b * COLOR_FACTOR,
+      rgba.a * COLOR_FACTOR,
     ];
   };
 }
