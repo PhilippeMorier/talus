@@ -37,6 +37,12 @@ export function floor(c: Coord): Coord {
   return [Math.floor(c[0]), Math.floor(c[1]), Math.floor(c[2])];
 }
 
+export function removeFraction(coordRef: Coord): void {
+  coordRef[0] = coordRef[0] << 0;
+  coordRef[1] = coordRef[1] << 0;
+  coordRef[2] = coordRef[2] << 0;
+}
+
 export function minComponent(c1: Coord, c2: Coord): Coord {
   return [Math.min(c1[0], c2[0]), Math.min(c1[1], c2[1]), Math.min(c1[2], c2[2])];
 }
