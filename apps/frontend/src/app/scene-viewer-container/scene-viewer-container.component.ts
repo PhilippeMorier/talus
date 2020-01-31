@@ -7,7 +7,13 @@ import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@tal
 import { Coord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { paintVoxel, removeVoxel, selectLinePoint, setVoxel, setVoxels } from './scene-viewer-container.actions';
+import {
+  paintVoxel,
+  removeVoxel,
+  selectLinePoint,
+  setVoxel,
+  setVoxels,
+} from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
