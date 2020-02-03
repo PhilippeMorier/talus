@@ -61,7 +61,7 @@ aliases:
     run:
       name: Deploy to Github pages
       command: |
-        git co gh-pages
+        git checkout gh-pages
         git pull
         yarn gh-pages \
         --dotfiles \
