@@ -75,7 +75,8 @@
             "sourceTag": "scope:libs",
             "onlyDependOnLibsWithTags": ["scope:libs"]
           }
-        ]
+        ],
+        "enforceBuildableLibDependency": true
       }
     ],
     "object-literal-sort-keys": false,

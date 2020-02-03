@@ -16,7 +16,7 @@ aliases:
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
-      - image: cypress/included:3.8.2
+      - image: cypress/included:3.8.3
 
   - &workspace ~/talus
 
@@ -61,8 +61,7 @@ aliases:
     run:
       name: Deploy to Github pages
       command: |
-        git checkout gh-pages
-        git pull
+        git fetch origin gh-pages:gh-pages
         yarn gh-pages \
         --dotfiles \
         --message "$COMMIT_MESSAGE" \
