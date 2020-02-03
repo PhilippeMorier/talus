@@ -52,16 +52,20 @@ aliases:
       name: Prepare github pages variables
       command: |
         echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
+        echo $LAST_COMMIT_HASH_SHORT
 
         echo 'export COMMIT_MESSAGE="[skip ci] Deploy: $DEPLOY_CONTEXT (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
+        echo $COMMIT_MESSAGE
         echo 'export DIST_PATH="dist/$DEPLOY_CONTEXT"' >> $BASH_ENV
-        echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
+        echo $DIST_PATH
+        echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT/$DEPLOY_CONTEXT"' >> $BASH_ENV
+        echo $DEST_PATH
 
   - &deploy_to_github_pages
     run:
       name: Deploy to Github pages
       command: |
-        git fetch origin gh-pages:gh-pages
+        git pull
         yarn gh-pages \
         --dotfiles \
         --message "$COMMIT_MESSAGE" \
