@@ -8,7 +8,7 @@ export class LeafBuffer<T> {
    * Construct a buffer populated with the specified value.
    */
   constructor(private size: Index, value?: T) {
-    if (value) {
+    if (value !== undefined) {
       this.fill(value);
     }
   }
