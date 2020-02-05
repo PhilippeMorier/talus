@@ -3,7 +3,7 @@ export class NodeUnion<ValueT, ChildT> {
   private value: ValueT;
 
   constructor(value?: ValueT) {
-    if (value) {
+    if (value !== undefined) {
       this.setValue(value);
     }
   }
