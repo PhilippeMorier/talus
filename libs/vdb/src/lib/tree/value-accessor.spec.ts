@@ -30,10 +30,12 @@ describe('ValueAccessor', () => {
     });
 
     it('should return background value', () => {
-      const tree = new Tree(-1);
+      const tree = new Tree(0);
       const accessor = new ValueAccessor3(tree);
 
-      expect(accessor.getValue([0, 0, 0])).toEqual(tree.background);
+      accessor.setValueOn([0, 0, 0], 0);
+
+      expect(accessor.getValue([0, 0, 1])).toEqual(tree.background);
     });
   });
 
