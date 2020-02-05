@@ -25,8 +25,16 @@ const COLOR_FACTOR = 1 / 255;
  */
 @Injectable()
 export class GridService {
-  grid = new Grid(0);
+  grid = new Grid(-1);
   accessor = this.grid.getAccessor();
+
+  get background(): number {
+    return this.grid.background;
+  }
+
+  getVoxel(xyz: Coord): number {
+    return this.accessor.getValue(xyz);
+  }
 
   /**
    * Sets a new voxel via accessor to share access path.
@@ -59,7 +67,7 @@ export class GridService {
   removeVoxel(xyz: Coord): VoxelChange {
     const oldValue = this.accessor.getValue(xyz);
 
-    this.accessor.setActiveState(xyz, false);
+    this.accessor.setValueOff(xyz, this.grid.background);
 
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,
