@@ -28,6 +28,13 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached([0, 0, InternalNode2.DIM - 1])).toBeTruthy();
       expect(accessor.isCached([0, 0, InternalNode2.DIM])).toBeFalsy();
     });
+
+    it('should return background value', () => {
+      const tree = new Tree(-1);
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.getValue([0, 0, 0])).toEqual(tree.background);
+    });
   });
 
   describe('setValueOn()', () => {
