@@ -135,6 +135,11 @@ export const selectSelectedCssColor = createSelector(
   fromOptionsPanel.selectSelectedCssColor,
 );
 
+export const selectSelectedIntColor = createSelector(
+  selectOptionsPanelState,
+  fromOptionsPanel.selectSelectedIntColor,
+);
+
 export const selectSelectedColorIndex = createSelector(
   selectOptionsPanelState,
   fromOptionsPanel.selectSelectedColorIndex,

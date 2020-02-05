@@ -2,14 +2,16 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
-import { Rgba, rgbaToInt, Tool } from '@talus/model';
+import { rgbaToInt, Tool } from '@talus/model';
 import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
-import { Coord, removeFraction } from '@talus/vdb';
+import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
+import { GridService } from './grid.service';
 import {
   paintVoxel,
   removeVoxel,
+  selectCurrentLinePoint,
   selectLinePoint,
   setVoxel,
   setVoxels,
@@ -21,6 +23,7 @@ import {
     <ui-scene-viewer
       *ngIf="selectedToolIdAndColor$ | async as selected"
       (pointerPick)="onPointerPick($event, selected[0], selected[1])"
+      (pointUnderPointer)="onPointUnderPointer($event, selected[0])"
     ></ui-scene-viewer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,25 +33,51 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   private sceneViewerComponent: UiSceneViewerComponent;
 
   private selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
-  private selectedColor$: Observable<Rgba> = this.store.pipe(select(fromApp.selectSelectedColor));
+  private selectedColor$: Observable<number> = this.store.pipe(
+    select(fromApp.selectSelectedIntColor),
+  );
   selectedToolIdAndColor$ = combineLatest([this.selectedToolId$, this.selectedColor$]);
 
-  constructor(private store: Store<fromApp.State>) {}
+  private lastToAddPositionUnderPointer: Coord = createMaxCoord();
+
+  constructor(private store: Store<fromApp.State>, private gridService: GridService) {}
 
   ngAfterViewInit(): void {
+    this.initializeChessboard();
+
     this.store.dispatch(
       setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
     );
   }
 
-  onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool, selectedColor: Rgba): void {
-    this.dispatchPickAction(event, selectedToolId, selectedColor);
+  onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {
+    this.dispatchPickAction(pickInfo, selectedToolId, selectedColor);
   }
 
-  // onMeshPick(mesh: AbstractMesh): void {
-  //   mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
-  //   mesh.renderOutline = !mesh.renderOutline;
-  // }
+  onPointUnderPointer(pickInfo: UiPointerPickInfo, selectedToolId: Tool): void {
+    const toAddPosition = this.calcVoxelToAddPosition(pickInfo);
+    const clickedPosition = this.calcClickedVoxelPosition(pickInfo);
+
+    if (areEqual(toAddPosition, this.lastToAddPositionUnderPointer)) {
+      return;
+    }
+
+    const selectionColor = rgbaToInt({ r: 24, g: 128, b: 24, a: 255 });
+    if (this.gridService.getVoxel(clickedPosition) === selectionColor) {
+      return;
+    }
+
+    this.lastToAddPositionUnderPointer = toAddPosition;
+
+    if (selectedToolId === Tool.SelectLinePoint) {
+      this.store.dispatch(
+        selectCurrentLinePoint({
+          xyz: toAddPosition,
+          newValue: selectionColor,
+        }),
+      );
+    }
+  }
 
   private initializeChessboard(): void {
     const white = rgbaToInt({ r: 255, g: 255, b: 255, a: 255 });
@@ -70,13 +99,11 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   private dispatchPickAction(
     pickInfo: UiPointerPickInfo,
     selectedToolId: Tool,
-    selectedColor: Rgba,
+    newValue: number,
   ): void {
     if (pickInfo.pointerButton !== UiPointerButton.Main) {
       return;
     }
-
-    const newValue = rgbaToInt(selectedColor);
 
     switch (selectedToolId) {
       case Tool.SelectLinePoint:

@@ -100,7 +100,7 @@ export class GridService {
     // Set start & end to ensure leaf-nodes are created in the grid.
     // Otherwise, it could happen that the start/end point is in a new leaf which
     // doesn't yet exist and therefore doesn't cause any intersection.
-    this.setVoxels(points, [newValue, newValue]);
+    // this.setVoxels(points, [newValue, newValue]);
 
     const ray = this.createIntersectionRay(startCenter, endCenter);
 

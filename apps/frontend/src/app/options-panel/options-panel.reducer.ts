@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { Rgba } from '@talus/model';
+import { Rgba, rgbaToInt } from '@talus/model';
 import { UiColorDialogColor } from '@talus/ui';
 import { selectColor } from './options-panel.actions';
 
@@ -70,6 +70,9 @@ export const selectCssColors = (state: State) => {
 export const selectSelectedColor = (state: State) => state.colors[state.selectedColorIndex];
 export const selectSelectedCssColor = (state: State) => {
   return convertRgbaToCssRgba(selectSelectedColor(state));
+};
+export const selectSelectedIntColor = (state: State) => {
+  return rgbaToInt(selectSelectedColor(state));
 };
 
 export const selectSelectedColorIndex = (state: State) => state.selectedColorIndex;

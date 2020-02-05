@@ -44,3 +44,11 @@ export const selectLinePoint = createAction(
   `${actionTypePrefix} Select line point`,
   props<{ xyz: Coord; newValue: number }>(),
 );
+export const selectCurrentLinePoint = createAction(
+  `${actionTypePrefix} Select current line point`,
+  props<{ xyz: Coord; newValue: number }>(),
+);
+export const selectLine = createAction(
+  `${actionTypePrefix} Select line`,
+  props<{ voxelChanges: VoxelChange[] }>(),
+);

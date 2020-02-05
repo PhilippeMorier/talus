@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { UiSceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, map, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import { GridService, VoxelChange } from './grid.service';
 import {
@@ -12,6 +12,8 @@ import {
   paintVoxelFailed,
   removeVoxel,
   removeVoxelFailed,
+  selectCurrentLinePoint,
+  selectLine,
   selectLinePoint,
   setVoxel,
   setVoxelFailed,
@@ -75,9 +77,38 @@ export class SceneViewerContainerEffects {
       map(([action, state]) =>
         !state.selectingPoints
           ? this.gridService.selectLine(state.selectedPoints, action.newValue)
-          : [],
+          : [this.gridService.setVoxel(action.xyz, action.newValue)],
       ),
-      map(voxelChanges => voxelsSet({ voxelChanges })),
+      switchMap(voxelChanges => [selectLine({ voxelChanges }), voxelsSet({ voxelChanges })]),
+    ),
+  );
+
+  selectCurrentLinePoint$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(selectCurrentLinePoint),
+      withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+      map(([action, state]) => {
+        if (state.selectedPoints.length < 1) {
+          return { lineChanges: [], previousLineChanges: [] };
+        }
+
+        const previousLineChanges = state.selectedLine.map(change =>
+          change.oldValue === this.gridService.background
+            ? this.gridService.removeVoxel(change.xyz)
+            : this.gridService.setVoxel(change.xyz, change.oldValue),
+        );
+
+        const lineChanges = this.gridService.selectLine(
+          [state.selectedPoints[0], action.xyz],
+          action.newValue,
+        );
+
+        return { lineChanges, previousLineChanges };
+      }),
+      switchMap(({ lineChanges, previousLineChanges }) => [
+        selectLine({ voxelChanges: lineChanges }),
+        voxelsSet({ voxelChanges: previousLineChanges }),
+      ]),
     ),
   );
 

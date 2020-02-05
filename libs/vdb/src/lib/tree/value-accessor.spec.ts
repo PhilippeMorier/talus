@@ -58,6 +58,17 @@ describe('ValueAccessor', () => {
 
       expect(accessor.isValueOn([0, 0, 0])).toBeTruthy();
     });
+
+    it('should get background', () => {
+      const tree = new Tree(-1);
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], -1);
+      accessor.setActiveState([0, 0, 0], false);
+
+      expect(accessor.getValue([0, 0, 0])).toEqual(-1);
+      expect(accessor.isValueOn([0, 0, 0])).toEqual(false);
+    });
   });
 
   describe('setValueOff()', () => {
