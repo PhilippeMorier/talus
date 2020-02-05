@@ -6,7 +6,7 @@ import { Coord } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, map, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
-import { GridService } from './grid.service';
+import { GridService, VoxelChange } from './grid.service';
 import {
   paintVoxel,
   paintVoxelFailed,
