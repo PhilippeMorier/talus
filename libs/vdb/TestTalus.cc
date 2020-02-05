@@ -10,7 +10,7 @@
 #define ASSERT_DOUBLES_APPROX_EQUAL(expected, actual) \
     CPPUNIT_ASSERT_DOUBLES_EQUAL((expected), (actual), /*tolerance=*/1.e-6);
 
-using ValueType = bool;
+using ValueType = int;
 using LeafNodeType = openvdb::tree::LeafNode<ValueType, 3>;
 using InternalNodeType1 = openvdb::tree::InternalNode<LeafNodeType, 4>;
 using InternalNodeType2 = openvdb::tree::InternalNode<InternalNodeType1, 5>;
@@ -43,20 +43,24 @@ public:
     CPPUNIT_TEST(LeafNode_testOffsetToLocalCoord);
     CPPUNIT_TEST(VolumeRayIntersector_testMarchingOverOneSingleLeafNode);
     CPPUNIT_TEST(VolumeRayIntersector_testMarchingOverTwoAdjacentLeafNodes);
+    CPPUNIT_TEST(VolumeRayIntersector_testMarchingOverOneLeafNodes);
     CPPUNIT_TEST(Coord_testExpand);
     CPPUNIT_TEST(Ray_testIntersects);
+    CPPUNIT_TEST(InternalNode_testSetActiveState);
 
     CPPUNIT_TEST_SUITE_END();
 
     void RootNode_testCoordToKey();
     void InternalNode_testCoordToOffset();
     void InternalNode_testSetValueOn();
+    void InternalNode_testSetActiveState();
     void InternalNode_testStaticConfigValues();
     void LeafNode_testCoordToOffset();
     void LeafNode_testOffsetToLocalCoord();
     void LeafNode_testOffsetToGlobalCoord();
     void VolumeRayIntersector_testMarchingOverOneSingleLeafNode();
     void VolumeRayIntersector_testMarchingOverTwoAdjacentLeafNodes();
+    void VolumeRayIntersector_testMarchingOverOneLeafNodes();
     void Coord_testExpand();
     void Ray_testIntersects();
 };
@@ -140,13 +144,28 @@ void
 TestTalus::InternalNode_testSetValueOn()
 {
     const Coord origin(0, 0, 0);
-    const bool bg = false;
+    const bool bg = -1;
     InternalNode1 internal(origin, bg, false);
 
-    internal.setValueOn(Coord(0, 127, 0), true);
+    internal.setValueOn(Coord(0, 127, 0), 42);
 
-    CPPUNIT_ASSERT_EQUAL(true, internal.getValue(Coord(0, 127, 0)));
-    CPPUNIT_ASSERT_EQUAL(false, internal.getValue(Coord(0, 0, 0)));
+    CPPUNIT_ASSERT_EQUAL(42, internal.getValue(Coord(0, 127, 0)));
+    CPPUNIT_ASSERT_EQUAL(-1, internal.getValue(Coord(0, 0, 0)));
+}
+
+
+void
+TestTalus::InternalNode_testSetActiveState()
+{
+    const Coord origin(0, 0, 0);
+    const bool bg = -1;
+    InternalNode1 internal(origin, bg, false);
+
+    internal.setValueOn(Coord(0, 127, 0), 42);
+    internal.setActiveState(Coord(0, 127, 0), false);
+
+    CPPUNIT_ASSERT_EQUAL(42, internal.getValue(Coord(0, 127, 0)));
+    CPPUNIT_ASSERT_EQUAL(false, internal.isValueOn(Coord(0, 127, 0)));
 }
 
 
@@ -315,6 +334,37 @@ TestTalus::VolumeRayIntersector_testMarchingOverTwoAdjacentLeafNodes()
     CPPUNIT_ASSERT(inter.march(t0, t1));
     ASSERT_DOUBLES_APPROX_EQUAL( 1.0, t0);
     ASSERT_DOUBLES_APPROX_EQUAL(17.0, t1);
+
+    CPPUNIT_ASSERT(!inter.march(t0, t1));
+}
+
+void
+TestTalus::VolumeRayIntersector_testMarchingOverOneLeafNodes()
+{
+    FloatGrid grid(-1.0f);
+
+    grid.tree().setValue(Coord(0, 0, 0), 42.0f);
+    grid.tree().setValue(Coord(1, 0, 0), 42.0f);
+    grid.tree().setValue(Coord(1, 1, 0), 42.0f);
+    grid.tree().setValue(Coord(2, 1, 0), 42.0f);
+    grid.tree().setValue(Coord(2, 2, 0), 42.0f);
+    grid.tree().setValue(Coord(3, 2, 0), 42.0f);
+    grid.tree().setValue(Coord(3, 3, 0), 42.0f);
+    grid.tree().setValue(Coord(4, 3, 0), 42.0f);
+
+    const Vec3T dir(5, 4, 0);
+    const Vec3T eye(-5, -4, 0);
+    const RayT ray(eye, dir);//ray in index space
+
+    // NodeLevel = 0
+    tools::VolumeRayIntersector<FloatGrid, 0> inter(grid);
+
+    CPPUNIT_ASSERT(inter.setIndexRay(ray));
+
+    double t0=0, t1=0;
+    CPPUNIT_ASSERT(inter.march(t0, t1));
+    ASSERT_DOUBLES_APPROX_EQUAL(1, t0);
+    ASSERT_DOUBLES_APPROX_EQUAL(2.6, t1);
 
     CPPUNIT_ASSERT(!inter.march(t0, t1));
 }
