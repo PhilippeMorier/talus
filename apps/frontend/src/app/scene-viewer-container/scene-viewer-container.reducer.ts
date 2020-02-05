@@ -2,7 +2,12 @@ import { createReducer, on } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
-import { selectLine, selectLinePoint, voxelRemoved, voxelSet } from './scene-viewer-container.actions';
+import {
+  selectLine,
+  selectLinePoint,
+  voxelRemoved,
+  voxelSet,
+} from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
 
