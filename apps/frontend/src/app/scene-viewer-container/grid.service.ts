@@ -46,18 +46,14 @@ export class GridService {
   }
 
   setVoxels(coords: Coord[], newValues: number[]): VoxelChange[] {
-    const changes = new Map<string, VoxelChange>();
-
     if (coords.length !== newValues.length) {
       throw new Error(`Coordinates and new values don't have the same length.`);
     }
 
-    coords.forEach((xyz, i) => {
-      const change = this.setVoxel(xyz, newValues[i]);
-      changes.set(change.affectedNodeOrigin.toString(), change);
-    });
+    const changes: VoxelChange[] = [];
+    coords.forEach((xyz, i) => changes.push(this.setVoxel(xyz, newValues[i])));
 
-    return Array.from(changes.values());
+    return changes;
   }
 
   removeVoxel(xyz: Coord): VoxelChange {

@@ -95,13 +95,22 @@ export class SceneViewerContainerEffects {
       this.actions$.pipe(
         ofType(voxelsSet),
         map(({ voxelChanges }) =>
-          voxelChanges.map(change => {
-            this.computeAndUpdateNodeMesh(change.affectedNodeOrigin);
+          this.getUniqueNodeOrigins(voxelChanges).map(origin => {
+            this.computeAndUpdateNodeMesh(origin);
           }),
         ),
       ),
     { dispatch: false },
   );
+
+  private getUniqueNodeOrigins(voxelChanges: VoxelChange[]): Coord[] {
+    const origins = new Map<string, Coord>();
+    voxelChanges.forEach(change => {
+      origins.set(change.affectedNodeOrigin.toString(), change.affectedNodeOrigin);
+    });
+
+    return Array.from(origins.values());
+  }
 
   private computeAndUpdateNodeMesh(affectedNodeOrigin: Coord): void {
     const mesh = this.gridService.computeInternalNode1Mesh(affectedNodeOrigin);
