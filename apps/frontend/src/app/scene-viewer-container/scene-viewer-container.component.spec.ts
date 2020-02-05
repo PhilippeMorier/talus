@@ -9,6 +9,7 @@ import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { initialMockState } from '../testing';
+import { GridService } from './grid.service';
 import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
@@ -34,6 +35,7 @@ describe('SceneViewerContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
       providers: [
+        GridService,
         provideMockStore<fromApp.State>({
           initialState: initialMockState,
         }),
