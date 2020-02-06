@@ -78,7 +78,7 @@ export class SceneViewerContainerEffects {
       ofType(setLineCoord),
       withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
       map(([action, state]) =>
-        state.selectedLineCoords.length > 0
+        state.selectedLineStartCoord
           ? finishLine({ voxelChanges: state.selectedLineChanges })
           : startLine(action),
       ),
@@ -114,8 +114,12 @@ export class SceneViewerContainerEffects {
       }),
       map(({ action, state, removeChanges }) => {
         // add new line
+        if (!state.selectedLineStartCoord) {
+          return { removeChanges, newChanges: [] };
+        }
+
         const newChanges = this.gridService.selectLine(
-          [state.selectedLineCoords[0], action.toAddPosition],
+          [state.selectedLineStartCoord, action.toAddPosition],
           action.color,
         );
 

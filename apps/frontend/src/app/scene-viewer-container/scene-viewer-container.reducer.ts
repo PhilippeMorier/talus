@@ -16,18 +16,17 @@ export const featureKey = 'sceneViewerContainer';
 export interface State {
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
-  selectedLineCoords: Coord[];
+  selectedLineStartCoord?: Coord;
   voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
   selectedLineChanges: [],
-  selectedLineCoords: [],
   voxelCount: 0,
 };
 
-export const reducer = createReducer(
+export const reducer = createReducer<State>(
   initialState,
   on(voxelSet, state => {
     return {
@@ -42,19 +41,25 @@ export const reducer = createReducer(
     };
   }),
 
-  on(startLine, (state, { xyz }) => {
-    return {
-      ...state,
-      selectedLineCoords: [xyz],
-    };
-  }),
-  on(finishLine, state => {
-    return {
-      ...state,
-      selectedLineChanges: [],
-      selectedLineCoords: [],
-    };
-  }),
+  on(
+    startLine,
+    (state, { xyz }): State => {
+      return {
+        ...state,
+        selectedLineStartCoord: xyz,
+      };
+    },
+  ),
+  on(
+    finishLine,
+    (state): State => {
+      return {
+        ...state,
+        selectedLineChanges: [],
+        selectedLineStartCoord: undefined,
+      };
+    },
+  ),
   on(addFirstLineChange, (state, voxelChange) => {
     return {
       ...state,

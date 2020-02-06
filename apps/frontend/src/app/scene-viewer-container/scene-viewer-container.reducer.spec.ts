@@ -32,6 +32,6 @@ describe('SceneViewerContainerReducer', () => {
   it('should set first line coord', () => {
     const stateWithOneLineCoord = reducer(undefined, startLine({ xyz: [0, 0, 0], newValue: 42 }));
 
-    expect(stateWithOneLineCoord.selectedLineCoords).toEqual([[0, 0, 0]]);
+    expect(stateWithOneLineCoord.selectedLineStartCoord).toEqual([[0, 0, 0]]);
   });
 });
