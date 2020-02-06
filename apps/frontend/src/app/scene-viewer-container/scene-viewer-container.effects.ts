@@ -2,27 +2,31 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { UiSceneViewerService } from '@talus/ui';
-import { Coord } from '@talus/vdb';
+import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import { GridService, VoxelChange } from './grid.service';
 import {
+  addFirstLineChange,
+  finishLine,
   paintVoxel,
   paintVoxelFailed,
+  refreshLine,
   removeVoxel,
   removeVoxelFailed,
-  selectCurrentLinePoint,
-  selectLine,
-  selectLinePoint,
+  setLineChanges,
+  setLineCoord,
   setVoxel,
   setVoxelFailed,
   setVoxels,
   setVoxelsFailed,
+  startLine,
   voxelPainted,
   voxelRemoved,
   voxelSet,
   voxelsSet,
+  voxelUnderCursorChange,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -70,44 +74,55 @@ export class SceneViewerContainerEffects {
     ),
   );
 
-  selectLinePoint$ = createEffect(() =>
+  setLineCord$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(selectLinePoint),
+      ofType(setLineCoord),
       withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
       map(([action, state]) =>
-        !state.selectingPoints
-          ? this.gridService.selectLine(state.selectedPoints, action.newValue)
-          : [this.gridService.setVoxel(action.xyz, action.newValue)],
+        state.selectedLineCoords.length > 0 ? finishLine() : startLine(action),
       ),
-      switchMap(voxelChanges => [selectLine({ voxelChanges }), voxelsSet({ voxelChanges })]),
     ),
   );
 
-  selectCurrentLinePoint$ = createEffect(() =>
+  startLine$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(selectCurrentLinePoint),
-      withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
-      map(([action, state]) => {
-        if (state.selectedPoints.length < 1) {
-          return { lineChanges: [], previousLineChanges: [] };
-        }
+      ofType(startLine),
+      map(({ xyz, newValue }) => this.gridService.setVoxel(xyz, newValue)),
+      map(voxelChange => addFirstLineChange(voxelChange)),
+    ),
+  );
 
-        const previousLineChanges = state.selectedLine.map(change =>
+  voxelUnderCursorChange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(voxelUnderCursorChange),
+      withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+      filter(([action, state]) => {
+        const lastLineChange = state.selectedLineChanges[state.selectedLineChanges.length - 1];
+
+        return lastLineChange && !areEqual(lastLineChange.xyz, action.underPointerPosition);
+      }),
+      map(([action, state]) => {
+        // remove old line
+        const removeChanges = state.selectedLineChanges.map(change =>
           change.oldValue === this.gridService.background
             ? this.gridService.removeVoxel(change.xyz)
             : this.gridService.setVoxel(change.xyz, change.oldValue),
         );
 
-        const lineChanges = this.gridService.selectLine(
-          [state.selectedPoints[0], action.xyz],
-          action.newValue,
+        return { action, state, removeChanges };
+      }),
+      map(({ action, state, removeChanges }) => {
+        // add new line
+        const newChanges = this.gridService.selectLine(
+          [state.selectedLineCoords[0], action.toAddPosition],
+          action.color,
         );
 
-        return { lineChanges, previousLineChanges };
+        return { removeChanges, newChanges };
       }),
-      switchMap(({ lineChanges, previousLineChanges }) => [
-        selectLine({ voxelChanges: lineChanges }),
-        voxelsSet({ voxelChanges: previousLineChanges }),
+      switchMap(({ removeChanges, newChanges }) => [
+        setLineChanges({ voxelChanges: newChanges }),
+        refreshLine({ voxelChanges: [...removeChanges, ...newChanges] }),
       ]),
     ),
   );
@@ -115,7 +130,7 @@ export class SceneViewerContainerEffects {
   updateGridMesh$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelSet, voxelRemoved, voxelPainted),
+        ofType(voxelSet, voxelRemoved, voxelPainted, addFirstLineChange),
         map(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
       ),
     { dispatch: false },
@@ -124,7 +139,7 @@ export class SceneViewerContainerEffects {
   updateGridMeshMultiple$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelsSet),
+        ofType(voxelsSet, refreshLine),
         map(({ voxelChanges }) =>
           this.getUniqueNodeOrigins(voxelChanges).map(origin => {
             this.computeAndUpdateNodeMesh(origin);

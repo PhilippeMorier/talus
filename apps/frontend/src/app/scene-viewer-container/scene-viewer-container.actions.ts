@@ -39,16 +39,30 @@ export const paintVoxel = createAction(
 export const paintVoxelFailed = createAction(`${actionTypePrefix} Paint voxel failed`);
 export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, props<VoxelChange>());
 
-// Select line point
-export const selectLinePoint = createAction(
-  `${actionTypePrefix} Select line point`,
+// Draw line
+export const setLineCoord = createAction(
+  `${actionTypePrefix} Set line coord`,
   props<{ xyz: Coord; newValue: number }>(),
 );
-export const selectCurrentLinePoint = createAction(
-  `${actionTypePrefix} Select current line point`,
+export const startLine = createAction(
+  `${actionTypePrefix} Start line`,
   props<{ xyz: Coord; newValue: number }>(),
 );
-export const selectLine = createAction(
-  `${actionTypePrefix} Select line`,
+export const finishLine = createAction(`${actionTypePrefix} Finish line`);
+export const addFirstLineChange = createAction(
+  `${actionTypePrefix} Add first line change`,
+  props<VoxelChange>(),
+);
+export const setLineChanges = createAction(
+  `${actionTypePrefix} Set line change`,
   props<{ voxelChanges: VoxelChange[] }>(),
+);
+export const refreshLine = createAction(
+  `${actionTypePrefix} Refresh line`,
+  props<{ voxelChanges: VoxelChange[] }>(),
+);
+
+export const voxelUnderCursorChange = createAction(
+  `${actionTypePrefix} Voxel under cursor change`,
+  props<{ toAddPosition: Coord; underPointerPosition: Coord; color: number }>(),
 );

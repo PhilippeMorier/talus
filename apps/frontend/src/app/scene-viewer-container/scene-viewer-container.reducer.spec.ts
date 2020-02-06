@@ -1,5 +1,5 @@
 import { VoxelChange } from './grid.service';
-import { voxelRemoved, voxelSet } from './scene-viewer-container.actions';
+import { startLine, voxelRemoved, voxelSet } from './scene-viewer-container.actions';
 import { reducer, selectVoxelCount } from './scene-viewer-container.reducer';
 
 describe('SceneViewerContainerReducer', () => {
@@ -27,5 +27,11 @@ describe('SceneViewerContainerReducer', () => {
     const stateWithOneVoxel = reducer(undefined, voxelSet(voxelChange));
 
     expect(selectVoxelCount(stateWithOneVoxel)).toEqual(1);
+  });
+
+  it('should set first line coord', () => {
+    const stateWithOneLineCoord = reducer(undefined, startLine({ xyz: [0, 0, 0], newValue: 42 }));
+
+    expect(stateWithOneLineCoord.selectedLineCoords).toEqual([[0, 0, 0]]);
   });
 });

@@ -3,8 +3,10 @@ import { Coord } from '@talus/vdb';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
-  selectLine,
-  selectLinePoint,
+  addFirstLineChange,
+  finishLine,
+  setLineChanges,
+  startLine,
   voxelRemoved,
   voxelSet,
 } from './scene-viewer-container.actions';
@@ -13,17 +15,15 @@ export const featureKey = 'sceneViewerContainer';
 
 export interface State {
   isDarkTheme: boolean;
-  selectedLine: VoxelChange[];
-  selectedPoints: Coord[];
-  selectingPoints: boolean;
+  selectedLineChanges: VoxelChange[];
+  selectedLineCoords: Coord[];
   voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
-  selectedLine: [],
-  selectedPoints: [],
-  selectingPoints: false,
+  selectedLineChanges: [],
+  selectedLineCoords: [],
   voxelCount: 0,
 };
 
@@ -42,17 +42,29 @@ export const reducer = createReducer(
     };
   }),
 
-  on(selectLinePoint, (state, { xyz }) => {
+  on(startLine, (state, { xyz }) => {
     return {
       ...state,
-      selectedPoints: state.selectingPoints ? [state.selectedPoints[0], xyz] : [xyz],
-      selectingPoints: !state.selectingPoints,
+      selectedLineCoords: [xyz],
     };
   }),
-  on(selectLine, (state, { voxelChanges }) => {
+  on(finishLine, state => {
     return {
       ...state,
-      selectedLine: [...voxelChanges],
+      selectedLineChanges: [],
+      selectedLineCoords: [],
+    };
+  }),
+  on(addFirstLineChange, (state, voxelChange) => {
+    return {
+      ...state,
+      selectedLineChanges: [voxelChange],
+    };
+  }),
+  on(setLineChanges, (state, { voxelChanges }) => {
+    return {
+      ...state,
+      selectedLineChanges: voxelChanges,
     };
   }),
 

@@ -7,14 +7,13 @@ import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@tal
 import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { GridService } from './grid.service';
 import {
   paintVoxel,
   removeVoxel,
-  selectCurrentLinePoint,
-  selectLinePoint,
+  setLineCoord,
   setVoxel,
   setVoxels,
+  voxelUnderCursorChange,
 } from './scene-viewer-container.actions';
 
 @Component({
@@ -23,7 +22,7 @@ import {
     <ui-scene-viewer
       *ngIf="selectedToolIdAndColor$ | async as selected"
       (pointerPick)="onPointerPick($event, selected[0], selected[1])"
-      (pointUnderPointer)="onPointUnderPointer($event, selected[0])"
+      (pointUnderPointer)="onPointUnderPointer($event, selected[0], selected[1])"
     ></ui-scene-viewer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,12 +37,12 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   );
   selectedToolIdAndColor$ = combineLatest([this.selectedToolId$, this.selectedColor$]);
 
-  private lastToAddPositionUnderPointer: Coord = createMaxCoord();
+  private lastUnderPointerPosition: Coord = createMaxCoord();
 
-  constructor(private store: Store<fromApp.State>, private gridService: GridService) {}
+  constructor(private store: Store<fromApp.State>) {}
 
   ngAfterViewInit(): void {
-    this.initializeChessboard();
+    // this.initializeChessboard();
 
     this.store.dispatch(
       setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
@@ -54,29 +53,32 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     this.dispatchPickAction(pickInfo, selectedToolId, selectedColor);
   }
 
-  onPointUnderPointer(pickInfo: UiPointerPickInfo, selectedToolId: Tool): void {
-    const toAddPosition = this.calcVoxelToAddPosition(pickInfo);
-    const clickedPosition = this.calcClickedVoxelPosition(pickInfo);
-
-    if (areEqual(toAddPosition, this.lastToAddPositionUnderPointer)) {
-      return;
-    }
-
-    const selectionColor = rgbaToInt({ r: 24, g: 128, b: 24, a: 255 });
-    if (this.gridService.getVoxel(clickedPosition) === selectionColor) {
-      return;
-    }
-
-    this.lastToAddPositionUnderPointer = toAddPosition;
-
+  onPointUnderPointer(
+    pickInfo: UiPointerPickInfo,
+    selectedToolId: Tool,
+    selectedColor: number,
+  ): void {
     if (selectedToolId === Tool.SelectLinePoint) {
-      this.store.dispatch(
-        selectCurrentLinePoint({
-          xyz: toAddPosition,
-          newValue: selectionColor,
-        }),
-      );
+      this.dispatchVoxelUnderCursorChange(pickInfo, selectedColor);
     }
+  }
+
+  private dispatchVoxelUnderCursorChange(pickInfo: UiPointerPickInfo, selectedColor: number): void {
+    const toAddPosition = this.calcVoxelToAddPosition(pickInfo);
+    const underPointerPosition = this.calcVoxelUnderPointerPosition(pickInfo);
+
+    if (areEqual(this.lastUnderPointerPosition, underPointerPosition)) {
+      return;
+    }
+    this.lastUnderPointerPosition = underPointerPosition;
+
+    this.store.dispatch(
+      voxelUnderCursorChange({
+        toAddPosition,
+        underPointerPosition,
+        color: selectedColor,
+      }),
+    );
   }
 
   private initializeChessboard(): void {
@@ -85,7 +87,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     const coords: Coord[] = [];
     const newValues: number[] = [];
 
-    const diameter = 10;
+    const diameter = 8;
     for (let x = -diameter; x < diameter; x++) {
       for (let z = -diameter; z < diameter; z++) {
         coords.push([x, 0, z]);
@@ -107,18 +109,18 @@ export class SceneViewerContainerComponent implements AfterViewInit {
 
     switch (selectedToolId) {
       case Tool.SelectLinePoint:
-        this.store.dispatch(
-          selectLinePoint({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }),
-        );
+        this.store.dispatch(setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
         break;
       case Tool.SetVoxel:
         this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
+        this.store.dispatch(removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo) }));
         break;
       case Tool.PaintVoxel:
-        this.store.dispatch(paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue }));
+        this.store.dispatch(
+          paintVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), newValue }),
+        );
         break;
     }
   }
@@ -147,7 +149,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     return newPoint;
   }
 
-  private calcClickedVoxelPosition(pickInfo: UiPointerPickInfo): Coord {
+  private calcVoxelUnderPointerPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [
