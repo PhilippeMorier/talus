@@ -57,10 +57,6 @@ export const setLineChanges = createAction(
   `${actionTypePrefix} Set line change`,
   props<{ voxelChanges: VoxelChange[] }>(),
 );
-export const refreshLine = createAction(
-  `${actionTypePrefix} Refresh line`,
-  props<{ voxelChanges: VoxelChange[] }>(),
-);
 
 export const voxelUnderCursorChange = createAction(
   `${actionTypePrefix} Voxel under cursor change`,

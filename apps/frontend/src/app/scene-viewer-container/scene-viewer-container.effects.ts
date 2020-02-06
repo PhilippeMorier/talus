@@ -12,7 +12,6 @@ import {
   finishLine,
   paintVoxel,
   paintVoxelFailed,
-  refreshLine,
   removeVoxel,
   removeVoxelFailed,
   setLineChanges,
@@ -122,7 +121,7 @@ export class SceneViewerContainerEffects {
       }),
       switchMap(({ removeChanges, newChanges }) => [
         setLineChanges({ voxelChanges: newChanges }),
-        refreshLine({ voxelChanges: [...removeChanges, ...newChanges] }),
+        voxelsSet({ voxelChanges: [...removeChanges, ...newChanges] }),
       ]),
     ),
   );
@@ -139,7 +138,7 @@ export class SceneViewerContainerEffects {
   updateGridMeshMultiple$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelsSet, refreshLine),
+        ofType(voxelsSet),
         map(({ voxelChanges }) =>
           this.getUniqueNodeOrigins(voxelChanges).map(origin => {
             this.computeAndUpdateNodeMesh(origin);
