@@ -60,25 +60,37 @@ export const reducer = createReducer<State>(
       };
     },
   ),
-  on(addFirstLineChange, (state, voxelChange) => {
-    return {
-      ...state,
-      selectedLineChanges: [voxelChange],
-    };
-  }),
-  on(setLineChanges, (state, { voxelChanges }) => {
-    return {
-      ...state,
-      selectedLineChanges: voxelChanges,
-    };
-  }),
+  on(
+    addFirstLineChange,
+    (state, { affectedNodeOrigin, newValue, oldValue, xyz }): State => {
+      return {
+        ...state,
+        selectedLineChanges: [{ affectedNodeOrigin, newValue, oldValue, xyz }],
+      };
+    },
+  ),
+  on(
+    setLineChanges,
+    (state, { voxelChanges }): State => {
+      return {
+        ...state,
+        selectedLineChanges: voxelChanges,
+      };
+    },
+  ),
 
-  on(menuBarContainerActions.setDarkTheme, state => {
-    return { ...state, isDarkTheme: true };
-  }),
-  on(menuBarContainerActions.setLightTheme, state => {
-    return { ...state, isDarkTheme: false };
-  }),
+  on(
+    menuBarContainerActions.setDarkTheme,
+    (state): State => {
+      return { ...state, isDarkTheme: true };
+    },
+  ),
+  on(
+    menuBarContainerActions.setLightTheme,
+    (state): State => {
+      return { ...state, isDarkTheme: false };
+    },
+  ),
 );
 
 export const selectVoxelCount = (state: State) => state.voxelCount;
