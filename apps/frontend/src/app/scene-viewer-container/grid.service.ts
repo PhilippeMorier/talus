@@ -43,7 +43,9 @@ export class GridService {
   setVoxel(xyz: Coord, newValue: number): VoxelChange {
     const oldValue = this.accessor.getValue(xyz);
 
-    this.accessor.setValueOn(xyz, newValue);
+    newValue !== this.grid.background
+      ? this.accessor.setValueOn(xyz, newValue)
+      : this.accessor.setValueOff(xyz, newValue);
 
     return {
       affectedNodeOrigin: this.accessor.internalNode1Origin,

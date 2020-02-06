@@ -78,7 +78,9 @@ export class SceneViewerContainerEffects {
       ofType(setLineCoord),
       withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
       map(([action, state]) =>
-        state.selectedLineCoords.length > 0 ? finishLine() : startLine(action),
+        state.selectedLineCoords.length > 0
+          ? finishLine({ voxelChanges: state.selectedLineChanges })
+          : startLine(action),
       ),
     ),
   );

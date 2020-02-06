@@ -48,7 +48,10 @@ export const startLine = createAction(
   `${actionTypePrefix} Start line`,
   props<{ xyz: Coord; newValue: number }>(),
 );
-export const finishLine = createAction(`${actionTypePrefix} Finish line`);
+export const finishLine = createAction(
+  `${actionTypePrefix} Finish line`,
+  props<{ voxelChanges: VoxelChange[] }>(),
+);
 export const addFirstLineChange = createAction(
   `${actionTypePrefix} Add first line change`,
   props<VoxelChange>(),
