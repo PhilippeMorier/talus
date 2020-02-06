@@ -81,7 +81,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     );
   }
 
-  private initializeChessboard(): void {
+  private initializeChessboard(position: Coord): void {
     const white = rgbaToInt({ r: 255, g: 255, b: 255, a: 255 });
     const grey = rgbaToInt({ r: 200, g: 200, b: 200, a: 255 });
     const coords: Coord[] = [];
@@ -90,7 +90,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     const diameter = 8;
     for (let x = -diameter; x < diameter; x++) {
       for (let z = -diameter; z < diameter; z++) {
-        coords.push([x, 0, z]);
+        coords.push([position[0] + x, position[1], position[2] + z]);
         newValues.push((x + z) % 2 === 0 ? white : grey);
       }
     }
