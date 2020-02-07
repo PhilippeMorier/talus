@@ -10,7 +10,12 @@ import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { initialMockState } from '../testing';
 import { GridService, VoxelChange } from './grid.service';
-import { addFirstLineChange, setLineCoord, startLine } from './scene-viewer-container.actions';
+import {
+  addFirstLineChange,
+  setLineCoord,
+  startLine,
+  voxelsSet,
+} from './scene-viewer-container.actions';
 import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
 
 @Injectable()
@@ -23,17 +28,29 @@ class GridServiceMock {
       xyz,
     };
   }
+
+  computeInternalNode1Mesh(): void {
+    return;
+  }
+}
+
+@Injectable()
+class UiSceneViewerServiceMock {
+  updateNodeMesh(): void {
+    return;
+  }
 }
 
 describe('SceneViewerContainerEffects', () => {
   let actions$: Observable<Action>;
   let effects: SceneViewerContainerEffects;
+  let gridService: GridService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         { provide: GridService, useClass: GridServiceMock },
-        { provide: UiSceneViewerService, useValue: {} },
+        { provide: UiSceneViewerService, useClass: UiSceneViewerServiceMock },
         SceneViewerContainerEffects,
         provideMockActions(() => actions$),
         provideMockStore<fromApp.State>({
@@ -43,6 +60,7 @@ describe('SceneViewerContainerEffects', () => {
     });
 
     effects = TestBed.get(SceneViewerContainerEffects);
+    gridService = TestBed.get(GridService);
   });
 
   it(`should dispatch 'startLine' after 'setLineCoord'`, () => {
@@ -68,5 +86,24 @@ describe('SceneViewerContainerEffects', () => {
     });
 
     expect(effects.startLine$).toBeObservable(expectedStartLine$);
+  });
+
+  it(`should filter out duplicate origins`, () => {
+    spyOn(gridService, 'computeInternalNode1Mesh');
+
+    const voxelChanges: VoxelChange[] = [
+      { affectedNodeOrigin: [0, 0, 0], newValue: 1, oldValue: 1, xyz: [0, 0, 1] },
+      { affectedNodeOrigin: [0, 0, 0], newValue: 1, oldValue: 1, xyz: [0, 0, 1] },
+      { affectedNodeOrigin: [8, 0, 0], newValue: 1, oldValue: 1, xyz: [8, 0, 0] },
+      { affectedNodeOrigin: [8, 0, 0], newValue: 1, oldValue: 1, xyz: [8, 0, 0] },
+    ];
+
+    actions$ = hot('-a', { a: voxelsSet({ voxelChanges }) });
+
+    expect(effects.updateGridMeshMultiple$).toBeObservable(actions$);
+
+    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledTimes(2);
+    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith([0, 0, 0]);
+    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith([8, 0, 0]);
   });
 });

@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { UiSceneViewerService } from '@talus/ui';
 import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import { GridService, VoxelChange } from './grid.service';
 import {
@@ -136,7 +136,7 @@ export class SceneViewerContainerEffects {
     () =>
       this.actions$.pipe(
         ofType(voxelSet, voxelRemoved, voxelPainted, addFirstLineChange),
-        map(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
+        tap(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
       ),
     { dispatch: false },
   );
@@ -145,7 +145,7 @@ export class SceneViewerContainerEffects {
     () =>
       this.actions$.pipe(
         ofType(voxelsSet),
-        map(({ voxelChanges }) =>
+        tap(({ voxelChanges }) =>
           this.getUniqueNodeOrigins(voxelChanges).map(origin => {
             this.computeAndUpdateNodeMesh(origin);
           }),
