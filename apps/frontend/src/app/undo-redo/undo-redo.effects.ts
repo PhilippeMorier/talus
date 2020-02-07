@@ -5,12 +5,15 @@ import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import {
+  finishLine,
   paintVoxel,
   removeVoxel,
   setVoxel,
+  setVoxels,
   voxelPainted,
   voxelRemoved,
   voxelSet,
+  voxelsSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
 
@@ -107,6 +110,25 @@ export class UndoRedoEffects {
         undoStartAction: paintVoxel({ xyz: voxelChange.xyz, newValue: voxelChange.oldValue }),
         undoEndActionType: voxelPainted.type,
       })),
+      map(addUndo),
+    ),
+  );
+
+  addUndoActionForFinishLine$ = createEffect(() =>
+    this.userTriggeredActions$.pipe(
+      ofType(finishLine),
+      map(({ voxelChanges }) => {
+        const coords = voxelChanges.map(c => c.xyz);
+        const newValues = voxelChanges.map(c => c.newValue);
+        const oldValues = voxelChanges.map(c => c.oldValue);
+
+        return {
+          redoStartAction: setVoxels({ coords, newValues }),
+          redoEndActionType: voxelsSet.type,
+          undoStartAction: setVoxels({ coords, newValues: oldValues }),
+          undoEndActionType: setVoxels.type,
+        };
+      }),
       map(addUndo),
     ),
   );

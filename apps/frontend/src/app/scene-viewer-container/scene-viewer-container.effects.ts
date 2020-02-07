@@ -2,25 +2,30 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { UiSceneViewerService } from '@talus/ui';
-import { Coord } from '@talus/vdb';
+import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, map, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import { GridService, VoxelChange } from './grid.service';
 import {
+  addFirstLineChange,
+  finishLine,
   paintVoxel,
   paintVoxelFailed,
   removeVoxel,
   removeVoxelFailed,
-  selectLinePoint,
+  setLineChanges,
+  setLineCoord,
   setVoxel,
   setVoxelFailed,
   setVoxels,
   setVoxelsFailed,
+  startLine,
   voxelPainted,
   voxelRemoved,
   voxelSet,
   voxelsSet,
+  voxelUnderCursorChange,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -68,24 +73,70 @@ export class SceneViewerContainerEffects {
     ),
   );
 
-  selectLinePoint$ = createEffect(() =>
+  setLineCord$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(selectLinePoint),
+      ofType(setLineCoord),
       withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
       map(([action, state]) =>
-        !state.selectingPoints
-          ? this.gridService.selectLine(state.selectedPoints, action.newValue)
-          : [],
+        state.selectedLineStartCoord
+          ? finishLine({ voxelChanges: state.selectedLineChanges })
+          : startLine(action),
       ),
-      map(voxelChanges => voxelsSet({ voxelChanges })),
+    ),
+  );
+
+  startLine$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(startLine),
+      map(({ xyz, newValue }) => this.gridService.setVoxel(xyz, newValue)),
+      map(voxelChange => addFirstLineChange(voxelChange)),
+    ),
+  );
+
+  voxelUnderCursorChange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(voxelUnderCursorChange),
+      withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+      filter(([action, state]) => {
+        const lastLineChange = state.selectedLineChanges[state.selectedLineChanges.length - 1];
+
+        return lastLineChange && !areEqual(lastLineChange.xyz, action.underPointerPosition);
+      }),
+      map(([action, state]) => {
+        // remove old line
+        const removeChanges = state.selectedLineChanges.map(change =>
+          change.oldValue === this.gridService.background
+            ? this.gridService.removeVoxel(change.xyz)
+            : this.gridService.setVoxel(change.xyz, change.oldValue),
+        );
+
+        return { action, state, removeChanges };
+      }),
+      map(({ action, state, removeChanges }) => {
+        // add new line
+        if (!state.selectedLineStartCoord) {
+          return { removeChanges, newChanges: [] };
+        }
+
+        const newChanges = this.gridService.selectLine(
+          [state.selectedLineStartCoord, action.toAddPosition],
+          action.color,
+        );
+
+        return { removeChanges, newChanges };
+      }),
+      switchMap(({ removeChanges, newChanges }) => [
+        setLineChanges({ voxelChanges: newChanges }),
+        voxelsSet({ voxelChanges: [...removeChanges, ...newChanges] }),
+      ]),
     ),
   );
 
   updateGridMesh$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(voxelSet, voxelRemoved, voxelPainted),
-        map(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
+        ofType(voxelSet, voxelRemoved, voxelPainted, addFirstLineChange),
+        tap(({ affectedNodeOrigin }) => this.computeAndUpdateNodeMesh(affectedNodeOrigin)),
       ),
     { dispatch: false },
   );
@@ -94,7 +145,7 @@ export class SceneViewerContainerEffects {
     () =>
       this.actions$.pipe(
         ofType(voxelsSet),
-        map(({ voxelChanges }) =>
+        tap(({ voxelChanges }) =>
           this.getUniqueNodeOrigins(voxelChanges).map(origin => {
             this.computeAndUpdateNodeMesh(origin);
           }),
