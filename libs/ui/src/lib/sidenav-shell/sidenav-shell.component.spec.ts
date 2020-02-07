@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import { By } from '@angular/platform-browser';
-
 import { UiSidenavShellComponent } from './sidenav-shell.component';
 import { UiSidenavShellModule } from './sidenav-shell.module';
 

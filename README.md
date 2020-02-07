@@ -187,6 +187,10 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 - `ng update @angular/cli @angular/core`
 - [Angular Update Guide](https://update.angular.io/)
 
+### Generate transpiled code with AOT-compiler `ngc`
+
+- `ngc -p ./apps/frontend/tsconfig.app.json` (output: `./dist/out-tsc`)
+
 ## Github Pages
 
 CircleCI pushes every build onto the
