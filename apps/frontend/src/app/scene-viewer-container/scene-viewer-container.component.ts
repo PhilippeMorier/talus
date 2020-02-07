@@ -28,7 +28,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerContainerComponent implements AfterViewInit {
-  @ViewChild(UiSceneViewerComponent, { static: false })
+  @ViewChild(UiSceneViewerComponent)
   private sceneViewerComponent: UiSceneViewerComponent;
 
   private selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
