@@ -129,18 +129,13 @@ describe('SceneViewerContainerEffects', () => {
     actions$ = hot('a', { a: startLine({ xyz: [0, 0, 0], newValue: 42 }) });
 
     const expectedStartLine$ = hot('a', {
-      a: addFirstLineChange({
-        affectedNodeOrigin: [0, 0, 0],
-        newValue: 42,
-        oldValue: -1,
-        xyz: [0, 0, 0],
-      }),
+      a: addFirstLineChange(VOXEL_CHANGE),
     });
 
     expect(effects.startLine$).toBeObservable(expectedStartLine$);
   });
 
-  it(`should filter out duplicate origins`, () => {
+  it('should filter out duplicate origins', () => {
     spyOn(gridService, 'computeInternalNode1Mesh');
 
     const voxelChanges: VoxelChange[] = [
