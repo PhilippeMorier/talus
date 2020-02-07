@@ -4,7 +4,6 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { UiSceneViewerService } from '@talus/ui';
-import { Coord } from '@talus/vdb';
 import { hot } from 'jasmine-marbles';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -13,20 +12,31 @@ import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
   setLineCoord,
+  setVoxel,
+  setVoxelFailed,
+  setVoxels,
+  setVoxelsFailed,
   startLine,
+  voxelSet,
   voxelsSet,
 } from './scene-viewer-container.actions';
 import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
 
+const VOXEL_CHANGE: VoxelChange = {
+  affectedNodeOrigin: [0, 0, 0],
+  newValue: 42,
+  oldValue: -1,
+  xyz: [0, 0, 0],
+};
+
 @Injectable()
 class GridServiceMock {
-  setVoxel(xyz: Coord, newValue: number): VoxelChange {
-    return {
-      affectedNodeOrigin: [0, 0, 0],
-      newValue,
-      oldValue: -1,
-      xyz,
-    };
+  setVoxel(): VoxelChange {
+    return VOXEL_CHANGE;
+  }
+
+  setVoxels(): VoxelChange[] {
+    return [VOXEL_CHANGE];
   }
 
   computeInternalNode1Mesh(): void {
@@ -61,6 +71,48 @@ describe('SceneViewerContainerEffects', () => {
 
     effects = TestBed.get(SceneViewerContainerEffects);
     gridService = TestBed.get(GridService);
+  });
+
+  it(`should dispatch 'voxelSet' after 'setVoxel'`, () => {
+    actions$ = hot('s', { s: setVoxel({ xyz: [0, 0, 0], newValue: 42 }) });
+
+    const expectedVoxelSet$ = hot('v', {
+      v: voxelSet(VOXEL_CHANGE),
+    });
+
+    expect(effects.setVoxel$).toBeObservable(expectedVoxelSet$);
+  });
+
+  it(`should dispatch 'setVoxelFailed' after 'setVoxel'`, () => {
+    spyOn(gridService, 'setVoxel').and.throwError('');
+    actions$ = hot('s', { s: setVoxel({ xyz: [0, 0, 0], newValue: 42 }) });
+
+    const expectedSetVoxelFailed$ = hot('(v|)', {
+      v: setVoxelFailed(),
+    });
+
+    expect(effects.setVoxel$).toBeObservable(expectedSetVoxelFailed$);
+  });
+
+  it(`should dispatch 'voxelsSet' after 'setVoxels'`, () => {
+    actions$ = hot('s', { s: setVoxels({ coords: [[0, 0, 0]], newValues: [42] }) });
+
+    const expectedVoxelsSet$ = hot('v', {
+      v: voxelsSet({ voxelChanges: [VOXEL_CHANGE] }),
+    });
+
+    expect(effects.setVoxels$).toBeObservable(expectedVoxelsSet$);
+  });
+
+  it(`should dispatch 'setVoxelFailed' after 'setVoxels'`, () => {
+    spyOn(gridService, 'setVoxels').and.throwError('');
+    actions$ = hot('s', { s: setVoxels({ coords: [[0, 0, 0]], newValues: [] }) });
+
+    const expectedSetVoxelsFailed$ = hot('(s|)', {
+      s: setVoxelsFailed(),
+    });
+
+    expect(effects.setVoxels$).toBeObservable(expectedSetVoxelsFailed$);
   });
 
   it(`should dispatch 'startLine' after 'setLineCoord'`, () => {
