@@ -185,6 +185,7 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 ### Update
 
 - `ng update @angular/cli @angular/core`
+- [Angular Update Guide](https://update.angular.io/)
 
 ## Github Pages
 
