@@ -74,7 +74,7 @@ export const reducer = createReducer<State>(
     (state, { voxelChanges }): State => {
       return {
         ...state,
-        selectedLineChanges: voxelChanges,
+        selectedLineChanges: [...voxelChanges],
       };
     },
   ),

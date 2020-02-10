@@ -1,4 +1,4 @@
-import { clone, Coord, createMaxCoord } from '../math';
+import { Coord, createMaxCoord } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -28,10 +28,6 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  get internalNode1Origin(): Coord {
-    return clone(this.internalKey1);
-  }
-
   private leafKey: Coord = createMaxCoord();
   private leafNode: LeafNode<T>;
 

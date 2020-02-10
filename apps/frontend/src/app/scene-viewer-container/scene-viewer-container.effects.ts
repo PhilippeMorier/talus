@@ -104,26 +104,44 @@ export class SceneViewerContainerEffects {
       }),
       map(([action, state]) => {
         // remove old line
-        const removeChanges = state.selectedLineChanges.map(change =>
+        state.selectedLineChanges.map(change =>
           change.oldValue === this.gridService.background
             ? this.gridService.removeVoxel(change.xyz)
             : this.gridService.setVoxel(change.xyz, change.oldValue),
         );
 
-        return { action, state, removeChanges };
+        return { action, state };
       }),
-      map(({ action, state, removeChanges }) => {
+      map(({ action, state }) => {
+        // Determine line end voxel
+        // Check if pointer is over an already selected voxel of the line.
+        // If so, use this as the endpoint instead, i.e. shorten line.
+        // Start from the last added/most recent change, since pointer is most likely over
+        // a voxel at the end of the line.
+        let alreadySelectedIndex = -1;
+        for (let i = state.selectedLineChanges.length - 1; i >= 0; i--) {
+          if (areEqual(state.selectedLineChanges[i].xyz, action.underPointerPosition)) {
+            alreadySelectedIndex = i;
+            break;
+          }
+        }
+
+        const endXyz =
+          alreadySelectedIndex > -1
+            ? state.selectedLineChanges[alreadySelectedIndex].xyz
+            : action.toAddPosition;
+
         // add new line
         if (!state.selectedLineStartCoord) {
-          return { removeChanges, newChanges: [] };
+          return { removeChanges: state.selectedLineChanges, newChanges: [] };
         }
 
         const newChanges = this.gridService.selectLine(
-          [state.selectedLineStartCoord, action.toAddPosition],
+          [state.selectedLineStartCoord, endXyz],
           action.color,
         );
 
-        return { removeChanges, newChanges };
+        return { removeChanges: state.selectedLineChanges, newChanges };
       }),
       switchMap(({ removeChanges, newChanges }) => [
         setLineChanges({ voxelChanges: newChanges }),

@@ -4,6 +4,7 @@ import {
   add,
   areEqual,
   Coord,
+  createMaxCoord,
   DDA,
   Grid,
   MeshData,
@@ -47,8 +48,11 @@ export class GridService {
       ? this.accessor.setValueOn(xyz, newValue)
       : this.accessor.setValueOff(xyz, newValue);
 
+    const internalNode1 = this.accessor.probeInternalNode1(xyz);
+    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
+
     return {
-      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      affectedNodeOrigin,
       newValue,
       oldValue,
       xyz,
@@ -71,8 +75,11 @@ export class GridService {
 
     this.accessor.setValueOff(xyz, this.grid.background);
 
+    const internalNode1 = this.accessor.probeInternalNode1(xyz);
+    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
+
     return {
-      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      affectedNodeOrigin,
       oldValue,
       newValue: oldValue,
       xyz,

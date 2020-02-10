@@ -69,8 +69,8 @@ describe('SceneViewerContainerEffects', () => {
       ],
     });
 
-    effects = TestBed.get(SceneViewerContainerEffects);
-    gridService = TestBed.get(GridService);
+    effects = TestBed.inject(SceneViewerContainerEffects);
+    gridService = TestBed.inject(GridService);
   });
 
   it(`should dispatch 'voxelSet' after 'setVoxel'`, () => {
