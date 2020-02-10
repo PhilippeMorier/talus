@@ -42,7 +42,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   constructor(private store: Store<fromApp.State>) {}
 
   ngAfterViewInit(): void {
-    // this.initializeChessboard();
+    this.initializeChessboard([0, 0, 0]);
+    this.initializeChessboard([8, 8, 0]);
 
     this.store.dispatch(
       setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),

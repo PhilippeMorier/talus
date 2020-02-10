@@ -99,11 +99,12 @@ export class GridService {
     const end = points[1];
     const endCenter = add(end, [0.5, 0.5, 0.5]);
 
-    // Set start & end to ensure leaf-nodes are created in the grid.
-    // Otherwise, it could happen that the start/end point is in a new leaf which
-    // doesn't yet exist and therefore doesn't cause any intersection.
-    // TODO: Maybe `touchLeaf()` would work as well?
-    const tempChanges = this.setVoxels(points, [newValue, newValue]);
+    // Set end to ensure leaf-node is created in the grid. And has at least one active voxel.
+    // Otherwise, it could happen that the end point is in a new leaf which doesn't yet exist
+    // and therefore doesn't cause any intersection (since a ray intersects only with active
+    // values i.e. either active voxels or tiles. The start voxel is already added when the
+    // drawing of the line starts (in effect).
+    const tempChange = this.setVoxel(end, newValue);
 
     const ray = this.createIntersectionRay(startCenter, endCenter);
 
@@ -112,12 +113,10 @@ export class GridService {
       return [];
     }
 
-    // Restore old values
-    tempChanges.forEach(change =>
-      change.oldValue === this.grid.background
-        ? this.removeVoxel(change.xyz)
-        : this.setVoxel(change.xyz, change.oldValue),
-    );
+    // Restore old value
+    tempChange.oldValue === this.grid.background
+      ? this.removeVoxel(tempChange.xyz)
+      : this.setVoxel(tempChange.xyz, tempChange.oldValue);
 
     return this.setVoxelsAlongRayUntilLastVoxel(ray, totalTimeSpan, end, newValue);
   }
