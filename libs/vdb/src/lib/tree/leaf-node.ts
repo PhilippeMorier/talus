@@ -130,6 +130,10 @@ export class LeafNode<T> implements HashableNode<T> {
     return this;
   }
 
+  touchLeafAndCache(_xyz: Coord, _accessor: ValueAccessor3<T>): LeafNode<T> {
+    return this;
+  }
+
   probeInternalNode1AndCache(
     _xyz: Coord,
     _accessor: ValueAccessor3<T>,

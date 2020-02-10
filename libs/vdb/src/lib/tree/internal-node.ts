@@ -92,6 +92,19 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return child.probeLeafNodeAndCache(xyz, accessor);
   }
 
+  touchLeafAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+
+    if (this.childMask.isOff(i)) {
+      this.setChildNode(i, this.createChildNode(xyz, node.getValue(), this.valueMask.isOn(i)));
+    }
+
+    accessor.insert(xyz, node.getChild());
+
+    return node.getChild().touchLeafAndCache(xyz, accessor);
+  }
+
   probeInternalNode1AndCache(
     xyz: Coord,
     accessor: ValueAccessor3<T>,
@@ -337,7 +350,7 @@ export class InternalNode1<T> extends InternalNode<T> {
   static readonly NUM_VOXELS = 1 << (3 * InternalNode1.TOTAL); // total voxel count represented by this node
   // tslint:enable:no-bitwise
 
-  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): LeafNode<T> {
+  createChildNode(xyz: Coord, value?: T, active?: boolean): LeafNode<T> {
     return new LeafNode(xyz, value, active);
   }
 
@@ -364,7 +377,7 @@ export class InternalNode2<T> extends InternalNode<T> {
   static readonly NUM_VOXELS = Math.pow(2, 3 * InternalNode2.TOTAL);
   // tslint:enable:no-bitwise
 
-  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): InternalNode1<T> {
+  createChildNode(xyz: Coord, value?: T, active?: boolean): InternalNode1<T> {
     return new InternalNode1(xyz, value, active);
   }
 

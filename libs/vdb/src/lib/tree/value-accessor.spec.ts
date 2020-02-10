@@ -234,4 +234,20 @@ describe('ValueAccessor', () => {
       expect(isHashed1Spy.calls.count()).toEqual(0);
     });
   });
+
+  describe('touchLeaf()', () => {
+    const tree = new Tree(-1);
+
+    it('should create not existing leaf node and return it', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.probeLeafNode([0, 0, 0])).toBeUndefined();
+
+      const newLeaf = accessor.touchLeaf([0, 0, 0]);
+
+      expect(newLeaf).toBeDefined();
+      expect(accessor.probeLeafNode([0, 0, 0])).toBeDefined();
+      expect(accessor.probeLeafNode([0, 0, 0])).toBe(newLeaf);
+    });
+  });
 });
