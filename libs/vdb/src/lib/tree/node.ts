@@ -73,6 +73,16 @@ export interface HashableNode<T> extends Node<T> {
   probeInternalNode1AndCache(xyz: Coord, accessor: ValueAccessor3<T>): InternalNode1<T> | undefined;
 
   /**
+   * Return the leaf node that contains voxel (x, y, z).
+   * If no such node exists, create one, but preserve the values and
+   * active states of all voxels.
+   *
+   * If necessary, update the given accessor with pointers to the nodes along the path
+   * from the root node to the node containing the coordinate.
+   */
+  touchLeafAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T>;
+
+  /**
    * Change the value of the voxel at the given coordinates and mark it as active.
    * If necessary, update the accessor with pointers to the nodes along the path
    * from the root node to the node containing the voxel.

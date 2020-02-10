@@ -101,6 +101,25 @@ export class RootNode<T> implements HashableNode<T> {
     return child.probeInternalNode1AndCache(xyz, accessor);
   }
 
+  touchLeafAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> {
+    let child: HashableNode<T> | undefined;
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      child = new InternalNode2(xyz, this._background, false);
+      this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else {
+      child = new InternalNode2(xyz, struct.getTile().value, struct.isTileOn());
+      struct.setChild(child);
+    }
+
+    accessor.insert(xyz, child);
+
+    return child.touchLeafAndCache(xyz, accessor);
+  }
+
   setValueOn(xyz: Coord, value: T): void {
     let child: HashableNode<T> | undefined;
     const struct = this.findCoord(xyz);

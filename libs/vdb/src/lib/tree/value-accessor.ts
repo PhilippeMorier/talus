@@ -80,6 +80,18 @@ export class ValueAccessor3<T> {
     }
   }
 
+  touchLeaf(xyz: Coord): LeafNode<T> {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode;
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.touchLeafAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.touchLeafAndCache(xyz, this);
+    } else {
+      return this.tree.root.touchLeafAndCache(xyz, this);
+    }
+  }
+
   /**
    * Return the value of the voxel at the given coordinates.
    */
