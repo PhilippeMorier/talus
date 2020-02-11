@@ -102,17 +102,15 @@ export class SceneViewerContainerEffects {
 
         return lastLineChange && !areEqual(lastLineChange.xyz, action.underPointerPosition);
       }),
-      map(([action, state]) => {
+      tap(([_action, state]) => {
         // remove old line
         state.selectedLineChanges.map(change =>
           change.oldValue === this.gridService.background
             ? this.gridService.removeVoxel(change.xyz)
             : this.gridService.setVoxel(change.xyz, change.oldValue),
         );
-
-        return { action, state };
       }),
-      map(({ action, state }) => {
+      map(([action, state]) => {
         // Determine line end voxel
         // Check if pointer is over an already selected voxel of the line.
         // If so, use this as the endpoint instead, i.e. shorten line.
