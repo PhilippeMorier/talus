@@ -2340,6 +2340,15 @@
     "@angular-devkit/architect" "0.900.1"
     "@angular-eslint/builder" "0.0.1-alpha.18"
 
+"@nrwl/nest@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@nrwl/nest/-/nest-9.0.0.tgz#aec112df7977ec6cd51d181dfa1dd0c1af75f5ef"
+  integrity sha512-g2u4MSzX3yC75P6cFnIKP8SsHfhXUJPKbRNn6g1wppInFiFSzQ5Ow0AYZXu3oUeowCwRRWlSxcMmQJhb/rgMNw==
+  dependencies:
+    "@angular-devkit/schematics" "9.0.1"
+    "@nrwl/jest" "9.0.0"
+    "@nrwl/node" "9.0.0"
+
 "@nrwl/node@9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@nrwl/node/-/node-9.0.0.tgz#f9b1f88c8d9e57744ab55618d641301f91a26901"

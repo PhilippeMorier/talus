@@ -191,6 +191,40 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 - `ngc -p ./apps/frontend/tsconfig.app.json` (output: `./dist/out-tsc`)
 
+## Backend
+
+### NestJS
+
+- `yarn add --dev @nrwl/nest`
+- `nx g @nrwl/nest:application backend --frontend-project frontend --dry-run`
+
+### Docker
+
+### Docker Engine - Community
+
+https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
+
+- `sudo apt-get update`
+- `sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common`
+- `curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -`
+- `sudo apt-key fingerprint 0EBFCD88`
+- `sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) eoan test"`
+  (https://unix.stackexchange.com/a/363058)
+- `sudo apt-get update`
+
+### Docker Compose binary
+
+https://docs.docker.com/compose/install/
+
+- `sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
+- `sudo chmod +x /usr/local/bin/docker-compose`
+
+### Docker Command-line completion
+
+https://docs.docker.com/compose/completion/
+
+- `sudo curl -L https://raw.githubusercontent.com/docker/compose/1.25.3/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose`
+
 ## Github Pages
 
 CircleCI pushes every build onto the
