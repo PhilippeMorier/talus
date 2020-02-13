@@ -13,6 +13,7 @@ import { OptionsPanelModule } from './options-panel/options-panel.module';
 import { SceneViewerContainerModule } from './scene-viewer-container';
 import { ToolsPanelModule } from './tools-panel/tools-panel.module';
 import { UndoRedoModule } from './undo-redo/undo-redo.module';
+import { WebSocketService } from './web-socket.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,7 +48,7 @@ import { UndoRedoModule } from './undo-redo/undo-redo.module';
     ToolsPanelModule,
     UndoRedoModule,
   ],
-  providers: [],
+  providers: [WebSocketService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -196,7 +196,7 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 ### NestJS
 
 - `yarn add --dev @nrwl/nest`
-- `nx g @nrwl/nest:application backend --frontend-project frontend --dry-run`
+- `nx g @nrwl/nest:application kafka-proxy --frontend-project frontend --linter eslint`
 
 ### Docker
 

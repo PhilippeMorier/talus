@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromApp from './app.reducer';
+import { WebSocketService } from './web-socket.service';
 
 @Component({
   selector: 'fe-root',
@@ -21,6 +22,8 @@ import * as fromApp from './app.reducer';
 
           <h5>Options</h5>
           <fe-options-panel></fe-options-panel>
+
+          <div>{{ kafka$ | async | json }}</div>
         </ui-sidenav-shell-left>
 
         <ui-sidenav-shell-right>
@@ -38,15 +41,24 @@ import * as fromApp from './app.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   title = 'frontend';
-
   isDarkTheme$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
     map(state => state.isDarkTheme),
   );
 
-  constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}
+  kafka$ = this.webSocketService.listen('kafka');
+
+  constructor(
+    private store: Store<fromApp.State>,
+    private renderer: Renderer2,
+    private webSocketService: WebSocketService,
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.webSocketService.emit('kafka', { dataValue: 'Buh' });
+  }
 
   setTheme(isDarkTheme: boolean): void {
     const toAddClass = isDarkTheme ? 'app-dark-theme' : 'app-light-theme';
