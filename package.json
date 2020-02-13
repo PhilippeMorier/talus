@@ -18,7 +18,7 @@
     "format:check": "nx format:check",
     "format:write": "nx format:write",
     "help": "nx help",
-    "kafka": "sudo docker-compose --file ./apps/kafka/docker-compose.yml up --scale kafka=2",
+    "kafka": "sudo docker-compose --file ./apps/kafka/docker-compose.yml up",
     "kafka:ps": "sudo docker-compose --file ./apps/kafka/docker-compose.yml ps",
     "lint": "nx workspace-lint && ng lint && yarn lint:styles",
     "lint:styles": "stylelint \"{apps,libs}/**/*.{css,scss}\"",
