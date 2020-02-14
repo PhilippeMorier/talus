@@ -15,5 +15,6 @@ import { UiStatusBarComponent } from './status-bar.component';
     MatToolbarModule,
     MatTooltipModule,
   ],
+  exports: [UiStatusBarComponent],
 })
 export class UiStatusBarModule {}

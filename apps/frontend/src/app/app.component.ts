@@ -33,7 +33,7 @@ import * as fromApp from './app.reducer';
       </ui-sidenav-shell>
     </main>
 
-    <!--<ui-status-bar></ui-status-bar>-->
+    <ui-status-bar></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
