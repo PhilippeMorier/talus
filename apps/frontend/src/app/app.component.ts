@@ -57,7 +57,7 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.webSocketService.emit('kafka', { dataValue: 'Buh' });
+    // this.webSocketService.emit('kafka', { dataValue: 'Buh' });
   }
 
   setTheme(isDarkTheme: boolean): void {
