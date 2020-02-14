@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import * as io from 'socket.io-client';
+import { Action } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import io from 'socket.io-client';
 
 @Injectable()
 export class WebSocketService {
-  socket: any;
+  private readonly socket: SocketIOClient.Socket;
+
+  private readonly connectedSubject = new Subject<boolean>();
+  connected$ = this.connectedSubject.asObservable();
 
   private readonly uri: string = 'ws://localhost:3333';
 
   constructor() {
     this.socket = io(this.uri);
+
+    this.registerConnectionEvents();
   }
 
   listen(eventName: string): Observable<unknown> {
@@ -20,7 +26,19 @@ export class WebSocketService {
     });
   }
 
-  emit(eventName: string, data: any): void {
-    this.socket.emit(eventName, data);
+  emit(eventName: string, action: Action): void {
+    this.socket.emit(eventName, action);
+  }
+
+  private registerConnectionEvents(): void {
+    this.socket.on('connect_error', () => {
+      this.connectedSubject.next(this.socket.connected);
+    });
+    this.socket.on('connect', () => {
+      this.connectedSubject.next(this.socket.connected);
+    });
+    this.socket.on('disconnect', () => {
+      this.connectedSubject.next(this.socket.connected);
+    });
   }
 }

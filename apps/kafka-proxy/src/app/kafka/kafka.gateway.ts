@@ -5,7 +5,7 @@ import {
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets';
-import { Kafka, logLevel } from 'kafkajs';
+import { CompressionTypes, Kafka, logLevel } from 'kafkajs';
 import { interval, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Server } from 'socket.io';
@@ -36,6 +36,7 @@ export class KafkaGateway {
     this.producer
       .send({
         topic: 'test-topic',
+        compression: CompressionTypes.GZIP,
         messages: [{ value: JSON.stringify(data) }],
       })
       .then(() => console.log('Message sent via producer'))
