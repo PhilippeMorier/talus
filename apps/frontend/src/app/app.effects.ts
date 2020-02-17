@@ -35,5 +35,12 @@ export class AppEffects {
     { dispatch: false },
   );
 
-  emitActions$ = createEffect(() => new Actions(this.kafkaProxyService.listenToActions()));
+  emitActions$ = createEffect(() =>
+    new Actions(this.kafkaProxyService.listenToActions()).pipe(
+      map((action: SyncableAction) => {
+        action.needsSync = false;
+        return action;
+      }),
+    ),
+  );
 }
