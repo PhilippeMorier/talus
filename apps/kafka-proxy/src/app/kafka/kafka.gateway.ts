@@ -53,9 +53,4 @@ export class KafkaGateway {
     console.log(`Action '${action.type}' from '${client.id}' received.`);
     this.server.emit('AllActions', action, client.id);
   }
-
-  @SubscribeMessage('identity')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data;
-  }
 }
