@@ -28,10 +28,7 @@ export class KafkaProxyService {
     return this.webSocketService.listen<[Action, string]>(EventName.AllActions).pipe(
       withLatestFrom(this.webSocketService.socketId$),
       filter(([[_action, id], socketId]) => id !== socketId),
-      map(([[action, _id], _socketId]) => {
-        action['needsSync'] = false;
-        return action;
-      }),
+      map(([[action, _id], _socketId]) => action),
     );
   }
 }
