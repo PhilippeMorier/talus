@@ -53,7 +53,9 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     // Due to the status-bar being on the bottom of the screen a resizing is needed.
     this.sceneViewerService.resizeView();
 
-    this.store.dispatch(setVoxel([0, 0, 0], rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }), false));
+    this.store.dispatch(
+      setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
+    );
   }
 
   onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {
@@ -84,6 +86,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         toAddPosition,
         underPointerPosition,
         color: selectedColor,
+        needsSync: true,
       }),
     );
   }
@@ -116,17 +119,27 @@ export class SceneViewerContainerComponent implements AfterViewInit {
 
     switch (selectedToolId) {
       case Tool.SelectLinePoint:
-        this.store.dispatch(setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
+        this.store.dispatch(
+          setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue, needsSync: true }),
+        );
         break;
       case Tool.SetVoxel:
-        this.store.dispatch(setVoxel(this.calcVoxelToAddPosition(pickInfo), newValue));
+        this.store.dispatch(
+          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue, needsSync: true }),
+        );
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo) }));
+        this.store.dispatch(
+          removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), needsSync: true }),
+        );
         break;
       case Tool.PaintVoxel:
         this.store.dispatch(
-          paintVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), newValue }),
+          paintVoxel({
+            xyz: this.calcVoxelUnderPointerPosition(pickInfo),
+            newValue,
+            needsSync: true,
+          }),
         );
         break;
     }

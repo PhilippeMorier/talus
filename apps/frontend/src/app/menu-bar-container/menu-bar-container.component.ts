@@ -36,12 +36,12 @@ export class MenuBarContainerComponent {
         {
           icon: 'undo',
           label: 'Undo',
-          value: undo(),
+          value: undo({ needsSync: true }),
         },
         {
           icon: 'redo',
           label: 'Redo',
-          value: redo(),
+          value: redo({ needsSync: true }),
         },
       ],
     },

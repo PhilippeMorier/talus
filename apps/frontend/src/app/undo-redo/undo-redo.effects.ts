@@ -79,7 +79,7 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelSet),
       map(voxelChange => ({
-        redoStartAction: setVoxel(voxelChange.xyz, voxelChange.newValue, false),
+        redoStartAction: setVoxel(voxelChange),
         redoEndActionType: voxelSet.type,
         undoStartAction: removeVoxel(voxelChange),
         undoEndActionType: voxelRemoved.type,
@@ -94,7 +94,7 @@ export class UndoRedoEffects {
       map(voxelChange => ({
         redoStartAction: removeVoxel(voxelChange),
         redoEndActionType: voxelRemoved.type,
-        undoStartAction: setVoxel(voxelChange.xyz, voxelChange.newValue, false),
+        undoStartAction: setVoxel(voxelChange),
         undoEndActionType: voxelSet.type,
       })),
       map(addUndo),

@@ -7,11 +7,7 @@ const actionTypePrefix = `[sceneViewerContainer]`;
 // Set voxel
 export const setVoxel = createAction(
   `${actionTypePrefix} Set voxel`,
-  (xyz: Coord, newValue: number, needsSync: boolean = true) => ({
-    xyz,
-    newValue,
-    needsSync,
-  }),
+  props<{ xyz: Coord; newValue: number; needsSync?: boolean }>(),
 );
 export const setVoxelFailed = createAction(`${actionTypePrefix} Set voxel failed`);
 export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<VoxelChange>());
@@ -30,7 +26,7 @@ export const voxelsSet = createAction(
 // Remove voxel
 export const removeVoxel = createAction(
   `${actionTypePrefix} Remove voxel`,
-  props<{ xyz: Coord }>(),
+  props<{ xyz: Coord; needsSync?: boolean }>(),
 );
 export const removeVoxelFailed = createAction(`${actionTypePrefix} Remove voxel failed`);
 export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, props<VoxelChange>());
@@ -38,7 +34,7 @@ export const voxelRemoved = createAction(`${actionTypePrefix} Voxel removed`, pr
 // Paint voxel
 export const paintVoxel = createAction(
   `${actionTypePrefix} Paint voxel`,
-  props<{ xyz: Coord; newValue: number }>(),
+  props<{ xyz: Coord; newValue: number; needsSync?: boolean }>(),
 );
 export const paintVoxelFailed = createAction(`${actionTypePrefix} Paint voxel failed`);
 export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, props<VoxelChange>());
@@ -46,7 +42,7 @@ export const voxelPainted = createAction(`${actionTypePrefix} Voxel painted`, pr
 // Draw line
 export const setLineCoord = createAction(
   `${actionTypePrefix} Set line coord`,
-  props<{ xyz: Coord; newValue: number }>(),
+  props<{ xyz: Coord; newValue: number; needsSync?: boolean }>(),
 );
 export const startLine = createAction(
   `${actionTypePrefix} Start line`,
@@ -67,5 +63,10 @@ export const setLineChanges = createAction(
 
 export const voxelUnderCursorChange = createAction(
   `${actionTypePrefix} Voxel under cursor change`,
-  props<{ toAddPosition: Coord; underPointerPosition: Coord; color: number }>(),
+  props<{
+    toAddPosition: Coord;
+    underPointerPosition: Coord;
+    color: number;
+    needsSync?: boolean;
+  }>(),
 );
