@@ -36,7 +36,7 @@ import { WebSocketService } from './web-socket.service';
       </ui-sidenav-shell>
     </main>
 
-    <ui-status-bar></ui-status-bar>
+    <ui-status-bar [connected]="connectionStatus$ | async"></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
@@ -48,6 +48,7 @@ export class AppComponent implements AfterViewInit {
     map(state => state.isDarkTheme),
   );
 
+  connectionStatus$ = this.webSocketService.connectionStatus$;
   kafka$ = this.webSocketService.listen('kafka');
 
   constructor(
