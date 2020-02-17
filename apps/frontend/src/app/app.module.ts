@@ -13,7 +13,7 @@ import { OptionsPanelModule } from './options-panel/options-panel.module';
 import { SceneViewerContainerModule } from './scene-viewer-container';
 import { ToolsPanelModule } from './tools-panel/tools-panel.module';
 import { UndoRedoModule } from './undo-redo/undo-redo.module';
-import { WebSocketService } from './web-socket.service';
+import { KafkaProxyService } from './web-socket/kafka-proxy.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,7 +48,7 @@ import { WebSocketService } from './web-socket.service';
     ToolsPanelModule,
     UndoRedoModule,
   ],
-  providers: [WebSocketService],
+  providers: [KafkaProxyService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

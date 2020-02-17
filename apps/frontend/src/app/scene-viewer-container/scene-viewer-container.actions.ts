@@ -7,7 +7,11 @@ const actionTypePrefix = `[sceneViewerContainer]`;
 // Set voxel
 export const setVoxel = createAction(
   `${actionTypePrefix} Set voxel`,
-  props<{ xyz: Coord; newValue: number }>(),
+  (xyz: Coord, newValue: number, needsSync: boolean = true) => ({
+    xyz,
+    newValue,
+    needsSync,
+  }),
 );
 export const setVoxelFailed = createAction(`${actionTypePrefix} Set voxel failed`);
 export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<VoxelChange>());

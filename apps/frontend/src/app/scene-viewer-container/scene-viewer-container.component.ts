@@ -50,12 +50,10 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.store.dispatch(
-      setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
-    );
-
-    // Ensure canvas gets correct size, otherwise mouse clicks add voxels at wrong positions
+    // Due to the status-bar being on the bottom of the screen a resizing is needed.
     this.sceneViewerService.resizeView();
+
+    this.store.dispatch(setVoxel([0, 0, 0], rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }), false));
   }
 
   onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {
@@ -121,7 +119,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         this.store.dispatch(setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
         break;
       case Tool.SetVoxel:
-        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
+        this.store.dispatch(setVoxel(this.calcVoxelToAddPosition(pickInfo), newValue));
         break;
       case Tool.RemoveVoxel:
         this.store.dispatch(removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo) }));

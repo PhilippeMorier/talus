@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
-import { createEffect } from '@ngrx/effects';
+import { Actions, createEffect } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
-import { map, mapTo } from 'rxjs/operators';
+import { filter, map, mapTo, tap } from 'rxjs/operators';
 import { wentOffline, wentOnline } from './app.actions';
+import { KafkaProxyService } from './web-socket/kafka-proxy.service';
+
+export interface SyncableAction extends Action {
+  needsSync: boolean;
+}
 
 @Injectable()
 export class AppEffects {
+  constructor(
+    private readonly actions$: Actions<SyncableAction>,
+    private readonly kafkaProxyService: KafkaProxyService,
+  ) {}
+
   // @source: https://indepth.dev/start-using-ngrx-effects-for-this/#1externalsources
   onlineStateChange$ = createEffect(() => {
     return merge(
@@ -14,4 +25,15 @@ export class AppEffects {
       fromEvent(window, 'offline').pipe(mapTo(false)),
     ).pipe(map(isOnline => (isOnline ? wentOnline() : wentOffline())));
   });
+
+  needsSyncActions$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        filter(action => action.needsSync),
+        tap(action => this.kafkaProxyService.logAction(action)),
+      ),
+    { dispatch: false },
+  );
+
+  emitActions$ = createEffect(() => new Actions(this.kafkaProxyService.listenToActions()));
 }

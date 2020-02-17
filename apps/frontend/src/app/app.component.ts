@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromApp from './app.reducer';
-import { WebSocketService } from './web-socket.service';
+import { KafkaProxyService } from './web-socket/kafka-proxy.service';
 
 @Component({
   selector: 'fe-root',
@@ -22,8 +22,6 @@ import { WebSocketService } from './web-socket.service';
 
           <h5>Options</h5>
           <fe-options-panel></fe-options-panel>
-
-          <div>{{ kafka$ | async | json }}</div>
         </ui-sidenav-shell-left>
 
         <ui-sidenav-shell-right>
@@ -48,13 +46,12 @@ export class AppComponent implements AfterViewInit {
     map(state => state.isDarkTheme),
   );
 
-  connectionStatus$ = this.webSocketService.connectionStatus$;
-  kafka$ = this.webSocketService.listen('kafka');
+  connectionStatus$ = this.kafkaProxyService.connectionStatus$;
 
   constructor(
     private store: Store<fromApp.State>,
     private renderer: Renderer2,
-    private webSocketService: WebSocketService,
+    private kafkaProxyService: KafkaProxyService,
   ) {}
 
   ngAfterViewInit(): void {

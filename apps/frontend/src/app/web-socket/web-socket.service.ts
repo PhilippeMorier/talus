@@ -1,29 +1,30 @@
-import { Injectable } from '@angular/core';
-import { Action } from '@ngrx/store';
 import { fromEvent, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
-@Injectable()
 export class WebSocketService {
   private readonly socket: SocketIOClient.Socket;
 
   private readonly connectionStatusSubject = new Subject<boolean>();
   connectionStatus$ = this.connectionStatusSubject.asObservable();
 
-  private readonly uri: string = 'ws://localhost:3333';
+  socketId$ = this.connectionStatus$.pipe(
+    map(() => this.socket.id),
+    distinctUntilChanged(),
+  );
 
-  constructor() {
-    this.socket = io(this.uri);
+  constructor(uri: string) {
+    this.socket = io(uri); // automatically tries to connect
 
     this.registerConnectionEvents();
   }
 
-  listen(eventName: string): Observable<unknown> {
-    return fromEvent(this.socket, eventName);
+  listen<T>(eventName: string): Observable<T> {
+    return fromEvent<T>(this.socket, eventName);
   }
 
-  emit(eventName: string, action: Action): void {
-    this.socket.emit(eventName, action);
+  emit<T>(eventName: string, data: T): void {
+    this.socket.emit(eventName, data);
   }
 
   private registerConnectionEvents(): void {

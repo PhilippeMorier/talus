@@ -1,14 +1,16 @@
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets';
+import { Action } from '@ngrx/store';
 import { CompressionTypes, Kafka, logLevel } from 'kafkajs';
 import { interval, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class KafkaGateway {
@@ -44,6 +46,12 @@ export class KafkaGateway {
 
     console.log(data);
     return interval(1000).pipe(map(item => ({ event: 'kafka', data: item })));
+  }
+
+  @SubscribeMessage('AllActions')
+  actions(@MessageBody() action: Action, @ConnectedSocket() client: Socket): void {
+    console.log(`Action '${action.type}' from '${client.id}' received.`);
+    this.server.emit('AllActions', action, client.id);
   }
 
   @SubscribeMessage('identity')
