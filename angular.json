@@ -18,6 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/apps/frontend",
             "index": "apps/frontend/src/index.html",
             "main": "apps/frontend/src/main.ts",
@@ -49,6 +50,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -209,8 +214,10 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:lint",
           "options": {
+            "linter": "eslint",
+            "config": "apps/benchmark/.eslintrc",
             "tsConfig": ["apps/benchmark/tsconfig.app.json"],
             "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
           }
@@ -224,8 +231,10 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:lint",
           "options": {
+            "linter": "eslint",
+            "config": "libs/vdb/.eslintrc",
             "tsConfig": ["libs/vdb/tsconfig.lib.json", "libs/vdb/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!libs/vdb/**"]
           }
@@ -265,13 +274,33 @@
           }
         }
       }
+    },
+    "model": {
+      "root": "libs/model",
+      "sourceRoot": "libs/model/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "libs/model/.eslintrc",
+            "tsConfig": ["libs/model/tsconfig.lib.json", "libs/model/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/model/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/model/jest.config.js",
+            "tsConfig": "libs/model/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
-    "warnings": {
-      "typescriptMismatch": false,
-      "versionMismatch": false
-    },
     "defaultCollection": "@nrwl/angular"
   },
   "schematics": {

@@ -1,8 +1,8 @@
-import { ValueType } from './tree/leaf-node';
-import { IterableNode } from './tree/node';
+import { ChildNode, IterableNode } from './tree/node';
 import { Tree } from './tree/tree';
 import { ValueAccessor3 } from './tree/value-accessor';
 import { Voxel } from './tree/voxel';
+import { ValueType } from './types';
 
 /**
  *  Grid, a container that associates a Tree with a Transform and additional metadata.
@@ -37,5 +37,13 @@ export class Grid<T = ValueType> implements IterableNode<T> {
 
   beginVoxelOn(): IterableIterator<Voxel<T>> {
     return this.tree.beginVoxelOn();
+  }
+
+  beginValueOn(): IterableIterator<ChildNode<T>> {
+    return this.tree.beginValueOn();
+  }
+
+  empty(): boolean {
+    return this.tree.empty();
   }
 }

@@ -14,7 +14,7 @@
  *           0--- X                   0-------1
  */
 
-import { HashableNode } from '../tree/node';
+import { HashableNode } from '../tree';
 
 export interface MeshData {
   colors: number[];

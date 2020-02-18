@@ -1,6 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Coord, Grid, MeshData, nodeToMesh } from '@talus/vdb';
-import { intToRgba } from '../model/rgba.value';
+import { intToRgba } from '@talus/model';
+import {
+  add,
+  areEqual,
+  Coord,
+  createMaxCoord,
+  DDA,
+  Grid,
+  MeshData,
+  nodeToMesh,
+  Ray,
+  TimeSpan,
+  Vec3,
+  VolumeRayIntersector,
+  Voxel,
+} from '@talus/vdb';
+
+const COLOR_FACTOR = 1 / 255;
 
 /**
  * Keeps the mutable state of the single grid. This state is not part of the store, due to
@@ -10,21 +26,16 @@ import { intToRgba } from '../model/rgba.value';
  */
 @Injectable()
 export class GridService {
-  grid = new Grid(0);
+  grid = new Grid(-1);
   accessor = this.grid.getAccessor();
 
-  colors = {
-    0: [0, 0, 0, 1],
-    1: [0, 0, 1, 1],
-    2: [0, 1, 0, 1],
-    3: [0, 1, 1, 1],
-    4: [1, 0, 0, 1],
-    5: [1, 0, 1, 1],
-    6: [1, 1, 0, 1],
-    7: [1, 1, 1, 1],
-  };
+  get background(): number {
+    return this.grid.background;
+  }
 
-  private readonly alphaFactor = 1 / 255;
+  getVoxel(xyz: Coord): number {
+    return this.accessor.getValue(xyz);
+  }
 
   /**
    * Sets a new voxel via accessor to share access path.
@@ -33,10 +44,15 @@ export class GridService {
   setVoxel(xyz: Coord, newValue: number): VoxelChange {
     const oldValue = this.accessor.getValue(xyz);
 
-    this.accessor.setValueOn(xyz, newValue);
+    newValue !== this.grid.background
+      ? this.accessor.setValueOn(xyz, newValue)
+      : this.accessor.setValueOff(xyz, newValue);
+
+    const internalNode1 = this.accessor.probeInternalNode1(xyz);
+    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
 
     return {
-      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      affectedNodeOrigin,
       newValue,
       oldValue,
       xyz,
@@ -44,27 +60,26 @@ export class GridService {
   }
 
   setVoxels(coords: Coord[], newValues: number[]): VoxelChange[] {
-    const changes = new Map<string, VoxelChange>();
-
     if (coords.length !== newValues.length) {
       throw new Error(`Coordinates and new values don't have the same length.`);
     }
 
-    coords.forEach((xyz, i) => {
-      const change = this.setVoxel(xyz, newValues[i]);
-      changes.set(change.affectedNodeOrigin.toString(), change);
-    });
+    const changes: VoxelChange[] = [];
+    coords.forEach((xyz, i) => changes.push(this.setVoxel(xyz, newValues[i])));
 
-    return Array.from(changes.values());
+    return changes;
   }
 
   removeVoxel(xyz: Coord): VoxelChange {
     const oldValue = this.accessor.getValue(xyz);
 
-    this.accessor.setActiveState(xyz, false);
+    this.accessor.setValueOff(xyz, this.grid.background);
+
+    const internalNode1 = this.accessor.probeInternalNode1(xyz);
+    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
 
     return {
-      affectedNodeOrigin: this.accessor.internalNode1Origin,
+      affectedNodeOrigin,
       oldValue,
       newValue: oldValue,
       xyz,
@@ -84,14 +99,90 @@ export class GridService {
 
     return nodeToMesh(internal1, this.valueToColor);
   }
+
+  selectLine(points: Coord[], newValue: number): VoxelChange[] {
+    const start = points[0];
+    const startCenter = add(start, [0.5, 0.5, 0.5]);
+    const end = points[1];
+    const endCenter = add(end, [0.5, 0.5, 0.5]);
+
+    // Set end to ensure leaf-node is created in the grid. And has at least one active voxel.
+    // Otherwise, it could happen that the end point is in a new leaf which doesn't yet exist
+    // and therefore doesn't cause any intersection (since a ray intersects only with active
+    // values i.e. either active voxels or tiles. The start voxel is already added when the
+    // drawing of the line starts (in effect).
+    const tempChange = this.setVoxel(end, newValue);
+
+    const ray = this.createIntersectionRay(startCenter, endCenter);
+
+    const totalTimeSpan = TimeSpan.inf();
+    if (!this.findTotalTimeSpan(ray, totalTimeSpan)) {
+      return [];
+    }
+
+    // Restore old value
+    tempChange.oldValue === this.grid.background
+      ? this.removeVoxel(tempChange.xyz)
+      : this.setVoxel(tempChange.xyz, tempChange.oldValue);
+
+    return this.setVoxelsAlongRayUntilLastVoxel(ray, totalTimeSpan, end, newValue);
+  }
+
+  private createIntersectionRay(startXyz: Coord, endXyz: Coord): Ray {
+    const eye = new Vec3(startXyz[0], startXyz[1], startXyz[2]);
+    const direction = new Vec3(
+      endXyz[0] - startXyz[0],
+      endXyz[1] - startXyz[1],
+      endXyz[2] - startXyz[2],
+    );
+
+    return new Ray(eye, direction);
+  }
+
+  private findTotalTimeSpan(ray: Ray, timeSpanRef: TimeSpan): boolean {
+    const intersector = new VolumeRayIntersector(this.grid);
+
+    // Does ray intersect
+    if (!intersector.setIndexRay(ray)) {
+      return false;
+    }
+
+    return intersector.marchUntilEnd(timeSpanRef);
+  }
+
+  private setVoxelsAlongRayUntilLastVoxel(
+    ray: Ray,
+    timeSpan: TimeSpan,
+    lastVoxel: Coord,
+    newValue: number,
+  ): VoxelChange[] {
+    const dda = new DDA(Voxel.LOG2DIM);
+    dda.init(ray, timeSpan.t0, timeSpan.t1);
+
+    const coords: Coord[] = [];
+    const values: number[] = [];
+
+    do {
+      const voxelCoord = dda.getVoxel();
+      coords.push(voxelCoord);
+      values.push(newValue);
+
+      if (areEqual(lastVoxel, voxelCoord)) {
+        break;
+      }
+    } while (dda.nextStep());
+
+    return this.setVoxels(coords, values);
+  }
+
   private valueToColor = (value: number): [number, number, number, number] => {
     const rgba = intToRgba(value);
 
     return [
-      rgba.r * this.alphaFactor,
-      rgba.g * this.alphaFactor,
-      rgba.b * this.alphaFactor,
-      rgba.a * this.alphaFactor,
+      rgba.r * COLOR_FACTOR,
+      rgba.g * COLOR_FACTOR,
+      rgba.b * COLOR_FACTOR,
+      rgba.a * COLOR_FACTOR,
     ];
   };
 }

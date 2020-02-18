@@ -1,4 +1,4 @@
-import { Tool } from '../model/tool.value';
+import { Tool } from '@talus/model';
 import { selectTool } from './tools-panel.actions';
 import { reducer } from './tools-panel.reducer';
 

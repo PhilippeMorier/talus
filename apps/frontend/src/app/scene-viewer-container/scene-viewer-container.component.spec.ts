@@ -3,13 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { rgbaToInt, Tool } from '@talus/model';
 import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { rgbaToInt } from '../model/rgba.value';
-import { Tool } from '../model/tool.value';
 import { initialMockState } from '../testing';
+import { GridService } from './grid.service';
 import { removeVoxel, setVoxel } from './scene-viewer-container.actions';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 
@@ -35,6 +35,7 @@ describe('SceneViewerContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
       providers: [
+        GridService,
         provideMockStore<fromApp.State>({
           initialState: initialMockState,
         }),
@@ -82,22 +83,22 @@ describe('SceneViewerContainerComponent', () => {
   it.each([
     [
       [1, 0.2, 0.9],
-      [1, 0.2, 0.9],
+      [1, 0, 0], // fraction part is removed
       [1, 0, 0],
     ],
     [
       [0.99999999, 0.2, 0.9],
-      [1, 0.2, 0.9],
+      [1, 0, 0],
       [1, 0, 0],
     ],
     [
       [0.2, 0.99999999, 0.9],
-      [0.2, 1, 0.9],
+      [0, 1, 0],
       [0, 1, 0],
     ],
     [
       [0.2, 0.9, 0.0000000001],
-      [0.2, 0.9, 0],
+      [0, 0, 0],
       [0, 0, 1],
     ],
     [
@@ -112,12 +113,12 @@ describe('SceneViewerContainerComponent', () => {
     ],
     [
       [-0, -2, 3],
-      [-0, -3, 2],
+      [0, -3, 2],
       [0, 0, -1],
     ],
     [
       [0.5, 1.4, -1],
-      [0.5, 1.4, -1],
+      [0, 1, -1],
       [0, 0, 1],
     ],
   ])(
@@ -151,37 +152,37 @@ describe('SceneViewerContainerComponent', () => {
   it.each([
     [
       [1.0000000000001, 0.5, 0.5],
-      [0, 0.5, 0.5],
+      [0, 0, 0], // fraction part is removed
       [1, 0, 0],
     ],
     [
       [0.999999999999, 0.5, 0.5],
-      [1, 0.5, 0.5],
+      [1, 0, 0],
       [-1, 0, 0],
     ],
     [
       [1.0000000000001, -0.5, 0.5],
-      [1, -1.5, 0.5],
+      [1, -1, 0],
       [-1, 0, 0],
     ],
     [
       [-0.999999999999, -0.5, 0.5],
-      [-1, -1.5, 0.5],
+      [-1, -1, 0],
       [-1, 0, 0],
     ],
     [
       [-2.0000000000001, -0.5, 0.5],
-      [-3, -1.5, 0.5],
+      [-3, -1, 0],
       [1, 0, 0],
     ],
     [
       [0.5, 0.999999999999, 0.5],
-      [0.5, 0, 0.5],
+      [0, 0, 0],
       [0, 1, 0],
     ],
     [
       [0.5461420538559825, 0.4841910809236776, -2],
-      [0.5461420538559825, 0.4841910809236776, -2],
+      [0, 0, -2],
       [0, 0, -1],
     ],
   ])(

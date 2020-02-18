@@ -1,13 +1,11 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
+import { Index } from '../types';
 import { NodeMask } from '../util/node-mask';
 import { InternalNode1 } from './internal-node';
 import { LeafBuffer } from './leaf-buffer';
-import { HashableNode } from './node';
+import { ChildNode, HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
-
-export type ValueType = boolean | number | string;
-export type Index = number;
 
 export class LeafNode<T> implements HashableNode<T> {
   // tslint:disable:no-bitwise
@@ -124,11 +122,22 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Return the value of the voxel at the given coordinates.
    * @note Used internally by ValueAccessor.
    */
-  getValueAndCache(xyz: Coord, _: ValueAccessor3<T>): T {
+  getValueAndCache(xyz: Coord, _accessor: ValueAccessor3<T>): T {
     return this.getValue(xyz);
   }
 
-  probeInternalNode1AndCache(xyz: Coord, _: ValueAccessor3<T>): InternalNode1<T> | undefined {
+  probeLeafNodeAndCache(_xyz: Coord, _accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    return this;
+  }
+
+  touchLeafAndCache(_xyz: Coord, _accessor: ValueAccessor3<T>): LeafNode<T> {
+    return this;
+  }
+
+  probeInternalNode1AndCache(
+    _xyz: Coord,
+    _accessor: ValueAccessor3<T>,
+  ): InternalNode1<T> | undefined {
     throw new Error(`Shouldn't be called on LeafNode`);
   }
 
@@ -136,7 +145,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Change the value of the voxel at the given coordinates and mark it as active.
    * @note Used internally by ValueAccessor.
    */
-  setValueAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+  setValueAndCache(xyz: Coord, value: T, _accessor: ValueAccessor3<T>): void {
     this.setValueOn(xyz, value);
   }
 
@@ -144,7 +153,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Change the value of the voxel at the given coordinates and mark it as inactive.
    * @note Used internally by ValueAccessor.
    */
-  setValueOffAndCache(xyz: Coord, value: T, _: ValueAccessor3<T>): void {
+  setValueOffAndCache(xyz: Coord, value: T, _accessor: ValueAccessor3<T>): void {
     this.setValueOff(xyz, value);
   }
 
@@ -152,7 +161,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Return `true` if the voxel at the given coordinates is active.
    * @note Used internally by ValueAccessor.
    */
-  isValueOnAndCache(xyz: Coord, _: ValueAccessor3<T>): boolean {
+  isValueOnAndCache(xyz: Coord, _accessor: ValueAccessor3<T>): boolean {
     return this.isValueOn(xyz);
   }
 
@@ -160,7 +169,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @brief Set the active state of the voxel at the given coordinates without changing its value.
    * @note Used internally by ValueAccessor.
    */
-  setActiveStateAndCache(xyz: Coord, on: boolean, _: ValueAccessor3<T>): void {
+  setActiveStateAndCache(xyz: Coord, on: boolean, _accessor: ValueAccessor3<T>): void {
     return this.setActiveState(xyz, on);
   }
 
@@ -177,6 +186,43 @@ export class LeafNode<T> implements HashableNode<T> {
     ];
   }
 
+  /**
+   * Expand the given bounding box so that it includes this leaf node's active voxels.
+   * If visitVoxels is false this LeafNode will be approximated as dense, i.e. with all
+   * voxels active. Else the individual active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    const thisBbox = this.getNodeBoundingBox();
+
+    // this LeafNode is already enclosed in the bbox
+    if (bbox.isInside(thisBbox)) {
+      return;
+    }
+
+    // any active values?
+    if (!this.beginVoxelOn().next().done) {
+      // use voxel granularity?
+      if (visitVoxels) {
+        thisBbox.reset();
+        // Originally, `beginValueOn()` would be called
+        for (const voxel of this.beginVoxelOn()) {
+          thisBbox.expand(voxel.globalCoord);
+        }
+        thisBbox.translate(this.origin);
+      }
+
+      bbox.expand(thisBbox);
+    }
+  }
+
+  /**
+   * Return the bounding box of this node, i.e., the full index space
+   * spanned by this leaf node.
+   */
+  getNodeBoundingBox(): CoordBBox {
+    return CoordBBox.createCube(this.origin, LeafNode.DIM);
+  }
+
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.valueMask.beginOn()) {
       yield {
@@ -184,5 +230,11 @@ export class LeafNode<T> implements HashableNode<T> {
         value: this.buffer.getValue(index),
       };
     }
+  }
+
+  beginValueOn(): IterableIterator<ChildNode<T>> {
+    // In `evalActiveBoundingBox()` `beginVoxelOn()` is called instead of `beginValueOn()`
+    // to have `globalCoord` available.
+    throw new Error(`Shouldn't be called on LeafNode`);
   }
 }

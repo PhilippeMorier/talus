@@ -28,6 +28,15 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached([0, 0, InternalNode2.DIM - 1])).toBeTruthy();
       expect(accessor.isCached([0, 0, InternalNode2.DIM])).toBeFalsy();
     });
+
+    it('should return background value', () => {
+      const tree = new Tree(0);
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 0);
+
+      expect(accessor.getValue([0, 0, 1])).toEqual(tree.background);
+    });
   });
 
   describe('setValueOn()', () => {
@@ -48,6 +57,17 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached([0, 0, InternalNode2.DIM])).toBeFalsy();
 
       expect(accessor.isValueOn([0, 0, 0])).toBeTruthy();
+    });
+
+    it('should get background', () => {
+      const tree = new Tree(-1);
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], -1);
+      accessor.setActiveState([0, 0, 0], false);
+
+      expect(accessor.getValue([0, 0, 0])).toEqual(-1);
+      expect(accessor.isValueOn([0, 0, 0])).toEqual(false);
     });
   });
 
@@ -123,22 +143,26 @@ describe('ValueAccessor', () => {
 
     it('should hit no cache and return internal node 1', () => {
       const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeInternalNode1AndCache').and.callThrough();
 
       accessor.setValueOn([0, 0, 0], 42);
-      // Produce a cache miss (go over root)
+      // Produce a cache L2 miss by accessing neighbouring InternalNode2
       accessor.setValueOn([InternalNode2.DIM, 0, 0], 42);
 
       expect(accessor.probeInternalNode1([32, 0, 0])).toBeInstanceOf(InternalNode1);
+      expect(tree.root.probeInternalNode1AndCache).toBeCalledTimes(1);
     });
 
     it('should hit cache L2 and return internal node 1', () => {
       const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeInternalNode1AndCache').and.callThrough();
 
       accessor.setValueOn([0, 0, 0], 42);
-      // Produce a cache miss (go over InternalNode2)
+      // Produce a cache L1 miss by accessing neighbouring InternalNode1
       accessor.setValueOn([InternalNode1.DIM, 0, 0], 42);
 
       expect(accessor.probeInternalNode1([32, 0, 0])).toBeInstanceOf(InternalNode1);
+      expect(tree.root.probeInternalNode1AndCache).not.toHaveBeenCalled();
     });
 
     it('should hit cache L1 and return internal node 1', () => {
@@ -146,7 +170,84 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn([0, 0, 0], 42);
 
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+      const isHashed2Spy = spyOn<any>(accessor, 'isHashed2');
       expect(accessor.probeInternalNode1([LeafNode.DIM, 0, 0])).toBeInstanceOf(InternalNode1);
+      expect(isHashed2Spy.calls.count()).toEqual(0);
+    });
+  });
+
+  describe('probeLeafNode()', () => {
+    const tree = new Tree(-1);
+
+    it('should return undefined if no leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.probeLeafNode([111, 222, 333])).toBeUndefined();
+    });
+
+    it('should hit no cache and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache L2 miss by accessing neighbouring InternalNode2
+      accessor.setValueOn([InternalNode2.DIM, 0, 0], 42);
+
+      expect(accessor.probeLeafNode([LeafNode.DIM - 1, 0, 0])).toBeInstanceOf(LeafNode);
+      expect(tree.root.probeLeafNodeAndCache).toBeCalledTimes(1);
+    });
+
+    it('should hit cache L2 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+      spyOn(tree.root, 'probeLeafNodeAndCache').and.callThrough();
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache L1 miss by accessing neighbouring InternalNode1
+      accessor.setValueOn([InternalNode1.DIM, 0, 0], 42);
+
+      expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
+      expect(tree.root.probeLeafNodeAndCache).not.toHaveBeenCalled();
+    });
+
+    it('should hit cache L1 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+      // Produce a cache L0 miss by accessing neighbouring LeafNode
+      accessor.setValueOn([LeafNode.DIM, 0, 0], 42);
+
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+      const isHashed2Spy = spyOn<any>(accessor, 'isHashed2').and.callThrough();
+      expect(accessor.probeLeafNode([0, LeafNode.DIM - 1, 0])).toBeInstanceOf(LeafNode);
+      expect(isHashed2Spy.calls.count()).toEqual(0);
+    });
+
+    it('should hit cache L0 and return leaf node', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      accessor.setValueOn([0, 0, 0], 42);
+
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+      const isHashed1Spy = spyOn<any>(accessor, 'isHashed1').and.callThrough();
+      expect(accessor.probeLeafNode([0, 0, LeafNode.DIM - 1])).toBeInstanceOf(LeafNode);
+      expect(isHashed1Spy.calls.count()).toEqual(0);
+    });
+  });
+
+  describe('touchLeaf()', () => {
+    const tree = new Tree(-1);
+
+    it('should create not existing leaf node and return it', () => {
+      const accessor = new ValueAccessor3(tree);
+
+      expect(accessor.probeLeafNode([0, 0, 0])).toBeUndefined();
+
+      const newLeaf = accessor.touchLeaf([0, 0, 0]);
+
+      expect(newLeaf).toBeDefined();
+      expect(accessor.probeLeafNode([0, 0, 0])).toBeDefined();
+      expect(accessor.probeLeafNode([0, 0, 0])).toBe(newLeaf);
     });
   });
 });

@@ -1,6 +1,7 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
-import { HashableNode } from './node';
+import { LeafNode } from './leaf-node';
+import { ChildNode, HashableNode } from './node';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
@@ -13,6 +14,7 @@ export class RootNode<T> implements HashableNode<T> {
 
   /**
    * Return a MapType key for the given coordinates.
+   *
    * Can't use Coord directly since it's a reference type.
    * Convert it to a value type i.e. in a string in form of 'X,Y,Z'.
    */
@@ -26,6 +28,12 @@ export class RootNode<T> implements HashableNode<T> {
     // tslint:enable:no-bitwise
 
     return coord.join(',');
+  }
+
+  static keyToCoord(key: string): Coord {
+    const xyz = key.split(',');
+
+    return [Number(xyz[0]), Number(xyz[1]), Number(xyz[2])];
   }
 
   get background(): T {
@@ -57,6 +65,26 @@ export class RootNode<T> implements HashableNode<T> {
     return struct.getTile().value;
   }
 
+  /**
+   * Return the bounding box of this RootNode, i.e., an infinite bounding box.
+   */
+  getNodeBoundingBox(): CoordBBox {
+    return CoordBBox.inf();
+  }
+
+  probeLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    const struct = this.findCoord(xyz);
+
+    if (!struct || struct.isTile()) {
+      return undefined;
+    }
+
+    const child = struct.getChild();
+    accessor.insert(xyz, child);
+
+    return child.probeLeafNodeAndCache(xyz, accessor);
+  }
+
   probeInternalNode1AndCache(
     xyz: Coord,
     accessor: ValueAccessor3<T>,
@@ -71,6 +99,25 @@ export class RootNode<T> implements HashableNode<T> {
     accessor.insert(xyz, child);
 
     return child.probeInternalNode1AndCache(xyz, accessor);
+  }
+
+  touchLeafAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> {
+    let child: HashableNode<T> | undefined;
+    const struct = this.findCoord(xyz);
+
+    if (!struct) {
+      child = new InternalNode2(xyz, this._background, false);
+      this.table.set(RootNode.coordToKey(xyz), new NodeStruct(child));
+    } else if (struct.isChild()) {
+      child = struct.getChild();
+    } else {
+      child = new InternalNode2(xyz, struct.getTile().value, struct.isTileOn());
+      struct.setChild(child);
+    }
+
+    accessor.insert(xyz, child);
+
+    return child.touchLeafAndCache(xyz, accessor);
   }
 
   setValueOn(xyz: Coord, value: T): void {
@@ -208,6 +255,57 @@ export class RootNode<T> implements HashableNode<T> {
     for (const nodeStruct of this.table.values()) {
       if (nodeStruct.isChild()) {
         yield* nodeStruct.getChild().beginVoxelOn();
+      }
+    }
+  }
+
+  *beginValueOn(): IterableIterator<ChildNode<T>> {
+    for (const nodeStruct of this.table.values()) {
+      if (nodeStruct.isChild()) {
+        yield* nodeStruct.getChild().beginValueOn();
+      }
+    }
+  }
+
+  /**
+   * Return true if this node's table is either empty or contains only background tiles.
+   */
+  empty(): boolean {
+    return this.table.size === this.numBackgroundTiles();
+  }
+
+  /**
+   * Return the number of background tiles.
+   */
+  numBackgroundTiles(): number {
+    let count = 0;
+    for (const nodeStruct of this.table.values()) {
+      if (this.isBackgroundTile(nodeStruct)) {
+        ++count;
+      }
+    }
+
+    return count;
+  }
+
+  isBackgroundTile(nodeStruct: NodeStruct<T>): boolean {
+    return nodeStruct.isTileOff() && nodeStruct.getTile().value === this._background;
+  }
+
+  /**
+   * @brief Expand the specified bbox so it includes the active tiles of
+   * this root node as well as all the active values in its child
+   * nodes. If visitVoxels is false LeafNodes will be approximated
+   * as dense, i.e. with all voxels active. Else the individual
+   * active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    for (const [key, nodeStruct] of this.table) {
+      const child = nodeStruct.isChild() && nodeStruct.getChild();
+      if (child) {
+        child.evalActiveBoundingBox(bbox, visitVoxels);
+      } else if (nodeStruct.isTileOn()) {
+        bbox.expand(RootNode.keyToCoord(key), InternalNode2.DIM);
       }
     }
   }

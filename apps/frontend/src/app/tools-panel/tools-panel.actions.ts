@@ -1,4 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { Tool } from '../model/tool.value';
+import { Tool } from '@talus/model';
 
 export const selectTool = createAction('[toolsPanel] Select tool', props<{ id: Tool }>());

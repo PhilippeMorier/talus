@@ -16,8 +16,9 @@ module.exports = {
     ],
   ],
   snapshotSerializers: [
-    'jest-preset-angular/AngularSnapshotSerializer.js',
-    'jest-preset-angular/HTMLCommentSerializer.js',
+    'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
+    'jest-preset-angular/build/AngularSnapshotSerializer.js',
+    'jest-preset-angular/build/HTMLCommentSerializer.js',
   ],
   // https://github.com/nrwl/nx/issues/1439#issuecomment-561268656
   // When using `Run test` directly in WebStorm, change the used config to

@@ -2,13 +2,19 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
+import { rgbaToInt, Tool } from '@talus/model';
 import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
-import { Coord } from '@talus/vdb';
+import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Rgba, rgbaToInt } from '../model/rgba.value';
-import { Tool } from '../model/tool.value';
-import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.actions';
+import {
+  paintVoxel,
+  removeVoxel,
+  setLineCoord,
+  setVoxel,
+  setVoxels,
+  voxelUnderCursorChange,
+} from './scene-viewer-container.actions';
 
 @Component({
   selector: 'fe-scene-viewer-container',
@@ -16,17 +22,22 @@ import { paintVoxel, removeVoxel, setVoxel } from './scene-viewer-container.acti
     <ui-scene-viewer
       *ngIf="selectedToolIdAndColor$ | async as selected"
       (pointerPick)="onPointerPick($event, selected[0], selected[1])"
+      (pointUnderPointer)="onPointUnderPointer($event, selected[0], selected[1])"
     ></ui-scene-viewer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SceneViewerContainerComponent implements AfterViewInit {
-  @ViewChild(UiSceneViewerComponent, { static: false })
+  @ViewChild(UiSceneViewerComponent)
   private sceneViewerComponent: UiSceneViewerComponent;
 
   private selectedToolId$: Observable<Tool> = this.store.pipe(select(fromApp.selectSelectedToolId));
-  private selectedColor$: Observable<Rgba> = this.store.pipe(select(fromApp.selectSelectedColor));
+  private selectedColor$: Observable<number> = this.store.pipe(
+    select(fromApp.selectSelectedIntColor),
+  );
   selectedToolIdAndColor$ = combineLatest([this.selectedToolId$, this.selectedColor$]);
+
+  private lastUnderPointerPosition: Coord = createMaxCoord();
 
   constructor(private store: Store<fromApp.State>) {}
 
@@ -36,38 +47,77 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     );
   }
 
-  onPointerPick(event: UiPointerPickInfo, selectedToolId: Tool, selectedColor: Rgba): void {
-    this.dispatchPickAction(event, selectedToolId, selectedColor);
+  onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {
+    this.dispatchPickAction(pickInfo, selectedToolId, selectedColor);
   }
 
-  // onMeshPick(mesh: AbstractMesh): void {
-  //   mesh.edgesRenderer ? mesh.disableEdgesRendering() : mesh.enableEdgesRendering();
-  //   mesh.renderOutline = !mesh.renderOutline;
-  // }
+  onPointUnderPointer(
+    pickInfo: UiPointerPickInfo,
+    selectedToolId: Tool,
+    selectedColor: number,
+  ): void {
+    if (selectedToolId === Tool.SelectLinePoint) {
+      this.dispatchVoxelUnderCursorChange(pickInfo, selectedColor);
+    }
+  }
+
+  private dispatchVoxelUnderCursorChange(pickInfo: UiPointerPickInfo, selectedColor: number): void {
+    const toAddPosition = this.calcVoxelToAddPosition(pickInfo);
+    const underPointerPosition = this.calcVoxelUnderPointerPosition(pickInfo);
+
+    if (areEqual(this.lastUnderPointerPosition, underPointerPosition)) {
+      return;
+    }
+    this.lastUnderPointerPosition = underPointerPosition;
+
+    this.store.dispatch(
+      voxelUnderCursorChange({
+        toAddPosition,
+        underPointerPosition,
+        color: selectedColor,
+      }),
+    );
+  }
+
+  private initializeChessboard(position: Coord): void {
+    const white = rgbaToInt({ r: 255, g: 255, b: 255, a: 255 });
+    const grey = rgbaToInt({ r: 200, g: 200, b: 200, a: 255 });
+    const coords: Coord[] = [];
+    const newValues: number[] = [];
+
+    const diameter = 8;
+    for (let x = -diameter; x < diameter; x++) {
+      for (let z = -diameter; z < diameter; z++) {
+        coords.push([position[0] + x, position[1], position[2] + z]);
+        newValues.push((x + z) % 2 === 0 ? white : grey);
+      }
+    }
+
+    this.store.dispatch(setVoxels({ coords, newValues }));
+  }
 
   private dispatchPickAction(
     pickInfo: UiPointerPickInfo,
     selectedToolId: Tool,
-    selectedColor: Rgba,
+    newValue: number,
   ): void {
     if (pickInfo.pointerButton !== UiPointerButton.Main) {
       return;
     }
 
-    const colorInt = rgbaToInt(selectedColor);
-
     switch (selectedToolId) {
+      case Tool.SelectLinePoint:
+        this.store.dispatch(setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
+        break;
       case Tool.SetVoxel:
-        this.store.dispatch(
-          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue: colorInt }),
-        );
+        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo) }));
+        this.store.dispatch(removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo) }));
         break;
       case Tool.PaintVoxel:
         this.store.dispatch(
-          paintVoxel({ xyz: this.calcClickedVoxelPosition(pickInfo), newValue: colorInt }),
+          paintVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), newValue }),
         );
         break;
     }
@@ -92,10 +142,12 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         : pickedIntegerPoint[2],
     ];
 
+    removeFraction(newPoint);
+
     return newPoint;
   }
 
-  private calcClickedVoxelPosition(pickInfo: UiPointerPickInfo): Coord {
+  private calcVoxelUnderPointerPosition(pickInfo: UiPointerPickInfo): Coord {
     const pickedIntegerPoint = this.roundDimensionAlongNormal(pickInfo);
 
     const newPoint: Coord = [
@@ -109,6 +161,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         ? pickedIntegerPoint[2] - 1
         : pickedIntegerPoint[2],
     ];
+
+    removeFraction(newPoint);
 
     return newPoint;
   }

@@ -7,17 +7,16 @@ aliases:
   # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
   - &use_docker_node
     docker:
-      - image: circleci/node:13.6.0-stretch
+      - image: circleci/node:13.7.0-stretch
 
   - &use_docker_node_browsers
     docker:
-      - image: circleci/node:13.6.0-stretch-browsers
+      - image: circleci/node:13.7.0-stretch-browsers
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
-      # 3.8.0 fails with `Error: write EPIPE` when running `benchmark`!?
-      - image: cypress/included:3.8.2
+      - image: cypress/included:4.0.1
 
   - &workspace ~/talus
 
@@ -56,12 +55,14 @@ aliases:
 
         echo 'export COMMIT_MESSAGE="[skip ci] Deploy: $DEPLOY_CONTEXT (#$LAST_COMMIT_HASH_SHORT)"' >> $BASH_ENV
         echo 'export DIST_PATH="dist/$DEPLOY_CONTEXT"' >> $BASH_ENV
-        echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT"' >> $BASH_ENV
+        echo 'export DEST_PATH="$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT/$DEPLOY_CONTEXT"' >> $BASH_ENV
 
   - &deploy_to_github_pages
     run:
       name: Deploy to Github pages
       command: |
+        git fetch origin gh-pages:gh-pages
+        git pull
         yarn gh-pages \
         --dotfiles \
         --message "$COMMIT_MESSAGE" \
@@ -145,7 +146,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn test:code-coverage
+          command: yarn nx test --code-coverage
 
       - *store_test_results
 
@@ -163,7 +164,11 @@ jobs:
 
       - run:
           name: Build benchmarks
-          command: yarn build benchmark
+          # add `--maxWorkers=10` to avoid following two errors:
+          # 1. Too long with no output (exceeded 10m0s): context deadline exceeded
+          # 2. Killed
+          #    error Command failed with exit code 137.
+          command: yarn nx build benchmark --maxWorkers=10
 
       - run:
           name: Run benchmarks
@@ -181,7 +186,7 @@ jobs:
 
       - run:
           name: Run frontend-e2e
-          command: yarn e2e:ci frontend-e2e
+          command: yarn nx e2e frontend-e2e --headless
 
       - *store_test_results
 
@@ -199,7 +204,7 @@ jobs:
 
       - run:
           name: Run ui-e2e
-          command: yarn ng run ui-e2e:e2e --headless
+          command: yarn nx e2e ui-e2e --headless
 
       - *store_test_results
 
@@ -218,7 +223,7 @@ jobs:
       - run:
           name: Build app
           command:
-            yarn ng run frontend:build:production --base-href BASE_PATH_PLACEHOLDER --progress=false
+            yarn nx build frontend --prod=true --base-href=BASE_PATH_PLACEHOLDER --progress=false
 
       - run:
           name: Create index files
@@ -230,7 +235,7 @@ jobs:
             echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
 
             echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/dist\/apps\/frontend\/"' >> $BASH_ENV
-            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$LAST_COMMIT_HASH_SHORT\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$LAST_COMMIT_HASH_SHORT\/apps\/frontend\/"' >> $BASH_ENV
 
             echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
             echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
@@ -262,7 +267,7 @@ jobs:
 
       - run:
           name: Build storybook
-          command: yarn ng run ui:build-storybook
+          command: yarn nx run ui:build-storybook
 
       - store_artifacts:
           path: ./dist/storybook/ui

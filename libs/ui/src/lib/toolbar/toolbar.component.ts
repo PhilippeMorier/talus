@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 export interface UiToolbarToolConfig<T> {
   tooltip?: string;

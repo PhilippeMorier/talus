@@ -1,4 +1,4 @@
-import { clone, Coord, createMaxCoord } from '../math/coord';
+import { Coord, createMaxCoord } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 import { HashableNode } from './node';
@@ -28,10 +28,6 @@ import { Tree } from './tree';
  * The configuration is hard-coded and has a depth of four.
  */
 export class ValueAccessor3<T> {
-  get internalNode1Origin(): Coord {
-    return clone(this.internalKey1);
-  }
-
   private leafKey: Coord = createMaxCoord();
   private leafNode: LeafNode<T>;
 
@@ -51,7 +47,23 @@ export class ValueAccessor3<T> {
   }
 
   /**
-   * @returns Returns the node that contains voxel (x, y, z)
+   * @returns the leaf node that contains voxel (x, y, z)
+   * and if it doesn't exist, return undefined.
+   */
+  probeLeafNode(xyz: Coord): LeafNode<T> | undefined {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode;
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.probeLeafNodeAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.probeLeafNodeAndCache(xyz, this);
+    } else {
+      return this.tree.root.probeLeafNodeAndCache(xyz, this);
+    }
+  }
+
+  /**
+   * @returns the node that contains voxel (x, y, z)
    * and if it doesn't exist, return undefined.
    */
   probeInternalNode1(xyz: Coord): InternalNode1<T> | undefined {
@@ -61,6 +73,18 @@ export class ValueAccessor3<T> {
       return this.internalNode2.probeInternalNode1AndCache(xyz, this);
     } else {
       return this.tree.root.probeInternalNode1AndCache(xyz, this);
+    }
+  }
+
+  touchLeaf(xyz: Coord): LeafNode<T> {
+    if (this.isHashed0(xyz)) {
+      return this.leafNode;
+    } else if (this.isHashed1(xyz)) {
+      return this.internalNode1.touchLeafAndCache(xyz, this);
+    } else if (this.isHashed2(xyz)) {
+      return this.internalNode2.touchLeafAndCache(xyz, this);
+    } else {
+      return this.tree.root.touchLeafAndCache(xyz, this);
     }
   }
 

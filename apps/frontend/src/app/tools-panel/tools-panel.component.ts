@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { Tool } from '@talus/model';
 import { UiToolbarToolChange, UiToolbarToolConfig } from '@talus/ui';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { Tool } from '../model/tool.value';
 import { selectTool } from './tools-panel.actions';
 
 @Component({
@@ -21,6 +21,11 @@ export class ToolsPanelComponent {
   selectedToolId$: Observable<Tool>;
 
   tools: UiToolbarToolConfig<Tool>[] = [
+    {
+      icon: 'timeline',
+      tooltip: '@@@ Select line point',
+      value: Tool.SelectLinePoint,
+    },
     {
       icon: 'add_circle_outline',
       tooltip: '@@@ Set voxel',

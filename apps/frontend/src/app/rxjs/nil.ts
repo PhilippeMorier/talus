@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+declare type Nil = undefined | null;
+
 /**
  * Filters the observable until the value is not null or undefined.
  */

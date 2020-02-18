@@ -1,4 +1,4 @@
-import { Coord } from '../math/coord';
+import { Coord } from '../math';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { LeafNode } from './leaf-node';
 
@@ -153,13 +153,14 @@ describe('InternalNode', () => {
     });
 
     describe('setValueOn()', () => {
-      const generateRandomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+      const generateRandomInRange = (min, max): number =>
+        Math.floor(Math.random() * (max - min + 1) + min);
       const generateRandomCoord = (min, max): Coord => [
         generateRandomInRange(min, max),
         generateRandomInRange(min, max),
         generateRandomInRange(min, max),
       ];
-      const generateRandomCoords = (length, min, max) => {
+      const generateRandomCoords = (length, min, max): Coord[][] => {
         return Array.from({ length }, () => [generateRandomCoord(min, max)]);
       };
 

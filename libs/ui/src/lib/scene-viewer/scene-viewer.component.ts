@@ -24,6 +24,7 @@ export class UiSceneViewerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>;
 
   @Output() pointerPick = this.sceneViewerService.pointerPick$;
+  @Output() pointUnderPointer = this.sceneViewerService.pointUnderPointer$;
 
   @Output() dropFiles = new EventEmitter<File[]>();
 

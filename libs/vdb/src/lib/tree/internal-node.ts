@@ -1,8 +1,9 @@
-import { Coord } from '../math/coord';
+import { Coord, CoordBBox } from '../math';
+import { Index } from '../types';
 import { createDenseArray } from '../util/array';
 import { NodeMask } from '../util/node-mask';
-import { Index, LeafNode } from './leaf-node';
-import { HashableNode } from './node';
+import { LeafNode } from './leaf-node';
+import { ChildNode, HashableNode } from './node';
 import { NodeUnion } from './node-union';
 import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
@@ -78,17 +79,42 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return node.getValue();
   }
 
+  probeLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
+    const i: Index = this.coordToOffset(xyz);
+    if (this.childMask.isOff(i)) {
+      return undefined;
+    }
+
+    const node = this.nodes[i];
+    const child = node.getChild();
+    accessor.insert(xyz, child);
+
+    return child.probeLeafNodeAndCache(xyz, accessor);
+  }
+
+  touchLeafAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> {
+    const i: Index = this.coordToOffset(xyz);
+    const node = this.nodes[i];
+
+    if (this.childMask.isOff(i)) {
+      this.setChildNode(i, this.createChildNode(xyz, node.getValue(), this.valueMask.isOn(i)));
+    }
+
+    accessor.insert(xyz, node.getChild());
+
+    return node.getChild().touchLeafAndCache(xyz, accessor);
+  }
+
   probeInternalNode1AndCache(
     xyz: Coord,
     accessor: ValueAccessor3<T>,
   ): InternalNode1<T> | undefined {
     const i: Index = this.coordToOffset(xyz);
-    const node = this.nodes[i];
-
     if (this.childMask.isOff(i)) {
       return undefined;
     }
 
+    const node = this.nodes[i];
     const child = node.getChild();
     accessor.insert(xyz, child);
 
@@ -203,11 +229,46 @@ abstract class InternalNode<T> implements HashableNode<T> {
     return this.nodes[i].getChild().isValueOnAndCache(xyz, accessor);
   }
 
+  /**
+   * @brief Expand the specified bounding box so that it includes the active tiles
+   * of this internal node as well as all the active values in its child nodes.
+   * If visitVoxels is false LeafNodes will be approximated as dense, i.e. with all
+   * voxels active. Else the individual active voxels are visited to produce a tight bbox.
+   */
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+    if (bbox.isInside(this.getNodeBoundingBox())) {
+      return;
+    }
+
+    const dim = this instanceof InternalNode2 ? InternalNode1.DIM : LeafNode.DIM;
+    for (const child of this.beginValueOn()) {
+      bbox.expand(child.origin, dim);
+    }
+
+    for (const child of this.beginChildOn()) {
+      child.evalActiveBoundingBox(bbox, visitVoxels);
+    }
+  }
+
+  getNodeBoundingBox(): CoordBBox {
+    const dim = this instanceof InternalNode2 ? InternalNode2.DIM : InternalNode1.DIM;
+
+    return CoordBBox.createCube(this.origin, dim);
+  }
+
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.childMask.beginOn()) {
       const child = this.nodes[index].getChild();
 
       yield* child.beginVoxelOn();
+    }
+  }
+
+  *beginValueOn(): IterableIterator<ChildNode<T>> {
+    for (const index of this.valueMask.beginOn()) {
+      const child = this.nodes[index].getChild();
+
+      yield* child.beginValueOn();
     }
   }
 
@@ -289,7 +350,7 @@ export class InternalNode1<T> extends InternalNode<T> {
   static readonly NUM_VOXELS = 1 << (3 * InternalNode1.TOTAL); // total voxel count represented by this node
   // tslint:enable:no-bitwise
 
-  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): LeafNode<T> {
+  createChildNode(xyz: Coord, value?: T, active?: boolean): LeafNode<T> {
     return new LeafNode(xyz, value, active);
   }
 
@@ -316,7 +377,7 @@ export class InternalNode2<T> extends InternalNode<T> {
   static readonly NUM_VOXELS = Math.pow(2, 3 * InternalNode2.TOTAL);
   // tslint:enable:no-bitwise
 
-  createChildNode(xyz: [number, number, number], value?: T, active?: boolean): InternalNode1<T> {
+  createChildNode(xyz: Coord, value?: T, active?: boolean): InternalNode1<T> {
     return new InternalNode1(xyz, value, active);
   }
 
