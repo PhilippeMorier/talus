@@ -7,6 +7,7 @@ import { UiSceneViewerTestModule, UiSidenavShellModule, UiStatusBarModule } from
 import { AppComponent } from './app.component';
 import * as fromApp from './app.reducer';
 import { initialMockState } from './testing';
+import { KafkaProxyService } from './web-socket/kafka-proxy.service';
 
 @Component({
   selector: 'fe-menu-bar-container',
@@ -57,6 +58,7 @@ describe('AppComponent', () => {
         provideMockStore<fromApp.State>({
           initialState: initialMockState,
         }),
+        KafkaProxyService,
       ],
     }).compileComponents();
   }));

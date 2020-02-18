@@ -46,8 +46,8 @@ describe('MenuBarComponent', () => {
   });
 
   it('should dispatch action', () => {
-    component.onMenuItemClick(undo());
+    component.onMenuItemClick(undo({}));
 
-    expect(store.dispatch).toHaveBeenCalledWith(undo());
+    expect(store.dispatch).toHaveBeenCalledWith(undo({}));
   });
 });
