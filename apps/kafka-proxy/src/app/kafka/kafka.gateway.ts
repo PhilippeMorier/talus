@@ -51,6 +51,6 @@ export class KafkaGateway {
   @SubscribeMessage('AllActions')
   actions(@MessageBody() action: Action, @ConnectedSocket() client: Socket): void {
     console.log(`Action '${action.type}' from '${client.id}' received.`);
-    this.server.emit('AllActions', action, client.id);
+    client.broadcast.emit('AllActions', action);
   }
 }

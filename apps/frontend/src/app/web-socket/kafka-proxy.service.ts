@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { filter, map, withLatestFrom } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
 
 enum EventName {
@@ -25,10 +24,6 @@ export class KafkaProxyService {
   }
 
   listenToActions(): Observable<Action> {
-    return this.webSocketService.listen<[Action, string]>(EventName.AllActions).pipe(
-      withLatestFrom(this.webSocketService.socketId$),
-      filter(([[_action, id], socketId]) => id !== socketId),
-      map(([[action, _id], _socketId]) => action),
-    );
+    return this.webSocketService.listen<Action>(EventName.AllActions);
   }
 }
