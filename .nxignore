@@ -1,2 +1,5 @@
 # Hack for getting benchmark app (generated with ng g @nrwl/node:application) through linting
 /apps/benchmark
+
+# kafka app is not a real @nrwl/nx app
+/apps/kafka
