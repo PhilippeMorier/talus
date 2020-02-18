@@ -36,7 +36,9 @@ interface UiMenuBarMenuItem<T> {
 export class UiMenuBarComponent {
   @Input() menus: UiMenuBarMenu<any>[] = [];
 
-  @Output() menuItemClick = new EventEmitter();
+  // Without `<any>` on `EventEmitter` test don't run and throw
+  // Error: connect ECONNREFUSED 127.0.0.1:80
+  @Output() menuItemClick = new EventEmitter<any>();
 
   onMenuItemClick(value: any): void {
     this.menuItemClick.emit(value);
