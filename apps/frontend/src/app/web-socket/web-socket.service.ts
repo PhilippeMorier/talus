@@ -14,7 +14,7 @@ export class WebSocketService {
   );
 
   constructor(uri: string) {
-    this.socket = io(uri); // automatically tries to connect
+    this.socket = io.connect(uri);
 
     this.registerConnectionEvents();
   }
