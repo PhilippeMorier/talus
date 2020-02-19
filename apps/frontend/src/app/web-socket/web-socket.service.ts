@@ -24,7 +24,7 @@ export class WebSocketService {
   }
 
   emit<T>(eventName: string, data: T): void {
-    this.socket.emit(eventName, data);
+    this.socket.emit(eventName, data, ackData => console.log(ackData));
   }
 
   private registerConnectionEvents(): void {

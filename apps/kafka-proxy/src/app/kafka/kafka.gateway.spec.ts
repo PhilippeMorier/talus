@@ -26,6 +26,8 @@ describe('KafkaGateway', () => {
   afterEach(() => app.close());
 
   describe('actions()', () => {
+    // Inspired by:
+    // https://github.com/nestjs/nest/blob/master/integration/websockets/e2e/gateway.spec.ts
     it('should send message to via KafkaService', async () => {
       spyOn(kafkaService, 'send');
 

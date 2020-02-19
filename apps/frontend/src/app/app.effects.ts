@@ -31,6 +31,7 @@ export class AppEffects {
       this.actions$.pipe(
         filter(action => action.needsSync),
         tap(action => this.kafkaProxyService.logAction(action)),
+        tap(() => this.kafkaProxyService.getTopicNames()),
       ),
     { dispatch: false },
   );

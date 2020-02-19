@@ -30,4 +30,20 @@ export class KafkaService {
   disconnect(): Promise<void> {
     return this.producer.disconnect();
   }
+
+  async getTopicNames(): Promise<string[]> {
+    const { topics } = await this.admin.fetchTopicMetadata({ topics: [] });
+
+    return topics.map(topic => topic.name);
+  }
+
+  async createTopic(topicName: string): Promise<boolean> {
+    return this.admin.createTopics({
+      topics: [{ topic: topicName, configEntries: [] }],
+    });
+  }
+
+  async deleteTopic(topicName: string): Promise<void> {
+    return this.admin.deleteTopics({ topics: [topicName] });
+  }
 }

@@ -27,4 +27,22 @@ export class KafkaGateway {
 
     return this.kafkaService.send('test-topic', 'myKey', { myObject: 'testValue' });
   }
+
+  @SubscribeMessage('GetTopicNames')
+  async getTopicNames(): Promise<string[]> {
+    return this.kafkaService.getTopicNames();
+  }
+
+  @SubscribeMessage('CreateTopic')
+  async createTopics(@MessageBody() topicName: string): Promise<boolean> {
+    return this.kafkaService.createTopic(topicName);
+  }
+
+  /**
+   * Requires `delete.topic.enable=true`, i.e.: `KAFKA_CFG_DELETE_TOPIC_ENABLE=true`
+   */
+  @SubscribeMessage('DeleteTopic')
+  async deleteTopics(@MessageBody() topicName: string): Promise<void> {
+    return this.kafkaService.deleteTopic(topicName);
+  }
 }
