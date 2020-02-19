@@ -28,21 +28,32 @@ export class KafkaGateway {
     return this.kafkaService.send('test-topic', 'myKey', { myObject: 'testValue' });
   }
 
-  @SubscribeMessage('GetTopicNames')
-  async getTopicNames(): Promise<string[]> {
-    return this.kafkaService.getTopicNames();
+  @SubscribeMessage('TopicNames')
+  async topicNames(): Promise<string[]> {
+    return this.getAndEmitTopicNames();
   }
 
   @SubscribeMessage('CreateTopic')
-  async createTopics(@MessageBody() topicName: string): Promise<boolean> {
-    return this.kafkaService.createTopic(topicName);
+  async createTopics(@MessageBody() topicName: string): Promise<string[]> {
+    await this.kafkaService.createTopic(topicName);
+
+    return this.getAndEmitTopicNames();
   }
 
   /**
    * Requires `delete.topic.enable=true`, i.e.: `KAFKA_CFG_DELETE_TOPIC_ENABLE=true`
    */
   @SubscribeMessage('DeleteTopic')
-  async deleteTopics(@MessageBody() topicName: string): Promise<void> {
-    return this.kafkaService.deleteTopic(topicName);
+  async deleteTopics(@MessageBody() topicName: string): Promise<string[]> {
+    await this.kafkaService.deleteTopic(topicName);
+
+    return this.getAndEmitTopicNames();
+  }
+
+  private async getAndEmitTopicNames(): Promise<string[]> {
+    const topicNames = await this.kafkaService.getTopicNames();
+    this.server.emit('TopicNames', topicNames);
+
+    return topicNames;
   }
 }

@@ -27,6 +27,12 @@ export class WebSocketService {
     this.socket.emit(eventName, data, ackData => console.log(ackData));
   }
 
+  emitAndListen<T>(eventName: string, data?: T): Observable<T> {
+    this.emit(eventName, data);
+
+    return this.listen(eventName);
+  }
+
   private registerConnectionEvents(): void {
     this.socket.on('connect_error', () => {
       this.connectionStatusSubject.next(this.socket.connected);

@@ -5,9 +5,9 @@ import { WebSocketService } from './web-socket.service';
 
 enum EventName {
   AllActions = 'AllActions',
-  GetTopicNames = 'GetTopicNames',
   CreateTopic = 'CreateTopic',
   DeleteTopic = 'DeleteTopic',
+  TopicNames = 'TopicNames',
 }
 
 @Injectable()
@@ -16,14 +16,12 @@ export class KafkaProxyService {
   private readonly webSocketService: WebSocketService;
 
   connectionStatus$: Observable<boolean>;
+  topics$: Observable<string[]>;
 
   constructor() {
     this.webSocketService = new WebSocketService(this.uri);
     this.connectionStatus$ = this.webSocketService.connectionStatus$;
-  }
-
-  getTopicNames(): void {
-    this.webSocketService.emit(EventName.GetTopicNames, {});
+    this.topics$ = this.webSocketService.emitAndListen(EventName.TopicNames);
   }
 
   createTopic(topicName: string): void {
