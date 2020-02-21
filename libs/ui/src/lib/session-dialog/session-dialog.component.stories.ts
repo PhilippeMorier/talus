@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { array } from '@storybook/addon-knobs';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UiSessionDialogModule } from './session-dialog.module';
 import { UiSessionDialogService } from './session-dialog.service';
 
@@ -14,8 +21,9 @@ import { UiSessionDialogService } from './session-dialog.service';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class SessionDialogTestComponent implements OnInit {
+class SessionDialogTestComponent implements OnInit, OnChanges {
   @Input() sessions: string[];
+  sessionsSubject$ = new BehaviorSubject<string[]>(this.sessions);
 
   results$: Observable<string | undefined>;
 
@@ -25,8 +33,15 @@ class SessionDialogTestComponent implements OnInit {
     this.onOpenClick();
   }
 
+  ngOnChanges({ sessions }: SimpleChanges): void {
+    if (sessions) {
+      console.log(sessions);
+      this.sessionsSubject$.next(sessions.currentValue);
+    }
+  }
+
   onOpenClick(): void {
-    const dialogRef = this.dialogService.open(this.sessions);
+    const dialogRef = this.dialogService.open(this.sessionsSubject$.asObservable());
 
     this.results$ = dialogRef.afterClosed();
   }
