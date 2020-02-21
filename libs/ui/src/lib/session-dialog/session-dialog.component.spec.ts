@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UiSessionDialogModule } from '@talus/ui';
-import { EMPTY } from 'rxjs';
 
 import { UiSessionDialogComponent } from './session-dialog.component';
 
@@ -15,7 +14,7 @@ describe('SessionDialogComponent', () => {
       providers: [
         // https://github.com/angular/components/issues/8419#issuecomment-361972699
         { provide: MatDialogRef, useValue: { close: () => {} } },
-        { provide: MAT_DIALOG_DATA, useValue: EMPTY },
+        { provide: MAT_DIALOG_DATA, useValue: [] },
       ],
     }).compileComponents();
   }));

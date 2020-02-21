@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { UiSceneViewerService } from '@talus/ui';
+import { UiSceneViewerService, UiSessionDialogService } from '@talus/ui';
 import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
+import {
+  openSessionDialog,
+  openSessionDialogFailed,
+  selectSession,
+} from '../menu-bar-container/menu-bar-container.actions';
+import { notNil } from '../rxjs/nil';
 import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -34,6 +40,7 @@ export class SceneViewerContainerEffects {
     private actions$: Actions,
     private gridService: GridService,
     private sceneViewerService: UiSceneViewerService,
+    private sessionDialogService: UiSessionDialogService,
     private store: Store<fromApp.State>,
   ) {}
 
@@ -168,6 +175,17 @@ export class SceneViewerContainerEffects {
         ),
       ),
     { dispatch: false },
+  );
+
+  openSessionDialog$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(openSessionDialog),
+      map(({ sessions }) => this.sessionDialogService.open(sessions)),
+      flatMap(dialogRef => dialogRef.beforeClosed()),
+      notNil(),
+      map(session => selectSession({ session })),
+      catchError(() => of(openSessionDialogFailed())),
+    ),
   );
 
   private getUniqueNodeOrigins(voxelChanges: VoxelChange[]): Coord[] {

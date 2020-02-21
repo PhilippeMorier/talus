@@ -25,7 +25,7 @@ export interface UiColorDialogData {
         <mat-toolbar>
           <span>Color Selector</span>
           <span class="spacer"></span>
-          <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+          <mat-icon cdkDragHandle>open_with</mat-icon>
         </mat-toolbar>
       </h1>
 

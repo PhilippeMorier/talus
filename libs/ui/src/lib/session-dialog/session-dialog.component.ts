@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'ui-session-dialog',
@@ -15,7 +14,7 @@ import { Observable } from 'rxjs';
         <mat-toolbar>
           <span>Color Selector</span>
           <span class="spacer"></span>
-          <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+          <mat-icon cdkDragHandle>open_with</mat-icon>
         </mat-toolbar>
       </h1>
 
@@ -25,7 +24,7 @@ import { Observable } from 'rxjs';
         <mat-radio-group aria-labelledby="session-radio-group-label" class="session-radio-group">
           <mat-radio-button
             class="session-radio-button"
-            *ngFor="let session of sessions$ | async"
+            *ngFor="let session of sessions"
             [value]="session"
             [mat-dialog-close]="session"
           >
@@ -45,7 +44,7 @@ import { Observable } from 'rxjs';
 export class UiSessionDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<UiSessionDialogComponent, string>,
-    @Inject(MAT_DIALOG_DATA) public sessions$: Observable<string[]>,
+    @Inject(MAT_DIALOG_DATA) public sessions: string[],
   ) {}
 
   onCancelClick(): void {
