@@ -31,13 +31,12 @@ export class AppEffects {
       this.actions$.pipe(
         filter(action => action.needsSync),
         tap(action => this.kafkaProxyService.logAction(action)),
-        tap(() => this.kafkaProxyService.getTopicNames()),
       ),
     { dispatch: false },
   );
 
   emitActions$ = createEffect(() =>
-    new Actions(this.kafkaProxyService.listenToActions()).pipe(
+    this.kafkaProxyService.listenToActions().pipe(
       map((action: SyncableAction) => {
         action.needsSync = false;
         return action;
