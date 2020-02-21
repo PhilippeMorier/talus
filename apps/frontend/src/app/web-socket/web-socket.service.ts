@@ -23,8 +23,8 @@ export class WebSocketService {
     return fromEvent<T>(this.socket, eventName);
   }
 
-  emit<T>(eventName: string, data: T): void {
-    this.socket.emit(eventName, data, ackData => console.log(ackData));
+  emit<T>(eventName: string, data: T, ackCallback?: (ackData: any) => void): void {
+    this.socket.emit(eventName, data, ackCallback);
   }
 
   emitAndListen<T>(eventName: string, data?: T): Observable<T> {
