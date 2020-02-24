@@ -3,7 +3,13 @@ import { Action, select, Store } from '@ngrx/store';
 import { UiMenuBarMenu } from '@talus/ui';
 import { map } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
-import { redo, setDarkTheme, setLightTheme, undo } from './menu-bar-container.actions';
+import {
+  openSessionDialog,
+  redo,
+  setDarkTheme,
+  setLightTheme,
+  undo,
+} from './menu-bar-container.actions';
 
 @Component({
   selector: 'fe-menu-bar-container',
@@ -14,6 +20,16 @@ import { redo, setDarkTheme, setLightTheme, undo } from './menu-bar-container.ac
 })
 export class MenuBarContainerComponent {
   private readonly menus: UiMenuBarMenu<Action>[] = [
+    {
+      label: 'File',
+      menuItems: [
+        {
+          icon: 'note_add',
+          label: 'Open/New',
+          value: openSessionDialog({ sessions: ['test-session'] }),
+        },
+      ],
+    },
     {
       label: 'Edit',
       menuItems: [

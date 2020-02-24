@@ -1,0 +1,23 @@
+h1 {
+  margin-left: -2rem;
+  margin-right: -2rem;
+  margin-top: -2rem;
+
+  mat-icon {
+    cursor: move;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.session-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.session-radio-button {
+  margin: 5px;
+}

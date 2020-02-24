@@ -18,7 +18,7 @@ export class OptionsPanelEffects {
       ),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
-      map(selectedColorIndex => selectColor({ colorIndex: selectedColorIndex })),
+      map(colorIndex => selectColor({ colorIndex })),
       catchError(() => of(openColorDialogFailed())),
     ),
   );

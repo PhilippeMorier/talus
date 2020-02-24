@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { number, object } from '@storybook/addon-knobs';
 import { Observable } from 'rxjs';
-import { UiColorDialogColor, UiColorDialogComponent } from './color-dialog.component';
+import { UiColorDialogColor } from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
 import { UiColorDialogService } from './color-dialog.service';
 
