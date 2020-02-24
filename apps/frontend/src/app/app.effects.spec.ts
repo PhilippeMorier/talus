@@ -14,6 +14,12 @@ import { KafkaProxyService } from './web-socket/kafka-proxy.service';
 
 @Injectable()
 class KafkaProxyServiceMock {
+  topics$: Observable<string[]> = of([]);
+
+  createTopic(): void {
+    return;
+  }
+
   logAction(): void {
     return;
   }

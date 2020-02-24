@@ -17,12 +17,14 @@ export interface State {
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
+  sessions: string[];
   voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
   selectedLineChanges: [],
+  sessions: [],
   voxelCount: 0,
 };
 
