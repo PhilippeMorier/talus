@@ -24,7 +24,11 @@ export class WebSocketService {
   }
 
   emit<T>(eventName: string, data: T, ackCallback?: (ackData: any) => void): void {
-    this.socket.emit(eventName, data, ackCallback);
+    ackCallback
+      ? // if `ackCallback` undefined, array [{...action}, null] gets emitted
+        // instead of only the `action` object.
+        this.socket.emit(eventName, data, ackCallback)
+      : this.socket.emit(eventName, data);
   }
 
   emitAndListen<T>(eventName: string, data?: T): Observable<T> {

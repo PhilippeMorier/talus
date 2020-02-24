@@ -17,13 +17,13 @@ export class KafkaGateway {
 
   constructor(private readonly kafkaService: KafkaService) {}
 
-  @SubscribeMessage('AllActions')
-  async actions(
+  @SubscribeMessage('SyncAction')
+  async syncAction(
     @MessageBody() action: Action,
     @ConnectedSocket() client: Socket,
   ): Promise<RecordMetadata[]> {
     console.log(`Action '${action.type}' from '${client.id}' received.`);
-    client.broadcast.emit('AllActions', action);
+    client.broadcast.emit('SyncAction', action);
 
     return this.kafkaService.send('test-topic', 'myKey', { myObject: 'testValue' });
   }

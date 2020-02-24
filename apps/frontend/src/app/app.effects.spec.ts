@@ -20,7 +20,7 @@ class KafkaProxyServiceMock {
     return;
   }
 
-  logAction(): void {
+  syncAction(): void {
     return;
   }
 
@@ -69,7 +69,7 @@ describe('AppEffects', () => {
   });
 
   it('should log action', () => {
-    spyOn(kafkaProxyService, 'logAction');
+    spyOn(kafkaProxyService, 'syncAction');
 
     actions$ = hot('r', {
       r: removeVoxel({ xyz: [0, 0, 0], needsSync: true }),
@@ -77,7 +77,7 @@ describe('AppEffects', () => {
 
     expect(effects.needsSyncActions$).toBeObservable(actions$);
 
-    expect(kafkaProxyService.logAction).toBeCalledTimes(1);
+    expect(kafkaProxyService.syncAction).toBeCalledTimes(1);
   });
 
   it(`should set 'needsSync' to false`, () => {

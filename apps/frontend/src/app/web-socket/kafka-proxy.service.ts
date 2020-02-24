@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { WebSocketService } from './web-socket.service';
 
 enum EventName {
-  AllActions = 'AllActions',
+  SyncAction = 'SyncAction',
   CreateTopic = 'CreateTopic',
   DeleteTopic = 'DeleteTopic',
   TopicNames = 'TopicNames',
@@ -32,11 +32,11 @@ export class KafkaProxyService {
     this.webSocketService.emit(EventName.DeleteTopic, topicName);
   }
 
-  logAction(action: Action): void {
-    this.webSocketService.emit(EventName.AllActions, action);
+  syncAction(action: Action): void {
+    this.webSocketService.emit(EventName.SyncAction, action);
   }
 
   listenToActions(): Observable<Action> {
-    return this.webSocketService.listen<Action>(EventName.AllActions);
+    return this.webSocketService.listen<Action>(EventName.SyncAction);
   }
 }

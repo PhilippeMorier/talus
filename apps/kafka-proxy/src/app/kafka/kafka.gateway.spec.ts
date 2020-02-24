@@ -34,12 +34,12 @@ describe('KafkaGateway', () => {
       ws = io.connect('http://localhost:3333');
       ws2 = io.connect('http://localhost:3333');
 
-      ws.emit('AllActions', {
+      ws.emit('SyncAction', {
         type: '[Test] Test action type',
       });
 
       await new Promise(resolve =>
-        ws2.on('AllActions', () => {
+        ws2.on('SyncAction', () => {
           expect(kafkaService.send).toBeCalledWith('test-topic', 'myKey', {
             myObject: 'testValue',
           });

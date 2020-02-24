@@ -30,8 +30,8 @@ export class AppEffects {
     () =>
       this.actions$.pipe(
         filter(action => action.needsSync),
-        tap(action => this.kafkaProxyService.logAction(action)),
-        tap(() => this.kafkaProxyService.createTopic('just-a-test')),
+        tap(action => this.kafkaProxyService.syncAction(action)),
+        // tap(() => this.kafkaProxyService.createTopic('just-a-test')),
       ),
     { dispatch: false },
   );
