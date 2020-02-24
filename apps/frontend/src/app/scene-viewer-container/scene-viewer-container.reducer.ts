@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
 import { updateSessions } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
+import { selectSession } from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -18,6 +19,7 @@ export interface State {
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
+  session?: string;
   sessions: string[];
   voxelCount: number;
 }
@@ -99,6 +101,13 @@ export const reducer = createReducer<State>(
     updateSessions,
     (state, { sessions }): State => {
       return { ...state, sessions: sessions };
+    },
+  ),
+
+  on(
+    selectSession,
+    (state, { session }): State => {
+      return { ...state, session };
     },
   ),
 );
