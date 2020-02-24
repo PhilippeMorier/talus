@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
+import { updateSessions } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
@@ -91,6 +92,13 @@ export const reducer = createReducer<State>(
     menuBarContainerActions.setLightTheme,
     (state): State => {
       return { ...state, isDarkTheme: false };
+    },
+  ),
+
+  on(
+    updateSessions,
+    (state, { sessions }): State => {
+      return { ...state, sessions: sessions };
     },
   ),
 );
