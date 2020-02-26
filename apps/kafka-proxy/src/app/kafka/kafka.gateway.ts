@@ -10,12 +10,12 @@ import {
 } from '@nestjs/websockets';
 import { Action } from '@ngrx/store';
 import { EventName } from '@talus/model';
+import { notNil } from '@talus/shared';
 import { Consumer, RecordMetadata } from 'kafkajs';
 import { Observable, of } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { flatMap, map, tap } from 'rxjs/operators';
 import { Client, Server, Socket } from 'socket.io';
-import { notNil } from '../../../../frontend/src/app/rxjs/nil';
 import { KafkaService } from './kafka.service';
 
 @WebSocketGateway({ namespace: 'kafka' })

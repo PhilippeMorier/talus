@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
+import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
@@ -11,7 +12,6 @@ import {
   openTopicDialogFailed,
   selectTopic,
 } from '../menu-bar-container/menu-bar-container.actions';
-import { notNil } from '../rxjs/nil';
 import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
