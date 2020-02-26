@@ -4,7 +4,7 @@ import { UiMenuBarMenu } from '@talus/ui';
 import { map } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import {
-  openSessionDialog,
+  openTopicDialog,
   redo,
   setDarkTheme,
   setLightTheme,
@@ -26,7 +26,7 @@ export class MenuBarContainerComponent {
         {
           icon: 'note_add',
           label: 'Open/New',
-          value: openSessionDialog({ sessions: ['test-session'] }),
+          value: openTopicDialog({ topics: ['test-topic'] }),
         },
       ],
     },

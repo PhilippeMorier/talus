@@ -7,11 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UiSessionDialogComponent } from './session-dialog.component';
-import { UiSessionDialogService } from './session-dialog.service';
+import { UiTopicDialogComponent } from './topic-dialog.component';
+import { UiTopicDialogService } from './topic-dialog.service';
 
 @NgModule({
-  declarations: [UiSessionDialogComponent],
+  declarations: [UiTopicDialogComponent],
   imports: [
     BrowserAnimationsModule,
     CommonModule,
@@ -22,7 +22,7 @@ import { UiSessionDialogService } from './session-dialog.service';
     MatRadioModule,
     MatToolbarModule,
   ],
-  providers: [UiSessionDialogService],
-  entryComponents: [UiSessionDialogComponent],
+  providers: [UiTopicDialogService],
+  entryComponents: [UiTopicDialogComponent],
 })
-export class UiSessionDialogModule {}
+export class UiTopicDialogModule {}

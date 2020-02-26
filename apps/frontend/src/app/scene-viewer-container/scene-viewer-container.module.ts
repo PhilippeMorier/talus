@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
-import { UiSceneViewerModule, UiSessionDialogModule } from '@talus/ui';
+import { UiSceneViewerModule, UiTopicDialogModule } from '@talus/ui';
 import { GridService } from './grid.service';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
@@ -12,7 +12,7 @@ import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
     CommonModule,
     EffectsModule.forFeature([SceneViewerContainerEffects]),
     UiSceneViewerModule,
-    UiSessionDialogModule,
+    UiTopicDialogModule,
   ],
   exports: [SceneViewerContainerComponent],
   providers: [GridService],

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ui-session-dialog',
   template: `
     <div class="dialog-content">
       <h1
@@ -12,23 +11,23 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
         cdkDragRootElement=".cdk-overlay-pane"
       >
         <mat-toolbar>
-          <span>Color Selector</span>
+          <span>Topic selection</span>
           <span class="spacer"></span>
           <mat-icon cdkDragHandle>open_with</mat-icon>
         </mat-toolbar>
       </h1>
 
       <div mat-dialog-content>
-        <label id="session-radio-group-label">Choose or create a session</label>
+        <label id="topic-radio-group-label">Choose or create a topic</label>
 
-        <mat-radio-group aria-labelledby="session-radio-group-label" class="session-radio-group">
+        <mat-radio-group aria-labelledby="topic-radio-group-label" class="topic-radio-group">
           <mat-radio-button
-            class="session-radio-button"
-            *ngFor="let session of sessions"
-            [value]="session"
-            [mat-dialog-close]="session"
+            class="topic-radio-button"
+            *ngFor="let topic of topics"
+            [value]="topic"
+            [mat-dialog-close]="topic"
           >
-            {{ session }}
+            {{ topic }}
           </mat-radio-button>
         </mat-radio-group>
       </div>
@@ -38,13 +37,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       </div>
     </div>
   `,
-  styleUrls: ['./session-dialog.component.scss'],
+  styleUrls: ['./topic-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiSessionDialogComponent {
+export class UiTopicDialogComponent {
   constructor(
-    public dialogRef: MatDialogRef<UiSessionDialogComponent, string>,
-    @Inject(MAT_DIALOG_DATA) public sessions: string[],
+    public dialogRef: MatDialogRef<UiTopicDialogComponent, string>,
+    @Inject(MAT_DIALOG_DATA) public topics: string[],
   ) {}
 
   onCancelClick(): void {

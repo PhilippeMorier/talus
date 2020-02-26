@@ -8,14 +8,12 @@ export const redo = createAction(`${actionTypePrefix} Redo`);
 export const setDarkTheme = createAction(`${actionTypePrefix} Set dark theme`);
 export const setLightTheme = createAction(`${actionTypePrefix} Set light theme`);
 
-export const openSessionDialog = createAction(
-  `${actionTypePrefix} Open session dialog`,
-  props<{ sessions: string[] }>(),
+export const openTopicDialog = createAction(
+  `${actionTypePrefix} Open topic dialog`,
+  props<{ topics: string[] }>(),
 );
-export const openSessionDialogFailed = createAction(
-  `${actionTypePrefix} Open session dialog failed`,
-);
-export const selectSession = createAction(
-  `${actionTypePrefix} Select session`,
-  props<{ session: string }>(),
+export const openTopicDialogFailed = createAction(`${actionTypePrefix} Open topic dialog failed`);
+export const selectTopic = createAction(
+  `${actionTypePrefix} Select topic`,
+  props<{ topic: string }>(),
 );

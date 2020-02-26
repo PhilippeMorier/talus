@@ -1,16 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UiSessionDialogModule } from '@talus/ui';
+import { UiTopicDialogComponent } from './topic-dialog.component';
+import { UiTopicDialogModule } from './topic-dialog.module';
 
-import { UiSessionDialogComponent } from './session-dialog.component';
-
-describe('SessionDialogComponent', () => {
-  let component: UiSessionDialogComponent;
-  let fixture: ComponentFixture<UiSessionDialogComponent>;
+describe('UiTopicDialogComponent', () => {
+  let component: UiTopicDialogComponent;
+  let fixture: ComponentFixture<UiTopicDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiSessionDialogModule],
+      imports: [UiTopicDialogModule],
       providers: [
         // https://github.com/angular/components/issues/8419#issuecomment-361972699
         { provide: MatDialogRef, useValue: { close: () => {} } },
@@ -20,7 +19,7 @@ describe('SessionDialogComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UiSessionDialogComponent);
+    fixture = TestBed.createComponent(UiTopicDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

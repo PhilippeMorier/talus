@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { UiSceneViewerService, UiSessionDialogService } from '@talus/ui';
+import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import {
-  openSessionDialog,
-  openSessionDialogFailed,
-  selectSession,
+  openTopicDialog,
+  openTopicDialogFailed,
+  selectTopic,
 } from '../menu-bar-container/menu-bar-container.actions';
 import { notNil } from '../rxjs/nil';
 import { GridService, VoxelChange } from './grid.service';
@@ -40,7 +40,7 @@ export class SceneViewerContainerEffects {
     private actions$: Actions,
     private gridService: GridService,
     private sceneViewerService: UiSceneViewerService,
-    private sessionDialogService: UiSessionDialogService,
+    private topicDialogService: UiTopicDialogService,
     private store: Store<fromApp.State>,
   ) {}
 
@@ -179,12 +179,12 @@ export class SceneViewerContainerEffects {
 
   openSessionDialog$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(openSessionDialog),
-      map(({ sessions }) => this.sessionDialogService.open(sessions)),
+      ofType(openTopicDialog),
+      map(({ topics }) => this.topicDialogService.open(topics)),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
-      map(session => selectSession({ session })),
-      catchError(() => of(openSessionDialogFailed())),
+      map(topic => selectTopic({ topic: topic })),
+      catchError(() => of(openTopicDialogFailed())),
     ),
   );
 

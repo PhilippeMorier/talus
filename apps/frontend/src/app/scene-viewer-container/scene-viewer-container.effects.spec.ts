@@ -3,11 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { UiSceneViewerService, UiSessionDialogService } from '@talus/ui';
+import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
 import * as fromApp from '../app.reducer';
-import { openSessionDialog, selectSession } from '../menu-bar-container/menu-bar-container.actions';
+import { openTopicDialog, selectTopic } from '../menu-bar-container/menu-bar-container.actions';
 import { initialMockState } from '../testing';
 import { GridService, VoxelChange } from './grid.service';
 import {
@@ -53,7 +53,7 @@ class UiSceneViewerServiceMock {
 }
 
 @Injectable()
-class UiSessionDialogServiceMock {
+class UiTopicDialogServiceMock {
   open(): void {
     return;
   }
@@ -63,14 +63,14 @@ describe('SceneViewerContainerEffects', () => {
   let actions$: Observable<Action>;
   let effects: SceneViewerContainerEffects;
   let gridService: GridService;
-  let sessionService: UiSessionDialogService;
+  let topicService: UiTopicDialogService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         { provide: GridService, useClass: GridServiceMock },
         { provide: UiSceneViewerService, useClass: UiSceneViewerServiceMock },
-        { provide: UiSessionDialogService, useClass: UiSessionDialogServiceMock },
+        { provide: UiTopicDialogService, useClass: UiTopicDialogServiceMock },
         SceneViewerContainerEffects,
         provideMockActions(() => actions$),
         provideMockStore<fromApp.State>({
@@ -81,7 +81,7 @@ describe('SceneViewerContainerEffects', () => {
 
     effects = TestBed.inject(SceneViewerContainerEffects);
     gridService = TestBed.inject(GridService);
-    sessionService = TestBed.inject(UiSessionDialogService);
+    topicService = TestBed.inject(UiTopicDialogService);
   });
 
   it(`should dispatch 'voxelSet' after 'setVoxel'`, () => {
@@ -166,13 +166,13 @@ describe('SceneViewerContainerEffects', () => {
   });
 
   it(`should dispatch 'selectSession' after 'openSessionDialog'`, () => {
-    const sessions = ['session-1', 'session-2'];
-    actions$ = hot('o', { o: openSessionDialog({ sessions }) });
+    const topics = ['topic-1', 'topic-2'];
+    actions$ = hot('o', { o: openTopicDialog({ topics }) });
 
-    spyOn(sessionService, 'open').and.returnValue({ beforeClosed: () => of(sessions[0]) });
-    const expected$ = hot('s', { s: selectSession({ session: sessions[0] }) });
+    spyOn(topicService, 'open').and.returnValue({ beforeClosed: () => of(topics[0]) });
+    const expected$ = hot('s', { s: selectTopic({ topic: topics[0] }) });
 
     expect(effects.openSessionDialog$).toBeObservable(expected$);
-    expect(sessionService.open).toHaveBeenCalledTimes(1);
+    expect(topicService.open).toHaveBeenCalledTimes(1);
   });
 });
