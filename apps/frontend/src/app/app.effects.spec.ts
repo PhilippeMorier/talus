@@ -75,7 +75,7 @@ describe('AppEffects', () => {
       r: removeVoxel({ xyz: [0, 0, 0], needsSync: true }),
     });
 
-    expect(effects.needsSyncActions$).toBeObservable(actions$);
+    expect(effects.syncActionToKafka$).toBeObservable(actions$);
 
     expect(kafkaProxyService.syncAction).toBeCalledTimes(1);
   });
@@ -87,6 +87,6 @@ describe('AppEffects', () => {
       r: removeVoxel({ xyz: [0, 0, 0], needsSync: false }),
     });
 
-    expect(effects.emitActions$).toBeObservable(expected$);
+    expect(effects.emitActionFromKafka$).toBeObservable(expected$);
   });
 });

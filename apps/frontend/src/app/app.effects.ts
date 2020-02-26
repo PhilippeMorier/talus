@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
 import { filter, map, mapTo, tap } from 'rxjs/operators';
 import { updateSessions, wentOffline, wentOnline } from './app.actions';
-import { KafkaProxyService } from './web-socket/kafka-proxy.service';
-
-export interface SyncableAction extends Action {
-  needsSync: boolean;
-}
+import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
 @Injectable()
 export class AppEffects {
@@ -26,7 +21,7 @@ export class AppEffects {
     ).pipe(map(isOnline => (isOnline ? wentOnline() : wentOffline())));
   });
 
-  needsSyncActions$ = createEffect(
+  syncActionToKafka$ = createEffect(
     () =>
       this.actions$.pipe(
         filter(action => action.needsSync),
@@ -36,9 +31,9 @@ export class AppEffects {
     { dispatch: false },
   );
 
-  emitActions$ = createEffect(() =>
-    this.kafkaProxyService.listenToActions().pipe(
-      map((action: SyncableAction) => {
+  emitActionFromKafka$ = createEffect(() =>
+    this.kafkaProxyService.actions$.pipe(
+      map(action => {
         action.needsSync = false;
         return action;
       }),

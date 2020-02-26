@@ -2,6 +2,14 @@ import { fromEvent, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
+export enum EventName {
+  SyncAction = 'SyncAction',
+  ConsumeTopic = 'ConsumeTopic',
+  CreateTopic = 'CreateTopic',
+  DeleteTopic = 'DeleteTopic',
+  TopicNames = 'TopicNames',
+}
+
 export class WebSocketService {
   private readonly socket: SocketIOClient.Socket;
 
@@ -23,7 +31,7 @@ export class WebSocketService {
     return fromEvent<T>(this.socket, eventName);
   }
 
-  emit<T>(eventName: string, data: T, ackCallback?: (ackData: any) => void): void {
+  emit<T>(eventName: string, data?: T, ackCallback?: (ackData: any) => void): void {
     ackCallback
       ? // if `ackCallback` undefined, array [{...action}, null] gets emitted
         // instead of only the `action` object.
@@ -31,10 +39,13 @@ export class WebSocketService {
       : this.socket.emit(eventName, data);
   }
 
-  emitAndListen<T>(eventName: string, data?: T): Observable<T> {
+  emitAndListen<DataType, ResultType = DataType>(
+    eventName: string,
+    data?: DataType,
+  ): Observable<ResultType> {
     this.emit(eventName, data);
 
-    return this.listen(eventName);
+    return this.listen<ResultType>(eventName);
   }
 
   private registerConnectionEvents(): void {

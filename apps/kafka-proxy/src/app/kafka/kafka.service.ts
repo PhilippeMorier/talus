@@ -1,10 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CompressionTypes, Kafka, logLevel, RecordMetadata } from 'kafkajs';
+import { Action } from '@ngrx/store';
+import {
+  CompressionTypes,
+  Consumer,
+  EachMessagePayload,
+  IHeaders,
+  Kafka,
+  logLevel,
+  RecordMetadata,
+} from 'kafkajs';
+import { Observable } from 'rxjs';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { flatMap, map } from 'rxjs/operators';
 
 @Injectable()
 export class KafkaService {
   readonly kafka = new Kafka({
-    logLevel: logLevel.DEBUG,
+    logLevel: logLevel.ERROR,
     clientId: 'kafka-proxy',
     brokers: ['localhost:29092'],
   });
@@ -19,12 +31,29 @@ export class KafkaService {
       .catch(error => error);
   }
 
-  send<T>(topic: string, key: string, data: T): Promise<RecordMetadata[]> {
+  send<T>(topic: string, key: string, data: T, headers?: IHeaders): Promise<RecordMetadata[]> {
     return this.producer.send({
       topic,
       compression: CompressionTypes.GZIP,
-      messages: [{ key, value: JSON.stringify(data) }],
+      messages: [{ key, value: JSON.stringify(data), headers }],
     });
+  }
+
+  runConsumer(
+    consumer: Consumer,
+    topic: string,
+    fromBeginning: boolean = true,
+  ): Observable<Action> {
+    const subscribe$ = fromPromise(consumer.subscribe({ topic, fromBeginning }));
+
+    const runEachMessage$ = new Observable<EachMessagePayload>(subscriber => {
+      consumer.run({ eachMessage: async payload => subscriber.next(payload) });
+    });
+
+    return subscribe$.pipe(
+      flatMap(() => runEachMessage$),
+      map(messagePayload => JSON.parse(messagePayload.message.value.toString())),
+    );
   }
 
   disconnect(): Promise<void> {
@@ -45,5 +74,12 @@ export class KafkaService {
 
   async deleteTopic(topicName: string): Promise<void> {
     return this.admin.deleteTopics({ topics: [topicName] });
+  }
+
+  async createConsumer(groupId: string): Promise<Consumer> {
+    const consumer = this.kafka.consumer({ groupId });
+    await consumer.connect();
+
+    return consumer;
   }
 }
