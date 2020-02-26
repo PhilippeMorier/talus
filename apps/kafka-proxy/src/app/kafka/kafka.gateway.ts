@@ -35,6 +35,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('Close connection:', client.id);
 
     this.consumers.delete(client.id);
+    this.kafkaService.disconnect().then();
   }
 
   @SubscribeMessage(EventName.SyncAction)
@@ -71,7 +72,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return consumer$.pipe(
       tap(consumer => this.consumers.set(socket.id, consumer)),
       flatMap(consumer => this.kafkaService.runConsumer(consumer, topic)),
-      map(data => ({ event: 'ConsumeTopic', data })),
+      map(action => ({ event: EventName.ConsumeTopic, data: action })),
     );
   }
 

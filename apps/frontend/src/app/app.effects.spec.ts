@@ -10,11 +10,13 @@ import { AppEffects } from './app.effects';
 import * as fromApp from './app.reducer';
 import { removeVoxel } from './scene-viewer-container/scene-viewer-container.actions';
 import { initialMockState } from './testing';
-import { KafkaProxyService } from './web-socket/kafka-proxy.service';
+import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
 @Injectable()
 class KafkaProxyServiceMock {
   topics$: Observable<string[]> = of([]);
+
+  actions$: Observable<SyncableAction[]> = of([]);
 
   createTopic(): void {
     return;
@@ -22,10 +24,6 @@ class KafkaProxyServiceMock {
 
   syncAction(): void {
     return;
-  }
-
-  listenToActions(): Observable<Action> {
-    return of(removeVoxel({ xyz: [0, 0, 0], needsSync: true }));
   }
 }
 
@@ -78,15 +76,5 @@ describe('AppEffects', () => {
     expect(effects.syncActionToKafka$).toBeObservable(actions$);
 
     expect(kafkaProxyService.syncAction).toBeCalledTimes(1);
-  });
-
-  it(`should set 'needsSync' to false`, () => {
-    spyOn(kafkaProxyService, 'listenToActions');
-
-    const expected$ = hot('(r|)', {
-      r: removeVoxel({ xyz: [0, 0, 0], needsSync: false }),
-    });
-
-    expect(effects.emitActionFromKafka$).toBeObservable(expected$);
   });
 });

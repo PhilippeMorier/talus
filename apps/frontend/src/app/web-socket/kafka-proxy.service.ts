@@ -39,8 +39,4 @@ export class KafkaProxyService {
   syncAction(action: Action): void {
     this.webSocketService.emit(EventName.SyncAction, action);
   }
-
-  listenToActions(): Observable<Action> {
-    return this.webSocketService.listen<Action>(EventName.SyncAction);
-  }
 }
