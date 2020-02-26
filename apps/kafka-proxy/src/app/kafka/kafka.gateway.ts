@@ -12,7 +12,7 @@ import { Action } from '@ngrx/store';
 import { Consumer, RecordMetadata } from 'kafkajs';
 import { Observable, of } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { flatMap, map } from 'rxjs/operators';
+import { flatMap, map, tap } from 'rxjs/operators';
 import { Client, Server, Socket } from 'socket.io';
 import { notNil } from '../../../../frontend/src/app/rxjs/nil';
 import { KafkaService } from './kafka.service';
@@ -32,6 +32,8 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Client): void {
     console.log('Close connection:', client.id);
+
+    this.consumers.delete(client.id);
   }
 
   @SubscribeMessage('SyncAction')
@@ -63,11 +65,10 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() topic: string,
     @ConnectedSocket() socket: Socket,
   ): Observable<WsResponse<unknown>> {
-    const consumer$: Observable<Consumer> = this.consumers.has(socket.id)
-      ? of(this.consumers.get(socket.id)).pipe(notNil())
-      : fromPromise(this.kafkaService.createConsumer(socket.id));
+    const consumer$ = this.getExistingOrNewConsumer(socket.id);
 
     return consumer$.pipe(
+      tap(consumer => this.consumers.set(socket.id, consumer)),
       flatMap(consumer => this.kafkaService.runConsumer(consumer, topic)),
       map(data => ({ event: 'ConsumeTopic', data })),
     );
@@ -88,5 +89,11 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('TopicNames', topicNames);
 
     return topicNames;
+  }
+
+  private getExistingOrNewConsumer(socketId: string): Observable<Consumer> {
+    return this.consumers.has(socketId)
+      ? of(this.consumers.get(socketId)).pipe(notNil())
+      : fromPromise(this.kafkaService.createConsumer(socketId));
   }
 }
