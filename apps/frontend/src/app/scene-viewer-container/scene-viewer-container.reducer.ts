@@ -2,7 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
 import { updateSessions } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
-import { selectSession } from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -105,7 +104,7 @@ export const reducer = createReducer<State>(
   ),
 
   on(
-    selectSession,
+    menuBarContainerActions.selectSession,
     (state, { session }): State => {
       return { ...state, session };
     },

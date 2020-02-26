@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
+import { EventName } from '@talus/model';
 import { Observable } from 'rxjs';
-import { EventName, WebSocketService } from './web-socket.service';
+import { WebSocketService } from './web-socket.service';
 
 export interface SyncableAction extends Action {
   needsSync: boolean;

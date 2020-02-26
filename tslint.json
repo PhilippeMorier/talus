@@ -68,6 +68,10 @@
             "onlyDependOnLibsWithTags": ["scope:libs", "scope:frontend"]
           },
           {
+            "sourceTag": "scope:backend",
+            "onlyDependOnLibsWithTags": ["scope:libs", "scope:backend"]
+          },
+          {
             "sourceTag": "scope:benchmark",
             "onlyDependOnLibsWithTags": ["scope:libs", "scope:benchmark"]
           },

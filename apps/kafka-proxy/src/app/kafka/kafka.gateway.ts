@@ -9,6 +9,7 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Action } from '@ngrx/store';
+import { EventName } from '@talus/model';
 import { Consumer, RecordMetadata } from 'kafkajs';
 import { Observable, of } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -36,7 +37,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.consumers.delete(client.id);
   }
 
-  @SubscribeMessage('SyncAction')
+  @SubscribeMessage(EventName.SyncAction)
   async syncAction(
     @MessageBody() action: Action,
     @ConnectedSocket() client: Socket,
@@ -48,19 +49,19 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return this.kafkaService.send('action-topic', 'action', action, { clientId: client.id });
   }
 
-  @SubscribeMessage('TopicNames')
+  @SubscribeMessage(EventName.TopicNames)
   async topicNames(): Promise<string[]> {
     return this.getAndEmitTopicNames();
   }
 
-  @SubscribeMessage('CreateTopic')
+  @SubscribeMessage(EventName.CreateTopic)
   async createTopics(@MessageBody() topicName: string): Promise<string[]> {
     await this.kafkaService.createTopic(topicName);
 
     return this.getAndEmitTopicNames();
   }
 
-  @SubscribeMessage('ConsumeTopic')
+  @SubscribeMessage(EventName.ConsumeTopic)
   consume(
     @MessageBody() topic: string,
     @ConnectedSocket() socket: Socket,
@@ -77,7 +78,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   /**
    * Requires `delete.topic.enable=true`, i.e.: `KAFKA_CFG_DELETE_TOPIC_ENABLE=true`
    */
-  @SubscribeMessage('DeleteTopic')
+  @SubscribeMessage(EventName.DeleteTopic)
   async deleteTopics(@MessageBody() topicName: string): Promise<string[]> {
     await this.kafkaService.deleteTopic(topicName);
 
@@ -86,7 +87,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private async getAndEmitTopicNames(): Promise<string[]> {
     const topicNames = await this.kafkaService.getTopicNames();
-    this.server.emit('TopicNames', topicNames);
+    this.server.emit(EventName.TopicNames, topicNames);
 
     return topicNames;
   }

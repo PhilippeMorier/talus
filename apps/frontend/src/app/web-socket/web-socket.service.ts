@@ -1,14 +1,7 @@
+import { EventName } from '@talus/model';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
-
-export enum EventName {
-  SyncAction = 'SyncAction',
-  ConsumeTopic = 'ConsumeTopic',
-  CreateTopic = 'CreateTopic',
-  DeleteTopic = 'DeleteTopic',
-  TopicNames = 'TopicNames',
-}
 
 export class WebSocketService {
   private readonly socket: SocketIOClient.Socket;
@@ -27,7 +20,7 @@ export class WebSocketService {
     this.registerConnectionEvents();
   }
 
-  listen<T>(eventName: string): Observable<T> {
+  listen<T>(eventName: EventName): Observable<T> {
     return fromEvent<T>(this.socket, eventName);
   }
 
@@ -40,7 +33,7 @@ export class WebSocketService {
   }
 
   emitAndListen<DataType, ResultType = DataType>(
-    eventName: string,
+    eventName: EventName,
     data?: DataType,
   ): Observable<ResultType> {
     this.emit(eventName, data);
