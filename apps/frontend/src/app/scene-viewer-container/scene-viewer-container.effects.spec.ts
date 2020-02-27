@@ -169,7 +169,9 @@ describe('SceneViewerContainerEffects', () => {
     const topics = ['topic-1', 'topic-2'];
     actions$ = hot('o', { o: openTopicDialog({ topics }) });
 
-    spyOn(topicService, 'open').and.returnValue({ beforeClosed: () => of(topics[0]) });
+    spyOn(topicService, 'open').and.returnValue({
+      beforeClosed: () => of({ topicName: topics[0], isNewTopic: false }),
+    });
     const expected$ = hot('s', { s: selectTopic({ topic: topics[0] }) });
 
     expect(effects.openSessionDialog$).toBeObservable(expected$);
