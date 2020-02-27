@@ -3,7 +3,12 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 // import '@babylonjs/core/Rendering/outlineRenderer';
 import { select, Store } from '@ngrx/store';
 import { rgbaToInt, Tool } from '@talus/model';
-import { UiPointerButton, UiPointerPickInfo, UiSceneViewerComponent } from '@talus/ui';
+import {
+  UiPointerButton,
+  UiPointerPickInfo,
+  UiSceneViewerComponent,
+  UiSceneViewerService,
+} from '@talus/ui';
 import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -39,12 +44,18 @@ export class SceneViewerContainerComponent implements AfterViewInit {
 
   private lastUnderPointerPosition: Coord = createMaxCoord();
 
-  constructor(private store: Store<fromApp.State>) {}
+  constructor(
+    private sceneViewerService: UiSceneViewerService,
+    private store: Store<fromApp.State>,
+  ) {}
 
   ngAfterViewInit(): void {
     this.store.dispatch(
       setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
     );
+
+    // Ensure canvas gets correct size, otherwise mouse clicks add voxels at wrong positions
+    this.sceneViewerService.resizeView();
   }
 
   onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {

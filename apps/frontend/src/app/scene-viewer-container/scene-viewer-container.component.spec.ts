@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { rgbaToInt, Tool } from '@talus/model';
-import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo, UiSceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -36,6 +36,7 @@ describe('SceneViewerContainerComponent', () => {
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
       providers: [
         GridService,
+        { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
         provideMockStore<fromApp.State>({
           initialState: initialMockState,
         }),
