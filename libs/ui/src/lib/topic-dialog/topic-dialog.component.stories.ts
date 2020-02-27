@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { array } from '@storybook/addon-knobs';
 import { Observable } from 'rxjs';
+import { UiTopicDialogSelectionResult } from './topic-dialog.component';
 import { UiTopicDialogModule } from './topic-dialog.module';
 import { UiTopicDialogService } from './topic-dialog.service';
 
@@ -10,14 +11,14 @@ import { UiTopicDialogService } from './topic-dialog.service';
   template: `
     <button (click)="onOpenClick()">Open</button>
 
-    <div>Selected topic: {{ results$ | async }}</div>
+    <div>Selected topic: {{ results$ | async | json }}</div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class TopicDialogTestComponent implements OnInit {
   @Input() topics: string[];
 
-  results$: Observable<string | undefined>;
+  results$: Observable<UiTopicDialogSelectionResult | undefined>;
 
   constructor(private readonly dialogService: UiTopicDialogService) {}
 

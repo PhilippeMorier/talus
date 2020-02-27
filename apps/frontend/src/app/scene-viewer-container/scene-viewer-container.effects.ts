@@ -183,7 +183,7 @@ export class SceneViewerContainerEffects {
       map(({ topics }) => this.topicDialogService.open(topics)),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
-      map(topic => selectTopic({ topic: topic })),
+      map(result => selectTopic({ topic: result.topicName })),
       catchError(() => of(openTopicDialogFailed())),
     ),
   );
