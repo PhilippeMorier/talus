@@ -49,7 +49,7 @@ describe('SceneViewerContainerReducer', () => {
         isDarkTheme: true,
         selectedLineChanges: [voxelChange, voxelChange, voxelChange],
         selectedLineStartCoord: [0, 0, 0],
-        sessions: [],
+        topics: [],
         voxelCount: 0,
       },
       finishLine({ voxelChanges: [] }),

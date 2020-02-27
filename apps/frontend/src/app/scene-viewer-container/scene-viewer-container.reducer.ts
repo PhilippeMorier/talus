@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
-import { updateSessions } from '../app.actions';
+import { updateTopics } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
@@ -18,15 +18,15 @@ export interface State {
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
-  session?: string;
-  sessions: string[];
+  topic?: string;
+  topics: string[];
   voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
   selectedLineChanges: [],
-  sessions: [],
+  topics: [],
   voxelCount: 0,
 };
 
@@ -97,16 +97,16 @@ export const reducer = createReducer<State>(
   ),
 
   on(
-    updateSessions,
-    (state, { sessions }): State => {
-      return { ...state, sessions: sessions };
+    updateTopics,
+    (state, { topics }): State => {
+      return { ...state, topics };
     },
   ),
 
   on(
-    menuBarContainerActions.selectSession,
-    (state, { session }): State => {
-      return { ...state, session };
+    menuBarContainerActions.selectTopic,
+    (state, { topic }): State => {
+      return { ...state, topic };
     },
   ),
 );

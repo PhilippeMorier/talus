@@ -5,7 +5,7 @@ const actionTypePrefix = '[app]';
 export const wentOnline = createAction(`${actionTypePrefix} Went online`);
 export const wentOffline = createAction(`${actionTypePrefix} Went offline`);
 
-export const updateSessions = createAction(
-  `${actionTypePrefix} Update sessions`,
-  props<{ sessions: string[] }>(),
+export const updateTopics = createAction(
+  `${actionTypePrefix} Update topics`,
+  props<{ topics: string[] }>(),
 );

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
 import { fromEvent, merge, of } from 'rxjs';
 import { filter, map, mapTo, tap } from 'rxjs/operators';
-import { updateSessions, wentOffline, wentOnline } from './app.actions';
+import { updateTopics, wentOffline, wentOnline } from './app.actions';
 import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
 @Injectable()
@@ -41,6 +41,6 @@ export class AppEffects {
   );
 
   updateTopics$ = createEffect(() =>
-    this.kafkaProxyService.topics$.pipe(map(sessions => updateSessions({ sessions }))),
+    this.kafkaProxyService.topics$.pipe(map(topics => updateTopics({ topics }))),
   );
 }
