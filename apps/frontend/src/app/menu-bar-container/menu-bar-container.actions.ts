@@ -17,3 +17,7 @@ export const selectTopic = createAction(
   `${actionTypePrefix} Select topic`,
   props<{ topic: string }>(),
 );
+export const createTopic = createAction(
+  `${actionTypePrefix} Create topic`,
+  props<{ topic: string }>(),
+);
