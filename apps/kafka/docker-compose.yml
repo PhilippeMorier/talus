@@ -4,11 +4,23 @@ services:
     image: obsidiandynamics/kafdrop
     restart: 'no'
     ports:
-      - '9000:9000'
+      - '9090:9090'
     environment:
       KAFKA_BROKERCONNECT: 'kafka:9092'
+      SERVER_PORT: 9090
     depends_on:
       - kafka
+
+  kafka_manager:
+    image: hlebalbau/kafka-manager:stable
+    ports:
+      - '9000:9000'
+    environment:
+      ZK_HOSTS: 'zookeeper:2181'
+      APPLICATION_SECRET: 'random-secret'
+    command: -Dpidfile.path=/dev/null
+    depends_on:
+      - zookeeper
 
   zookeeper:
     image: 'bitnami/zookeeper:3'
