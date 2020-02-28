@@ -174,7 +174,7 @@ describe('SceneViewerContainerEffects', () => {
     });
     const expected$ = hot('s', { s: selectTopic({ topic: topics[0] }) });
 
-    expect(effects.openSessionDialog$).toBeObservable(expected$);
+    expect(effects.openTopicDialog$).toBeObservable(expected$);
     expect(topicService.open).toHaveBeenCalledTimes(1);
   });
 });
