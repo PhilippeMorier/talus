@@ -56,6 +56,10 @@ export class KafkaService {
     );
   }
 
+  resetOffsets(groupId: string, topic: string): Observable<void> {
+    return fromPromise(this.admin.resetOffsets({ groupId, topic, earliest: true }));
+  }
+
   disconnect(): Promise<void> {
     return this.producer.disconnect();
   }
