@@ -57,6 +57,7 @@ export class CameraFactory {
 export class UiSceneViewerService {
   private actionManager: ActionManager;
   private camera: ArcRotateCamera;
+  private canvas?: HTMLCanvasElement;
   private engine: Engine;
   private gridNode: TransformNode;
   private light: HemisphericLight;
@@ -72,6 +73,7 @@ export class UiSceneViewerService {
   constructor(private cameraFactory: CameraFactory, private engineFactory: EngineFactory) {}
 
   initialize(canvas: HTMLCanvasElement): void {
+    this.canvas = canvas;
     this.engine = this.engineFactory.create(canvas);
     this.createScene();
     this.createCamera();
@@ -101,6 +103,15 @@ export class UiSceneViewerService {
 
       const nodeMesh = this.createUnIndexedAlphaMesh(meshName);
       data.applyToMesh(nodeMesh, false);
+    }
+  }
+
+  disposeSceneAndRestartRendering(): void {
+    this.scene.dispose();
+
+    if (this.canvas) {
+      this.initialize(this.canvas);
+      this.startRendering();
     }
   }
 
