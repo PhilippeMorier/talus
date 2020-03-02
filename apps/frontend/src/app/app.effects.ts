@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
+import { select, Store } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
-import { filter, map, mapTo, tap } from 'rxjs/operators';
+import { filter, map, mapTo, tap, withLatestFrom } from 'rxjs/operators';
 import { updateTopics, wentOffline, wentOnline } from './app.actions';
+import * as fromApp from './app.reducer';
 import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
 @Injectable()
 export class AppEffects {
   constructor(
     private readonly actions$: Actions<SyncableAction>,
+    private readonly store: Store<fromApp.State>,
     private readonly kafkaProxyService: KafkaProxyService,
   ) {}
 
@@ -25,8 +28,13 @@ export class AppEffects {
     () =>
       this.actions$.pipe(
         filter(action => action.needsSync),
-        tap(action => this.kafkaProxyService.syncAction(action)),
-        // tap(() => this.kafkaProxyService.createTopic('just-a-test')),
+        withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+        tap(
+          ([action, state]) =>
+            state.topic && this.kafkaProxyService.syncAction(action, state.topic),
+        ),
+        // Map it to single action just for making testing easier
+        map(([action]) => action),
       ),
     { dispatch: false },
   );
@@ -34,8 +42,7 @@ export class AppEffects {
   emitActionFromKafka$ = createEffect(() =>
     this.kafkaProxyService.actions$.pipe(
       map(action => {
-        action.needsSync = false;
-        return action;
+        return { ...action, needsSync: false };
       }),
     ),
   );

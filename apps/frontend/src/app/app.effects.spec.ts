@@ -9,6 +9,7 @@ import { wentOffline, wentOnline } from './app.actions';
 import { AppEffects } from './app.effects';
 import * as fromApp from './app.reducer';
 import { removeVoxel } from './scene-viewer-container/scene-viewer-container.actions';
+import { featureKey } from './scene-viewer-container/scene-viewer-container.reducer';
 import { initialMockState } from './testing';
 import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
@@ -38,7 +39,10 @@ describe('AppEffects', () => {
         AppEffects,
         { provide: KafkaProxyService, useClass: KafkaProxyServiceMock },
         provideMockStore<fromApp.State>({
-          initialState: initialMockState,
+          initialState: {
+            ...initialMockState,
+            sceneViewerContainer: { ...initialMockState[featureKey], topic: 'test-topic' },
+          },
         }),
         provideMockActions(() => actions$),
       ],
@@ -66,7 +70,7 @@ describe('AppEffects', () => {
     expect(effects.onlineStateChange$).toBeObservable(expected);
   });
 
-  it('should log action', () => {
+  it('should sync action', () => {
     spyOn(kafkaProxyService, 'syncAction');
 
     actions$ = hot('r', {

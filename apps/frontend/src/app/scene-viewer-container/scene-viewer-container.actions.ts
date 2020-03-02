@@ -46,11 +46,11 @@ export const setLineCoord = createAction(
 );
 export const startLine = createAction(
   `${actionTypePrefix} Start line`,
-  props<{ xyz: Coord; newValue: number }>(),
+  props<{ xyz: Coord; newValue: number; needsSync?: boolean }>(),
 );
 export const finishLine = createAction(
   `${actionTypePrefix} Finish line`,
-  props<{ voxelChanges: VoxelChange[] }>(),
+  props<{ voxelChanges: VoxelChange[]; needsSync?: boolean }>(),
 );
 export const addFirstLineChange = createAction(
   `${actionTypePrefix} Add first line change`,

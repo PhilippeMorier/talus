@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { openTopicDialog, selectTopic } from '../menu-bar-container/menu-bar-container.actions';
 import { initialMockState } from '../testing';
+import { KafkaProxyService } from '../web-socket/kafka-proxy.service';
 import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -59,6 +60,16 @@ class UiTopicDialogServiceMock {
   }
 }
 
+@Injectable()
+class KafkaProxyServiceMock {
+  createTopic(): void {
+    return;
+  }
+  setTopic(): void {
+    return;
+  }
+}
+
 describe('SceneViewerContainerEffects', () => {
   let actions$: Observable<Action>;
   let effects: SceneViewerContainerEffects;
@@ -71,6 +82,7 @@ describe('SceneViewerContainerEffects', () => {
         { provide: GridService, useClass: GridServiceMock },
         { provide: UiSceneViewerService, useClass: UiSceneViewerServiceMock },
         { provide: UiTopicDialogService, useClass: UiTopicDialogServiceMock },
+        { provide: KafkaProxyService, useClass: KafkaProxyServiceMock },
         SceneViewerContainerEffects,
         provideMockActions(() => actions$),
         provideMockStore<fromApp.State>({

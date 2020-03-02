@@ -106,7 +106,12 @@ export const reducer = createReducer<State>(
   on(
     menuBarContainerActions.selectTopic,
     (state, { topic }): State => {
-      return { ...state, topic };
+      return {
+        ...state,
+        selectedLineChanges: initialState.selectedLineChanges,
+        selectedLineStartCoord: initialState.selectedLineStartCoord,
+        topic,
+      };
     },
   ),
 );

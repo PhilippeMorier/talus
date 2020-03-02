@@ -40,14 +40,14 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage(EventName.SyncAction)
   async syncAction(
-    @MessageBody() action: Action,
+    @MessageBody() { action, topic }: { action: Action; topic: string },
     @ConnectedSocket() client: Socket,
   ): Promise<RecordMetadata[]> {
-    console.log(`Action '${action.type}' from '${client.id}' received.`);
+    console.log(`Action '${action.type}' for topic '${topic}' from '${client.id}' received.`);
 
     // https://github.com/tulios/kafkajs/issues/36#issuecomment-449953932
 
-    return this.kafkaService.send('action-topic', 'action', action, { clientId: client.id });
+    return this.kafkaService.send(topic, 'action', action, { clientId: client.id });
   }
 
   @SubscribeMessage(EventName.TopicNames)
@@ -63,15 +63,22 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(EventName.ConsumeTopic)
-  consume(
+  consumeTopic(
     @MessageBody() topic: string,
     @ConnectedSocket() socket: Socket,
-  ): Observable<WsResponse<unknown>> {
+  ): Observable<WsResponse<Action>> {
     const consumer$ = this.getExistingOrNewConsumer(socket.id);
 
     return consumer$.pipe(
       tap(consumer => this.consumers.set(socket.id, consumer)),
-      flatMap(consumer => this.kafkaService.runConsumer(consumer, topic)),
+      flatMap(consumer => {
+        // The consumer group must have no running instances when performing the reset.
+        // https://kafka.js.org/docs/admin#a-name-reset-offsets-a-reset-consumer-group-offsets
+        return fromPromise(consumer.stop()).pipe(
+          flatMap(() => this.kafkaService.resetOffsets(socket.id, topic)),
+          flatMap(() => this.kafkaService.runConsumer(consumer, topic)),
+        );
+      }),
       map(action => ({ event: EventName.ConsumeTopic, data: action })),
     );
   }

@@ -17,6 +17,9 @@ class KafkaServiceMock {
   createConsumer(): void {
     return;
   }
+  resetOffsets(): void {
+    return;
+  }
 }
 
 describe('KafkaGateway', () => {
@@ -44,24 +47,25 @@ describe('KafkaGateway', () => {
     // https://github.com/nestjs/nest/blob/master/integration/websockets/e2e/gateway.spec.ts
     it('should send message to via KafkaService', async () => {
       spyOn(kafkaServiceMock, 'send');
-      spyOn(kafkaServiceMock, 'runConsumer').and.returnValue(of({ type: '[Test] Fake' }));
       spyOn(kafkaServiceMock, 'createConsumer').and.returnValue(
-        new Promise(resolve => resolve({})),
+        new Promise(resolve => resolve({ stop: () => new Promise(r => r({})) })),
       );
+      spyOn(kafkaServiceMock, 'resetOffsets').and.returnValue(of({}));
+      spyOn(kafkaServiceMock, 'runConsumer').and.returnValue(of({}));
 
       ws = io.connect('http://localhost:3334/kafka');
 
-      const fakeAction = { type: '[Test] Test action type' };
+      const fakeMessageBody = { action: { type: '[Test] Test action type' }, topic: 'test-topic' };
 
-      ws.emit(EventName.SyncAction, fakeAction);
+      ws.emit(EventName.SyncAction, fakeMessageBody);
       ws.emit(EventName.ConsumeTopic, 'to-consume-topic');
 
       await new Promise(resolve =>
         ws.on(EventName.ConsumeTopic, () => {
           expect(kafkaServiceMock.send).toBeCalledWith(
-            'action-topic',
+            'test-topic',
             'action',
-            fakeAction,
+            fakeMessageBody.action,
             expect.objectContaining({ clientId: expect.any(String) }),
           );
 
