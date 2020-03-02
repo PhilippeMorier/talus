@@ -11,8 +11,8 @@ import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.serv
 export class AppEffects {
   constructor(
     private readonly actions$: Actions<SyncableAction>,
-    private readonly store: Store<fromApp.State>,
     private readonly kafkaProxyService: KafkaProxyService,
+    private readonly store: Store<fromApp.State>,
   ) {}
 
   // @source: https://indepth.dev/start-using-ngrx-effects-for-this/#1externalsources

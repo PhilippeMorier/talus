@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -39,7 +39,7 @@ import { KafkaProxyService } from './web-socket/kafka-proxy.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   title = 'frontend';
   isDarkTheme$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
@@ -53,10 +53,6 @@ export class AppComponent implements AfterViewInit {
     private renderer: Renderer2,
     private kafkaProxyService: KafkaProxyService,
   ) {}
-
-  ngAfterViewInit(): void {
-    // this.webSocketService.emit('kafka', { dataValue: 'Buh' });
-  }
 
   setTheme(isDarkTheme: boolean): void {
     const toAddClass = isDarkTheme ? 'app-dark-theme' : 'app-light-theme';
