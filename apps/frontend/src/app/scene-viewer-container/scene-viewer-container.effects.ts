@@ -90,8 +90,8 @@ export class SceneViewerContainerEffects {
       withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
       map(([action, state]) =>
         state.selectedLineStartCoord
-          ? finishLine({ voxelChanges: state.selectedLineChanges, needsSync: action.needsSync })
-          : startLine(action),
+          ? finishLine({ voxelChanges: state.selectedLineChanges })
+          : startLine({ newValue: action.newValue, xyz: action.xyz }),
       ),
     ),
   );
