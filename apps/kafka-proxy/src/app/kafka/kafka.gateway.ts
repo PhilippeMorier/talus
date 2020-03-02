@@ -9,7 +9,7 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Action } from '@ngrx/store';
-import { EventName } from '@talus/model';
+import { DecodedKafkaMessage, EventName } from '@talus/model';
 import { notNil } from '@talus/shared';
 import { Consumer, RecordMetadata } from 'kafkajs';
 import { Observable, of } from 'rxjs';
@@ -35,19 +35,23 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('Close connection:', client.id);
 
     this.consumers.delete(client.id);
+    const consumer = this.consumers.get(client.id);
+    if (consumer) {
+      consumer.disconnect().then();
+    }
     this.kafkaService.disconnect().then();
   }
 
   @SubscribeMessage(EventName.SyncAction)
   async syncAction(
     @MessageBody() { action, topic }: { action: Action; topic: string },
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() socket: Socket,
   ): Promise<RecordMetadata[]> {
-    console.log(`Action '${action.type}' for topic '${topic}' from '${client.id}' received.`);
+    console.log(`Action '${action.type}' for topic '${topic}' from '${socket.id}' received.`);
 
     // https://github.com/tulios/kafkajs/issues/36#issuecomment-449953932
 
-    return this.kafkaService.send(topic, 'action', action, { clientId: client.id });
+    return this.kafkaService.send(topic, 'action', action, { socketId: socket.id });
   }
 
   @SubscribeMessage(EventName.TopicNames)
@@ -66,7 +70,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   consumeTopic(
     @MessageBody() topic: string,
     @ConnectedSocket() socket: Socket,
-  ): Observable<WsResponse<Action>> {
+  ): Observable<WsResponse<DecodedKafkaMessage<Action>>> {
     const consumer$ = this.getExistingOrNewConsumer(socket.id);
 
     return consumer$.pipe(
@@ -79,7 +83,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
           flatMap(() => this.kafkaService.runConsumer(consumer, topic)),
         );
       }),
-      map(action => ({ event: EventName.ConsumeTopic, data: action })),
+      map(message => ({ event: EventName.ConsumeTopic, data: message })),
     );
   }
 

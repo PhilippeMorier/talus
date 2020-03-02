@@ -66,7 +66,7 @@ describe('KafkaGateway', () => {
             'test-topic',
             'action',
             fakeMessageBody.action,
-            expect.objectContaining({ clientId: expect.any(String) }),
+            expect.objectContaining({ socketId: expect.any(String) }),
           );
 
           expect(kafkaServiceMock.runConsumer).toHaveBeenCalledWith(

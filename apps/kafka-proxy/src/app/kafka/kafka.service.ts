@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Action } from '@ngrx/store';
+import { DecodedKafkaMessage } from '@talus/model';
 import {
   CompressionTypes,
   Consumer,
@@ -43,7 +44,7 @@ export class KafkaService {
     consumer: Consumer,
     topic: string,
     fromBeginning: boolean = true,
-  ): Observable<Action> {
+  ): Observable<DecodedKafkaMessage<Action>> {
     const subscribe$ = fromPromise(consumer.subscribe({ topic, fromBeginning }));
 
     const runEachMessage$ = new Observable<EachMessagePayload>(subscriber => {
@@ -52,7 +53,13 @@ export class KafkaService {
 
     return subscribe$.pipe(
       flatMap(() => runEachMessage$),
-      map(messagePayload => JSON.parse(messagePayload.message.value.toString())),
+      map(({ message }) => {
+        return {
+          key: message.key.toString(),
+          value: JSON.parse(message.value.toString()),
+          headers: { socketId: message.headers && message.headers['socketId'].toString() },
+        };
+      }),
     );
   }
 

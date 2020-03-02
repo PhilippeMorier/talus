@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { EventName } from '@talus/model';
+import { DecodedKafkaMessage, EventName } from '@talus/model';
 import { Observable, Subject } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { filter, flatMap, map, withLatestFrom } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
 
 export interface SyncableAction extends Action {
@@ -28,8 +28,14 @@ export class KafkaProxyService {
 
     this.actions$ = this.topicSubject.pipe(
       flatMap(topic =>
-        this.webSocketService.emitAndListen<string, SyncableAction>(EventName.ConsumeTopic, topic),
+        this.webSocketService.emitAndListen<string, DecodedKafkaMessage<SyncableAction>>(
+          EventName.ConsumeTopic,
+          topic,
+        ),
       ),
+      withLatestFrom(this.socketId$),
+      filter(([message, socketId]) => socketId !== message.headers.socketId),
+      map(([message, _socketId]) => message.value),
     );
   }
 
