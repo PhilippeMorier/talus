@@ -22,6 +22,7 @@ export class KafkaProxyService {
 
   constructor() {
     this.webSocketService = new WebSocketService(this.uri);
+    this.webSocketService.connect();
     this.connectionStatus$ = this.webSocketService.connectionStatus$;
     this.socketId$ = this.webSocketService.socketId$;
     this.topics$ = this.webSocketService.emitAndListen(EventName.TopicNames);
@@ -52,6 +53,8 @@ export class KafkaProxyService {
   }
 
   setTopic(topic: string): void {
+    // Reconnect to get a new socket-id so all the messages from the topic get received
+    this.webSocketService.reconnect();
     this.topicSubject.next(topic);
   }
 }

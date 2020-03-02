@@ -4,17 +4,25 @@ import { map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
 export class WebSocketService {
-  private readonly socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
 
   private readonly connectionStatusSubject = new Subject<boolean>();
   connectionStatus$ = this.connectionStatusSubject.asObservable();
 
   socketId$ = this.connectionStatus$.pipe(map(() => this.socket.id));
 
-  constructor(uri: string) {
-    this.socket = io.connect(uri);
+  constructor(private uri: string) {
+    this.connect();
+  }
 
+  connect(): void {
+    this.socket = io.connect(this.uri);
     this.registerConnectionEvents();
+  }
+
+  reconnect(): void {
+    this.socket.disconnect();
+    this.connect();
   }
 
   listen<T>(eventName: EventName): Observable<T> {
