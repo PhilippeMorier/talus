@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { Topic } from '@talus/model';
 
 const actionTypePrefix = '[app]';
 
@@ -7,5 +8,5 @@ export const wentOffline = createAction(`${actionTypePrefix} Went offline`);
 
 export const updateTopics = createAction(
   `${actionTypePrefix} Update topics`,
-  props<{ topics: string[] }>(),
+  props<{ topics: Topic[] }>(),
 );

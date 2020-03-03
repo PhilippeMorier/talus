@@ -184,7 +184,7 @@ export class SceneViewerContainerEffects {
   openTopicDialog$ = createEffect(() =>
     this.actions$.pipe(
       ofType(openTopicDialog),
-      map(({ topics }) => this.topicDialogService.open(topics)),
+      map(({ topics }) => this.topicDialogService.open(topics.map(topic => topic.name))),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
       map(({ topicName, isNewTopic }) =>

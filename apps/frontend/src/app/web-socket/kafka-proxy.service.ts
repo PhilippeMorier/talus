@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { DecodedKafkaMessage, EventName } from '@talus/model';
+import { DecodedKafkaMessage, EventName, Topic } from '@talus/model';
 import { Observable, Subject } from 'rxjs';
 import { filter, flatMap, map, withLatestFrom } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
@@ -16,7 +16,7 @@ export class KafkaProxyService {
 
   connectionStatus$: Observable<boolean>;
   socketId$: Observable<string>;
-  topics$: Observable<string[]>;
+  topics$: Observable<Topic[]>;
   private topicSubject = new Subject<string>();
   actions$: Observable<SyncableAction>;
 
@@ -26,9 +26,9 @@ export class KafkaProxyService {
     this.connectionStatus$ = this.webSocketService.connectionStatus$;
     this.socketId$ = this.webSocketService.socketId$;
     this.topics$ = this.webSocketService
-      .emitAndListen<void, string[]>(EventName.TopicNames)
+      .emitAndListen<void, Topic[]>(EventName.TopicNames)
       // https://kafka.apache.org/0110/documentation.html#impl_offsettracking
-      .pipe(map(names => names.filter(name => name !== '__consumer_offsets')));
+      .pipe(map(topics => topics.filter(topic => topic.name !== '__consumer_offsets')));
 
     this.actions$ = this.topicSubject.pipe(
       flatMap(topic =>

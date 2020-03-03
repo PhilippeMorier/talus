@@ -9,7 +9,7 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Action } from '@ngrx/store';
-import { DecodedKafkaMessage, EventName } from '@talus/model';
+import { DecodedKafkaMessage, EventName, Topic } from '@talus/model';
 import { RecordMetadata } from 'kafkajs';
 import { Observable } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
@@ -47,15 +47,15 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(EventName.TopicNames)
-  async topicNames(): Promise<string[]> {
-    return this.getAndEmitTopicNames();
+  async topicNames(): Promise<WsResponse<Topic[]>> {
+    return this.getTopicNamesAsWsResponse();
   }
 
   @SubscribeMessage(EventName.CreateTopic)
-  async createTopics(@MessageBody() topicName: string): Promise<string[]> {
+  async createTopics(@MessageBody() topicName: string): Promise<WsResponse<Topic[]>> {
     await this.kafkaService.createTopic(topicName);
 
-    return this.getAndEmitTopicNames();
+    return this.getTopicNamesAsWsResponse();
   }
 
   @SubscribeMessage(EventName.ConsumeTopic)
@@ -82,16 +82,15 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * Requires `delete.topic.enable=true`, i.e.: `KAFKA_CFG_DELETE_TOPIC_ENABLE=true`
    */
   @SubscribeMessage(EventName.DeleteTopic)
-  async deleteTopics(@MessageBody() topicName: string): Promise<string[]> {
+  async deleteTopics(@MessageBody() topicName: string): Promise<WsResponse<Topic[]>> {
     await this.kafkaService.deleteTopic(topicName);
 
-    return this.getAndEmitTopicNames();
+    return this.getTopicNamesAsWsResponse();
   }
 
-  private async getAndEmitTopicNames(): Promise<string[]> {
-    const topicNames = await this.kafkaService.getTopicNames();
-    this.server.emit(EventName.TopicNames, topicNames);
+  private async getTopicNamesAsWsResponse(): Promise<WsResponse<Topic[]>> {
+    const topics = await this.kafkaService.getTopics();
 
-    return topicNames;
+    return { event: EventName.TopicNames, data: topics };
   }
 }

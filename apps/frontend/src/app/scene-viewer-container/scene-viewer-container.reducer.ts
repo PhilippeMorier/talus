@@ -1,4 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
+import { Topic } from '@talus/model';
 import { Coord } from '@talus/vdb';
 import { updateTopics } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
@@ -19,7 +20,7 @@ export interface State {
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
   topic?: string;
-  topics: string[];
+  topics: Topic[];
   voxelCount: number;
 }
 

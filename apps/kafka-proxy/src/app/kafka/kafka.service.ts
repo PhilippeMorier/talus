@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Action } from '@ngrx/store';
-import { DecodedKafkaMessage } from '@talus/model';
+import { DecodedKafkaMessage, Topic } from '@talus/model';
 import {
   CompressionTypes,
   Consumer,
@@ -22,7 +22,10 @@ export class KafkaService {
     brokers: ['localhost:29092'],
   });
 
-  readonly producer = this.kafka.producer();
+  readonly producer = this.kafka.producer({
+    // https://blog.softwaremill.com/does-kafka-really-guarantee-the-order-of-messages-3ca849fd19d2#f700
+    maxInFlightRequests: 1,
+  });
   readonly admin = this.kafka.admin();
   private readonly consumers: Map<string, Consumer> = new Map<string, Consumer>();
 
@@ -68,10 +71,30 @@ export class KafkaService {
     return fromPromise(this.admin.resetOffsets({ groupId, topic, earliest: true }));
   }
 
-  async getTopicNames(): Promise<string[]> {
+  async getTopics(): Promise<Topic[]> {
     const { topics } = await this.admin.fetchTopicMetadata({ topics: [] });
 
-    return topics.map(topic => topic.name);
+    const namesPromise = topics.map(async topic => ({
+      name: topic.name,
+      offsets: await this.admin.fetchTopicOffsets(topic.name),
+    }));
+
+    return this.convertToTopics(await Promise.all(namesPromise));
+  }
+
+  private convertToTopics(
+    kafkaTopics: {
+      name: string;
+      offsets: { partition: number; offset: string; high: string; low: string }[];
+    }[],
+  ): Topic[] {
+    return kafkaTopics.map(topic => ({
+      name: topic.name,
+      totalSize: topic.offsets.reduce(
+        (previous, next) => previous + (Number(next.high) - Number(next.low)),
+        0,
+      ),
+    }));
   }
 
   async createTopic(topicName: string): Promise<boolean> {
