@@ -24,6 +24,7 @@ export class KafkaService {
 
   readonly producer = this.kafka.producer();
   readonly admin = this.kafka.admin();
+  private readonly consumers: Map<string, Consumer> = new Map<string, Consumer>();
 
   constructor() {
     this.producer
@@ -67,10 +68,6 @@ export class KafkaService {
     return fromPromise(this.admin.resetOffsets({ groupId, topic, earliest: true }));
   }
 
-  disconnect(): Promise<void> {
-    return this.producer.disconnect();
-  }
-
   async getTopicNames(): Promise<string[]> {
     const { topics } = await this.admin.fetchTopicMetadata({ topics: [] });
 
@@ -92,5 +89,27 @@ export class KafkaService {
     await consumer.connect();
 
     return consumer;
+  }
+
+  async connectConsumer(groupId: string): Promise<Consumer> {
+    let consumer = this.consumers.get(groupId);
+
+    if (!consumer) {
+      consumer = this.kafka.consumer({ groupId });
+      this.consumers.set(groupId, consumer);
+    }
+
+    await consumer.connect();
+
+    return consumer;
+  }
+
+  async disconnectConsumer(groupId: string): Promise<void> {
+    const consumer = this.consumers.get(groupId);
+
+    if (consumer) {
+      await consumer.disconnect();
+      this.consumers.delete(groupId);
+    }
   }
 }

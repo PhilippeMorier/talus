@@ -11,9 +11,7 @@ export class WebSocketService {
 
   socketId$ = this.connectionStatus$.pipe(map(() => this.socket.id));
 
-  constructor(private uri: string) {
-    this.connect();
-  }
+  constructor(private uri: string) {}
 
   connect(): void {
     this.socket = io.connect(this.uri);

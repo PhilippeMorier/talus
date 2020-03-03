@@ -14,7 +14,7 @@ class KafkaServiceMock {
   runConsumer(): void {
     return;
   }
-  createConsumer(): void {
+  connectConsumer(): void {
     return;
   }
   resetOffsets(): void {
@@ -47,7 +47,7 @@ describe('KafkaGateway', () => {
     // https://github.com/nestjs/nest/blob/master/integration/websockets/e2e/gateway.spec.ts
     it('should send message to via KafkaService', async () => {
       spyOn(kafkaServiceMock, 'send');
-      spyOn(kafkaServiceMock, 'createConsumer').and.returnValue(
+      spyOn(kafkaServiceMock, 'connectConsumer').and.returnValue(
         new Promise(resolve => resolve({ stop: () => new Promise(r => r({})) })),
       );
       spyOn(kafkaServiceMock, 'resetOffsets').and.returnValue(of({}));

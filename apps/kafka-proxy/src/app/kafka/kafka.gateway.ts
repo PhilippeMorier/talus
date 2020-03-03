@@ -10,11 +10,10 @@ import {
 } from '@nestjs/websockets';
 import { Action } from '@ngrx/store';
 import { DecodedKafkaMessage, EventName } from '@talus/model';
-import { notNil } from '@talus/shared';
-import { Consumer, RecordMetadata } from 'kafkajs';
-import { Observable, of } from 'rxjs';
+import { RecordMetadata } from 'kafkajs';
+import { Observable } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { flatMap, map, tap } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { Client, Server, Socket } from 'socket.io';
 import { KafkaService } from './kafka.service';
 
@@ -23,23 +22,18 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  consumers: Map<string, Consumer> = new Map<string, Consumer>();
-
   constructor(private readonly kafkaService: KafkaService) {}
 
   handleConnection(client: Client): void {
-    console.log('New connection:', client.id);
+    this.kafkaService
+      .connectConsumer(client.id)
+      .then(() => console.log('New connection for:', client.id));
   }
 
   handleDisconnect(client: Client): void {
-    console.log('Close connection:', client.id);
-
-    this.consumers.delete(client.id);
-    const consumer = this.consumers.get(client.id);
-    if (consumer) {
-      consumer.disconnect().then();
-    }
-    this.kafkaService.disconnect().then();
+    this.kafkaService
+      .disconnectConsumer(client.id)
+      .then(() => console.log('Connection closed for:', client.id));
   }
 
   @SubscribeMessage(EventName.SyncAction)
@@ -71,10 +65,9 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() topic: string,
     @ConnectedSocket() socket: Socket,
   ): Observable<WsResponse<DecodedKafkaMessage<Action>>> {
-    const consumer$ = this.getExistingOrNewConsumer(socket.id);
+    const consumer$ = fromPromise(this.kafkaService.connectConsumer(socket.id));
 
     return consumer$.pipe(
-      tap(consumer => this.consumers.set(socket.id, consumer)),
       flatMap(consumer => {
         // The consumer group must have no running instances when performing the reset.
         // https://kafka.js.org/docs/admin#a-name-reset-offsets-a-reset-consumer-group-offsets
@@ -102,11 +95,5 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit(EventName.TopicNames, topicNames);
 
     return topicNames;
-  }
-
-  private getExistingOrNewConsumer(socketId: string): Observable<Consumer> {
-    return this.consumers.has(socketId)
-      ? of(this.consumers.get(socketId)).pipe(notNil())
-      : fromPromise(this.kafkaService.createConsumer(socketId));
   }
 }
