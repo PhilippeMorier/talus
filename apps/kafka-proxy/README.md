@@ -1,5 +1,11 @@
 # kafka-proxy
 
+Same idea as [Confluent REST proxy](https://docs.confluent.io/current/kafka-rest/) but using
+WebSockets.
+
+- https://docs.confluent.io/current/kafka-rest/
+- https://github.com/tulios/kafkajs/issues/36#issuecomment-449953932
+
 ## Debug in WebStorm
 
 - https://www.jetbrains.com/help/webstorm/running-and-debugging-node-js.html#cc8ea8a7

@@ -43,8 +43,6 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): Promise<RecordMetadata[]> {
     console.log(`Action '${action.type}' for topic '${topic}' from '${socket.id}' received.`);
 
-    // https://github.com/tulios/kafkajs/issues/36#issuecomment-449953932
-
     return this.kafkaService.send(topic, 'action', action, { socketId: socket.id });
   }
 
