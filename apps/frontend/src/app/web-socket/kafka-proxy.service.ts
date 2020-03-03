@@ -25,7 +25,10 @@ export class KafkaProxyService {
     this.webSocketService.connect();
     this.connectionStatus$ = this.webSocketService.connectionStatus$;
     this.socketId$ = this.webSocketService.socketId$;
-    this.topics$ = this.webSocketService.emitAndListen(EventName.TopicNames);
+    this.topics$ = this.webSocketService
+      .emitAndListen<void, string[]>(EventName.TopicNames)
+      // https://kafka.apache.org/0110/documentation.html#impl_offsettracking
+      .pipe(map(names => names.filter(name => name !== '__consumer_offsets')));
 
     this.actions$ = this.topicSubject.pipe(
       flatMap(topic =>
