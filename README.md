@@ -51,6 +51,8 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 11. `nx g @nrwl/angular:storybook-configuration ui`
 
+12. `ng generate @nrwl/workspace:library shared --linter=eslint`
+
 ## Installations
 
 ### Node
@@ -117,13 +119,15 @@ Setting up a macro which will fix all the linting issues, optimizes the imports 
 
 2. Record macro (Edit > Macros > Start Macro Recording) in this order
 
-   - Action: TsLintFileFixAction (with opened \*.ts file)
-   - Action: OptimizeImports
-   - Action: ReformatWithPrettierAction
-   - Action: FileWatcher.runForFiles (with opened \*.scss file)
-   - Action: SaveAll
+   - Action: `OptimizeImports`
+   - Action: `TsLintFileFixAction` (with opened \*.ts file)
+   - Action: `Javascript.Linters.EsLint.Fix`
+   - Action: `ReformatWithPrettierAction`
+   - Action: `FileWatcher.runForFiles` (with opened \*.scss file)
+   - Action: `SaveAll`
 
-3. Save macro as e.g. `Fix & Save`
+3. Save macro as e.g. `Fix & Save`  
+   (macros are saved under `/home/<user>/.WebStorm2019.3/config/options/macros.xml`)
 
 4. Assign Keyboard shortcut `Ctrl` + `S` to macro `Fix & Save` (search for macro)
 
@@ -227,9 +231,13 @@ https://docs.docker.com/compose/completion/
 
 ## Github Pages
 
-CircleCI pushes every build onto the
+CircleCI pushes every develop/master branch build (frontend & storybook of ui) onto the
 [gh-pages branch](https://github.com/PhilippeMorier/talus/tree/gh-pages) which gets published on
 GitHub under:
 
-- Schema: `https://philippemorier.github.io/talus/<branch>/<commit-hash>/frontend/`
-- Example: `https://philippemorier.github.io/talus/develop/56c699a/frontend/`
+Example:
+
+- frontend: `https://philippemorier.github.io/talus/master/d632e97/apps/frontend/`
+- storybook of ui: `https://philippemorier.github.io/talus/master/d632e97/storybook/ui/`
+
+See also the [releases page](https://github.com/PhilippeMorier/talus/releases) for older versions.
