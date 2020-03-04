@@ -17,6 +17,9 @@ class KafkaServiceMock {
   connectConsumer(): void {
     return;
   }
+  disconnectConsumer(): void {
+    return;
+  }
   resetOffsets(): void {
     return;
   }
@@ -48,7 +51,10 @@ describe('KafkaGateway', () => {
     it('should send message to via KafkaService', async () => {
       spyOn(kafkaServiceMock, 'send');
       spyOn(kafkaServiceMock, 'connectConsumer').and.returnValue(
-        new Promise(resolve => resolve({ stop: () => Promise.resolve({}) })),
+        Promise.resolve({ stop: () => Promise.resolve({}) }),
+      );
+      spyOn(kafkaServiceMock, 'disconnectConsumer').and.returnValue(
+        Promise.resolve({ stop: () => Promise.resolve({}) }),
       );
       spyOn(kafkaServiceMock, 'resetOffsets').and.returnValue(of({}));
       spyOn(kafkaServiceMock, 'runConsumer').and.returnValue(of({}));
