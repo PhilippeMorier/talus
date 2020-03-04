@@ -11,6 +11,7 @@ import {
   nodeToMesh,
   Ray,
   TimeSpan,
+  ValueAccessor3,
   Vec3,
   VolumeRayIntersector,
   Voxel,
@@ -26,8 +27,17 @@ const COLOR_FACTOR = 1 / 255;
  */
 @Injectable()
 export class GridService {
-  grid = new Grid(-1);
-  accessor = this.grid.getAccessor();
+  grid: Grid<number>;
+  accessor: ValueAccessor3<number>;
+
+  constructor() {
+    this.initialize();
+  }
+
+  initialize(): void {
+    this.grid = new Grid(-1);
+    this.accessor = this.grid.getAccessor();
+  }
 
   get background(): number {
     return this.grid.background;

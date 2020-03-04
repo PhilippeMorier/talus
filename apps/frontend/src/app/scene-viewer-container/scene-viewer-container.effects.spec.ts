@@ -3,12 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { Topic } from '@talus/model';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { openTopicDialog, selectTopic } from '../menu-bar-container/menu-bar-container.actions';
 import { initialMockState } from '../testing';
+import { KafkaProxyService } from '../web-socket/kafka-proxy.service';
 import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -59,6 +61,16 @@ class UiTopicDialogServiceMock {
   }
 }
 
+@Injectable()
+class KafkaProxyServiceMock {
+  createTopic(): void {
+    return;
+  }
+  setTopic(): void {
+    return;
+  }
+}
+
 describe('SceneViewerContainerEffects', () => {
   let actions$: Observable<Action>;
   let effects: SceneViewerContainerEffects;
@@ -71,6 +83,7 @@ describe('SceneViewerContainerEffects', () => {
         { provide: GridService, useClass: GridServiceMock },
         { provide: UiSceneViewerService, useClass: UiSceneViewerServiceMock },
         { provide: UiTopicDialogService, useClass: UiTopicDialogServiceMock },
+        { provide: KafkaProxyService, useClass: KafkaProxyServiceMock },
         SceneViewerContainerEffects,
         provideMockActions(() => actions$),
         provideMockStore<fromApp.State>({
@@ -166,15 +179,18 @@ describe('SceneViewerContainerEffects', () => {
   });
 
   it(`should dispatch 'selectSession' after 'openSessionDialog'`, () => {
-    const topics = ['topic-1', 'topic-2'];
+    const topics: Topic[] = [
+      { name: 'topic-1', totalSize: 42 },
+      { name: 'topic-2', totalSize: 24 },
+    ];
     actions$ = hot('o', { o: openTopicDialog({ topics }) });
 
     spyOn(topicService, 'open').and.returnValue({
-      beforeClosed: () => of({ topicName: topics[0], isNewTopic: false }),
+      beforeClosed: () => of({ topicName: topics[0].name, isNewTopic: false }),
     });
-    const expected$ = hot('s', { s: selectTopic({ topic: topics[0] }) });
+    const expected$ = hot('s', { s: selectTopic({ topic: topics[0].name, isNewTopic: false }) });
 
-    expect(effects.openSessionDialog$).toBeObservable(expected$);
+    expect(effects.openTopicDialog$).toBeObservable(expected$);
     expect(topicService.open).toHaveBeenCalledTimes(1);
   });
 });

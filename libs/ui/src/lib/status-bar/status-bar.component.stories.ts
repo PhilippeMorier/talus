@@ -1,4 +1,4 @@
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
 import { UiStatusBarComponent } from './status-bar.component';
 import { UiStatusBarModule } from './status-bar.module';
 
@@ -13,5 +13,6 @@ export const primary = () => ({
   component: UiStatusBarComponent,
   props: {
     connected: boolean('connected', false),
+    status: text('status', 'Your status text'),
   },
 });

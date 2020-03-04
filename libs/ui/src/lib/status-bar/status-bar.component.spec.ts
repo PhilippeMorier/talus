@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { UiStatusBarModule } from '@talus/ui';
-
 import { UiStatusBarComponent } from './status-bar.component';
+import { UiStatusBarModule } from './status-bar.module';
 
 describe('StatusBarComponent', () => {
   let component: UiStatusBarComponent;

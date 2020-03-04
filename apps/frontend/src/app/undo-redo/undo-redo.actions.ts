@@ -12,15 +12,6 @@ export const addUndo = createAction(
   }>(),
 );
 
-export const undo = createAction(`${actionTypePrefix} Undo`);
-
 export const undone = createAction(`${actionTypePrefix} Undone`);
-
-export const addRedo = createAction(
-  `${actionTypePrefix} Add redo`,
-  props<{ redoAction: Action }>(),
-);
-
-export const redo = createAction(`${actionTypePrefix} Redo`);
 
 export const redone = createAction(`${actionTypePrefix} Redone`);

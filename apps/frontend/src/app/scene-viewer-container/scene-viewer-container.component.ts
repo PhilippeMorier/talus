@@ -50,12 +50,12 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    // Due to the status-bar being on the bottom of the screen a resizing is needed.
+    this.sceneViewerService.resizeView();
+
     this.store.dispatch(
       setVoxel({ xyz: [0, 0, 0], newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }) }),
     );
-
-    // Ensure canvas gets correct size, otherwise mouse clicks add voxels at wrong positions
-    this.sceneViewerService.resizeView();
   }
 
   onPointerPick(pickInfo: UiPointerPickInfo, selectedToolId: Tool, selectedColor: number): void {
@@ -86,6 +86,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
         toAddPosition,
         underPointerPosition,
         color: selectedColor,
+        needsSync: true,
       }),
     );
   }
@@ -104,7 +105,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
       }
     }
 
-    this.store.dispatch(setVoxels({ coords, newValues }));
+    this.store.dispatch(setVoxels({ coords, newValues, needsSync: true }));
   }
 
   private dispatchPickAction(
@@ -118,17 +119,27 @@ export class SceneViewerContainerComponent implements AfterViewInit {
 
     switch (selectedToolId) {
       case Tool.SelectLinePoint:
-        this.store.dispatch(setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
+        this.store.dispatch(
+          setLineCoord({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue, needsSync: true }),
+        );
         break;
       case Tool.SetVoxel:
-        this.store.dispatch(setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue }));
+        this.store.dispatch(
+          setVoxel({ xyz: this.calcVoxelToAddPosition(pickInfo), newValue, needsSync: true }),
+        );
         break;
       case Tool.RemoveVoxel:
-        this.store.dispatch(removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo) }));
+        this.store.dispatch(
+          removeVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), needsSync: true }),
+        );
         break;
       case Tool.PaintVoxel:
         this.store.dispatch(
-          paintVoxel({ xyz: this.calcVoxelUnderPointerPosition(pickInfo), newValue }),
+          paintVoxel({
+            xyz: this.calcVoxelUnderPointerPosition(pickInfo),
+            newValue,
+            needsSync: true,
+          }),
         );
         break;
     }

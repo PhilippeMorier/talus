@@ -68,11 +68,6 @@ export const selectSceneViewerContainerState = createFeatureSelector<
   fromSceneViewerContainer.State
 >(fromSceneViewerContainer.featureKey);
 
-export const selectVoxelCount = createSelector(
-  selectSceneViewerContainerState,
-  fromSceneViewerContainer.selectVoxelCount,
-);
-
 /**
  * ToolsPanel reducers
  */

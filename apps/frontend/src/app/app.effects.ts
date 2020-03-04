@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
-import { createEffect } from '@ngrx/effects';
+import { Actions, createEffect } from '@ngrx/effects';
+import { select, Store } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
-import { map, mapTo } from 'rxjs/operators';
-import { wentOffline, wentOnline } from './app.actions';
+import { filter, map, mapTo, tap, withLatestFrom } from 'rxjs/operators';
+import { updateConnectionStatus, updateTopics, wentOffline, wentOnline } from './app.actions';
+import * as fromApp from './app.reducer';
+import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
 @Injectable()
 export class AppEffects {
+  constructor(
+    private readonly actions$: Actions<SyncableAction>,
+    private readonly kafkaProxyService: KafkaProxyService,
+    private readonly store: Store<fromApp.State>,
+  ) {}
+
   // @source: https://indepth.dev/start-using-ngrx-effects-for-this/#1externalsources
   onlineStateChange$ = createEffect(() => {
     return merge(
@@ -14,4 +23,39 @@ export class AppEffects {
       fromEvent(window, 'offline').pipe(mapTo(false)),
     ).pipe(map(isOnline => (isOnline ? wentOnline() : wentOffline())));
   });
+
+  syncActionToKafka$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        filter(action => action.needsSync),
+        withLatestFrom(this.store.pipe(select(fromApp.selectSceneViewerContainerState))),
+        tap(
+          ([action, state]) =>
+            state.topic && this.kafkaProxyService.syncAction(action, state.topic),
+        ),
+        // Map it to single action just for making testing easier
+        map(([action]) => action),
+      ),
+    { dispatch: false },
+  );
+
+  emitActionFromKafka$ = createEffect(() =>
+    this.kafkaProxyService.actions$.pipe(
+      map(action => {
+        return { ...action, needsSync: false };
+      }),
+    ),
+  );
+
+  updateTopics$ = createEffect(() =>
+    this.kafkaProxyService.topics$.pipe(map(topics => updateTopics({ topics }))),
+  );
+
+  updateConnectionStatus$ = createEffect(() =>
+    this.kafkaProxyService.connectionStatus$.pipe(
+      map(connectedKafkaProxy =>
+        updateConnectionStatus({ isConnectedToKafkaProxy: connectedKafkaProxy }),
+      ),
+    ),
+  );
 }

@@ -62,7 +62,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "frontend:build",
+            "proxyConfig": "apps/frontend/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -295,6 +296,86 @@
           "options": {
             "jestConfig": "libs/model/jest.config.js",
             "tsConfig": "libs/model/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "kafka-proxy": {
+      "root": "apps/kafka-proxy",
+      "sourceRoot": "apps/kafka-proxy/src",
+      "projectType": "application",
+      "prefix": "kafka-proxy",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/kafka-proxy",
+            "main": "apps/kafka-proxy/src/main.ts",
+            "tsConfig": "apps/kafka-proxy/tsconfig.app.json",
+            "assets": ["apps/kafka-proxy/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/kafka-proxy/src/environments/environment.ts",
+                  "with": "apps/kafka-proxy/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "kafka-proxy:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/kafka-proxy/.eslintrc",
+            "tsConfig": [
+              "apps/kafka-proxy/tsconfig.app.json",
+              "apps/kafka-proxy/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/kafka-proxy/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/kafka-proxy/jest.config.js",
+            "tsConfig": "apps/kafka-proxy/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared": {
+      "root": "libs/shared",
+      "sourceRoot": "libs/shared/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "libs/shared/.eslintrc",
+            "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/shared/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/jest.config.js",
+            "tsConfig": "libs/shared/tsconfig.spec.json"
           }
         }
       }

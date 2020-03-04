@@ -6,7 +6,7 @@ import { undo } from './menu-bar-container.actions';
 import { MenuBarContainerComponent } from './menu-bar-container.component';
 import { MenuBarContainerModule } from './menu-bar-container.module';
 
-describe('MenuBarComponent', () => {
+describe('MenuBarContainerComponent', () => {
   let component: MenuBarContainerComponent;
   let fixture: ComponentFixture<MenuBarContainerComponent>;
 

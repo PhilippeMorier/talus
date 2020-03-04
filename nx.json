@@ -34,6 +34,12 @@
     },
     "model": {
       "tags": ["scope:libs"]
+    },
+    "kafka-proxy": {
+      "tags": ["scope:backend"]
+    },
+    "shared": {
+      "tags": ["scope:libs"]
     }
   }
 }

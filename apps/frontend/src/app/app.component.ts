@@ -33,7 +33,10 @@ import * as fromApp from './app.reducer';
       </ui-sidenav-shell>
     </main>
 
-    <ui-status-bar></ui-status-bar>
+    <ui-status-bar
+      [status]="topicName$ | async"
+      [connected]="isConnectedToKafkaProxy$ | async"
+    ></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
@@ -44,6 +47,16 @@ export class AppComponent {
   isDarkTheme$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
     map(state => state.isDarkTheme),
+  );
+
+  topicName$: Observable<string | undefined> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.topic),
+  );
+
+  isConnectedToKafkaProxy$: Observable<boolean> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.isConnectedToKafkaProxy),
   );
 
   constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}

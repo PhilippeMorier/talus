@@ -21,16 +21,6 @@ import {
 export class MenuBarContainerComponent {
   private readonly menus: UiMenuBarMenu<Action>[] = [
     {
-      label: 'File',
-      menuItems: [
-        {
-          icon: 'note_add',
-          label: 'Open/New',
-          value: openTopicDialog({ topics: ['test-topic'] }),
-        },
-      ],
-    },
-    {
       label: 'Edit',
       menuItems: [
         {
@@ -49,13 +39,22 @@ export class MenuBarContainerComponent {
 
   menus$ = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
-    map(state => state.isDarkTheme),
-    map(isDarkTheme => [
+    map(state => [
+      {
+        label: 'File',
+        menuItems: [
+          {
+            icon: 'note_add',
+            label: 'Open/New',
+            value: openTopicDialog({ topics: state.topics }),
+          },
+        ],
+      },
       ...this.menus,
       {
         label: 'View',
         menuItems: [
-          ...(isDarkTheme
+          ...(state.isDarkTheme
             ? [
                 {
                   icon: 'brightness_5',

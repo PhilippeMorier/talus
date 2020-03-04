@@ -21,6 +21,7 @@ export function nil<T>(): (o: Observable<Nil | T>) => Observable<Nil> {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isNil(value: any): boolean {
   return value == null;
 }

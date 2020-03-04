@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
+import { rgbaToInt } from '@talus/model';
+import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { areEqual, Coord } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import {
+  createTopic,
   openTopicDialog,
   openTopicDialogFailed,
   selectTopic,
 } from '../menu-bar-container/menu-bar-container.actions';
-import { notNil } from '../rxjs/nil';
+import { KafkaProxyService } from '../web-socket/kafka-proxy.service';
 import { GridService, VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
@@ -39,9 +42,10 @@ export class SceneViewerContainerEffects {
   constructor(
     private actions$: Actions,
     private gridService: GridService,
+    private kafkaProxyService: KafkaProxyService,
     private sceneViewerService: UiSceneViewerService,
-    private topicDialogService: UiTopicDialogService,
     private store: Store<fromApp.State>,
+    private topicDialogService: UiTopicDialogService,
   ) {}
 
   setVoxel$ = createEffect(() =>
@@ -87,7 +91,7 @@ export class SceneViewerContainerEffects {
       map(([action, state]) =>
         state.selectedLineStartCoord
           ? finishLine({ voxelChanges: state.selectedLineChanges })
-          : startLine(action),
+          : startLine({ newValue: action.newValue, xyz: action.xyz }),
       ),
     ),
   );
@@ -177,14 +181,48 @@ export class SceneViewerContainerEffects {
     { dispatch: false },
   );
 
-  openSessionDialog$ = createEffect(() =>
+  openTopicDialog$ = createEffect(() =>
     this.actions$.pipe(
       ofType(openTopicDialog),
-      map(({ topics }) => this.topicDialogService.open(topics)),
+      map(({ topics }) => this.topicDialogService.open(topics.map(topic => topic.name))),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
-      map(result => selectTopic({ topic: result.topicName })),
+      map(({ topicName, isNewTopic }) =>
+        isNewTopic
+          ? createTopic({ topic: topicName })
+          : selectTopic({ topic: topicName, isNewTopic }),
+      ),
       catchError(() => of(openTopicDialogFailed())),
+    ),
+  );
+
+  createTopicInKafka$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createTopic),
+      tap(({ topic }) => this.kafkaProxyService.createTopic(topic)),
+      map(({ topic }) => selectTopic({ topic, isNewTopic: true })),
+    ),
+  );
+
+  restartSceneViewer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(selectTopic),
+      tap(() => this.sceneViewerService.disposeSceneAndRestartRendering()),
+      tap(() => this.gridService.initialize()),
+      tap(({ topic }) => this.kafkaProxyService.setTopic(topic)),
+      filter(({ isNewTopic }) => isNewTopic),
+      map(() =>
+        setVoxel({
+          xyz: [0, 0, 0],
+          newValue: rgbaToInt({
+            r: 0,
+            g: 255,
+            b: 0,
+            a: 255,
+          }),
+          needsSync: true,
+        }),
+      ),
     ),
   );
 

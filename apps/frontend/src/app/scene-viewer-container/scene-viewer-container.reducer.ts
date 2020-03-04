@@ -1,5 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
+import { Topic } from '@talus/model';
 import { Coord } from '@talus/vdb';
+import { updateConnectionStatus, updateTopics } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
@@ -7,39 +9,28 @@ import {
   finishLine,
   setLineChanges,
   startLine,
-  voxelRemoved,
-  voxelSet,
 } from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
 
 export interface State {
+  isConnectedToKafkaProxy: boolean;
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
-  voxelCount: number;
+  topic?: string;
+  topics: Topic[];
 }
 
 export const initialState: State = {
+  isConnectedToKafkaProxy: false,
   isDarkTheme: true,
   selectedLineChanges: [],
-  voxelCount: 0,
+  topics: [],
 };
 
 export const reducer = createReducer<State>(
   initialState,
-  on(voxelSet, state => {
-    return {
-      ...state,
-      voxelCount: state.voxelCount + 1,
-    };
-  }),
-  on(voxelRemoved, state => {
-    return {
-      ...state,
-      voxelCount: state.voxelCount - 1,
-    };
-  }),
 
   on(
     startLine,
@@ -91,6 +82,29 @@ export const reducer = createReducer<State>(
       return { ...state, isDarkTheme: false };
     },
   ),
-);
 
-export const selectVoxelCount = (state: State) => state.voxelCount;
+  on(
+    updateTopics,
+    (state, { topics }): State => {
+      return { ...state, topics };
+    },
+  ),
+  on(
+    updateConnectionStatus,
+    (state, { isConnectedToKafkaProxy }): State => {
+      return { ...state, isConnectedToKafkaProxy };
+    },
+  ),
+
+  on(
+    menuBarContainerActions.selectTopic,
+    (state, { topic }): State => {
+      return {
+        ...state,
+        selectedLineChanges: initialState.selectedLineChanges,
+        selectedLineStartCoord: initialState.selectedLineStartCoord,
+        topic,
+      };
+    },
+  ),
+);
