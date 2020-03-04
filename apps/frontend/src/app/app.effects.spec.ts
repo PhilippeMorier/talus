@@ -19,6 +19,8 @@ class KafkaProxyServiceMock {
 
   actions$: Observable<SyncableAction[]> = of([]);
 
+  connectionStatus$: Observable<boolean> = of(true);
+
   createTopic(): void {
     return;
   }

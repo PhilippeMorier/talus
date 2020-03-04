@@ -10,3 +10,7 @@ export const updateTopics = createAction(
   `${actionTypePrefix} Update topics`,
   props<{ topics: Topic[] }>(),
 );
+export const updateConnectionStatus = createAction(
+  `${actionTypePrefix} Update connection status`,
+  props<{ isConnectedToKafkaProxy: boolean }>(),
+);

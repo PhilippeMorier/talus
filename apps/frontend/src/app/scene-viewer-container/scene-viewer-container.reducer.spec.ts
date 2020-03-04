@@ -25,6 +25,7 @@ describe('SceneViewerContainerReducer', () => {
   it('should reset selected line changes and start coord', () => {
     const stateWithNoStartCoord = reducer(
       {
+        isConnectedToKafkaProxy: true,
         isDarkTheme: true,
         selectedLineChanges: [voxelChange, voxelChange, voxelChange],
         selectedLineStartCoord: [0, 0, 0],

@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { Topic } from '@talus/model';
 import { Coord } from '@talus/vdb';
-import { updateTopics } from '../app.actions';
+import { updateConnectionStatus, updateTopics } from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
@@ -14,6 +14,7 @@ import {
 export const featureKey = 'sceneViewerContainer';
 
 export interface State {
+  isConnectedToKafkaProxy: boolean;
   isDarkTheme: boolean;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
@@ -22,6 +23,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  isConnectedToKafkaProxy: false,
   isDarkTheme: true,
   selectedLineChanges: [],
   topics: [],
@@ -85,6 +87,12 @@ export const reducer = createReducer<State>(
     updateTopics,
     (state, { topics }): State => {
       return { ...state, topics };
+    },
+  ),
+  on(
+    updateConnectionStatus,
+    (state, { isConnectedToKafkaProxy }): State => {
+      return { ...state, isConnectedToKafkaProxy };
     },
   ),
 

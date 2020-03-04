@@ -3,7 +3,6 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromApp from './app.reducer';
-import { KafkaProxyService } from './web-socket/kafka-proxy.service';
 
 @Component({
   selector: 'fe-root',
@@ -34,25 +33,33 @@ import { KafkaProxyService } from './web-socket/kafka-proxy.service';
       </ui-sidenav-shell>
     </main>
 
-    <ui-status-bar [connected]="connectionStatus$ | async"></ui-status-bar>
+    <ui-status-bar
+      [status]="topicName$ | async"
+      [connected]="isConnectedToKafkaProxy$ | async"
+    ></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'frontend';
+
   isDarkTheme$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
     map(state => state.isDarkTheme),
   );
 
-  connectionStatus$ = this.kafkaProxyService.connectionStatus$;
+  topicName$: Observable<string | undefined> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.topic),
+  );
 
-  constructor(
-    private store: Store<fromApp.State>,
-    private renderer: Renderer2,
-    private kafkaProxyService: KafkaProxyService,
-  ) {}
+  isConnectedToKafkaProxy$: Observable<boolean> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.isConnectedToKafkaProxy),
+  );
+
+  constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}
 
   setTheme(isDarkTheme: boolean): void {
     const toAddClass = isDarkTheme ? 'app-dark-theme' : 'app-light-theme';

@@ -3,7 +3,7 @@ import { Actions, createEffect } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
 import { filter, map, mapTo, tap, withLatestFrom } from 'rxjs/operators';
-import { updateTopics, wentOffline, wentOnline } from './app.actions';
+import { updateConnectionStatus, updateTopics, wentOffline, wentOnline } from './app.actions';
 import * as fromApp from './app.reducer';
 import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
@@ -49,5 +49,13 @@ export class AppEffects {
 
   updateTopics$ = createEffect(() =>
     this.kafkaProxyService.topics$.pipe(map(topics => updateTopics({ topics }))),
+  );
+
+  updateConnectionStatus$ = createEffect(() =>
+    this.kafkaProxyService.connectionStatus$.pipe(
+      map(connectedKafkaProxy =>
+        updateConnectionStatus({ isConnectedToKafkaProxy: connectedKafkaProxy }),
+      ),
+    ),
   );
 }
