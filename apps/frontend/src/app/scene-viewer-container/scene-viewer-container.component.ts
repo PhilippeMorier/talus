@@ -105,7 +105,7 @@ export class SceneViewerContainerComponent implements AfterViewInit {
       }
     }
 
-    this.store.dispatch(setVoxels({ coords, newValues }));
+    this.store.dispatch(setVoxels({ coords, newValues, needsSync: true }));
   }
 
   private dispatchPickAction(

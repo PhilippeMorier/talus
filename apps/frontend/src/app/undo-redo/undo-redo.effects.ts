@@ -79,9 +79,9 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelSet),
       map(voxelChange => ({
-        redoStartAction: setVoxel(voxelChange),
+        redoStartAction: setVoxel({ ...voxelChange, needsSync: true }),
         redoEndActionType: voxelSet.type,
-        undoStartAction: removeVoxel(voxelChange),
+        undoStartAction: removeVoxel({ ...voxelChange, needsSync: true }),
         undoEndActionType: voxelRemoved.type,
       })),
       map(addUndo),
@@ -92,9 +92,9 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelRemoved),
       map(voxelChange => ({
-        redoStartAction: removeVoxel(voxelChange),
+        redoStartAction: removeVoxel({ ...voxelChange, needsSync: true }),
         redoEndActionType: voxelRemoved.type,
-        undoStartAction: setVoxel(voxelChange),
+        undoStartAction: setVoxel({ ...voxelChange, needsSync: true }),
         undoEndActionType: voxelSet.type,
       })),
       map(addUndo),
@@ -105,9 +105,13 @@ export class UndoRedoEffects {
     this.userTriggeredActions$.pipe(
       ofType(voxelPainted),
       map(voxelChange => ({
-        redoStartAction: paintVoxel(voxelChange),
+        redoStartAction: paintVoxel({ ...voxelChange, needsSync: true }),
         redoEndActionType: voxelPainted.type,
-        undoStartAction: paintVoxel({ xyz: voxelChange.xyz, newValue: voxelChange.oldValue }),
+        undoStartAction: paintVoxel({
+          xyz: voxelChange.xyz,
+          newValue: voxelChange.oldValue,
+          needsSync: true,
+        }),
         undoEndActionType: voxelPainted.type,
       })),
       map(addUndo),
@@ -123,9 +127,9 @@ export class UndoRedoEffects {
         const oldValues = voxelChanges.map(c => c.oldValue);
 
         return {
-          redoStartAction: setVoxels({ coords, newValues }),
+          redoStartAction: setVoxels({ coords, newValues, needsSync: true }),
           redoEndActionType: voxelsSet.type,
-          undoStartAction: setVoxels({ coords, newValues: oldValues }),
+          undoStartAction: setVoxels({ coords, newValues: oldValues, needsSync: true }),
           undoEndActionType: setVoxels.type,
         };
       }),

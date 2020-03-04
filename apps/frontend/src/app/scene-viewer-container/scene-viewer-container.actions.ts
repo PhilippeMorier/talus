@@ -15,7 +15,7 @@ export const voxelSet = createAction(`${actionTypePrefix} Voxel set`, props<Voxe
 // Set voxels
 export const setVoxels = createAction(
   `${actionTypePrefix} Set voxels`,
-  props<{ coords: Coord[]; newValues: number[] }>(),
+  props<{ coords: Coord[]; newValues: number[]; needsSync?: boolean }>(),
 );
 export const setVoxelsFailed = createAction(`${actionTypePrefix} Set voxels failed`);
 export const voxelsSet = createAction(
