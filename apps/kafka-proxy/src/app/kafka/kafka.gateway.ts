@@ -11,9 +11,9 @@ import {
 import { Action } from '@ngrx/store';
 import { DecodedKafkaMessage, EventName, Topic } from '@talus/model';
 import { RecordMetadata } from 'kafkajs';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { flatMap, map } from 'rxjs/operators';
+import { flatMap, map, startWith } from 'rxjs/operators';
 import { Client, Server, Socket } from 'socket.io';
 import { KafkaService } from './kafka.service';
 
@@ -21,6 +21,8 @@ import { KafkaService } from './kafka.service';
 export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  readonly getTopicNamesSubject = new Subject<void>();
 
   constructor(private readonly kafkaService: KafkaService) {}
 
@@ -47,15 +49,23 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(EventName.TopicNames)
-  async topicNames(): Promise<WsResponse<Topic[]>> {
-    return this.getTopicNamesAsWsResponse();
+  topicNames(): Observable<WsResponse<Topic[]>> {
+    return this.getTopicNamesSubject.pipe(
+      startWith(this.getTopicNamesAsWsResponse()),
+      flatMap(() => this.getTopicNamesAsWsResponse()),
+    );
   }
 
   @SubscribeMessage(EventName.CreateTopic)
-  async createTopics(@MessageBody() topicName: string): Promise<WsResponse<Topic[]>> {
-    await this.kafkaService.createTopic(topicName);
+  async createTopics(@MessageBody() topicName: string): Promise<boolean> {
+    const topicCreated = await this.kafkaService.createTopic(topicName);
 
-    return this.getTopicNamesAsWsResponse();
+    if (topicCreated) {
+      console.log('Topic created:', topicName);
+      this.getTopicNamesSubject.next();
+    }
+
+    return topicCreated;
   }
 
   @SubscribeMessage(EventName.ConsumeTopic)
@@ -82,10 +92,10 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * Requires `delete.topic.enable=true`, i.e.: `KAFKA_CFG_DELETE_TOPIC_ENABLE=true`
    */
   @SubscribeMessage(EventName.DeleteTopic)
-  async deleteTopics(@MessageBody() topicName: string): Promise<WsResponse<Topic[]>> {
+  async deleteTopics(@MessageBody() topicName: string): Promise<void> {
     await this.kafkaService.deleteTopic(topicName);
 
-    return this.getTopicNamesAsWsResponse();
+    this.getTopicNamesSubject.next();
   }
 
   private async getTopicNamesAsWsResponse(): Promise<WsResponse<Topic[]>> {
