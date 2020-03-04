@@ -188,7 +188,9 @@ export class SceneViewerContainerEffects {
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
       map(({ topicName, isNewTopic }) =>
-        isNewTopic ? createTopic({ topic: topicName }) : selectTopic({ topic: topicName }),
+        isNewTopic
+          ? createTopic({ topic: topicName })
+          : selectTopic({ topic: topicName, isNewTopic }),
       ),
       catchError(() => of(openTopicDialogFailed())),
     ),
@@ -198,7 +200,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(createTopic),
       tap(({ topic }) => this.kafkaProxyService.createTopic(topic)),
-      map(({ topic }) => selectTopic({ topic })),
+      map(({ topic }) => selectTopic({ topic, isNewTopic: true })),
     ),
   );
 
@@ -208,6 +210,7 @@ export class SceneViewerContainerEffects {
       tap(() => this.sceneViewerService.disposeSceneAndRestartRendering()),
       tap(() => this.gridService.initialize()),
       tap(({ topic }) => this.kafkaProxyService.setTopic(topic)),
+      filter(({ isNewTopic }) => isNewTopic),
       map(() =>
         setVoxel({
           xyz: [0, 0, 0],

@@ -16,7 +16,7 @@ export const openTopicDialog = createAction(
 export const openTopicDialogFailed = createAction(`${actionTypePrefix} Open topic dialog failed`);
 export const selectTopic = createAction(
   `${actionTypePrefix} Select topic`,
-  props<{ topic: string }>(),
+  props<{ topic: string; isNewTopic: boolean }>(),
 );
 export const createTopic = createAction(
   `${actionTypePrefix} Create topic`,
