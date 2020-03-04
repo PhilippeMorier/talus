@@ -9,8 +9,6 @@ import {
   finishLine,
   setLineChanges,
   startLine,
-  voxelRemoved,
-  voxelSet,
 } from './scene-viewer-container.actions';
 
 export const featureKey = 'sceneViewerContainer';
@@ -21,30 +19,16 @@ export interface State {
   selectedLineStartCoord?: Coord;
   topic?: string;
   topics: Topic[];
-  voxelCount: number;
 }
 
 export const initialState: State = {
   isDarkTheme: true,
   selectedLineChanges: [],
   topics: [],
-  voxelCount: 0,
 };
 
 export const reducer = createReducer<State>(
   initialState,
-  on(voxelSet, state => {
-    return {
-      ...state,
-      voxelCount: state.voxelCount + 1,
-    };
-  }),
-  on(voxelRemoved, state => {
-    return {
-      ...state,
-      voxelCount: state.voxelCount - 1,
-    };
-  }),
 
   on(
     startLine,
@@ -116,5 +100,3 @@ export const reducer = createReducer<State>(
     },
   ),
 );
-
-export const selectVoxelCount = (state: State) => state.voxelCount;
