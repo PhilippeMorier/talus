@@ -15,7 +15,7 @@ import {
   voxelSet,
   voxelsSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
-import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
+import { addUndo, redone, undone } from './undo-redo.actions';
 
 @Injectable()
 export class UndoRedoEffects {
@@ -23,7 +23,7 @@ export class UndoRedoEffects {
 
   undo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(undo, menuBarContainerActions.undo),
+      ofType(menuBarContainerActions.undo),
       withLatestFrom(this.store.pipe(select(fromApp.selectCurrentUndoStartAction))),
       switchMap(([_action, currentUndoAction]) =>
         currentUndoAction ? [currentUndoAction] : [undone()],
@@ -33,7 +33,7 @@ export class UndoRedoEffects {
 
   redo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(redo, menuBarContainerActions.redo),
+      ofType(menuBarContainerActions.redo),
       withLatestFrom(this.store.pipe(select(fromApp.selectCurrentRedoStartAction))),
       switchMap(([_action, currentRedoAction]) =>
         currentRedoAction ? [currentRedoAction] : [redone()],

@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Coord } from '@talus/vdb';
+import { redo, undo } from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from '../scene-viewer-container/grid.service';
 import {
   removeVoxel,
@@ -7,7 +8,7 @@ import {
   voxelRemoved,
   voxelSet,
 } from '../scene-viewer-container/scene-viewer-container.actions';
-import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
+import { addUndo, redone, undone } from './undo-redo.actions';
 import {
   reducer,
   selectCurrentRedoEndAction,
