@@ -137,7 +137,7 @@ describe('SceneViewerContainerComponent', () => {
           b: 255,
           a: 255,
         }),
-        needsSync: false,
+        needsSync: true,
       });
 
       stubComponent.pointerPick.next({
@@ -194,7 +194,12 @@ describe('SceneViewerContainerComponent', () => {
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ xyz, needsSync: false });
+      const initialAction = setVoxel({
+        xyz: [0, 0, 0],
+        newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
+      });
+
+      const action = removeVoxel({ xyz, needsSync: true });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -202,6 +207,7 @@ describe('SceneViewerContainerComponent', () => {
         normal,
       });
 
+      expect(mockStore.dispatch).toHaveBeenCalledWith(initialAction);
       expect(mockStore.dispatch).toHaveBeenCalledWith(action);
     },
   );

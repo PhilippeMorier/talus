@@ -188,7 +188,7 @@ describe('SceneViewerContainerEffects', () => {
     spyOn(topicService, 'open').and.returnValue({
       beforeClosed: () => of({ topicName: topics[0].name, isNewTopic: false }),
     });
-    const expected$ = hot('s', { s: selectTopic({ topic: topics[0].name }) });
+    const expected$ = hot('s', { s: selectTopic({ topic: topics[0].name, isNewTopic: false }) });
 
     expect(effects.openTopicDialog$).toBeObservable(expected$);
     expect(topicService.open).toHaveBeenCalledTimes(1);
