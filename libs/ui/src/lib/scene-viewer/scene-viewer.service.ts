@@ -7,6 +7,7 @@ import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Color4 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
@@ -107,7 +108,9 @@ export class UiSceneViewerService {
   }
 
   disposeSceneAndRestartRendering(): void {
-    this.scene.dispose();
+    if (this.scene) {
+      this.scene.dispose();
+    }
 
     if (this.canvas) {
       this.initialize(this.canvas);
@@ -121,6 +124,9 @@ export class UiSceneViewerService {
       useGeometryUniqueIdsMap: true,
       useClonedMeshMap: true,
     });
+
+    // Make background of canvas transparent
+    this.scene.clearColor = new Color4(0, 0, 0, 0);
 
     // An as transparent flagged mesh does not write to the depth buffer when rendering.
     // This can lead to potential artifacts.
