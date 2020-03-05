@@ -68,6 +68,11 @@ export const selectSceneViewerContainerState = createFeatureSelector<
   fromSceneViewerContainer.State
 >(fromSceneViewerContainer.featureKey);
 
+export const selectTopicLoadingProgressValue = createSelector(
+  selectSceneViewerContainerState,
+  fromSceneViewerContainer.selectTopicLoadingProgressValue,
+);
+
 /**
  * ToolsPanel reducers
  */

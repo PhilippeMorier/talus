@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { DecodedKafkaMessage } from '@talus/model';
 import { hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
 import { wentOffline, wentOnline } from './app.actions';
@@ -17,7 +18,7 @@ import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.serv
 class KafkaProxyServiceMock {
   topics$: Observable<string[]> = of([]);
 
-  actions$: Observable<SyncableAction[]> = of([]);
+  messages$: Observable<DecodedKafkaMessage<SyncableAction>> = of();
 
   connectionStatus$: Observable<boolean> = of(true);
 

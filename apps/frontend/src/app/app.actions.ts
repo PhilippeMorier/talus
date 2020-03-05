@@ -14,3 +14,7 @@ export const updateConnectionStatus = createAction(
   `${actionTypePrefix} Update connection status`,
   props<{ isConnectedToKafkaProxy: boolean }>(),
 );
+export const updateLastLoadedMessageOffset = createAction(
+  `${actionTypePrefix} Update last loaded message offset`,
+  props<{ offset: number }>(),
+);

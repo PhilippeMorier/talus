@@ -1,7 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import { Topic } from '@talus/model';
 import { Coord } from '@talus/vdb';
-import { updateConnectionStatus, updateTopics } from '../app.actions';
+import {
+  updateConnectionStatus,
+  updateLastLoadedMessageOffset,
+  updateTopics,
+} from '../app.actions';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
 import { VoxelChange } from './grid.service';
 import {
@@ -16,6 +20,7 @@ export const featureKey = 'sceneViewerContainer';
 export interface State {
   isConnectedToKafkaProxy: boolean;
   isDarkTheme: boolean;
+  lastLoadedMessageOffset: number;
   selectedLineChanges: VoxelChange[];
   selectedLineStartCoord?: Coord;
   topic?: string;
@@ -25,6 +30,7 @@ export interface State {
 export const initialState: State = {
   isConnectedToKafkaProxy: false,
   isDarkTheme: true,
+  lastLoadedMessageOffset: 0,
   selectedLineChanges: [],
   topics: [],
 };
@@ -90,6 +96,12 @@ export const reducer = createReducer<State>(
     },
   ),
   on(
+    updateLastLoadedMessageOffset,
+    (state, { offset }): State => {
+      return { ...state, lastLoadedMessageOffset: offset };
+    },
+  ),
+  on(
     updateConnectionStatus,
     (state, { isConnectedToKafkaProxy }): State => {
       return { ...state, isConnectedToKafkaProxy };
@@ -101,6 +113,7 @@ export const reducer = createReducer<State>(
     (state, { topic }): State => {
       return {
         ...state,
+        lastLoadedMessageOffset: 0,
         selectedLineChanges: initialState.selectedLineChanges,
         selectedLineStartCoord: initialState.selectedLineStartCoord,
         topic,
@@ -108,3 +121,5 @@ export const reducer = createReducer<State>(
     },
   ),
 );
+
+export const selectTopicLoadingProgressValue = (state: State) => state.lastLoadedMessageOffset;

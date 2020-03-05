@@ -22,7 +22,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  readonly getTopicNamesSubject = new Subject<void>();
+  readonly getTopicsSubject = new Subject<void>();
 
   constructor(private readonly kafkaService: KafkaService) {}
 
@@ -48,11 +48,11 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return this.kafkaService.send(topic, 'action', action, { socketId: socket.id });
   }
 
-  @SubscribeMessage(EventName.TopicNames)
-  topicNames(): Observable<WsResponse<Topic[]>> {
-    return this.getTopicNamesSubject.pipe(
-      startWith(this.getTopicNamesAsWsResponse()),
-      flatMap(() => this.getTopicNamesAsWsResponse()),
+  @SubscribeMessage(EventName.GetTopics)
+  getTopics(): Observable<WsResponse<Topic[]>> {
+    return this.getTopicsSubject.pipe(
+      startWith(this.getTopicsAsWsResponse()),
+      flatMap(() => this.getTopicsAsWsResponse()),
     );
   }
 
@@ -62,7 +62,7 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (topicCreated) {
       console.log('Topic created:', topicName);
-      this.getTopicNamesSubject.next();
+      this.getTopicsSubject.next();
     }
 
     return topicCreated;
@@ -70,20 +70,20 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage(EventName.ConsumeTopic)
   consumeTopic(
-    @MessageBody() topic: string,
+    @MessageBody() topicName: string,
     @ConnectedSocket() socket: Socket,
   ): Observable<WsResponse<DecodedKafkaMessage<Action>>> {
     const consumer$ = fromPromise(this.kafkaService.connectConsumer(socket.id));
 
     return consumer$.pipe(
-      flatMap(consumer => {
+      flatMap(consumer =>
         // The consumer group must have no running instances when performing the reset.
         // https://kafka.js.org/docs/admin#a-name-reset-offsets-a-reset-consumer-group-offsets
-        return fromPromise(consumer.stop()).pipe(
-          flatMap(() => this.kafkaService.resetOffsets(socket.id, topic)),
-          flatMap(() => this.kafkaService.runConsumer(consumer, topic)),
-        );
-      }),
+        fromPromise(consumer.stop()).pipe(
+          flatMap(() => this.kafkaService.resetOffsets(socket.id, topicName)),
+          flatMap(() => this.kafkaService.runConsumer(consumer, topicName, true)),
+        ),
+      ),
       map(message => ({ event: EventName.ConsumeTopic, data: message })),
     );
   }
@@ -95,12 +95,12 @@ export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async deleteTopics(@MessageBody() topicName: string): Promise<void> {
     await this.kafkaService.deleteTopic(topicName);
 
-    this.getTopicNamesSubject.next();
+    this.getTopicsSubject.next();
   }
 
-  private async getTopicNamesAsWsResponse(): Promise<WsResponse<Topic[]>> {
+  private async getTopicsAsWsResponse(): Promise<WsResponse<Topic[]>> {
     const topics = await this.kafkaService.getTopics();
 
-    return { event: EventName.TopicNames, data: topics };
+    return { event: EventName.GetTopics, data: topics };
   }
 }

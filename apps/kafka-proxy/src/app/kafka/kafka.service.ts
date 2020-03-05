@@ -57,13 +57,7 @@ export class KafkaService {
 
     return subscribe$.pipe(
       flatMap(() => runEachMessage$),
-      map(({ message }) => {
-        return {
-          key: message.key.toString(),
-          value: JSON.parse(message.value.toString()),
-          headers: { socketId: message.headers && message.headers['socketId'].toString() },
-        };
-      }),
+      map(({ message }) => DecodedKafkaMessage.fromKafkaMessage(message)),
     );
   }
 
@@ -74,27 +68,22 @@ export class KafkaService {
   async getTopics(): Promise<Topic[]> {
     const { topics } = await this.admin.fetchTopicMetadata({ topics: [] });
 
-    const namesPromise = topics.map(async topic => ({
-      name: topic.name,
-      offsets: await this.admin.fetchTopicOffsets(topic.name),
-    }));
+    const topicPromises = topics.map(topic => this.getTopic(topic.name));
 
-    return this.convertToTopics(await Promise.all(namesPromise));
+    return Promise.all(topicPromises);
   }
 
-  private convertToTopics(
-    kafkaTopics: {
-      name: string;
-      offsets: { partition: number; offset: string; high: string; low: string }[];
-    }[],
-  ): Topic[] {
-    return kafkaTopics.map(topic => ({
-      name: topic.name,
-      totalSize: topic.offsets.reduce(
-        (previous, next) => previous + (Number(next.high) - Number(next.low)),
-        0,
-      ),
-    }));
+  async getTopic(topicName: string): Promise<Topic> {
+    const offsets = await this.admin.fetchTopicOffsets(topicName);
+    return {
+      name: topicName,
+      offsets: offsets.map(offset => ({
+        high: Number(offset.high),
+        low: Number(offset.low),
+        offset: Number(offset.offset),
+        partition: offset.partition,
+      })),
+    };
   }
 
   async createTopic(topicName: string): Promise<boolean> {
@@ -105,13 +94,6 @@ export class KafkaService {
 
   async deleteTopic(topicName: string): Promise<void> {
     return this.admin.deleteTopics({ topics: [topicName] });
-  }
-
-  async createConsumer(groupId: string): Promise<Consumer> {
-    const consumer = this.kafka.consumer({ groupId });
-    await consumer.connect();
-
-    return consumer;
   }
 
   async connectConsumer(groupId: string): Promise<Consumer> {

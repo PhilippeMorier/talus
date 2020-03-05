@@ -78,6 +78,7 @@ describe('KafkaGateway', () => {
           expect(kafkaServiceMock.runConsumer).toHaveBeenCalledWith(
             expect.anything(),
             'to-consume-topic',
+            true,
           );
 
           resolve();

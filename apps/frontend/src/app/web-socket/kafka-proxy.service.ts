@@ -18,7 +18,7 @@ export class KafkaProxyService {
   socketId$: Observable<string>;
   topics$: Observable<Topic[]>;
   private topicSubject = new Subject<string>();
-  actions$: Observable<SyncableAction>;
+  messages$: Observable<DecodedKafkaMessage<SyncableAction>>;
 
   constructor() {
     this.webSocketService = new WebSocketService(this.uri);
@@ -26,11 +26,11 @@ export class KafkaProxyService {
     this.connectionStatus$ = this.webSocketService.connectionStatus$;
     this.socketId$ = this.webSocketService.socketId$;
     this.topics$ = this.webSocketService
-      .emitAndListen<void, Topic[]>(EventName.TopicNames)
+      .emitAndListen<void, Topic[]>(EventName.GetTopics)
       // https://kafka.apache.org/0110/documentation.html#impl_offsettracking
       .pipe(map(topics => topics.filter(topic => topic.name !== '__consumer_offsets')));
 
-    this.actions$ = this.topicSubject.pipe(
+    this.messages$ = this.topicSubject.pipe(
       flatMap(topic =>
         this.webSocketService.emitAndListen<string, DecodedKafkaMessage<SyncableAction>>(
           EventName.ConsumeTopic,
@@ -39,7 +39,7 @@ export class KafkaProxyService {
       ),
       withLatestFrom(this.socketId$),
       filter(([message, socketId]) => socketId !== message.headers.socketId),
-      map(([message, _socketId]) => message.value),
+      map(([message, _socketId]) => message),
     );
   }
 

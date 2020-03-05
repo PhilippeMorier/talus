@@ -34,8 +34,9 @@ import * as fromApp from './app.reducer';
     </main>
 
     <ui-status-bar
-      [status]="topicName$ | async"
       [connected]="isConnectedToKafkaProxy$ | async"
+      [status]="topicName$ | async"
+      [progressValue]="topicLoadingProgressValue$ | async"
     ></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,6 +58,10 @@ export class AppComponent {
   isConnectedToKafkaProxy$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
     map(state => state.isConnectedToKafkaProxy),
+  );
+
+  topicLoadingProgressValue$: Observable<number> = this.store.pipe(
+    select(fromApp.selectTopicLoadingProgressValue),
   );
 
   constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}

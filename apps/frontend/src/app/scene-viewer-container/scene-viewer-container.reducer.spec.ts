@@ -27,6 +27,7 @@ describe('SceneViewerContainerReducer', () => {
       {
         isConnectedToKafkaProxy: true,
         isDarkTheme: true,
+        lastLoadedMessageOffset: 0,
         selectedLineChanges: [voxelChange, voxelChange, voxelChange],
         selectedLineStartCoord: [0, 0, 0],
         topics: [],

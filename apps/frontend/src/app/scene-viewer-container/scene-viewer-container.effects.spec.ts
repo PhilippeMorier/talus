@@ -180,8 +180,8 @@ describe('SceneViewerContainerEffects', () => {
 
   it(`should dispatch 'selectSession' after 'openSessionDialog'`, () => {
     const topics: Topic[] = [
-      { name: 'topic-1', totalSize: 42 },
-      { name: 'topic-2', totalSize: 24 },
+      { name: 'topic-1', offsets: [] },
+      { name: 'topic-2', offsets: [] },
     ];
     actions$ = hot('o', { o: openTopicDialog({ topics }) });
 

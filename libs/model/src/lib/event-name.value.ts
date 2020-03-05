@@ -3,5 +3,5 @@ export enum EventName {
   ConsumeTopic = 'ConsumeTopic',
   CreateTopic = 'CreateTopic',
   DeleteTopic = 'DeleteTopic',
-  TopicNames = 'TopicNames',
+  GetTopics = 'GetTopics',
 }

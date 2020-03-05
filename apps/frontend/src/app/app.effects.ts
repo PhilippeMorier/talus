@@ -2,8 +2,14 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { fromEvent, merge, of } from 'rxjs';
-import { filter, map, mapTo, tap, withLatestFrom } from 'rxjs/operators';
-import { updateConnectionStatus, updateTopics, wentOffline, wentOnline } from './app.actions';
+import { filter, map, mapTo, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import {
+  updateConnectionStatus,
+  updateLastLoadedMessageOffset,
+  updateTopics,
+  wentOffline,
+  wentOnline,
+} from './app.actions';
 import * as fromApp from './app.reducer';
 import { KafkaProxyService, SyncableAction } from './web-socket/kafka-proxy.service';
 
@@ -40,9 +46,12 @@ export class AppEffects {
   );
 
   emitActionFromKafka$ = createEffect(() =>
-    this.kafkaProxyService.actions$.pipe(
-      map(action => {
-        return { ...action, needsSync: false };
+    this.kafkaProxyService.messages$.pipe(
+      switchMap(message => {
+        return [
+          { ...message.value, needsSync: false },
+          updateLastLoadedMessageOffset({ offset: message.offset }),
+        ];
       }),
     ),
   );
