@@ -9,3 +9,11 @@ main {
   // https://stackoverflow.com/a/38383437
   min-height: 0;
 }
+
+h6 {
+  margin-bottom: 0;
+
+  &:not(:first-child) {
+    margin-top: 1rem;
+  }
+}

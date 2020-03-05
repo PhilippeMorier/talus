@@ -16,10 +16,10 @@ import * as fromApp from './app.reducer';
     <main>
       <ui-sidenav-shell>
         <ui-sidenav-shell-left>
-          <h5>Tools</h5>
+          <h6 class="mat-h6">Tools</h6>
           <fe-tools-panel></fe-tools-panel>
 
-          <h5>Options</h5>
+          <h6 class="mat-h6">Options</h6>
           <fe-options-panel></fe-options-panel>
         </ui-sidenav-shell-left>
 
