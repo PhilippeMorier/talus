@@ -21,8 +21,14 @@ mat-sidenav {
 button {
   position: absolute;
   visibility: visible;
-  width: 24px;
   top: 50%;
+  width: 1.5rem;
+
+  mat-icon {
+    font-size: 1.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
 }
 
 #left-sidenav-button {
