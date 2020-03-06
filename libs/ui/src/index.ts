@@ -4,3 +4,4 @@ export * from './lib/scene-viewer';
 export * from './lib/sidenav-shell';
 export * from './lib/status-bar';
 export * from './lib/toolbar';
+export * from './lib/topic-dialog';

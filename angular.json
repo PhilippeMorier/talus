@@ -62,7 +62,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "frontend:build",
+            "proxyConfig": "apps/frontend/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -88,7 +89,8 @@
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
             "tsConfig": "apps/frontend/tsconfig.spec.json",
-            "setupFile": "apps/frontend/src/test-setup.ts"
+            "setupFile": "apps/frontend/src/test-setup.ts",
+            "passWithNoTests": true
           }
         }
       }
@@ -138,7 +140,8 @@
           "options": {
             "jestConfig": "libs/ui/jest.config.js",
             "tsConfig": "libs/ui/tsconfig.spec.json",
-            "setupFile": "libs/ui/src/test-setup.ts"
+            "setupFile": "libs/ui/src/test-setup.ts",
+            "passWithNoTests": true
           }
         },
         "storybook": {
@@ -243,7 +246,8 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/vdb/jest.config.js",
-            "tsConfig": "libs/vdb/tsconfig.spec.json"
+            "tsConfig": "libs/vdb/tsconfig.spec.json",
+            "passWithNoTests": true
           }
         }
       }
@@ -294,7 +298,90 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/model/jest.config.js",
-            "tsConfig": "libs/model/tsconfig.spec.json"
+            "tsConfig": "libs/model/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "kafka-proxy": {
+      "root": "apps/kafka-proxy",
+      "sourceRoot": "apps/kafka-proxy/src",
+      "projectType": "application",
+      "prefix": "kafka-proxy",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/kafka-proxy",
+            "main": "apps/kafka-proxy/src/main.ts",
+            "tsConfig": "apps/kafka-proxy/tsconfig.app.json",
+            "assets": ["apps/kafka-proxy/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/kafka-proxy/src/environments/environment.ts",
+                  "with": "apps/kafka-proxy/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "kafka-proxy:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/kafka-proxy/.eslintrc",
+            "tsConfig": [
+              "apps/kafka-proxy/tsconfig.app.json",
+              "apps/kafka-proxy/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/kafka-proxy/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/kafka-proxy/jest.config.js",
+            "tsConfig": "apps/kafka-proxy/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared": {
+      "root": "libs/shared",
+      "sourceRoot": "libs/shared/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "libs/shared/.eslintrc",
+            "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/shared/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/jest.config.js",
+            "tsConfig": "libs/shared/tsconfig.spec.json",
+            "passWithNoTests": true
           }
         }
       }

@@ -68,9 +68,9 @@ export const selectSceneViewerContainerState = createFeatureSelector<
   fromSceneViewerContainer.State
 >(fromSceneViewerContainer.featureKey);
 
-export const selectVoxelCount = createSelector(
+export const selectTopicLoadingProgressValue = createSelector(
   selectSceneViewerContainerState,
-  fromSceneViewerContainer.selectVoxelCount,
+  fromSceneViewerContainer.selectTopicLoadingProgressValue,
 );
 
 /**

@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import * as menuBarContainerActions from '../menu-bar-container/menu-bar-container.actions';
-import { addUndo, redo, redone, undo, undone } from './undo-redo.actions';
+import { addUndo, redone, undone } from './undo-redo.actions';
 
 /**
  * Use normal reducer instead of meta-reducer, to have the state in the normal store
@@ -57,14 +57,14 @@ export const reducer = createReducer(
     },
   ),
 
-  on(undo, menuBarContainerActions.undo, state => {
+  on(menuBarContainerActions.undo, state => {
     return {
       ...state,
       isUndoing: true,
     };
   }),
 
-  on(redo, menuBarContainerActions.redo, state => {
+  on(menuBarContainerActions.redo, state => {
     return {
       ...state,
       isRedoing: true,

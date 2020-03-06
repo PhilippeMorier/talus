@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { notNil } from '@talus/shared';
 import { UiColorDialogService } from '@talus/ui';
 import { of } from 'rxjs';
 import { catchError, flatMap, map } from 'rxjs/operators';
-import { notNil } from '../rxjs/nil';
 import { openColorDialog, openColorDialogFailed, selectColor } from './options-panel.actions';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class OptionsPanelEffects {
       ),
       flatMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
-      map(selectedColorIndex => selectColor({ colorIndex: selectedColorIndex })),
+      map(colorIndex => selectColor({ colorIndex })),
       catchError(() => of(openColorDialogFailed())),
     ),
   );

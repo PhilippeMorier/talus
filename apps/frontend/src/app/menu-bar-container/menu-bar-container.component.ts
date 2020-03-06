@@ -3,7 +3,13 @@ import { Action, select, Store } from '@ngrx/store';
 import { UiMenuBarMenu } from '@talus/ui';
 import { map } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
-import { redo, setDarkTheme, setLightTheme, undo } from './menu-bar-container.actions';
+import {
+  openTopicDialog,
+  redo,
+  setDarkTheme,
+  setLightTheme,
+  undo,
+} from './menu-bar-container.actions';
 
 @Component({
   selector: 'fe-menu-bar-container',
@@ -33,13 +39,22 @@ export class MenuBarContainerComponent {
 
   menus$ = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
-    map(state => state.isDarkTheme),
-    map(isDarkTheme => [
+    map(state => [
+      {
+        label: 'File',
+        menuItems: [
+          {
+            icon: 'note_add',
+            label: 'Open/New',
+            value: openTopicDialog({ topics: state.topics }),
+          },
+        ],
+      },
       ...this.menus,
       {
         label: 'View',
         menuItems: [
-          ...(isDarkTheme
+          ...(state.isDarkTheme
             ? [
                 {
                   icon: 'brightness_5',

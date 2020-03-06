@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { rgbaToInt, Tool } from '@talus/model';
-import { UiPointerButton, UiPointerPickInfo } from '@talus/ui';
+import { UiPointerButton, UiPointerPickInfo, UiSceneViewerService } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -36,6 +36,7 @@ describe('SceneViewerContainerComponent', () => {
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
       providers: [
         GridService,
+        { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
         provideMockStore<fromApp.State>({
           initialState: initialMockState,
         }),
@@ -136,6 +137,7 @@ describe('SceneViewerContainerComponent', () => {
           b: 255,
           a: 255,
         }),
+        needsSync: true,
       });
 
       stubComponent.pointerPick.next({
@@ -192,7 +194,12 @@ describe('SceneViewerContainerComponent', () => {
       mockStore.refreshState();
       fixture.detectChanges();
 
-      const action = removeVoxel({ xyz });
+      const initialAction = setVoxel({
+        xyz: [0, 0, 0],
+        newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
+      });
+
+      const action = removeVoxel({ xyz, needsSync: true });
 
       stubComponent.pointerPick.next({
         pickedPoint,
@@ -200,6 +207,7 @@ describe('SceneViewerContainerComponent', () => {
         normal,
       });
 
+      expect(mockStore.dispatch).toHaveBeenCalledWith(initialAction);
       expect(mockStore.dispatch).toHaveBeenCalledWith(action);
     },
   );

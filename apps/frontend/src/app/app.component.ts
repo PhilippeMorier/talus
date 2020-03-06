@@ -16,10 +16,10 @@ import * as fromApp from './app.reducer';
     <main>
       <ui-sidenav-shell>
         <ui-sidenav-shell-left>
-          <h5>Tools</h5>
+          <h6 class="mat-h6">Tools</h6>
           <fe-tools-panel></fe-tools-panel>
 
-          <h5>Options</h5>
+          <h6 class="mat-h6">Options</h6>
           <fe-options-panel></fe-options-panel>
         </ui-sidenav-shell-left>
 
@@ -33,7 +33,11 @@ import * as fromApp from './app.reducer';
       </ui-sidenav-shell>
     </main>
 
-    <ui-status-bar></ui-status-bar>
+    <ui-status-bar
+      [connected]="isConnectedToKafkaProxy$ | async"
+      [status]="topicName$ | async"
+      [progressValue]="topicLoadingProgressValue$ | async"
+    ></ui-status-bar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./app.component.scss'],
@@ -44,6 +48,20 @@ export class AppComponent {
   isDarkTheme$: Observable<boolean> = this.store.pipe(
     select(fromApp.selectSceneViewerContainerState),
     map(state => state.isDarkTheme),
+  );
+
+  topicName$: Observable<string | undefined> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.topic),
+  );
+
+  isConnectedToKafkaProxy$: Observable<boolean> = this.store.pipe(
+    select(fromApp.selectSceneViewerContainerState),
+    map(state => state.isConnectedToKafkaProxy),
+  );
+
+  topicLoadingProgressValue$: Observable<number> = this.store.pipe(
+    select(fromApp.selectTopicLoadingProgressValue),
   );
 
   constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}
