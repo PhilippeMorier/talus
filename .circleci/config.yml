@@ -169,7 +169,7 @@ jobs:
           # 1. Too long with no output (exceeded 10m0s): context deadline exceeded
           # 2. Killed
           #    error Command failed with exit code 137.
-          command: yarn nx build benchmark --maxWorkers=10
+          command: yarn ng build benchmark --maxWorkers=10
 
       - run:
           name: Run benchmarks
