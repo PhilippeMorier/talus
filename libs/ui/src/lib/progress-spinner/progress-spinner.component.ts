@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Nil } from '@talus/shared';
 
 @Component({
@@ -16,6 +16,7 @@ import { Nil } from '@talus/shared';
     <div *ngIf="status">{{ status }}</div>
   `,
   styleUrls: ['./progress-spinner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiProgressSpinnerComponent {
   @Input() value: number | Nil;
