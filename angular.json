@@ -26,7 +26,8 @@
             "tsConfig": "apps/frontend/tsconfig.app.json",
             "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
             "styles": ["apps/frontend/src/styles.scss", "apps/frontend/src/themes.scss"],
-            "scripts": []
+            "scripts": [],
+            "webWorkerTsConfig": "apps/frontend/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -80,7 +81,11 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/frontend/tsconfig.app.json", "apps/frontend/tsconfig.spec.json"],
+            "tsConfig": [
+              "apps/frontend/tsconfig.app.json",
+              "apps/frontend/tsconfig.spec.json",
+              "apps/frontend/tsconfig.worker.json"
+            ],
             "exclude": ["**/node_modules/**", "!apps/frontend/**"]
           }
         },
