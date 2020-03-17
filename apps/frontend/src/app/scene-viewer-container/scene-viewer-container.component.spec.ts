@@ -1,10 +1,17 @@
+import { OverlayRef } from '@angular/cdk/overlay';
 import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector, Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { rgbaToInt, Tool } from '@talus/model';
-import { UiPointerButton, UiPointerPickInfo, UiSceneViewerService } from '@talus/ui';
+import {
+  UiFullscreenOverlayModule,
+  UiPointerButton,
+  UiPointerPickInfo,
+  UiSceneViewerService,
+  UI_OVERLAY_DATA,
+} from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import * as fromApp from '../app.reducer';
@@ -33,9 +40,12 @@ describe('SceneViewerContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [UiFullscreenOverlayModule],
       declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
       providers: [
         GridService,
+        { provide: UI_OVERLAY_DATA, useValue: {} },
+        { provide: OverlayRef, useValue: {} },
         { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
         provideMockStore<fromApp.State>({
           initialState: initialMockState,

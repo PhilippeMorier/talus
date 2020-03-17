@@ -5,9 +5,8 @@ import { UiProgressSpinnerModule, UiSceneViewerTestModule, UI_OVERLAY_DATA } fro
 import { of } from 'rxjs';
 import * as fromApp from '../../app.reducer';
 import { initialMockState } from '../../testing';
-import { LoadFileService } from './load-file.service';
-
 import { LoadFileContainerComponent } from './load-file-container.component';
+import { LoadFileService } from './load-file.service';
 
 describe('LoadFileContainerComponent', () => {
   let component: LoadFileContainerComponent;
@@ -23,7 +22,7 @@ describe('LoadFileContainerComponent', () => {
         {
           provide: LoadFileService,
           useValue: {
-            load: of({ coords: [], isConverting: false, isLoading: false, progress: 100 }),
+            load: () => of({ coords: [], isConverting: false, isLoading: false, progress: 100 }),
           },
         },
         provideMockStore<fromApp.State>({
