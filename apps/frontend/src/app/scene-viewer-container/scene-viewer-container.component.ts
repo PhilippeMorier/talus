@@ -4,6 +4,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 import { select, Store } from '@ngrx/store';
 import { rgbaToInt, Tool } from '@talus/model';
 import {
+  UiFullscreenOverlayService,
   UiPointerButton,
   UiPointerPickInfo,
   UiSceneViewerComponent,
@@ -12,6 +13,7 @@ import {
 import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
 import { combineLatest, Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
+import { LoadFileContainerComponent } from './load-file-container/load-file-container.component';
 import {
   paintVoxel,
   removeVoxel,
@@ -28,6 +30,7 @@ import {
       *ngIf="selectedToolIdAndColor$ | async as selected"
       (pointerPick)="onPointerPick($event, selected[0], selected[1])"
       (pointUnderPointer)="onPointUnderPointer($event, selected[0], selected[1])"
+      (dropFiles)="onDropFiles($event)"
     ></ui-scene-viewer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,8 +48,9 @@ export class SceneViewerContainerComponent implements AfterViewInit {
   private lastUnderPointerPosition: Coord = createMaxCoord();
 
   constructor(
-    private sceneViewerService: UiSceneViewerService,
-    private store: Store<fromApp.State>,
+    private readonly fullscreenOverlayService: UiFullscreenOverlayService,
+    private readonly sceneViewerService: UiSceneViewerService,
+    private readonly store: Store<fromApp.State>,
   ) {}
 
   ngAfterViewInit(): void {
@@ -70,6 +74,14 @@ export class SceneViewerContainerComponent implements AfterViewInit {
     if (selectedToolId === Tool.SelectLinePoint) {
       this.dispatchVoxelUnderCursorChange(pickInfo, selectedColor);
     }
+  }
+
+  onDropFiles(files: File[]): void {
+    if (files.length < 1) {
+      return;
+    }
+
+    this.fullscreenOverlayService.open(LoadFileContainerComponent, files[0]);
   }
 
   private dispatchVoxelUnderCursorChange(pickInfo: UiPointerPickInfo, selectedColor: number): void {
