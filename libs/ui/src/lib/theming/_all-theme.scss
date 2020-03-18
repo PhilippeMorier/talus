@@ -1,0 +1,5 @@
+@import '../progress-spinner/progress-spinner-theme';
+
+@mixin ui-lib-theme($theme) {
+  @include ui-progress-spinner-theme($theme);
+}

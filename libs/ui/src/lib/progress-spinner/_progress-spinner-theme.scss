@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+
+@mixin ui-progress-spinner-theme($theme) {
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  ui-progress-spinner {
+    color: mat-color($foreground, text);
+
+    mat-progress-spinner {
+      background-color: mat-color($background, background);
+    }
+  }
+}

@@ -4,14 +4,14 @@ import { Nil } from '@talus/shared';
 @Component({
   selector: 'ui-progress-spinner',
   template: `
-    <div *ngIf="value" class="value">{{ value }}%</div>
-
     <mat-progress-spinner
       class="example-margin"
       [color]="color"
       [mode]="mode"
       [value]="value"
     ></mat-progress-spinner>
+
+    <h1 *ngIf="value" class="value">{{ value }}%</h1>
 
     <div *ngIf="status">{{ status }}</div>
   `,

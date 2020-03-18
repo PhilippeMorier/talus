@@ -20,16 +20,24 @@ $app-accent: mat-palette($mat-pink, A200, A100, A400); // stylelint-disable-line
 $app-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+//$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
+@import 'libs/ui/src/lib/theming/all-theme';
+
 .app-light-theme {
-  @include angular-material-theme(mat-light-theme($app-primary, $app-accent, $app-warn));
+  $light-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+  @include angular-material-theme($light-theme);
+  @include ui-lib-theme($light-theme);
 }
 
 .app-dark-theme {
-  @include angular-material-theme(mat-dark-theme($app-primary, $app-accent, $app-warn));
+  $dark-theme: mat-dark-theme($app-primary, $app-accent, $app-warn);
+
+  @include angular-material-theme($dark-theme);
+  @include ui-lib-theme($dark-theme);
 }
