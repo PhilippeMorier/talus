@@ -1,13 +1,13 @@
 import { EventName } from '@talus/model';
 import { fromEvent, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
 export class WebSocketService {
   private socket: SocketIOClient.Socket;
 
   private readonly connectionStatusSubject = new Subject<boolean>();
-  connectionStatus$ = this.connectionStatusSubject.asObservable();
+  connectionStatus$ = this.connectionStatusSubject.asObservable().pipe(distinctUntilChanged());
 
   socketId$ = this.connectionStatus$.pipe(map(() => this.socket.id));
 
