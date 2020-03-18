@@ -16,7 +16,7 @@ aliases:
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
-      - image: cypress/included:4.1.0
+      - image: cypress/included:4.2.0
 
   - &workspace ~/talus
 
