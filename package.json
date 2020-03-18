@@ -63,7 +63,7 @@
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0",
     "tslib": "1.11.1",
-    "zone.js": "0.10.2"
+    "zone.js": "0.10.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.900.6",
@@ -94,7 +94,7 @@
     "babylonjs": "4.1.0",
     "benchmark": "2.1.4",
     "codelyzer": "5.2.1",
-    "cypress": "4.1.0",
+    "cypress": "4.2.0",
     "dotenv": "8.2.0",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
@@ -102,7 +102,7 @@
     "jasmine-marbles": "0.6.0",
     "jest": "24.9.0",
     "jest-junit": "10.0.0",
-    "jest-preset-angular": "8.0.0",
+    "jest-preset-angular": "8.1.2",
     "junit-xml": "1.2.0",
     "prettier": "1.19.1",
     "stylelint": "13.2.1",
