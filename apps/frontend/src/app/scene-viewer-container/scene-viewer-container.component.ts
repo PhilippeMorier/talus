@@ -81,6 +81,8 @@ export class SceneViewerContainerComponent implements AfterViewInit {
       return;
     }
 
+    // Can't dispatch action with `File` since it would be an unserializable action.
+    // Therefore, opening the dialog here and not in an effect.
     this.fullscreenOverlayService.open(LoadFileContainerComponent, files[0]);
   }
 
