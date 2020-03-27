@@ -1,6 +1,6 @@
 {
   "name": "vdb-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "JavaScript implementation of OpenVDB.",
   "author": "Philippe Morier",
   "license": "MPL 2.0",
@@ -14,5 +14,8 @@
     "dynamic",
     "B+",
     "tree"
-  ]
+  ],
+  "dependencies": {
+    "mnemonist": "~0.34.0"
+  }
 }
