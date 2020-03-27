@@ -254,6 +254,16 @@
             "tsConfig": "libs/vdb/tsconfig.spec.json",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/libs/vdb",
+            "tsConfig": "libs/vdb/tsconfig.lib.json",
+            "packageJson": "libs/vdb/package.json",
+            "main": "libs/vdb/src/index.ts",
+            "assets": ["libs/vdb/*.md"]
+          }
         }
       }
     },

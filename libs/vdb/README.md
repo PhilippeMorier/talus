@@ -1,10 +1,10 @@
-# vdb
+# vdb-js
 
-- `nx test vdb`
-  - `--watch`
-  - `--codeCoverage`
+JavaScript implementation of [OpenVDB](https://www.openvdb.org/).
 
-## openVDB
+## Publish
 
-Check [blog](https://philippemorier.github.io/flash_cards/open_vdb.html) to see how to install
-openVDB and create custom tests.
+1. `npm login`
+2. `yarn nx build vdb`
+3. `cd ./dist/libs/vdb`
+4. `npm publish`
