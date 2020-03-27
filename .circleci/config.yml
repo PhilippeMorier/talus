@@ -155,7 +155,7 @@ jobs:
           path: ./coverage
           destination: coverage
 
-  'benchmark':
+  'benchmarks':
     <<: *use_docker_node_browsers
 
     <<: *set_working_directory
@@ -169,11 +169,11 @@ jobs:
           # 1. Too long with no output (exceeded 10m0s): context deadline exceeded
           # 2. Killed
           #    error Command failed with exit code 137.
-          command: yarn ng build benchmark --maxWorkers=10
+          command: yarn ng build benchmarks --maxWorkers=10
 
       - run:
           name: Run benchmarks
-          command: node ./dist/apps/benchmark/main.js
+          command: node ./dist/apps/benchmarks/main.js
 
       - *store_test_results
 
@@ -353,7 +353,7 @@ workflows:
           requires:
             - 'dependencies'
 
-      - 'benchmark':
+      - 'benchmarks':
           requires:
             - 'dependencies'
 
@@ -362,28 +362,28 @@ workflows:
             - 'linting'
             - 'prettier'
             - 'unit'
-            - 'benchmark'
+            - 'benchmarks'
 
       - 'frontend e2e':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
-            - 'benchmark'
+            - 'benchmarks'
 
       - 'ui build':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
-            - 'benchmark'
+            - 'benchmarks'
 
       - 'ui e2e':
           requires:
             - 'linting'
             - 'prettier'
             - 'unit'
-            - 'benchmark'
+            - 'benchmarks'
 
       - 'frontend deploy':
           requires:

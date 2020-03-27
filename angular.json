@@ -186,20 +186,20 @@
         }
       }
     },
-    "benchmark": {
-      "root": "apps/benchmark",
-      "sourceRoot": "apps/benchmark/src",
+    "benchmarks": {
+      "root": "apps/benchmarks",
+      "sourceRoot": "apps/benchmarks/src",
       "projectType": "application",
-      "prefix": "benchmark",
+      "prefix": "benchmarks",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
           "options": {
-            "outputPath": "dist/apps/benchmark",
-            "main": "apps/benchmark/src/main.ts",
-            "tsConfig": "apps/benchmark/tsconfig.app.json",
-            "assets": ["apps/benchmark/src/assets"]
+            "outputPath": "dist/apps/benchmarks",
+            "main": "apps/benchmarks/src/main.ts",
+            "tsConfig": "apps/benchmarks/tsconfig.app.json",
+            "assets": ["apps/benchmarks/src/assets"]
           },
           "configurations": {
             "production": {
@@ -208,8 +208,8 @@
               "inspect": false,
               "fileReplacements": [
                 {
-                  "replace": "apps/benchmark/src/environments/environment.ts",
-                  "with": "apps/benchmark/src/environments/environment.prod.ts"
+                  "replace": "apps/benchmarks/src/environments/environment.ts",
+                  "with": "apps/benchmarks/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -218,16 +218,16 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "benchmark:build"
+            "buildTarget": "benchmarks:build"
           }
         },
         "lint": {
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "apps/benchmark/.eslintrc",
-            "tsConfig": ["apps/benchmark/tsconfig.app.json"],
-            "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
+            "config": "apps/benchmarks/.eslintrc",
+            "tsConfig": ["apps/benchmarks/tsconfig.app.json"],
+            "exclude": ["**/node_modules/**", "!apps/benchmarks/**"]
           }
         }
       }
