@@ -11,7 +11,7 @@ import { Nil } from '@talus/shared';
       [value]="value"
     ></mat-progress-spinner>
 
-    <h1 *ngIf="value" class="value">{{ value }}%</h1>
+    <h2 *ngIf="value" class="value">{{ value }}%</h2>
 
     <div *ngIf="status">{{ status }}</div>
   `,
