@@ -1,5 +1,6 @@
 import { CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -27,7 +28,7 @@ import {
   styleUrls: ['./rectangular-marquee.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiRectangularMarqueeComponent implements OnInit {
+export class UiRectangularMarqueeComponent implements OnInit, AfterViewInit {
   @ViewChild('rectangle') rectangle: ElementRef<HTMLDivElement>;
 
   public gizmoCurrentFreeDragPositions: { x: number; y: number }[] = [];
@@ -46,7 +47,9 @@ export class UiRectangularMarqueeComponent implements OnInit {
       { x: 0, y: 1 },
     ];
     this.gizmoCurrentFreeDragPositions = [...this.gizmoTotalFreeDragPositions];
+  }
 
+  ngAfterViewInit(): void {
     this.updateRectangle();
   }
 
