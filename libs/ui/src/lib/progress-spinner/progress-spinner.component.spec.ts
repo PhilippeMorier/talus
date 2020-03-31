@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { UiProgressSpinnerModule } from '@talus/ui';
-
 import { UiProgressSpinnerComponent } from './progress-spinner.component';
+import { UiProgressSpinnerModule } from './progress-spinner.module';
 
 describe('UiProgressSpinnerComponent', () => {
   let component: UiProgressSpinnerComponent;
