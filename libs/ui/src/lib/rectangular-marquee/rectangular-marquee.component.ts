@@ -1,5 +1,12 @@
 import { CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'ui-rectangular-marquee',
@@ -9,6 +16,7 @@ import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@ang
     <div
       *ngFor="let i of [0, 1, 2, 3]"
       id="{{ 'gizmo' + i }}"
+      class="mat-elevation-z2"
       cdkDrag
       (cdkDragStarted)="onStarted(i)"
       (cdkDragMoved)="onMoved(i, $event)"
@@ -17,8 +25,9 @@ import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@ang
     ></div>
   `,
   styleUrls: ['./rectangular-marquee.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiRectangularMarqueeComponent implements AfterViewInit {
+export class UiRectangularMarqueeComponent implements OnInit {
   @ViewChild('rectangle') rectangle: ElementRef<HTMLDivElement>;
 
   public gizmoCurrentFreeDragPositions: { x: number; y: number }[] = [];
@@ -29,7 +38,7 @@ export class UiRectangularMarqueeComponent implements AfterViewInit {
 
   constructor(private renderer: Renderer2) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.gizmoTotalFreeDragPositions = [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
