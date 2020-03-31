@@ -1,5 +1,7 @@
 @import '../progress-spinner/progress-spinner-theme';
+@import '../rectangular-marquee/rectangular-marquee-theme';
 
 @mixin ui-lib-theme($theme) {
   @include ui-progress-spinner-theme($theme);
+  @include ui-rectangular-marquee-theme($theme);
 }

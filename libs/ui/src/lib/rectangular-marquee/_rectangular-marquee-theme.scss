@@ -1,0 +1,15 @@
+@import '~@angular/material/theming';
+
+@mixin ui-rectangular-marquee-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  ui-rectangular-marquee {
+    #rectangle {
+      border-color: mat-color($foreground, text);
+    }
+
+    [id^='gizmo'] {
+      background-color: mat-color($foreground, text);
+    }
+  }
+}
