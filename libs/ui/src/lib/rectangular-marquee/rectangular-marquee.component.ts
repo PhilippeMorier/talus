@@ -40,6 +40,7 @@ export class UiRectangularMarqueeComponent implements OnInit, AfterViewInit {
   constructor(private renderer: Renderer2) {}
 
   ngOnInit(): void {
+    // Ensure that all gizmos have different positions
     this.gizmoTotalFreeDragPositions = [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
