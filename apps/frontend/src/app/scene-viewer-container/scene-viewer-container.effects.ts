@@ -115,10 +115,8 @@ export class SceneViewerContainerEffects {
       }),
       tap(([_action, state]) => {
         // remove old line
-        state.selectedLineChanges.map(change =>
-          change.oldValue === this.gridService.background
-            ? this.gridService.removeVoxel(change.xyz)
-            : this.gridService.setVoxel(change.xyz, change.oldValue),
+        state.selectedLineChanges.forEach(change =>
+          this.gridService.setVoxel(change.xyz, change.oldValue),
         );
       }),
       map(([action, state]) => {

@@ -52,6 +52,9 @@ export const finishLine = createAction(
   `${actionTypePrefix} Finish line`,
   props<{ voxelChanges: VoxelChange[] }>(),
 );
+export const cancelLine = createAction(
+  `${actionTypePrefix} Cancel line`,
+);
 export const addFirstLineChange = createAction(
   `${actionTypePrefix} Add first line change`,
   props<VoxelChange>(),
