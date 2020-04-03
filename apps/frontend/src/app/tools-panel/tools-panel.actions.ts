@@ -1,4 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 import { Tool } from '@talus/model';
 
-export const selectTool = createAction('[toolsPanel] Select tool', props<{ id: Tool }>());
+const actionTypePrefix = `[toolsPanel]`;
+
+export const selectTool = createAction(`${actionTypePrefix} Select tool`, props<{ id: Tool }>());
+
+export const removeSelectionLinePreview = createAction(
+  `${actionTypePrefix} Remove selection line preview`,
+);

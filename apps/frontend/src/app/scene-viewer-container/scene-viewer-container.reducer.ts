@@ -10,6 +10,7 @@ import * as menuBarContainerActions from '../menu-bar-container/menu-bar-contain
 import { VoxelChange } from './grid.service';
 import {
   addFirstLineChange,
+  cancelLine,
   finishLine,
   setLineChanges,
   startLine,
@@ -48,6 +49,7 @@ export const reducer = createReducer<State>(
     },
   ),
   on(
+    cancelLine,
     finishLine,
     (state): State => {
       return {

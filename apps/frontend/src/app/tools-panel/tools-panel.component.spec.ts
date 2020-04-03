@@ -1,26 +1,28 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
-import { ROOT_REDUCERS } from '../app.reducer';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Action } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { UiToolbarModule } from '@talus/ui';
+import { Observable, of } from 'rxjs';
+import { default as fromApp } from '../app.reducer';
+import { initialMockState } from '../testing';
 import { ToolsPanelComponent } from './tools-panel.component';
-import { ToolsPanelModule } from './tools-panel.module';
 
 describe('ToolsPanelComponent', () => {
   let component: ToolsPanelComponent;
   let fixture: ComponentFixture<ToolsPanelComponent>;
 
+  const actions$: Observable<Action> = of();
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [],
-      imports: [
-        ToolsPanelModule,
-        StoreModule.forRoot(ROOT_REDUCERS, {
-          runtimeChecks: {
-            strictStateImmutability: true,
-            strictActionImmutability: true,
-            strictStateSerializability: true,
-            strictActionSerializability: true,
-          },
+      declarations: [ToolsPanelComponent],
+      imports: [UiToolbarModule],
+      providers: [
+        provideMockStore<fromApp.State>({
+          initialState: initialMockState,
         }),
+        provideMockActions(() => actions$),
       ],
     }).compileComponents();
   }));
