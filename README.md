@@ -57,6 +57,8 @@ This project was generated using [Nx](https://nx.dev) with the following command
 
 12. `ng generate @nrwl/workspace:library shared --linter=eslint`
 
+12. `ng generate @nrwl/workspace:library shared --linter=eslint`
+
 ## Installations
 
 ### Node
