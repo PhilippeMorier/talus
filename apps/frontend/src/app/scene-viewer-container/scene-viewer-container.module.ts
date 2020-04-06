@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
-import { UiSceneViewerModule, UiTopicDialogModule } from '@talus/ui';
+import { UiFullscreenOverlayModule, UiSceneViewerModule, UiTopicDialogModule } from '@talus/ui';
 import { GridService } from './grid.service';
+import { LoadFileContainerModule } from './load-file-container/load-file-container.module';
 import { SceneViewerContainerComponent } from './scene-viewer-container.component';
 import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
 
@@ -11,6 +12,8 @@ import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
   imports: [
     CommonModule,
     EffectsModule.forFeature([SceneViewerContainerEffects]),
+    LoadFileContainerModule,
+    UiFullscreenOverlayModule,
     UiSceneViewerModule,
     UiTopicDialogModule,
   ],

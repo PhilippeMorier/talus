@@ -1,0 +1,23 @@
+{
+  "name": "vdb-js",
+  "version": "0.0.5",
+  "description": "JavaScript implementation of OpenVDB.",
+  "author": "Philippe Morier",
+  "homepage": "https://github.com/PhilippeMorier/talus/tree/develop/libs/vdb",
+  "license": "MPL 2.0",
+  "keywords": [
+    "openVDB",
+    "hierarchical",
+    "data",
+    "structure",
+    "sparse",
+    "volumetric",
+    "dynamic",
+    "B+",
+    "tree"
+  ],
+  "dependencies": {
+    "mnemonist": "~0.34.0",
+    "tslib": "~1.11.1"
+  }
+}

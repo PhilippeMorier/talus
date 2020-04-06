@@ -16,8 +16,8 @@
       "tags": ["scope:frontend"],
       "implicitDependencies": ["frontend"]
     },
-    "benchmark": {
-      "tags": ["scope:benchmark"],
+    "benchmarks": {
+      "tags": ["scope:benchmarks"],
       "implicitDependencies": []
     },
     "ui": {

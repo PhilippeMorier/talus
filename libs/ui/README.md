@@ -4,6 +4,11 @@
   - `--watch`
   - `--codeCoverage`
 
+## Create new component
+
+- `ng g module new-component --project=ui`
+- `ng g component new-component --module=new-component --project=ui --style=scss`
+
 ## Storybook
 
 The [Storybook](https://storybook.js.org/) was generated with

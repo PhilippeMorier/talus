@@ -26,7 +26,8 @@
             "tsConfig": "apps/frontend/tsconfig.app.json",
             "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
             "styles": ["apps/frontend/src/styles.scss", "apps/frontend/src/themes.scss"],
-            "scripts": []
+            "scripts": [],
+            "webWorkerTsConfig": "apps/frontend/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -80,7 +81,11 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/frontend/tsconfig.app.json", "apps/frontend/tsconfig.spec.json"],
+            "tsConfig": [
+              "apps/frontend/tsconfig.app.json",
+              "apps/frontend/tsconfig.spec.json",
+              "apps/frontend/tsconfig.worker.json"
+            ],
             "exclude": ["**/node_modules/**", "!apps/frontend/**"]
           }
         },
@@ -181,20 +186,20 @@
         }
       }
     },
-    "benchmark": {
-      "root": "apps/benchmark",
-      "sourceRoot": "apps/benchmark/src",
+    "benchmarks": {
+      "root": "apps/benchmarks",
+      "sourceRoot": "apps/benchmarks/src",
       "projectType": "application",
-      "prefix": "benchmark",
+      "prefix": "benchmarks",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
           "options": {
-            "outputPath": "dist/apps/benchmark",
-            "main": "apps/benchmark/src/main.ts",
-            "tsConfig": "apps/benchmark/tsconfig.app.json",
-            "assets": ["apps/benchmark/src/assets"]
+            "outputPath": "dist/apps/benchmarks",
+            "main": "apps/benchmarks/src/main.ts",
+            "tsConfig": "apps/benchmarks/tsconfig.app.json",
+            "assets": ["apps/benchmarks/src/assets"]
           },
           "configurations": {
             "production": {
@@ -203,8 +208,8 @@
               "inspect": false,
               "fileReplacements": [
                 {
-                  "replace": "apps/benchmark/src/environments/environment.ts",
-                  "with": "apps/benchmark/src/environments/environment.prod.ts"
+                  "replace": "apps/benchmarks/src/environments/environment.ts",
+                  "with": "apps/benchmarks/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -213,16 +218,16 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "benchmark:build"
+            "buildTarget": "benchmarks:build"
           }
         },
         "lint": {
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "apps/benchmark/.eslintrc",
-            "tsConfig": ["apps/benchmark/tsconfig.app.json"],
-            "exclude": ["**/node_modules/**", "!apps/benchmark/**"]
+            "config": "apps/benchmarks/.eslintrc",
+            "tsConfig": ["apps/benchmarks/tsconfig.app.json"],
+            "exclude": ["**/node_modules/**", "!apps/benchmarks/**"]
           }
         }
       }
@@ -248,6 +253,16 @@
             "jestConfig": "libs/vdb/jest.config.js",
             "tsConfig": "libs/vdb/tsconfig.spec.json",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/libs/vdb",
+            "tsConfig": "libs/vdb/tsconfig.lib.json",
+            "packageJson": "libs/vdb/package.json",
+            "main": "libs/vdb/src/index.ts",
+            "assets": ["libs/vdb/*.md"]
           }
         }
       }

@@ -37,19 +37,25 @@ This project was generated using [Nx](https://nx.dev) with the following command
 4. https://nx.dev/api/angular/schematics/ng-add  
    `ng add @nrwl/angular` & `npm audit fix`
 
-5. `ng generate @nrwl/angular:application frontend --directory --style=scss --inlineTemplate --viewEncapsulation=Emulated --prefix=fe --tags=frontend`
+5. `ng generate @nrwl/angular:application frontend --style=scss --inlineTemplate --viewEncapsulation=Emulated --prefix=fe --tags=frontend`
 
-6. `ng generate @nrwl/angular:lib ui --directory --style=scss --prefix=ui --tags=ui`
+6. `ng generate @nrwl/angular:lib ui --style=scss --prefix=ui --tags=ui`
 
 7. `ng generate @nrwl/angular:module sidenav-shell --project=ui`
 
 8. `ng generate @nrwl/angular:component sidenav-shell --project=ui --module=sidenav-shell --export`
 
-9. `nx g @nrwl/node:application benchmark --linter=eslint`
+9. `nx generate @nrwl/node:application benchmark --linter=eslint`
 
 10. `ng generate @nrwl/workspace:library model --linter=eslint`
 
-11. `nx g @nrwl/angular:storybook-configuration ui`
+11. `nx generate @nrwl/angular:storybook-configuration ui`
+
+12. `ng generate @nrwl/workspace:library shared --linter=eslint`
+
+13. `ng generate @nrwl/node:library vdb --linter=eslint --publishable`
+
+12. `ng generate @nrwl/workspace:library shared --linter=eslint`
 
 12. `ng generate @nrwl/workspace:library shared --linter=eslint`
 
@@ -188,7 +194,7 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 ### Update
 
-- `ng update @angular/cli @angular/core`
+- ng update @angular/cli @angular/core @angular/cdk @angular/material
 - [Angular Update Guide](https://update.angular.io/)
 
 ### Generate transpiled code with AOT-compiler `ngc`

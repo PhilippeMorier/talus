@@ -16,3 +16,5 @@ https://rmoff.net/2018/08/02/kafka-listeners-explained/
 - Access Kafdrop: http://localhost:9000/
 - Clean up docker: `sudo docker system prune`
   - E.g. if Kafdrop can't start
+- Stop all containers: `sudo docker stop $(sudo docker ps -a -q)`
+- Remove all containers and volumes: `sudo docker rm -v $(sudo docker ps -a -q)`
