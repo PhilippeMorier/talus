@@ -2467,6 +2467,24 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-9.0.7.tgz#2d9397544afcf503530eafc764c64d40a99fa070"
   integrity sha512-MvoMaErkjESefoIrbt8F2RpKDr9KavwvH4v3hwSAKooVNFdFKNsjJ7m3gCQehumEfsYFq2mrEK2sTW4/CpFlMQ==
   dependencies:
+    iterare "1.2.0"
+    tslib "1.11.1"
+
+"@ngrx/effects@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-9.0.0.tgz#fe9956911621183f7d1d75c606578cfa25750b73"
+  integrity sha512-6Rq7FsNZK26HqYlpOGCglKLenIkVOOKE0y6D/8KXjEJ1JlZWi00fdI7poclBGjm9pvMBGXfJA8a9MKuxb/t9cA==
+
+"@ngrx/store@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-9.0.0.tgz#ef45e241ba9cf401d5280fa99b09f2fb3fc3278d"
+  integrity sha512-QnmfXJ4G2jp+vFaqT5Qfp6h0J9OHxfDKI2RbnMU93Tq1Xd/WVPzXnOQGjILBjwwWI6RFkSdIpUoQONr7VOW63g==
+
+"@ngtools/webpack@9.0.7":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-9.0.7.tgz#2d9397544afcf503530eafc764c64d40a99fa070"
+  integrity sha512-MvoMaErkjESefoIrbt8F2RpKDr9KavwvH4v3hwSAKooVNFdFKNsjJ7m3gCQehumEfsYFq2mrEK2sTW4/CpFlMQ==
+  dependencies:
     "@angular-devkit/core" "9.0.7"
     enhanced-resolve "4.1.1"
     rxjs "6.5.3"
@@ -3305,6 +3323,13 @@
   version "15.0.4"
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-15.0.4.tgz#7e5d0f8ca25e9d5849f2ea443cf7c402decd8299"
   integrity sha512-9T1auFmbPZoxHz0enUFlUuKRy3it01R+hlggyVUMtnCTQRunsQYifnSGb8hET4Xo8yiC0o0r1paW3ud5+rbURg==
+  dependencies:
+    "@types/yargs-parser" "*"
+
+"@typescript-eslint/eslint-plugin@2.24.0":
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-2.24.0.tgz#a86cf618c965a462cddf3601f594544b134d6d68"
+  integrity sha512-wJRBeaMeT7RLQ27UQkDFOu25MqFOBus8PtOa9KaT5ZuxC1kAsd7JEHqWt4YXuY9eancX0GK9C68i5OROnlIzBA==
   dependencies:
     "@types/yargs-parser" "*"
 
