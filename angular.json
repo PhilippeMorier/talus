@@ -199,7 +199,8 @@
             "outputPath": "dist/apps/benchmarks",
             "main": "apps/benchmarks/src/main.ts",
             "tsConfig": "apps/benchmarks/tsconfig.app.json",
-            "assets": ["apps/benchmarks/src/assets"]
+            "assets": ["apps/benchmarks/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -332,7 +333,8 @@
             "outputPath": "dist/apps/kafka-proxy",
             "main": "apps/kafka-proxy/src/main.ts",
             "tsConfig": "apps/kafka-proxy/tsconfig.app.json",
-            "assets": ["apps/kafka-proxy/src/assets"]
+            "assets": ["apps/kafka-proxy/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {

@@ -4,7 +4,7 @@ import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { UiToolbarModule } from '@talus/ui';
 import { Observable, of } from 'rxjs';
-import { default as fromApp } from '../app.reducer';
+import * as fromApp from '../app.reducer';
 import { initialMockState } from '../testing';
 import { ToolsPanelComponent } from './tools-panel.component';
 
