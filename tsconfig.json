@@ -14,7 +14,8 @@
       "@talus/model": ["libs/model/src/index.ts"],
       "@talus/ui": ["libs/ui/src/index.ts"],
       "@talus/vdb": ["libs/vdb/src/index.ts"],
-      "@talus/shared": ["libs/shared/src/index.ts"]
+      "@talus/shared": ["libs/shared/src/index.ts"],
+      "@talus/wepe-tree": ["libs/wepe-tree/src/index.ts"]
     },
     "rootDir": ".",
     "skipDefaultLibCheck": true,

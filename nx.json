@@ -43,6 +43,9 @@
     },
     "shared": {
       "tags": ["scope:libs"]
+    },
+    "wepe-tree": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

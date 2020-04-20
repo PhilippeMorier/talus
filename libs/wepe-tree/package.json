@@ -1,0 +1,20 @@
+{
+  "name": "@talus/wepe-tree",
+  "version": "0.0.1",
+  "description": "JavaScript implementation of OpenVDB.",
+  "author": "Philippe Morier",
+  "homepage": "https://github.com/PhilippeMorier/talus/tree/develop/libs/wepe-tree",
+  "keywords": [
+    "creation",
+    "rendering",
+    "realistic",
+    "trees",
+    "parametric",
+    "Weber",
+    "Penn",
+    "Hewitt"
+  ],
+  "dependencies": {
+    "tslib": "~1.11.1"
+  }
+}

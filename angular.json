@@ -402,6 +402,41 @@
           }
         }
       }
+    },
+    "wepe-tree": {
+      "root": "libs/wepe-tree",
+      "sourceRoot": "libs/wepe-tree/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "libs/wepe-tree/.eslintrc",
+            "tsConfig": ["libs/wepe-tree/tsconfig.lib.json", "libs/wepe-tree/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/wepe-tree/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/wepe-tree/jest.config.js",
+            "tsConfig": "libs/wepe-tree/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/libs/wepe-tree",
+            "tsConfig": "libs/wepe-tree/tsconfig.lib.json",
+            "packageJson": "libs/wepe-tree/package.json",
+            "main": "libs/wepe-tree/src/index.ts",
+            "assets": ["libs/wepe-tree/*.md"]
+          }
+        }
+      }
     }
   },
   "cli": {
