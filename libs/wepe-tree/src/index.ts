@@ -1,1 +1,1 @@
-export * from './lib/wepe-tree';
+export * from './lib/tree';

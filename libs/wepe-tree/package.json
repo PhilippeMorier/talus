@@ -15,6 +15,7 @@
     "Hewitt"
   ],
   "dependencies": {
-    "tslib": "~1.11.1"
+    "tslib": "~1.11.1",
+    "seedrandom": "3.0.5"
   }
 }
