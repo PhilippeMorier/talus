@@ -4,6 +4,7 @@ import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
  * 3D turtle implementation for use in parametric tree generation schemes
  */
 export class Turtle {
+  // Turtle points by default up (+y)
   dir = new Vector3(0, 1, 0);
   pos = new Vector3(0, 0, 0);
   right = new Vector3(1, 0, 0);
@@ -16,6 +17,7 @@ export class Turtle {
     const axis = this.dir.cross(this.right);
     axis.normalize();
 
+    // https://doc.babylonjs.com/features/position,_rotation,_scaling#rotationquaternion
     const rotQuat = Quaternion.RotationAxis(axis, angle);
 
     this.dir.rotateByQuaternionToRef(rotQuat, this.dir);
