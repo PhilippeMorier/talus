@@ -2,6 +2,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { random, randomInRange } from './random';
 import { Stem } from './stem';
 import { TreeParam } from './tree-param';
+import { Turtle } from './turtle';
 
 /**
  * Class to store data for the tree
@@ -51,15 +52,26 @@ export class Tree {
    */
   private createBranches(): void {
     // actually make the branches
+    let points: [Vector3, number][] = [];
     if (this.param.branches[0] > 0) {
-      const points = this.pointsForFloorSplit();
+      points = this.pointsForFloorSplit();
     }
 
-    // for (let i = 0; i < this.param.branches[0]; i++) {
-    //   this.treeScale = this.param.gScale + randomInRange(-1, 1) * this.param.gScaleV;
-    //
-    //   // turtle
-    // }
+    for (let ind = 0; ind < this.param.branches[0]; ind++) {
+      this.treeScale = this.param.gScale + randomInRange(-1, 1) * this.param.gScaleV;
+
+      const turtle = new Turtle();
+
+      if (this.param.branches[0] > 1) {
+        // position randomly at base and rotate to face out
+        const point = points[ind];
+        turtle.rollRight(point[1] - Math.PI / 2);
+        turtle.pos = point[0];
+      } else {
+        // start at random rotation
+        turtle.rollRight(randomInRange(0, Math.PI * 2));
+      }
+    }
   }
 
   /**
@@ -85,7 +97,8 @@ export class Tree {
         );
 
         // angle random in circle
-        const theta = randomInRange(0, 2 * Math.PI);
+        const theta = randomInRange(0, Math.PI * 2);
+        // Todo: swap y with z due to Blender & Babylonjs having different up-vector
         const pos = new Vector3(dis * Math.cos(theta), dis * Math.sin(theta), 0);
 
         // test point against those already in array to ensure it will not intersect
