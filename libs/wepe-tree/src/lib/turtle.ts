@@ -24,7 +24,40 @@ export class Turtle {
     this.right.normalize();
   }
 
+  /**
+   * Turn the turtle left about the axis perpendicular to the direction it is facing
+   */
   turnLeft(angle: number): void {
     this.turnRight(-angle);
+  }
+
+  /**
+   * Pitch the turtle up about the right axis
+   */
+  pitchUp(angle: number): void {
+    this.pitchDown(-angle);
+  }
+
+  /**
+   * Pitch the turtle down about the right axis
+   */
+  pitchDown(angle: number): void {
+    this.dir.rotateByQuaternionToRef(Quaternion.RotationAxis(this.right, angle), this.dir);
+    this.dir.normalize();
+  }
+
+  /**
+   * Roll the turtle right about the direction it is facing
+   */
+  rollRight(angle: number): void {
+    this.rollLeft(-angle);
+  }
+
+  /**
+   * Roll the turtle left about the direction it is facing
+   */
+  rollLeft(angle: number): void {
+    this.right.rotateByQuaternionToRef(Quaternion.RotationAxis(this.dir, angle), this.right);
+    this.right.normalize();
   }
 }
