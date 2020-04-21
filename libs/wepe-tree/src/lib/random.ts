@@ -1,3 +1,5 @@
+// https://github.com/davidbau/seedrandom
+
 import { alea } from 'seedrandom';
 
 let aleaNumberGenerator = alea('initialDefaultSeed');
