@@ -92,4 +92,14 @@ describe('Turtle', () => {
     expect(turtle.right.y).toBeCloseTo(0, 5);
     expect(turtle.right.z).toBeCloseTo(-1, 5);
   });
+
+  it('should move along direction by given distance', () => {
+    const turtle = new Turtle();
+
+    turtle.move(10);
+
+    expect(turtle.pos.x).toEqual(0);
+    expect(turtle.pos.y).toEqual(10);
+    expect(turtle.pos.z).toEqual(0);
+  });
 });

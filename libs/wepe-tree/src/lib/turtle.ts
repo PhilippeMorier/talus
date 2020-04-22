@@ -62,4 +62,11 @@ export class Turtle {
     this.right.rotateByQuaternionToRef(Quaternion.RotationAxis(this.dir, angle), this.right);
     this.right.normalize();
   }
+
+  /**
+   * Move the turtle in the direction it is facing by specified distance
+   */
+  move(distance: number): void {
+    this.pos.addInPlace(this.dir.multiplyByFloats(distance, distance, distance));
+  }
 }
