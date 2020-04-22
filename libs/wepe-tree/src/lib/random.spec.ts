@@ -1,4 +1,10 @@
-import { random, randomInRange, setNumberGeneratorSeed } from './random';
+import {
+  createNumberGenerator,
+  getNumberGeneratorState,
+  random,
+  randomInRange,
+  setNumberGeneratorState,
+} from './random';
 
 describe('Random', () => {
   it('should generate random numbers based on default seed', () => {
@@ -14,7 +20,7 @@ describe('Random', () => {
   });
 
   it('should generate random numbers based on custom seed', () => {
-    setNumberGeneratorSeed('testSeed');
+    createNumberGenerator('testSeed');
 
     expect(random()).toEqual(0.6172510553151369);
     expect(random()).toEqual(0.31603568652644753);
@@ -25,6 +31,18 @@ describe('Random', () => {
     expect(randomInRange(-10, -5)).toEqual(-9.301879717968404);
     expect(randomInRange(1, 2)).toEqual(1.4558202477637678);
     expect(randomInRange(3000, 4000)).toEqual(3329.66287760064);
+  });
+
+  it('should re-create state and therefore generate same numbers', () => {
+    createNumberGenerator('testStateSeed');
+
+    const state = getNumberGeneratorState();
+    expect(random()).toEqual(0.16935233026742935);
+    expect(random()).toEqual(0.3338560601696372);
+
+    setNumberGeneratorState(state);
+    expect(random()).toEqual(0.16935233026742935);
+    expect(random()).toEqual(0.3338560601696372);
   });
 
   it('should generate only random numbers within range', () => {
