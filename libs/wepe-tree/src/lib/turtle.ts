@@ -10,6 +10,15 @@ export class Turtle {
   right = new Vector3(1, 0, 0);
   width = 0;
 
+  constructor(toCloneTurtle?: Turtle) {
+    if (toCloneTurtle) {
+      this.dir = toCloneTurtle.dir.clone();
+      this.pos = toCloneTurtle.pos.clone();
+      this.right = toCloneTurtle.right.clone();
+      this.width = toCloneTurtle.width;
+    }
+  }
+
   /**
    * Turn the turtle right about the axis perpendicular to the direction it is facing
    */

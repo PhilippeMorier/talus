@@ -1,6 +1,18 @@
 import { Turtle } from './turtle';
 
 describe('Turtle', () => {
+  it('should clone turtle', () => {
+    const turtle = new Turtle();
+    turtle.turnRight(Math.PI / 2);
+
+    const cloneTurtle = new Turtle(turtle);
+
+    expect(cloneTurtle.dir).toEqual(turtle.dir);
+    expect(cloneTurtle.pos).toEqual(turtle.pos);
+    expect(cloneTurtle.right).toEqual(turtle.right);
+    expect(cloneTurtle.width).toEqual(turtle.width);
+  });
+
   /**                                             / (z)
    *                                             /
    *  dir (y)                                   0----- dir (x)
