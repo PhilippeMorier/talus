@@ -1,4 +1,5 @@
-import { Turtle } from './turtle';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { applyTropism, Turtle } from './turtle';
 
 describe('Turtle', () => {
   it('should clone turtle', () => {
@@ -114,4 +115,34 @@ describe('Turtle', () => {
     expect(turtle.pos.y).toEqual(10);
     expect(turtle.pos.z).toEqual(0);
   });
+
+  it.each([
+    // Values received from running the python function `apply_tropism` manually
+    [new Vector3(0, 0.5, 0.5), new Vector3(0, 0.996, 0.087), new Vector3(1, 0, 0)],
+    [
+      new Vector3(0.5, 0.5, 0.5),
+      new Vector3(0.087, 0.992, 0.087),
+      new Vector3(0.996, -0.087, -0.0038),
+    ],
+    [
+      new Vector3(-1, 1.5, 0.5),
+      new Vector3(-0.173, 0.981, 0.0867),
+      new Vector3(0.9848, 0.173, 0.0075),
+    ],
+  ])(
+    'should apply tropism vector %j to turtle',
+    (tropism: Vector3, expectedDir: Vector3, expectedRight: Vector3) => {
+      const turtle = new Turtle();
+
+      applyTropism(turtle, tropism);
+
+      expect(turtle.dir.x).toBeCloseTo(expectedDir.x, 3);
+      expect(turtle.dir.y).toBeCloseTo(expectedDir.y, 3);
+      expect(turtle.dir.z).toBeCloseTo(expectedDir.z, 3);
+
+      expect(turtle.right.x).toBeCloseTo(expectedRight.x, 3);
+      expect(turtle.right.y).toBeCloseTo(expectedRight.y, 3);
+      expect(turtle.right.z).toBeCloseTo(expectedRight.z, 3);
+    },
+  );
 });

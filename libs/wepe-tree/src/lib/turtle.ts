@@ -1,4 +1,24 @@
 import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Tools } from '@babylonjs/core/Misc/tools';
+
+/**
+ * Apply tropismVector to turtle direction
+ */
+export function applyTropism(turtle: Turtle, tropismVector: Vector3): void {
+  const hCrossT = turtle.dir.cross(tropismVector);
+
+  // calc angle to rotate by (from ABoP) multiply to achieve accurate results from WP attractionUp param
+  const alpha = 10 * hCrossT.length();
+  hCrossT.normalize();
+
+  // rotate by angle about axis perpendicular to turtle direction and tropism vector
+  const rotQuat = Quaternion.RotationAxis(hCrossT, Tools.ToRadians(alpha));
+
+  turtle.dir.rotateByQuaternionToRef(rotQuat, turtle.dir);
+  turtle.dir.normalize();
+  turtle.right.rotateByQuaternionToRef(rotQuat, turtle.right);
+  turtle.right.normalize();
+}
 
 /**
  * 3D turtle implementation for use in parametric tree generation schemes

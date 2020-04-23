@@ -1,3 +1,5 @@
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+
 export interface TreeParam {
   shape: number;
   gScale: number;
@@ -34,7 +36,7 @@ export interface TreeParam {
   blossomShape: number;
   blossomScale: number;
   blossomRate: number;
-  tropism: [number, number, number];
+  tropism: Vector3;
   pruneRatio: number;
   pruneWidth: number;
   pruneWidthPeak: number;
@@ -78,7 +80,7 @@ export const DEFAULT_TREE_PARAM: TreeParam = {
   blossomShape: 1,
   blossomScale: 0,
   blossomRate: 0,
-  tropism: [0, 0, 0.5],
+  tropism: new Vector3(0, 0, 0.5),
   pruneRatio: 0,
   pruneWidth: 0.5,
   pruneWidthPeak: 0.5,
