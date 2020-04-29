@@ -1,4 +1,5 @@
 import { Curve3 } from '@babylonjs/core/Maths/math.path';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 
 /**
  * Class to store data for each stem (branch) in the system, primarily to be accessed
@@ -8,15 +9,77 @@ export class Stem {
   length = 0;
   lengthChildMax = 0;
   radius = 0;
+  bezierPoints: BezierPoint[] = [];
 
   /**
    * Init with at depth with curve, possibly parent and offset (for depth > 0)
    */
   constructor(
     public depth: number,
-    private curve?: Curve3,
+    public curve: Curve3 = new Curve3([Vector3.Zero()]),
     public parent?: Stem,
     public offset: number = 0,
     public radiusLimit: number = -1,
   ) {}
+}
+
+/**
+ * calculate radius of stem at offset z1 along it
+ */
+// TODO: rename z1 to y1?
+export function radiusAtOffset(stem: Stem, z1: number, nTaper: number, flare: number): number {
+  let unitTaper: number;
+  if (nTaper < 1) {
+    unitTaper = nTaper;
+  } else if (nTaper < 2) {
+    unitTaper = 2 - nTaper;
+  } else {
+    unitTaper = 0;
+  }
+
+  const taper = stem.radius * (1 - unitTaper * z1);
+
+  let radius: number;
+  let depth: number;
+  let z3: number;
+
+  if (nTaper < 1) {
+    radius = taper;
+  } else {
+    const z2 = (1 - z1) * stem.length;
+    if (nTaper < 2 || z2 < taper) {
+      depth = 1;
+    } else {
+      depth = nTaper - 2;
+    }
+
+    if (nTaper < 2) {
+      z3 = z2;
+    } else {
+      z3 = Math.abs(z2 - 2 * taper * Math.trunc(z2 / (2 * taper) + 0.5));
+    }
+
+    if (nTaper < 2 && z3 >= taper) {
+      radius = taper;
+    } else {
+      radius =
+        (1 - depth) * taper + depth * Math.sqrt(Math.pow(taper, 2) - Math.pow(z3 - taper, 2));
+    }
+  }
+
+  if (stem.depth === 0) {
+    const yVal = Math.max(0, 1 - 8 * z1);
+    flare = flare * ((Math.pow(100, yVal) - 1) / 100) + 1;
+    radius *= flare;
+  }
+
+  return radius;
+}
+
+export class BezierPoint {
+  handleLeft: Vector3;
+  handleRight: Vector3;
+  radius: number;
+
+  constructor(public controlPoint: Vector3 = Vector3.Zero()) {}
 }
