@@ -24,11 +24,13 @@ export class Stem {
 }
 
 export class BezierPoint {
-  handleLeft: Vector3;
-  handleRight: Vector3;
   radius: number;
 
-  constructor(public controlPoint: Vector3 = Vector3.Zero()) {}
+  constructor(
+    public controlPoint: Vector3 = Vector3.Zero(),
+    public handleLeft: Vector3 = Vector3.Zero(),
+    public handleRight: Vector3 = Vector3.Zero(),
+  ) {}
 }
 
 /**
