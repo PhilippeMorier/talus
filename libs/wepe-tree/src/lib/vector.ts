@@ -34,3 +34,31 @@ export function calcPointOnBezier(
   // return Vector(res);
   return res;
 }
+
+/**
+ * Calculate tangent to Bezier curve at offset between bezier_splinePoints startPoint and endPoint
+ */
+export function calcTangentToBezier(
+  offset: number,
+  startPoint: BezierPoint,
+  endPoint: BezierPoint,
+): Vector3 {
+  if (offset < 0 || offset > 1) {
+    throw new Error(`Offset out of range: ${offset} not between 0 and 1`);
+  }
+
+  const oneMinusOffset = 1 - offset;
+
+  const startHandleRight = startPoint.handleRight;
+  const endHandleLeft = endPoint.handleLeft;
+
+  const res = startHandleRight
+    .subtract(startPoint.controlPoint)
+    .scale(3 * oneMinusOffset ** 2)
+    .add(endHandleLeft.subtract(startHandleRight).scale(6 * oneMinusOffset * offset))
+    .add(endPoint.controlPoint.subtract(endHandleLeft).scale(3 * offset ** 2));
+
+  // initialize new vector to add subclassed methods
+  // return Vector(res);
+  return res;
+}
