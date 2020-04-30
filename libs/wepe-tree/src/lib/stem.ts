@@ -23,6 +23,14 @@ export class Stem {
   ) {}
 }
 
+export class BezierPoint {
+  handleLeft: Vector3;
+  handleRight: Vector3;
+  radius: number;
+
+  constructor(public controlPoint: Vector3 = Vector3.Zero()) {}
+}
+
 /**
  * calculate radius of stem at offset z1 along it
  */
@@ -76,10 +84,17 @@ export function radiusAtOffset(stem: Stem, z1: number, nTaper: number, flare: nu
   return radius;
 }
 
-export class BezierPoint {
-  handleLeft: Vector3;
-  handleRight: Vector3;
-  radius: number;
-
-  constructor(public controlPoint: Vector3 = Vector3.Zero()) {}
+/**
+ * Reduce length of bezier handles to account for increased density of points on curve for
+ * flared base of trunk
+ */
+export function scaleBezierHandlesForFlare(stem: Stem, maxPointsPerSeg: number): void {
+  for (const point of stem.bezierPoints) {
+    point.handleLeft = point.controlPoint.add(
+      point.handleLeft.subtract(point.controlPoint).scale(1 / maxPointsPerSeg),
+    );
+    point.handleRight = point.controlPoint.add(
+      point.handleRight.subtract(point.controlPoint).scale(1 / maxPointsPerSeg),
+    );
+  }
 }
