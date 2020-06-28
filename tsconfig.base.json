@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "lib": ["es2017", "dom"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "paths": {
+      "@talus/model": ["libs/model/src/index.ts"],
+      "@talus/ui": ["libs/ui/src/index.ts"],
+      "@talus/vdb": ["libs/vdb/src/index.ts"],
+      "@talus/shared": ["libs/shared/src/index.ts"]
+    },
+    "rootDir": ".",
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es2015",
+    "typeRoots": ["node_modules/@types"]
+  },
+  "exclude": ["node_modules", "tmp"]
+}
