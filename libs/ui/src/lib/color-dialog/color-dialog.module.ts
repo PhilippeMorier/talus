@@ -21,6 +21,5 @@ import { UiColorDialogService } from './color-dialog.service';
     MatToolbarModule,
   ],
   providers: [UiColorDialogService],
-  entryComponents: [UiColorDialogComponent],
 })
 export class UiColorDialogModule {}

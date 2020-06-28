@@ -29,6 +29,5 @@ import { UiTopicDialogService } from './topic-dialog.service';
     ReactiveFormsModule,
   ],
   providers: [UiTopicDialogService],
-  entryComponents: [UiTopicDialogComponent],
 })
 export class UiTopicDialogModule {}
