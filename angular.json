@@ -86,7 +86,7 @@
               "apps/frontend/tsconfig.spec.json",
               "apps/frontend/tsconfig.worker.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/frontend/**"]
+            "exclude": ["**/node_modules/**", "!apps/frontend/**/*"]
           }
         },
         "test": {
@@ -122,7 +122,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "apps/frontend-e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**", "!apps/frontend-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/frontend-e2e/**/*"]
           }
         }
       }
@@ -137,7 +137,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/ui/tsconfig.lib.json", "libs/ui/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ui/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui/**/*"]
           }
         },
         "test": {
@@ -226,9 +226,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "apps/benchmarks/.eslintrc",
             "tsConfig": ["apps/benchmarks/tsconfig.app.json"],
-            "exclude": ["**/node_modules/**", "!apps/benchmarks/**"]
+            "exclude": ["**/node_modules/**", "!apps/benchmarks/**/*"]
           }
         }
       }
@@ -243,9 +242,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "libs/vdb/.eslintrc",
             "tsConfig": ["libs/vdb/tsconfig.lib.json", "libs/vdb/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/vdb/**"]
+            "exclude": ["**/node_modules/**", "!libs/vdb/**/*"]
           }
         },
         "test": {
@@ -290,7 +288,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ui-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/ui-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/ui-e2e/**/*"]
           }
         }
       }
@@ -305,9 +303,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "libs/model/.eslintrc",
             "tsConfig": ["libs/model/tsconfig.lib.json", "libs/model/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/model/**"]
+            "exclude": ["**/node_modules/**", "!libs/model/**/*"]
           }
         },
         "test": {
@@ -360,12 +357,11 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "apps/kafka-proxy/.eslintrc",
             "tsConfig": [
               "apps/kafka-proxy/tsconfig.app.json",
               "apps/kafka-proxy/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/kafka-proxy/**"]
+            "exclude": ["**/node_modules/**", "!apps/kafka-proxy/**/*"]
           }
         },
         "test": {
@@ -388,9 +384,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "config": "libs/shared/.eslintrc",
             "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/shared/**"]
+            "exclude": ["**/node_modules/**", "!libs/shared/**/*"]
           }
         },
         "test": {
