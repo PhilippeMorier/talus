@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
-import { MockStore } from '@ngrx/store/testing';
 import { ROOT_REDUCERS, State } from '../app.reducer';
 import { undo } from './menu-bar-container.actions';
 import { MenuBarContainerComponent } from './menu-bar-container.component';
@@ -10,7 +9,7 @@ describe('MenuBarContainerComponent', () => {
   let component: MenuBarContainerComponent;
   let fixture: ComponentFixture<MenuBarContainerComponent>;
 
-  let store: MockStore<State>;
+  let store: Store<State>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,7 +27,7 @@ describe('MenuBarContainerComponent', () => {
       ],
     }).compileComponents();
 
-    store = TestBed.get<Store<State>>(Store);
+    store = TestBed.inject<Store<State>>(Store);
   }));
 
   beforeEach(() => {

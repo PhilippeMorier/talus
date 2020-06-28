@@ -2,7 +2,7 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MemoizedSelector, Store } from '@ngrx/store';
+import { MemoizedSelector } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { rgbaToInt, Tool } from '@talus/model';
 import {
@@ -53,7 +53,7 @@ describe('SceneViewerContainerComponent', () => {
       ],
     }).compileComponents();
 
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(MockStore);
 
     mockSelectedToolIdSelector = mockStore.overrideSelector(
       fromApp.selectSelectedToolId,
