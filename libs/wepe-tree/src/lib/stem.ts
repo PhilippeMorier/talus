@@ -1,4 +1,3 @@
-import { Curve3 } from '@babylonjs/core/Maths/math.path';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 
 /**
@@ -16,11 +15,29 @@ export class Stem {
    */
   constructor(
     public depth: number,
-    public curve: Curve3 = new Curve3([Vector3.Zero()]),
+    // `bezierPoints` are used in place of a Blender Curve/Spline
+    // public curve: Curve3 = new Curve3([Vector3.Zero()]),
     public parent?: Stem,
     public offset: number = 0,
     public radiusLimit: number = -1,
   ) {}
+
+  /**
+   * Copy method for stems
+   */
+  copy(): Stem {
+    const newStem = new Stem(
+      this.depth,
+      /*this.curve,*/ this.parent,
+      this.offset,
+      this.radiusLimit,
+    );
+    newStem.length = this.length;
+    newStem.radius = this.radius;
+    newStem.lengthChildMax = this.lengthChildMax;
+
+    return newStem;
+  }
 }
 
 export class BezierPoint {

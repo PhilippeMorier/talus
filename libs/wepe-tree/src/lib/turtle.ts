@@ -1,5 +1,6 @@
 import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Tools } from '@babylonjs/core/Misc/tools';
+import { randomInRange } from './random';
 
 /**
  * Apply tropismVector to turtle direction
@@ -18,6 +19,42 @@ export function applyTropism(turtle: Turtle, tropismVector: Vector3): void {
   turtle.dir.normalize();
   turtle.right.rotateByQuaternionToRef(rotQuat, turtle.right);
   turtle.right.normalize();
+}
+
+/**
+ * Calculates required points to produce helix bezier curve with given radius and
+ * pitch in direction of turtle
+ */
+export function calcHelixPoints(
+  turtle: Turtle,
+  rad: number,
+  pitch: number,
+): [Vector3, Vector3, Vector3, Vector3] {
+  // simplifies greatly for case incAngle = 90
+  const points = [
+    new Vector3(0, -rad, -pitch / 4),
+    new Vector3((4 * rad) / 3, -rad, 0),
+    new Vector3((4 * rad) / 3, rad, 0),
+    new Vector3(0, rad, pitch / 4),
+  ];
+
+  // align helix points to turtle direction and randomize rotation around axis
+  // https://blender.stackexchange.com/questions/19533/align-object-to-vector-using-python
+  const trf = turtle.dir.toTrackQuat('Z', 'Y');
+  const spinAng = randomInRange(0, 2 * Math.PI);
+  const rotQuat = Quaternion.RotationAxis(new Vector3(0, 0, 1), spinAng);
+
+  for (const p of points) {
+    p.rotateByQuaternionToRef(rotQuat, p);
+    p.rotateByQuaternionToRef(trf, p);
+  }
+
+  return [
+    points[1].subtract(points[0]),
+    points[2].subtract(points[0]),
+    points[3].subtract(points[0]),
+    turtle.dir.clone(),
+  ];
 }
 
 /**
