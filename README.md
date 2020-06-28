@@ -204,6 +204,10 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 - `yarn add --dev @nrwl/nest`
 - `nx g @nrwl/nest:application kafka-proxy --frontend-project frontend --linter eslint`
 
+#### Update
+
+- yarn nest update --force (see [CLI usages](https://docs.nestjs.com/cli/usages#nest-update))
+
 ### Docker
 
 ### Docker Engine - Community
