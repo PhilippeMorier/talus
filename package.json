@@ -27,7 +27,7 @@
     "nx": "nx",
     "postinstall": "ngcc --async=false && node ./decorate-angular-cli.js",
     "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci,apps,libs}/**/*.{ts,scss,json,html,yml}'",
-    "test": "nx test",
+    "test": "nx run-many --all --target=test --parallel",
     "test:code-coverage": "nx test --code-coverage",
     "update": "nx update @nrwl/workspace",
     "update:check": "nx update",
