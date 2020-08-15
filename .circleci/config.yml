@@ -135,7 +135,7 @@ jobs:
 
       - run:
           name: Run prettier
-          command: yarn prettier
+          command: yarn prettier:check
 
   'unit':
     <<: *use_docker_node_browsers
