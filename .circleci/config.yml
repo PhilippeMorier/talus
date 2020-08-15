@@ -11,7 +11,7 @@ aliases:
 
   - &use_docker_node_browsers
     docker:
-      - image: circleci/node:14.8.0-stretch-browsers
+      - image: circleci/node:14.8.0-stretch-browsers-legacy
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
