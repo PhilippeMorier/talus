@@ -4,5 +4,14 @@
     "types": ["node", "jest"],
     "emitDecoratorMetadata": true
   },
-  "include": ["**/*.ts"]
+  "include": [],
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
 }

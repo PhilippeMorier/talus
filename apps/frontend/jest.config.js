@@ -23,7 +23,7 @@ module.exports = {
   // https://github.com/nrwl/nx/issues/1439#issuecomment-561268656
   // When using `Run test` directly in WebStorm, change the used config to
   // this file i.e. `./frontend/jest.config.js` and not `<rootDir>/jest.config.js`.
-  setupFilesAfterEnv: ['./src/test-setup.ts'],
+  setupFilesAfterEnv: ['./src/test-setup.ts', '<rootDir>/src/test-setup.ts'],
 
   // https://github.com/thymikee/jest-preset-angular/issues/293#issuecomment-513544717
   // When using `Run test` directly in WebStorm, the scss couldn't be loaded.
