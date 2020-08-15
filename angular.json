@@ -178,7 +178,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       }
     },
@@ -413,7 +413,7 @@
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:component": {
-      "styleext": "scss",
+      "style": "scss",
       "inlineTemplate": true
     },
     "@nrwl/angular:library": {
