@@ -11,7 +11,6 @@ describe('SidenavShellComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [UiSidenavShellModule],
-      declarations: [],
     }).compileComponents();
   }));
 
