@@ -135,7 +135,7 @@ jobs:
 
       - run:
           name: Run prettier
-          command: yarn prettier:check
+          command: yarn prettier
 
   'unit':
     <<: *use_docker_node_browsers
@@ -147,7 +147,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn nx test --code-coverage
+          command: yarn test:code-coverage
 
       - *store_test_results
 
