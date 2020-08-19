@@ -43,7 +43,11 @@ export class OptionsPanelComponent {
     this.store.dispatch(openColorDialog({ colors, selectedColorIndex }));
   }
 
-  getCssRgbaString(color: Rgba): string {
+  getCssRgbaString(color: UiColorDialogColor | null): string {
+    if (!color) {
+      return 'inherit';
+    }
+
     return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
   }
 }
