@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Nil } from '@talus/shared';
 
 @Component({
   selector: 'ui-status-bar',
@@ -18,7 +19,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiStatusBarComponent {
-  @Input() connected = false;
-  @Input() status: string;
-  @Input() progressValue: number;
+  @Input() connected: boolean | Nil = false;
+  @Input() status: string | Nil;
+  @Input() progressValue: number | Nil;
 }

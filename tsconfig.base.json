@@ -25,8 +25,7 @@
     "typeRoots": ["node_modules/@types"]
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictTemplates": true
   },
   "exclude": ["node_modules", "tmp"]
 }
