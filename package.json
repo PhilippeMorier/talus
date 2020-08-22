@@ -25,7 +25,7 @@
     "nest": "nest",
     "ng": "nx",
     "nx": "nx",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points --async=false",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --async=false",
     "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci,apps,libs}/**/*.{ts,scss,json,html,yml}'",
     "test": "nx run-many --all --target=test --maxWorkers=50%",
     "test:code-coverage": "yarn test --code-coverage",
