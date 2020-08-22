@@ -20,7 +20,7 @@
     "help": "nx help",
     "kafka": "sudo docker-compose --file ./apps/kafka/docker-compose.yml up",
     "kafka:ps": "sudo docker-compose --file ./apps/kafka/docker-compose.yml ps",
-    "lint": "nx workspace-lint && yarn lint:styles && nx lint",
+    "lint": "yarn lint:styles && nx run-many --all --target=lint",
     "lint:styles": "stylelint \"{apps,libs}/**/*.{css,scss}\"",
     "nest": "nest",
     "ng": "nx",
