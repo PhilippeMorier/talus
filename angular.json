@@ -256,7 +256,8 @@
             "tsConfig": "libs/vdb/tsconfig.lib.json",
             "packageJson": "libs/vdb/package.json",
             "main": "libs/vdb/src/index.ts",
-            "assets": ["libs/vdb/*.md"]
+            "assets": ["libs/vdb/*.md"],
+            "srcRootForCompilationRoot": "libs/vdb/src"
           }
         }
       }
