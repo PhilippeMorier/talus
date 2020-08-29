@@ -130,6 +130,10 @@ jobs:
           name: Run linting
           command: yarn lint
 
+      - persist_to_workspace:
+          root: .
+          paths: node_modules/.cache/nx
+
   'prettier':
     <<: *use_docker_node
 
@@ -155,6 +159,10 @@ jobs:
           command: yarn test:code-coverage
 
       - *store_test_results
+
+      - persist_to_workspace:
+          root: .
+          paths: node_modules/.cache/nx
 
       - store_artifacts:
           path: ./coverage
