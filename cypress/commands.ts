@@ -8,6 +8,4 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add('dataCy', value => {
-  return cy.get(`[data-cy=${value}]`, { log: false });
-});
+Cypress.Commands.add('dataCy', value => cy.get(`[data-cy=${value}]`));
