@@ -2,11 +2,10 @@ import { INestApplication, Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventName } from '@talus/model';
 import { of } from 'rxjs';
+import 'socket.io-client';
 import { KafkaGateway } from './kafka.gateway';
 import { KafkaService } from './kafka.service';
-
-import 'socket.io-client';
-const io = require('socket.io-client');
+import io = require('socket.io-client');
 
 @Injectable()
 class KafkaServiceMock {
