@@ -99,6 +99,10 @@ jobs:
             - yarn-packages-v1-{{ .Branch }}-
             - yarn-packages-v1-
 
+      - restore_cache:
+          keys:
+            - nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
+
       - run:
           name: Install dependencies
           command: yarn install
@@ -177,6 +181,17 @@ jobs:
           command: node ./dist/apps/benchmarks/main.js
 
       - *store_test_results
+
+  'cache nx':
+    <<: *use_docker_node
+
+    <<: *set_working_directory
+
+    steps:
+      - save_cache:
+          paths:
+            - ~/node_modules/.cache/nx
+          key: nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
 
   'frontend e2e':
     <<: *use_docker_cypress_included
@@ -357,6 +372,11 @@ workflows:
       - 'benchmarks':
           requires:
             - 'dependencies'
+
+      - 'cache nx':
+          requires:
+            - 'unit'
+            - 'linting'
 
       - 'frontend build':
           requires:
