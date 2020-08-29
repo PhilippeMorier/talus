@@ -99,10 +99,6 @@ jobs:
             - yarn-packages-v1-{{ .Branch }}-
             - yarn-packages-v1-
 
-      - restore_cache:
-          keys:
-            - nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
-
       - run:
           name: Install dependencies
           command: yarn install
@@ -111,7 +107,6 @@ jobs:
           paths:
             - ~/.cache/yarn
             - ~/.cache/Cypress
-            - ~/.cache/nx
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
@@ -126,9 +121,19 @@ jobs:
     steps:
       - *attach_workspace
 
+      - restore_cache:
+          keys:
+            - nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
+            - nx-cache-v1-
+
       - run:
           name: Run linting
           command: yarn lint
+
+      - save_cache:
+          root: .
+          paths: node_modules/.cache/nx
+          key: nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
 
       - persist_to_workspace:
           root: .
@@ -160,10 +165,6 @@ jobs:
 
       - *store_test_results
 
-      - persist_to_workspace:
-          root: .
-          paths: node_modules/.cache/nx
-
       - store_artifacts:
           path: ./coverage
           destination: coverage
@@ -190,16 +191,10 @@ jobs:
 
       - *store_test_results
 
-  'cache nx':
-    <<: *use_docker_node
-
-    <<: *set_working_directory
-
-    steps:
-      - save_cache:
-          paths:
-            - ~/node_modules/.cache/nx
-          key: nx-cache-v1-{{ checksum "node_modules/.cache/nx/nxdeps.json" }}
+  #  'cache nx':
+  #    <<: *use_docker_node
+  #
+  #    <<: *set_working_directory
 
   'frontend e2e':
     <<: *use_docker_cypress_included
@@ -381,10 +376,10 @@ workflows:
           requires:
             - 'dependencies'
 
-      - 'cache nx':
-          requires:
-            - 'unit'
-            - 'linting'
+      #      - 'cache nx':
+      #          requires:
+      #            - 'unit'
+      #            - 'linting'
 
       - 'frontend build':
           requires:
