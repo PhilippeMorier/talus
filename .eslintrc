@@ -25,6 +25,7 @@
       }
     ],
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-namespace": "off",
     "@nrwl/nx/enforce-module-boundaries": [
       "error",
       {
