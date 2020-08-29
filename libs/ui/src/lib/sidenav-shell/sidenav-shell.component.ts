@@ -40,7 +40,14 @@ export class UiSidenavShellRightComponent {}
   selector: 'ui-sidenav-shell',
   template: `
     <mat-sidenav-container [hasBackdrop]="false" class="example-container">
-      <mat-sidenav #leftSidenav mode="over" position="start" [autoFocus]="false" [opened]="true">
+      <mat-sidenav
+        data-cy="left-sidenav"
+        #leftSidenav
+        mode="over"
+        position="start"
+        [autoFocus]="false"
+        [opened]="true"
+      >
         <button mat-mini-fab id="left-sidenav-button" (click)="leftSidenav.toggle()">
           <mat-icon *ngIf="leftSidenav.opened">keyboard_arrow_left</mat-icon>
           <mat-icon *ngIf="!leftSidenav.opened">keyboard_arrow_right</mat-icon>
@@ -49,7 +56,14 @@ export class UiSidenavShellRightComponent {}
         <ng-content select="ui-sidenav-shell-left"></ng-content>
       </mat-sidenav>
 
-      <mat-sidenav #rightSidenav mode="over" position="end" [autoFocus]="false" [opened]="true">
+      <mat-sidenav
+        data-cy="right-sidenav"
+        #rightSidenav
+        mode="over"
+        position="end"
+        [autoFocus]="false"
+        [opened]="true"
+      >
         <button mat-mini-fab id="right-sidenav-button" (click)="rightSidenav.toggle()">
           <mat-icon *ngIf="rightSidenav.opened">keyboard_arrow_right</mat-icon>
           <mat-icon *ngIf="!rightSidenav.opened">keyboard_arrow_left</mat-icon>

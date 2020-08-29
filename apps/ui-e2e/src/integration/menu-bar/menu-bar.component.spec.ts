@@ -18,12 +18,12 @@ const menus: UiMenuBarMenu<string>[] = [
   },
 ];
 
-describe('ui', () => {
+describe('menu-bar', () => {
   beforeEach(() =>
     cy.visit(`/iframe.html?id=uimenubarcomponent--primary&knob-menus=${JSON.stringify(menus)}`),
   );
 
-  it('should render all menus/menu-items & and open/close menu', () => {
+  it('renders all menus/menu-items & and open/close menu', () => {
     cy.get('ui-menu-bar').should('exist');
 
     cy.get('.mat-menu-trigger').click();
