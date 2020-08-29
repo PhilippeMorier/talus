@@ -4,12 +4,11 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.*?.json"
   },
   "plugins": ["@typescript-eslint", "@nrwl/nx"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "prettier/@typescript-eslint"
@@ -26,6 +25,7 @@
       }
     ],
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-namespace": "off",
     "@nrwl/nx/enforce-module-boundaries": [
       "error",
       {

@@ -93,8 +93,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
-            "tsConfig": "apps/frontend/tsconfig.spec.json",
-            "setupFile": "apps/frontend/src/test-setup.ts",
             "passWithNoTests": true
           }
         }
@@ -144,8 +142,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui/jest.config.js",
-            "tsConfig": "libs/ui/tsconfig.spec.json",
-            "setupFile": "libs/ui/src/test-setup.ts",
             "passWithNoTests": true
           }
         },
@@ -182,7 +178,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       }
     },
@@ -250,7 +246,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/vdb/jest.config.js",
-            "tsConfig": "libs/vdb/tsconfig.spec.json",
             "passWithNoTests": true
           }
         },
@@ -261,7 +256,8 @@
             "tsConfig": "libs/vdb/tsconfig.lib.json",
             "packageJson": "libs/vdb/package.json",
             "main": "libs/vdb/src/index.ts",
-            "assets": ["libs/vdb/*.md"]
+            "assets": ["libs/vdb/*.md"],
+            "srcRootForCompilationRoot": "libs/vdb/src"
           }
         }
       }
@@ -311,7 +307,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/model/jest.config.js",
-            "tsConfig": "libs/model/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -368,7 +363,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/kafka-proxy/jest.config.js",
-            "tsConfig": "apps/kafka-proxy/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -392,7 +386,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/shared/jest.config.js",
-            "tsConfig": "libs/shared/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -421,7 +414,7 @@
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:component": {
-      "styleext": "scss",
+      "style": "scss",
       "inlineTemplate": true
     },
     "@nrwl/angular:library": {

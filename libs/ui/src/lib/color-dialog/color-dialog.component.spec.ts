@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UiColorDialogComponent } from './color-dialog.component';
 import { UiColorDialogModule } from './color-dialog.module';
 
-describe('DraggableDialogComponent', () => {
+describe('ColorDialogComponent', () => {
   let component: UiColorDialogComponent;
   let fixture: ComponentFixture<UiColorDialogComponent>;
 

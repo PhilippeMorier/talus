@@ -34,12 +34,13 @@ module.exports = {
   // - Error: Uncaught (in promise): Failed to load *.component.scss
   globals: {
     'ts-jest': {
+      diagnostics: false, // https://github.com/nrwl/nx/issues/1439#issuecomment-593684534
       tsConfig: '<rootDir>/tsconfig.spec.json',
-      // stringifyContentPathRegex: '\\.html$',
-      // astTransformers: [
-      //   'jest-preset-angular/build/InlineFilesTransformer',
-      //   'jest-preset-angular/build/StripStylesTransformer',
-      // ],
+      stringifyContentPathRegex: '\\.(html|svg)$',
+      astTransformers: [
+        'jest-preset-angular/build/InlineFilesTransformer',
+        'jest-preset-angular/build/StripStylesTransformer',
+      ],
     },
   },
 };

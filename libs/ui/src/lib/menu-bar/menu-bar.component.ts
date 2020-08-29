@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Nil } from '@talus/shared';
 
 export interface UiMenuBarMenu<T> {
   label: string;
@@ -34,7 +35,7 @@ interface UiMenuBarMenuItem<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiMenuBarComponent {
-  @Input() menus: UiMenuBarMenu<any>[] = [];
+  @Input() menus: UiMenuBarMenu<any>[] | Nil = [];
 
   // Without `<any>` on `EventEmitter` test don't run and throw
   // Error: connect ECONNREFUSED 127.0.0.1:80

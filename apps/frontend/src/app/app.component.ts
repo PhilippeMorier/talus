@@ -66,7 +66,7 @@ export class AppComponent {
 
   constructor(private store: Store<fromApp.State>, private renderer: Renderer2) {}
 
-  setTheme(isDarkTheme: boolean): void {
+  setTheme(isDarkTheme: boolean | null): void {
     const toAddClass = isDarkTheme ? 'app-dark-theme' : 'app-light-theme';
     const toRemoveClass = isDarkTheme ? 'app-light-theme' : 'app-dark-theme';
 

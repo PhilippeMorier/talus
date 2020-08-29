@@ -7,16 +7,16 @@ aliases:
   # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
   - &use_docker_node
     docker:
-      - image: circleci/node:13.8.0-stretch
+      - image: circleci/node:14.8.0-stretch
 
   - &use_docker_node_browsers
     docker:
-      - image: circleci/node:13.8.0-stretch-browsers
+      - image: circleci/node:14.8.0-stretch-browsers-legacy
 
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
-      - image: cypress/included:4.4.0
+      - image: cypress/included:4.12.1
 
   - &workspace ~/talus
 
@@ -107,6 +107,7 @@ jobs:
           paths:
             - ~/.cache/yarn
             - ~/.cache/Cypress
+            - ~/.cache/nx
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
@@ -147,7 +148,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn nx test --code-coverage
+          command: yarn test:code-coverage
 
       - *store_test_results
 

@@ -1,5 +1,8 @@
 {
   "rulesDirectory": ["node_modules/@nrwl/workspace/src/tslint", "node_modules/codelyzer"],
+  "linterOptions": {
+    "exclude": ["**/*"]
+  },
   "rules": {
     "arrow-parens": [true, "ban-single-arg-parens"],
     "arrow-return-shorthand": true,
@@ -56,7 +59,6 @@
     "no-trailing-whitespace": true,
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
-    "no-unused-variable": [false],
     "no-var-keyword": true,
     "nx-enforce-module-boundaries": [
       true,

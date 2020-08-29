@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "declaration": false,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // Due to `socket.io-client`
     "experimentalDecorators": true,
     "importHelpers": true,
     "lib": ["es2017", "dom"],
@@ -23,6 +23,9 @@
     "strictNullChecks": true,
     "target": "es2015",
     "typeRoots": ["node_modules/@types"]
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   },
   "exclude": ["node_modules", "tmp"]
 }
