@@ -49,12 +49,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ]
             }
@@ -410,6 +411,7 @@
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:application": {
+      "strict": true,
       "unitTestRunner": "jest",
       "e2eTestRunner": "cypress"
     },
@@ -418,6 +420,7 @@
       "inlineTemplate": true
     },
     "@nrwl/angular:library": {
+      "strict": true,
       "unitTestRunner": "jest"
     }
   },

@@ -29,7 +29,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiRectangularMarqueeComponent implements OnInit, AfterViewInit {
-  @ViewChild('rectangle') rectangle: ElementRef<HTMLDivElement>;
+  @ViewChild('rectangle') rectangle?: ElementRef<HTMLDivElement>;
 
   public gizmoCurrentFreeDragPositions: { x: number; y: number }[] = [];
 
@@ -112,6 +112,10 @@ export class UiRectangularMarqueeComponent implements OnInit, AfterViewInit {
   }
 
   private updateRectangle(): void {
+    if (!this.rectangle) {
+      throw new Error('Rectangle is unavailable.');
+    }
+
     const minX = Math.min(...this.gizmoCurrentFreeDragPositions.map(({ x }) => x));
     const minY = Math.min(...this.gizmoCurrentFreeDragPositions.map(({ y }) => y));
     const maxX = Math.max(...this.gizmoCurrentFreeDragPositions.map(({ x }) => x));

@@ -69,9 +69,9 @@ export class Ray {
   intersects(bbox: CoordBBox, timeSpanRef: TimeSpan): boolean {
     timeSpanRef.set(this.timeSpan.t0, this.timeSpan.t1);
 
-    for (let i = 0; i < 3; i++) {
-      let a = (bbox.min[i] - this.eye[i]) * this.invDir[i];
-      let b = (bbox.max[i] - this.eye[i]) * this.invDir[i];
+    Vec3.Axes.forEach(axis => {
+      let a = (bbox.min[axis] - this.eye[axis]) * this.invDir[axis];
+      let b = (bbox.max[axis] - this.eye[axis]) * this.invDir[axis];
 
       if (a > b) {
         [a, b] = [b, a];
@@ -85,7 +85,7 @@ export class Ray {
       if (timeSpanRef.t0 > timeSpanRef.t1) {
         return false;
       }
-    }
+    });
 
     return true;
   }

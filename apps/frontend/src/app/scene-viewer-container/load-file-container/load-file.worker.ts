@@ -63,7 +63,7 @@ function floatArrayToCoords(positions: FloatArray): Coord[] {
   let progress = 0;
 
   for (let i = 0; i < positions.length; i += 3) {
-    coords.push([positions[i], positions[i + 1], positions[i + 2]]);
+    coords.push({ x: positions[i], y: positions[i + 1], z: positions[i + 2] });
 
     const currentProgress = Math.trunc(i * progressFactor);
     if (progress !== currentProgress) {

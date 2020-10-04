@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Light } from '@babylonjs/core';
 import { ActionManager } from '@babylonjs/core/Actions/actionManager';
 // Babylon.js needs to target individual files to fully benefit from tree shaking.
 // See: https://doc.babylonjs.com/features/es6_support#tree-shaking
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { TargetCamera } from '@babylonjs/core/Cameras/targetCamera';
 import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -56,14 +58,14 @@ export class CameraFactory {
  */
 @Injectable()
 export class UiSceneViewerService {
-  private actionManager: ActionManager;
-  private camera: ArcRotateCamera;
+  private actionManager?: ActionManager;
+  private camera?: ArcRotateCamera;
   private canvas?: HTMLCanvasElement;
-  private engine: Engine;
-  private gridNode: TransformNode;
-  private light: HemisphericLight;
-  private scene: Scene;
-  private standardMaterial: StandardMaterial;
+  private engine?: Engine;
+  private gridNode?: TransformNode;
+  private light?: Light;
+  private scene?: Scene;
+  private standardMaterial?: StandardMaterial;
 
   private pointerPickSubject$ = new Subject<UiPointerPickInfo>();
   pointerPick$ = this.pointerPickSubject$.asObservable();
@@ -76,25 +78,29 @@ export class UiSceneViewerService {
   initialize(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
     this.engine = this.engineFactory.create(canvas);
-    this.createScene();
-    this.createCamera();
-    this.createLight();
+    this.scene = this.createScene(this.engine);
+    this.light = createLight(this.scene);
+    this.createCamera(this.scene);
 
-    this.registerPointerEvents();
+    this.registerPointerEvents(this.scene);
   }
 
   startRendering(): void {
-    this.engine.runRenderLoop(() => this.scene.render());
+    this.engine?.runRenderLoop(() => this.scene?.render());
   }
 
   resizeView(): void {
-    this.engine.resize();
+    this.engine?.resize();
   }
 
   updateNodeMesh(mesh: MeshData | undefined, origin: Coord): void {
+    if (!this.scene || !this.standardMaterial || !this.actionManager) {
+      return;
+    }
+
     const meshName = `node1 [${origin}]`;
 
-    this.deleteMesh(meshName);
+    deleteMesh(this.scene, meshName);
 
     if (mesh) {
       const data = new VertexData();
@@ -102,7 +108,11 @@ export class UiSceneViewerService {
       data.normals = mesh.normals;
       data.positions = mesh.positions;
 
-      const nodeMesh = this.createUnIndexedAlphaMesh(meshName);
+      const nodeMesh = this.createUnIndexedAlphaMesh(
+        this.standardMaterial,
+        this.actionManager,
+        meshName,
+      );
       data.applyToMesh(nodeMesh, false);
     }
   }
@@ -118,108 +128,95 @@ export class UiSceneViewerService {
     }
   }
 
-  private createScene(): void {
+  private createScene(engine: Engine): Scene {
     // https://doc.babylonjs.com/how_to/optimizing_your_scene
-    this.scene = new Scene(this.engine, {
+    const scene = new Scene(engine, {
       useGeometryUniqueIdsMap: true,
       useClonedMeshMap: true,
     });
 
     // Make background of canvas transparent
-    this.scene.clearColor = new Color4(0, 0, 0, 0);
+    scene.clearColor = new Color4(0, 0, 0, 0);
 
     // An as transparent flagged mesh does not write to the depth buffer when rendering.
     // This can lead to potential artifacts.
     // https://forum.babylonjs.com/t/hasvertexalpha-causes-problems-when-unindexed-is-used-directly
-    this.standardMaterial = new StandardMaterial('standardMaterial', this.scene);
+    this.standardMaterial = new StandardMaterial('standardMaterial', scene);
     this.standardMaterial.forceDepthWrite = true;
 
-    this.scene.freezeMaterials();
+    scene.freezeMaterials();
 
     // Used only as parent to have all nodes grouped together
-    this.gridNode = new TransformNode('grid', this.scene);
+    this.gridNode = new TransformNode('grid', scene);
 
     // To have `scene.onPointerMove` emitting
-    this.actionManager = new ActionManager(this.scene);
+    this.actionManager = new ActionManager(scene);
+
+    return scene;
   }
 
-  private createCamera(): void {
-    this.camera = this.cameraFactory.create(
+  private createCamera(scene: Scene): TargetCamera {
+    const camera = this.cameraFactory.create(
       'camera',
       Math.PI / 2,
       Math.PI / 2,
       2,
       new Vector3(0, 0, 0),
-      this.scene,
+      scene,
     );
-    this.camera.inertia = 0;
-    this.camera.panningInertia = 0;
-    this.camera.wheelPrecision = 1.0;
+    camera.inertia = 0;
+    camera.panningInertia = 0;
+    camera.wheelPrecision = 1.0;
 
-    this.camera.panningSensibility = 10;
-    this.camera.angularSensibilityX = 200;
-    this.camera.angularSensibilityY = 100;
+    camera.panningSensibility = 10;
+    camera.angularSensibilityX = 200;
+    camera.angularSensibilityY = 100;
 
-    this.camera.setPosition(new Vector3(20, 20, -20));
+    camera.setPosition(new Vector3(20, 20, -20));
 
     this.attachCameraControl();
+
+    return camera;
   }
 
   private attachCameraControl(): void {
-    const renderingCanvas = this.engine.getRenderingCanvas();
-    if (renderingCanvas) {
+    const renderingCanvas = this.engine?.getRenderingCanvas();
+    if (renderingCanvas && this.camera) {
       this.camera.attachControl(renderingCanvas, true, false, 2);
     }
   }
 
   private detachCameraControl(): void {
-    const renderingCanvas = this.engine.getRenderingCanvas();
-    if (renderingCanvas) {
+    const renderingCanvas = this.engine?.getRenderingCanvas();
+    if (renderingCanvas && this.camera) {
       this.camera.detachControl(renderingCanvas);
     }
   }
 
-  private createLight(): void {
-    this.light = new HemisphericLight('light', new Vector3(0, 1, -2), this.scene);
-  }
-
-  private registerPointerEvents(): void {
-    this.scene.onPointerPick = this.onPointerPick;
-    this.scene.onPointerMove = this.onPointerMove;
+  private registerPointerEvents(scene: Scene): void {
+    scene.onPointerPick = this.onPointerPick;
+    scene.onPointerMove = this.onPointerMove;
   }
 
   private onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
-    const info = this.getPointerPickInfo(event, pickInfo);
+    const info = getPointerPickInfo(event, pickInfo);
     if (info) {
       this.pointerPickSubject$.next(info);
     }
   };
 
   private onPointerMove = (event: PointerEvent, pickInfo: PickingInfo): void => {
-    const info = this.getPointerPickInfo(event, pickInfo);
+    const info = getPointerPickInfo(event, pickInfo);
     if (info) {
       this.pointUnderPointerSubject$.next(info);
     }
   };
 
-  private getPointerPickInfo(
-    event: PointerEvent,
-    pickInfo: PickingInfo,
-  ): UiPointerPickInfo | undefined {
-    if (!pickInfo.pickedMesh || !pickInfo.pickedPoint) {
-      return undefined;
-    }
-
-    const info: UiPointerPickInfo = {
-      pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
-      pointerButton: event.button,
-      normal: this.getNormal(pickInfo.pickedMesh, pickInfo.faceId),
-    };
-
-    return info;
-  }
-
-  private createUnIndexedAlphaMesh(name: string): Mesh {
+  private createUnIndexedAlphaMesh(
+    material: StandardMaterial,
+    actionManager: ActionManager,
+    name: string,
+  ): Mesh {
     const mesh = new Mesh(name, this.scene, this.gridNode);
 
     // https://www.html5gamedevs.com/topic/31617-mesh-without-indices/?tab=comments#comment-181659
@@ -228,10 +225,10 @@ export class UiSceneViewerService {
 
     // https://forum.babylonjs.com/t/hasvertexalpha-causes-problems-when-unindexed-is-used-directly
     mesh.hasVertexAlpha = true;
-    mesh.material = this.standardMaterial;
+    mesh.material = material;
 
     // To have `scene.onPointerMove` emitting
-    mesh.actionManager = this.actionManager;
+    mesh.actionManager = actionManager;
 
     // https://doc.babylonjs.com/how_to/optimizing_your_scene
     // https://www.html5gamedevs.com/topic/12504-performancedraw-calls/
@@ -240,36 +237,63 @@ export class UiSceneViewerService {
 
     return mesh;
   }
+}
 
-  /**
-   * PickingInfo.getNormal() requires to have indices which are not available
-   * for an un-indexed custom mesh. Therefore, read normals directly from picked mesh.
-   *
-   * https://github.com/BabylonJS/Babylon.js/blob/master/src/Collisions/pickingInfo.ts#L65
-   */
-  private getNormal(pickedMesh: AbstractMesh, faceId: number): Coord {
-    const normals = pickedMesh.getVerticesData(VertexBuffer.NormalKind);
+/**
+ * PickingInfo.getNormal() requires to have indices which are not available
+ * for an un-indexed custom mesh. Therefore, read normals directly from picked mesh.
+ *
+ * https://github.com/BabylonJS/Babylon.js/blob/master/src/Collisions/pickingInfo.ts#L65
+ */
+function getNormal(pickedMesh: AbstractMesh, faceId: number): Coord {
+  const normals = pickedMesh.getVerticesData(VertexBuffer.NormalKind);
 
-    if (!normals) {
-      throw new Error('Could not get normals from picked mesh.');
-    }
-
-    const faceIndex = faceId * 9;
-
-    return [normals[faceIndex], normals[faceIndex + 1], normals[faceIndex + 2]];
+  if (!normals) {
+    throw new Error('Could not get normals from picked mesh.');
   }
 
-  private deleteMesh(name: string): void {
-    const oldMesh = this.scene.getMeshByName(name);
+  const faceIndex = faceId * 9;
 
-    if (oldMesh) {
-      oldMesh.dispose();
-    }
+  return {
+    x: normals[faceIndex],
+    y: normals[faceIndex + 1],
+    z: normals[faceIndex + 2],
+  };
+}
+
+function getPointerPickInfo(
+  event: PointerEvent,
+  pickInfo: PickingInfo,
+): UiPointerPickInfo | undefined {
+  if (!pickInfo.pickedMesh || !pickInfo.pickedPoint) {
+    return undefined;
   }
+
+  return {
+    pickedPoint: vector3ToCoord(pickInfo.pickedPoint),
+    pointerButton: event.button,
+    normal: getNormal(pickInfo.pickedMesh, pickInfo.faceId),
+  };
+}
+
+function createLight(scene: Scene): Light {
+  return new HemisphericLight('light', new Vector3(0, 1, -2), scene);
 }
 
 function vector3ToCoord(vector: Vector3): Coord {
-  return [vector.x, vector.y, vector.z];
+  return {
+    x: vector.x,
+    y: vector.y,
+    z: vector.z,
+  };
+}
+
+function deleteMesh(scene: Scene, name: string): void {
+  const oldMesh = scene.getMeshByName(name);
+
+  if (oldMesh) {
+    oldMesh.dispose();
+  }
 }
 
 export interface UiPointerPickInfo {

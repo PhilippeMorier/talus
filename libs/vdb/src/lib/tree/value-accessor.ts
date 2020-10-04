@@ -1,8 +1,8 @@
-import { Coord, createMaxCoord } from '../math';
-import { InternalNode1, InternalNode2 } from './internal-node';
-import { LeafNode } from './leaf-node';
-import { HashableNode } from './node';
-import { Tree } from './tree';
+import {Coord, createMaxCoord} from '../math';
+import {InternalNode1, InternalNode2} from './internal-node';
+import {LeafNode} from './leaf-node';
+import {HashableNode} from './node';
+import {Tree} from './tree';
 
 /**
  * When traversing a grid by (i, j, k) index in a spatially coherent pattern, such as when
@@ -76,7 +76,7 @@ export class ValueAccessor3<T> {
     }
   }
 
-  touchLeaf(xyz: Coord): LeafNode<T> {
+  touchLeaf(xyz: Coord): LeafNode<T> | undefined {
     if (this.isHashed0(xyz)) {
       return this.leafNode;
     } else if (this.isHashed1(xyz)) {
@@ -164,44 +164,44 @@ export class ValueAccessor3<T> {
   // tslint:disable:no-bitwise
   insert(xyz: Coord, node: HashableNode<T>): void {
     if (node instanceof LeafNode) {
-      this.leafKey[0] = xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED;
-      this.leafKey[1] = xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED;
-      this.leafKey[2] = xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED;
+      this.leafKey.x = xyz.x & LeafNode.DIM_MAX_INDEX_INVERTED;
+      this.leafKey.y = xyz.y & LeafNode.DIM_MAX_INDEX_INVERTED;
+      this.leafKey.z = xyz.z & LeafNode.DIM_MAX_INDEX_INVERTED;
       this.leafNode = node;
     } else if (node instanceof InternalNode1) {
-      this.internalKey1[0] = xyz[0] & InternalNode1.DIM_MAX_INDEX_INVERTED;
-      this.internalKey1[1] = xyz[1] & InternalNode1.DIM_MAX_INDEX_INVERTED;
-      this.internalKey1[2] = xyz[2] & InternalNode1.DIM_MAX_INDEX_INVERTED;
+      this.internalKey1.x = xyz.x & InternalNode1.DIM_MAX_INDEX_INVERTED;
+      this.internalKey1.y = xyz.y & InternalNode1.DIM_MAX_INDEX_INVERTED;
+      this.internalKey1.z = xyz.z & InternalNode1.DIM_MAX_INDEX_INVERTED;
       this.internalNode1 = node;
     } else if (node instanceof InternalNode2) {
-      this.internalKey2[0] = xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED;
-      this.internalKey2[1] = xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED;
-      this.internalKey2[2] = xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED;
+      this.internalKey2.x = xyz.x & InternalNode2.DIM_MAX_INDEX_INVERTED;
+      this.internalKey2.y = xyz.y & InternalNode2.DIM_MAX_INDEX_INVERTED;
+      this.internalKey2.z = xyz.z & InternalNode2.DIM_MAX_INDEX_INVERTED;
       this.internalNode2 = node;
     }
   }
 
   private isHashed0(xyz: Coord): boolean {
     return (
-      (xyz[0] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[0] &&
-      (xyz[1] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[1] &&
-      (xyz[2] & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey[2]
+      (xyz.x & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey.x &&
+      (xyz.y & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey.y &&
+      (xyz.z & LeafNode.DIM_MAX_INDEX_INVERTED) === this.leafKey.z
     );
   }
 
   private isHashed1(xyz: Coord): boolean {
     return (
-      (xyz[0] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[0] &&
-      (xyz[1] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[1] &&
-      (xyz[2] & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1[2]
+      (xyz.x & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1.x &&
+      (xyz.y & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1.y &&
+      (xyz.z & InternalNode1.DIM_MAX_INDEX_INVERTED) === this.internalKey1.z
     );
   }
 
   private isHashed2(xyz: Coord): boolean {
     return (
-      (xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[0] &&
-      (xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[1] &&
-      (xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2[2]
+      (xyz.x & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2.x &&
+      (xyz.y & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2.y &&
+      (xyz.z & InternalNode2.DIM_MAX_INDEX_INVERTED) === this.internalKey2.z
     );
   }
   // tslint:enable:no-bitwise

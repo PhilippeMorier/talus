@@ -34,9 +34,9 @@ export class LeafNode<T> implements HashableNode<T> {
   static coordToOffset(xyz: Coord): Index {
     // tslint:disable:no-bitwise
     return (
-      ((xyz[0] & LeafNode.DIM_MAX_INDEX) << (2 * LeafNode.LOG2DIM)) +
-      ((xyz[1] & LeafNode.DIM_MAX_INDEX) << LeafNode.LOG2DIM) +
-      (xyz[2] & LeafNode.DIM_MAX_INDEX)
+      ((xyz.x & LeafNode.DIM_MAX_INDEX) << (2 * LeafNode.LOG2DIM)) +
+      ((xyz.y & LeafNode.DIM_MAX_INDEX) << LeafNode.LOG2DIM) +
+      (xyz.z & LeafNode.DIM_MAX_INDEX)
     );
     // tslint:enable:no-bitwise
   }
@@ -46,13 +46,13 @@ export class LeafNode<T> implements HashableNode<T> {
    * where offset 0 has coordinates (0, 0, 0).
    */
   static offsetToLocalCoord(i: Index): Coord {
-    const xyz: Coord = [0, 0, 0];
+    const xyz: Coord = { x: 0, y: 0, z: 0 };
 
     // tslint:disable:no-bitwise
-    xyz[0] = i >> (2 * LeafNode.LOG2DIM);
+    xyz.x = i >> (2 * LeafNode.LOG2DIM);
     i &= (1 << (2 * LeafNode.LOG2DIM)) - 1;
-    xyz[1] = i >> LeafNode.LOG2DIM;
-    xyz[2] = i & ((1 << LeafNode.LOG2DIM) - 1);
+    xyz.y = i >> LeafNode.LOG2DIM;
+    xyz.z = i & ((1 << LeafNode.LOG2DIM) - 1);
     // tslint:enable:no-bitwise
 
     return xyz;
@@ -68,11 +68,11 @@ export class LeafNode<T> implements HashableNode<T> {
     this.valueMask = new NodeMask(LeafNode.NUM_VALUES, active);
 
     // tslint:disable:no-bitwise
-    this.origin = [
-      origin[0] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      origin[1] & LeafNode.DIM_MAX_INDEX_INVERTED,
-      origin[2] & LeafNode.DIM_MAX_INDEX_INVERTED,
-    ];
+    this.origin = {
+      x: origin.x & LeafNode.DIM_MAX_INDEX_INVERTED,
+      y: origin.y & LeafNode.DIM_MAX_INDEX_INVERTED,
+      z: origin.z & LeafNode.DIM_MAX_INDEX_INVERTED,
+    };
     // tslint:enable:no-bitwise
   }
 
@@ -179,11 +179,11 @@ export class LeafNode<T> implements HashableNode<T> {
   offsetToGlobalCoord(i: Index): Coord {
     const localCoord = LeafNode.offsetToLocalCoord(i);
 
-    return [
-      localCoord[0] + this.origin[0],
-      localCoord[1] + this.origin[1],
-      localCoord[2] + this.origin[2],
-    ];
+    return {
+      x: localCoord.x + this.origin.x,
+      y: localCoord.y + this.origin.y,
+      z: localCoord.z + this.origin.z,
+    };
   }
 
   /**
@@ -225,10 +225,7 @@ export class LeafNode<T> implements HashableNode<T> {
 
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.valueMask.beginOn()) {
-      yield {
-        globalCoord: this.offsetToGlobalCoord(index),
-        value: this.buffer.getValue(index),
-      };
+      yield new Voxel(this.offsetToGlobalCoord(index), this.buffer.getValue(index));
     }
   }
 

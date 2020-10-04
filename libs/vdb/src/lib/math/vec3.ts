@@ -5,28 +5,34 @@ export class Vec3 {
     return new Vec3(0, 0, 0);
   }
 
-  get [0](): number {
+  static Axes: ['x', 'y', 'z'] = ['x', 'y', 'z'];
+
+  get ['x'](): number {
     return this.x;
   }
-  set [0](x: number) {
+  set ['x'](x: number) {
     this.x = x;
   }
 
-  get [1](): number {
+  get ['y'](): number {
     return this.y;
   }
-  set [1](y: number) {
+  set ['y'](y: number) {
     this.y = y;
   }
 
-  get [2](): number {
+  get ['z'](): number {
     return this.z;
   }
-  set [2](z: number) {
+  set ['z'](z: number) {
     this.z = z;
   }
 
-  constructor(public x: number, public y: number, public z: number) {}
+  constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
   divide(scalar: number): Vec3 {
     return new Vec3(scalar / this.x, scalar / this.y, scalar / this.z);
@@ -45,7 +51,7 @@ export class Vec3 {
   }
 
   toCoord(): Coord {
-    return [this.x, this.y, this.z];
+    return this;
   }
 
   /**
@@ -57,9 +63,9 @@ export class Vec3 {
    * returned. In other words the return value corresponds to the largest index
    * of the of the smallest vector components.
    */
-  minIndex(): 0 | 1 | 2 {
-    const dummyValue = 0;
-    const hashTable: (0 | 1 | 2)[] = [2, 1, dummyValue, 1, 2, dummyValue, 0, 0];
+  minIndex(): 'x' | 'y' | 'z' {
+    const dummyValue = 'x';
+    const hashTable: ('x' | 'y' | 'z')[] = ['z', 'y', dummyValue, 'y', 'z', dummyValue, 'x', 'x'];
 
     const xLtY = Number(this.x < this.y);
     const xLtZ = Number(this.x < this.z);

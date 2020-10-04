@@ -211,7 +211,7 @@ export class SceneViewerContainerEffects {
       filter(({ isNewTopic }) => isNewTopic),
       map(() =>
         setVoxel({
-          xyz: [0, 0, 0],
+          xyz: { x: 0, y: 0, z: 0 },
           newValue: rgbaToInt({
             r: 0,
             g: 255,

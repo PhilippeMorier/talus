@@ -11,7 +11,6 @@ import {
   nodeToMesh,
   Ray,
   TimeSpan,
-  ValueAccessor3,
   Vec3,
   VolumeRayIntersector,
   Voxel,
@@ -27,12 +26,8 @@ const COLOR_FACTOR = 1 / 255;
  */
 @Injectable()
 export class GridService {
-  grid: Grid<number>;
-  accessor: ValueAccessor3<number>;
-
-  constructor() {
-    this.initialize();
-  }
+  grid = new Grid(-1);
+  accessor = this.grid.getAccessor();
 
   initialize(): void {
     this.grid = new Grid(-1);
@@ -112,9 +107,9 @@ export class GridService {
 
   selectLine(points: Coord[], newValue: number): VoxelChange[] {
     const start = points[0];
-    const startCenter = add(start, [0.5, 0.5, 0.5]);
+    const startCenter = add(start, { x: 0.5, y: 0.5, z: 0.5 });
     const end = points[1];
-    const endCenter = add(end, [0.5, 0.5, 0.5]);
+    const endCenter = add(end, { x: 0.5, y: 0.5, z: 0.5 });
 
     // Set end to ensure leaf-node is created in the grid. And has at least one active voxel.
     // Otherwise, it could happen that the end point is in a new leaf which doesn't yet exist
@@ -123,7 +118,7 @@ export class GridService {
     // drawing of the line starts (in effect).
     const tempChange = this.setVoxel(end, newValue);
 
-    const ray = this.createIntersectionRay(startCenter, endCenter);
+    const ray = createIntersectionRay(startCenter, endCenter);
 
     const totalTimeSpan = TimeSpan.inf();
     if (!this.findTotalTimeSpan(ray, totalTimeSpan)) {
@@ -136,17 +131,6 @@ export class GridService {
       : this.setVoxel(tempChange.xyz, tempChange.oldValue);
 
     return this.setVoxelsAlongRayUntilLastVoxel(ray, totalTimeSpan, end, newValue);
-  }
-
-  private createIntersectionRay(startXyz: Coord, endXyz: Coord): Ray {
-    const eye = new Vec3(startXyz[0], startXyz[1], startXyz[2]);
-    const direction = new Vec3(
-      endXyz[0] - startXyz[0],
-      endXyz[1] - startXyz[1],
-      endXyz[2] - startXyz[2],
-    );
-
-    return new Ray(eye, direction);
   }
 
   private findTotalTimeSpan(ray: Ray, timeSpanRef: TimeSpan): boolean {
@@ -195,6 +179,13 @@ export class GridService {
       rgba.a * COLOR_FACTOR,
     ];
   };
+}
+
+function createIntersectionRay(startXyz: Coord, endXyz: Coord): Ray {
+  const eye = new Vec3(startXyz.x, startXyz.y, startXyz.z);
+  const direction = new Vec3(endXyz.x - startXyz.x, endXyz.y - startXyz.y, endXyz.z - startXyz.z);
+
+  return new Ray(eye, direction);
 }
 
 export interface VoxelChange {

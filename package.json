@@ -2,6 +2,7 @@
   "name": "talus",
   "version": "0.0.0",
   "license": "MIT",
+  "sideEffects": false,
   "scripts": {
     "affected": "nx affected",
     "affected:apps": "nx affected:apps",

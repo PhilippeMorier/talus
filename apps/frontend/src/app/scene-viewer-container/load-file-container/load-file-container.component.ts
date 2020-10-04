@@ -40,7 +40,7 @@ export class LoadFileContainerComponent {
       this.status = 'Adding voxels...';
 
       setTimeout(() => {
-        const action = this.getActionFromCoords(status.coords);
+        const action = getActionFromCoords(status.coords);
         this.store.dispatch(action);
 
         this.overlayRef.detach();
@@ -54,21 +54,21 @@ export class LoadFileContainerComponent {
     private readonly store: Store<fromApp.State>,
     private readonly loadFileService: LoadFileService,
   ) {}
+}
 
-  private getActionFromCoords(coords: Coord[]): Action {
-    const colors: number[] = [];
-    const defaultColor = rgbaToInt({ r: 0, g: 255, b: 0, a: 255 });
-    const scaleFactor = 50;
+function getActionFromCoords(coords: Coord[]): Action {
+  const colors: number[] = [];
+  const defaultColor = rgbaToInt({ r: 0, g: 255, b: 0, a: 255 });
+  const scaleFactor = 50;
 
-    for (let i = 0; i < coords.length; i++) {
-      coords[i] = [
-        coords[i][0] * scaleFactor,
-        coords[i][1] * scaleFactor,
-        coords[i][2] * scaleFactor,
-      ];
-      colors.push(defaultColor);
-    }
-
-    return setVoxels({ coords, newValues: colors, needsSync: true });
+  for (let i = 0; i < coords.length; i++) {
+    coords[i] = {
+      x: coords[i].x * scaleFactor,
+      y: coords[i].y * scaleFactor,
+      z: coords[i].z * scaleFactor,
+    };
+    colors.push(defaultColor);
   }
+
+  return setVoxels({ coords, newValues: colors, needsSync: true });
 }

@@ -17,8 +17,8 @@ import { Vec3 } from './vec3';
 export class DDA {
   private readonly DIM = 1 << this.log2Dim;
 
-  private t0: number;
-  private t1: number;
+  private t0: number = -1;
+  private t1: number = -1;
 
   private voxel: Coord = createMaxCoord();
   private step: Coord = createMaxCoord();
@@ -47,7 +47,7 @@ export class DDA {
   }
 
   getVoxel(): Coord {
-    return [this.voxel[0], this.voxel[1], this.voxel[2]];
+    return { x: this.voxel.x, y: this.voxel.y, z: this.voxel.z };
   }
 
   init(ray: Ray, startTime: number, maxTime: number): void {
@@ -63,11 +63,11 @@ export class DDA {
     const inv = ray.invDir;
 
     this.voxel = floor(pos.toCoord());
-    this.voxel[0] &= ~(this.DIM - 1);
-    this.voxel[1] &= ~(this.DIM - 1);
-    this.voxel[2] &= ~(this.DIM - 1);
+    this.voxel.x &= ~(this.DIM - 1);
+    this.voxel.y &= ~(this.DIM - 1);
+    this.voxel.z &= ~(this.DIM - 1);
 
-    for (let axis = 0; axis < 3; ++axis) {
+    Vec3.Axes.forEach(axis => {
       // handles dir = +/- 0
       if (dir[axis] === 0) {
         this.step[axis] = 0; // dummy value
@@ -82,7 +82,7 @@ export class DDA {
         this.next[axis] = this.t0 + (this.voxel[axis] - pos[axis]) * inv[axis];
         this.delta[axis] = this.step[axis] * inv[axis];
       }
-    }
+    });
   }
 
   /**

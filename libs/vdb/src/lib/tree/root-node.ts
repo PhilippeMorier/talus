@@ -20,20 +20,20 @@ export class RootNode<T> implements HashableNode<T> {
    */
   static coordToKey(xyz: Coord): string {
     // tslint:disable:no-bitwise
-    const coord: Coord = [
-      xyz[0] & InternalNode2.DIM_MAX_INDEX_INVERTED,
-      xyz[1] & InternalNode2.DIM_MAX_INDEX_INVERTED,
-      xyz[2] & InternalNode2.DIM_MAX_INDEX_INVERTED,
-    ];
+    const coord: Coord = {
+      x: xyz.x & InternalNode2.DIM_MAX_INDEX_INVERTED,
+      y: xyz.y & InternalNode2.DIM_MAX_INDEX_INVERTED,
+      z: xyz.z & InternalNode2.DIM_MAX_INDEX_INVERTED,
+    };
     // tslint:enable:no-bitwise
 
-    return coord.join(',');
+    return `${coord.x},${coord.y},${coord.z}`;
   }
 
   static keyToCoord(key: string): Coord {
     const xyz = key.split(',');
 
-    return [Number(xyz[0]), Number(xyz[1]), Number(xyz[2])];
+    return { x: Number(xyz[0]), y: Number(xyz[1]), z: Number(xyz[2]) };
   }
 
   get background(): T {
@@ -356,7 +356,7 @@ class NodeStruct<T> {
   }
 }
 
-class Tile<T> {
+interface Tile<T> {
   value: T;
   active: boolean;
 }

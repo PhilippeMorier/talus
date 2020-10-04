@@ -13,7 +13,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
   protected childMask: NodeMask;
   protected valueMask: NodeMask;
 
-  protected nodes: NodeUnion<T, HashableNode<T>>[];
+  protected nodes: NodeUnion<T, HashableNode<T>>[] = [];
 
   constructor(xyz: Coord, value?: T, active: boolean = false) {
     if (this instanceof InternalNode1) {
@@ -31,9 +31,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
   ): Index {
     // tslint:disable:no-bitwise
     return (
-      (((xyz[0] & (dim - 1)) >> childNodeTotal) << (2 * log2dim)) +
-      (((xyz[1] & (dim - 1)) >> childNodeTotal) << log2dim) +
-      ((xyz[2] & (dim - 1)) >> childNodeTotal)
+      (((xyz.x & (dim - 1)) >> childNodeTotal) << (2 * log2dim)) +
+      (((xyz.y & (dim - 1)) >> childNodeTotal) << log2dim) +
+      ((xyz.z & (dim - 1)) >> childNodeTotal)
     );
     // tslint:enable:no-bitwise
   }
@@ -251,6 +251,10 @@ abstract class InternalNode<T> implements HashableNode<T> {
   }
 
   getNodeBoundingBox(): CoordBBox {
+    if (!this.origin) {
+      throw new Error('Origin is not set. Call "initialize()" first.');
+    }
+
     const dim = this instanceof InternalNode2 ? InternalNode2.DIM : InternalNode1.DIM;
 
     return CoordBBox.createCube(this.origin, dim);
@@ -303,11 +307,11 @@ abstract class InternalNode<T> implements HashableNode<T> {
     this.valueMask = new NodeMask(numValues);
 
     // tslint:disable:no-bitwise
-    this.origin = [
-      xyz[0] & dimMaxIndexInverted,
-      xyz[1] & dimMaxIndexInverted,
-      xyz[2] & dimMaxIndexInverted,
-    ];
+    this.origin = {
+      x: xyz.x & dimMaxIndexInverted,
+      y: xyz.y & dimMaxIndexInverted,
+      z: xyz.z & dimMaxIndexInverted,
+    };
     // tslint:enable:no-bitwise
 
     if (active) {

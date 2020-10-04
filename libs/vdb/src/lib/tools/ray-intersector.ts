@@ -29,8 +29,8 @@ export class VolumeRayIntersector<T> {
   private accessor: ValueAccessor3<T> = this.grid.getAccessor();
   private bbox: CoordBBox = new CoordBBox();
   private hdda: VolumeHDDA<T> = new VolumeHDDA<T>();
-  private ray: Ray;
-  private tMax: number;
+  private ray?: Ray;
+  private tMax?: number;
 
   constructor(private grid: Grid<T> /* dilationCount: number = 0 */) {
     // if (!grid.hasUniformVoxels()) {
@@ -88,7 +88,11 @@ export class VolumeRayIntersector<T> {
    * I.e. TimeSpan instead of separate t0 and t1 are passed.
    */
   march(timeSpanRef: TimeSpan): boolean {
-    const result = this.marchInternal();
+    if (!this.ray) {
+      throw new Error('Ray is not set. Call "setIndexRay()" first.');
+    }
+
+    const result = this.marchInternal(this.ray);
     timeSpanRef.set(result.t0, result.t1);
 
     return timeSpanRef.valid();
@@ -111,11 +115,11 @@ export class VolumeRayIntersector<T> {
     return timeSpanRef.valid();
   }
 
-  private marchInternal(): TimeSpan {
-    const t: TimeSpan = this.hdda.marchStart(this.ray, this.accessor);
+  private marchInternal(ray: Ray): TimeSpan {
+    const t: TimeSpan = this.hdda.marchStart(ray, this.accessor);
 
     if (t.t1 > 0) {
-      this.ray.setTimes(t.t1 + DELTA, this.tMax);
+      ray.setTimes(t.t1 + DELTA, this.tMax);
     }
 
     return t;

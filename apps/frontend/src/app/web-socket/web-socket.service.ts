@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
 export class WebSocketService {
-  private socket: SocketIOClient.Socket;
+  private socket?: SocketIOClient.Socket;
 
   private readonly connectionStatusSubject = new Subject<boolean>();
   connectionStatus$ = this.connectionStatusSubject.asObservable().pipe(distinctUntilChanged());
@@ -15,11 +15,11 @@ export class WebSocketService {
 
   connect(): void {
     this.socket = io.connect(this.uri);
-    this.registerConnectionEvents();
+    this.registerConnectionEvents(this.socket);
   }
 
   reconnect(): void {
-    this.socket.disconnect();
+    this.socket?.disconnect();
     this.connect();
   }
 
@@ -44,15 +44,15 @@ export class WebSocketService {
     return this.listen<ResultType>(eventName);
   }
 
-  private registerConnectionEvents(): void {
-    this.socket.on('connect_error', () => {
-      this.connectionStatusSubject.next(this.socket.connected);
+  private registerConnectionEvents(socket: SocketIOClient.Socket): void {
+    socket.on('connect_error', () => {
+      this.connectionStatusSubject.next(socket.connected);
     });
-    this.socket.on('connect', () => {
-      this.connectionStatusSubject.next(this.socket.connected);
+    socket.on('connect', () => {
+      this.connectionStatusSubject.next(socket.connected);
     });
-    this.socket.on('disconnect', () => {
-      this.connectionStatusSubject.next(this.socket.connected);
+    socket.on('disconnect', () => {
+      this.connectionStatusSubject.next(socket.connected);
     });
   }
 }
