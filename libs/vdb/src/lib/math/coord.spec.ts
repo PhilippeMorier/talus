@@ -102,8 +102,8 @@ describe('CoordBBox', () => {
 
       box.expand(otherBox);
 
-      expect(box.min).toEqual([2, 0, 0]);
-      expect(box.max).toEqual([30, 10, 40]);
+      expect(box.min).toEqual(new Coord(2, 0, 0));
+      expect(box.max).toEqual(new Coord(30, 10, 40));
     });
   });
 
