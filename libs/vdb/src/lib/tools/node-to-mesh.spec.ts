@@ -1,13 +1,14 @@
 import { Grid } from '../grid';
 import { nodeToMesh } from './node-to-mesh';
+import { Coord } from '@talus/vdb';
 
 describe('nodeToMesh()', () => {
   it('should generate the mesh', () => {
     const grid = new Grid(0);
     const accessor = grid.getAccessor();
 
-    accessor.setValueOn([0, 0, 0], 1);
-    accessor.setValueOn([0, 0, 1], 1);
+    accessor.setValueOn(new Coord(0, 0, 0), 1);
+    accessor.setValueOn(new Coord(0, 0, 1), 1);
 
     const meshData = nodeToMesh(grid.tree.root, () => [0, 0, 0, 1]);
 

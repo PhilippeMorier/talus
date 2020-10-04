@@ -9,9 +9,9 @@ import { ValueAccessor3 } from './value-accessor';
 import { Voxel } from './voxel';
 
 abstract class InternalNode<T> implements HashableNode<T> {
-  origin: Coord;
-  protected childMask: NodeMask;
-  protected valueMask: NodeMask;
+  origin?: Coord;
+  protected childMask = new NodeMask(0);
+  protected valueMask = new NodeMask(0);
 
   protected nodes: NodeUnion<T, HashableNode<T>>[] = [];
 

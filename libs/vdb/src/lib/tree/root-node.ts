@@ -318,8 +318,11 @@ export class RootNode<T> implements HashableNode<T> {
   }
 }
 
+/**
+ * This lightweight struct pairs child pointers and tiles.
+ */
 class NodeStruct<T> {
-  tile: Tile<T>;
+  private tile?: Tile<T>;
 
   constructor(private child?: HashableNode<T>) {}
 
@@ -340,6 +343,10 @@ class NodeStruct<T> {
   }
 
   getTile(): Tile<T> {
+    if (!this.tile) {
+      throw new Error('Tile is not set.');
+    }
+
     return this.tile;
   }
 
@@ -348,15 +355,15 @@ class NodeStruct<T> {
   }
 
   isTileOff(): boolean {
-    return this.isTile() && !this.tile.active;
+    return this.isTile() && !this.tile?.active;
   }
 
   isTileOn(): boolean {
-    return this.isTile() && this.tile.active;
+    return this.isTile() && Boolean(this.tile?.active);
   }
 }
 
-interface Tile<T> {
-  value: T;
+interface Tile<ValueType> {
+  value: ValueType;
   active: boolean;
 }

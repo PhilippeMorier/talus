@@ -1,38 +1,15 @@
 import { Coord } from './coord';
 
+export type Axis = 'x' | 'y' | 'z';
+
 export class Vec3 {
   static get Zero(): Vec3 {
     return new Vec3(0, 0, 0);
   }
 
-  static Axes: ['x', 'y', 'z'] = ['x', 'y', 'z'];
+  static Axes: [Axis, Axis, Axis] = ['x', 'y', 'z'];
 
-  get ['x'](): number {
-    return this.x;
-  }
-  set ['x'](x: number) {
-    this.x = x;
-  }
-
-  get ['y'](): number {
-    return this.y;
-  }
-  set ['y'](y: number) {
-    this.y = y;
-  }
-
-  get ['z'](): number {
-    return this.z;
-  }
-  set ['z'](z: number) {
-    this.z = z;
-  }
-
-  constructor(x: number, y: number, z: number) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
+  constructor(public x: number, public y: number, public z: number) {}
 
   divide(scalar: number): Vec3 {
     return new Vec3(scalar / this.x, scalar / this.y, scalar / this.z);
@@ -55,7 +32,7 @@ export class Vec3 {
   }
 
   /**
-   * @brief Return the index [0,1,2] of the smallest value in a 3D vector.
+   * @brief Return the axis [x,y,z] of the smallest value in a 3D vector.
    * @note This methods assumes operator[] exists and avoids branching.
    * @details If two components of the input vector are equal and smaller than the
    * third component, the largest index of the two is always returned.
@@ -63,9 +40,9 @@ export class Vec3 {
    * returned. In other words the return value corresponds to the largest index
    * of the of the smallest vector components.
    */
-  minIndex(): 'x' | 'y' | 'z' {
+  minIndex(): Axis {
     const dummyValue = 'x';
-    const hashTable: ('x' | 'y' | 'z')[] = ['z', 'y', dummyValue, 'y', 'z', dummyValue, 'x', 'x'];
+    const hashTable: Axis[] = ['z', 'y', dummyValue, 'y', 'z', dummyValue, 'x', 'x'];
 
     const xLtY = Number(this.x < this.y);
     const xLtZ = Number(this.x < this.z);

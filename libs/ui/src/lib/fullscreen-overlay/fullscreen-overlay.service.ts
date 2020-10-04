@@ -4,7 +4,7 @@ import { ComponentType } from '@angular/cdk/portal/portal';
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 
 // Injection token that can be used to access the data that was passed in to an overlay.
-export const UI_OVERLAY_DATA = new InjectionToken<any>('UiOverlayData');
+export const UI_OVERLAY_DATA = new InjectionToken('UiOverlayData');
 
 @Injectable()
 export class UiFullscreenOverlayService {

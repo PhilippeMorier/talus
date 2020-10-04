@@ -54,7 +54,8 @@ export class GridService {
       : this.accessor.setValueOff(xyz, newValue);
 
     const internalNode1 = this.accessor.probeInternalNode1(xyz);
-    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
+    const affectedNodeOrigin: Coord =
+      internalNode1 && internalNode1.origin ? internalNode1.origin : createMaxCoord();
 
     return {
       affectedNodeOrigin,
@@ -81,7 +82,8 @@ export class GridService {
     this.accessor.setValueOff(xyz, this.grid.background);
 
     const internalNode1 = this.accessor.probeInternalNode1(xyz);
-    const affectedNodeOrigin: Coord = internalNode1 ? internalNode1.origin : createMaxCoord();
+    const affectedNodeOrigin: Coord =
+      internalNode1 && internalNode1.origin ? internalNode1.origin : createMaxCoord();
 
     return {
       affectedNodeOrigin,

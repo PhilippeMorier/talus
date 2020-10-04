@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { Nil } from '@talus/shared';
 
-type ToolValue = string | number;
+export type ToolValue = string | number;
 
 export interface UiToolbarToolConfig<T extends ToolValue> {
   tooltip?: string;
@@ -33,7 +34,7 @@ export interface UiToolbarToolChange<T extends ToolValue> extends MatButtonToggl
 export class UiToolbarComponent {
   @Input() tools: UiToolbarToolConfig<ToolValue>[] = [];
 
-  @Input() selectedToolId?: ToolValue;
+  @Input() selectedToolId: ToolValue | Nil;
 
   @Output() toolChange = new EventEmitter<UiToolbarToolChange<ToolValue>>();
 

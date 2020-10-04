@@ -1,8 +1,8 @@
-import {Coord, createMaxCoord} from '../math';
-import {InternalNode1, InternalNode2} from './internal-node';
-import {LeafNode} from './leaf-node';
-import {HashableNode} from './node';
-import {Tree} from './tree';
+import { Coord, createMaxCoord } from '../math';
+import { InternalNode1, InternalNode2 } from './internal-node';
+import { LeafNode } from './leaf-node';
+import { HashableNode } from './node';
+import { Tree } from './tree';
 
 /**
  * When traversing a grid by (i, j, k) index in a spatially coherent pattern, such as when
@@ -29,13 +29,13 @@ import {Tree} from './tree';
  */
 export class ValueAccessor3<T> {
   private leafKey: Coord = createMaxCoord();
-  private leafNode: LeafNode<T>;
+  private leafNode = new LeafNode<T>(this.leafKey);
 
   private internalKey1: Coord = createMaxCoord();
-  private internalNode1: InternalNode1<T>;
+  private internalNode1 = new InternalNode1<T>(this.internalKey1);
 
   private internalKey2: Coord = createMaxCoord();
-  private internalNode2: InternalNode2<T>;
+  private internalNode2 = new InternalNode2<T>(this.internalKey2);
 
   constructor(private tree: Tree<T>) {}
 

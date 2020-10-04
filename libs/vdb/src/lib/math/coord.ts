@@ -11,10 +11,8 @@ export const Y = 1;
  */
 export const Z = 2;
 
-export interface Coord {
-  x: number;
-  y: number;
-  z: number;
+export class Coord {
+  constructor(public x: number, public y: number, public z: number) {}
 }
 
 export function add(c1: Coord, c2: Coord): Coord {

@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 
 export class WebSocketService {
-  private socket?: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket = io.Socket;
 
   private readonly connectionStatusSubject = new Subject<boolean>();
   connectionStatus$ = this.connectionStatusSubject.asObservable().pipe(distinctUntilChanged());

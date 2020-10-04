@@ -4,7 +4,7 @@ import { LoadFileStatus } from './load-file.worker';
 
 @Injectable()
 export class LoadFileService {
-  private worker: Worker;
+  private readonly worker?: Worker;
 
   constructor() {
     if (typeof Worker !== 'undefined') {
@@ -17,6 +17,10 @@ export class LoadFileService {
 
   load(file: File): Observable<LoadFileStatus> {
     return new Observable<LoadFileStatus>(subscriber => {
+      if (!this.worker) {
+        throw new Error('Worker is unavailable. Web workers might be not supported.');
+      }
+
       this.worker.onmessage = ({ data: status }) => {
         subscriber.next(status);
 
