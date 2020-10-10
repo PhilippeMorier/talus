@@ -206,7 +206,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(selectTopic),
       tap(() => this.sceneViewerService.disposeSceneAndRestartRendering()),
-      tap(() => this.gridService.initialize()),
+      tap(() => this.gridService.reinitialize()),
       tap(({ topic }) => this.kafkaProxyService.setTopic(topic)),
       filter(({ isNewTopic }) => isNewTopic),
       map(() =>

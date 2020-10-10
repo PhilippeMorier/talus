@@ -29,7 +29,7 @@ export class GridService {
   grid = new Grid(-1);
   accessor = this.grid.getAccessor();
 
-  initialize(): void {
+  reinitialize(): void {
     this.grid = new Grid(-1);
     this.accessor = this.grid.getAccessor();
   }
