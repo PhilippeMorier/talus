@@ -6,11 +6,11 @@ import { MemoizedSelector } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { rgbaToInt, Tool } from '@talus/model';
 import {
-  UI_OVERLAY_DATA,
   UiFullscreenOverlayModule,
   UiPointerButton,
   UiPointerPickInfo,
   UiSceneViewerService,
+  UI_OVERLAY_DATA,
 } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';

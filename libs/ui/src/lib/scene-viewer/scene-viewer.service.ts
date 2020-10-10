@@ -37,7 +37,7 @@ export class EngineFactory {
 
 @Injectable()
 export class CameraFactory {
-  create(
+  create: CreateCameraFn = (
     name: string,
     alpha: number,
     beta: number,
@@ -45,7 +45,7 @@ export class CameraFactory {
     target: Vector3,
     scene: Scene,
     setActiveOnSceneIfNoneActive?: boolean,
-  ): ArcRotateCamera {
+  ): ArcRotateCamera => {
     return new ArcRotateCamera(
       name,
       alpha,
@@ -55,8 +55,18 @@ export class CameraFactory {
       scene,
       setActiveOnSceneIfNoneActive,
     );
-  }
+  };
 }
+
+export type CreateCameraFn = (
+  name: string,
+  alpha: number,
+  beta: number,
+  radius: number,
+  target: Vector3,
+  scene: Scene,
+  setActiveOnSceneIfNoneActive?: boolean,
+) => ArcRotateCamera;
 
 /**
  * This service allows to set a new mesh for `SceneViewerComponent` to render. This service is
