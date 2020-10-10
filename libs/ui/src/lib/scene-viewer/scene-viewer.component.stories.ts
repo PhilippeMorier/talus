@@ -14,7 +14,7 @@ class UiSceneViewerTestComponent implements AfterViewInit {
   constructor(private sceneViewerService: UiSceneViewerService) {}
 
   ngAfterViewInit(): void {
-    this.sceneViewerService.updateNodeMesh(cubeMesh, [0, 0, 0]);
+    this.sceneViewerService.updateNodeMesh(cubeMesh, { x: 0, y: 0, z: 0 });
   }
 }
 

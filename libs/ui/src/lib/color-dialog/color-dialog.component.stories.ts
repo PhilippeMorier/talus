@@ -16,10 +16,10 @@ import { UiColorDialogService } from './color-dialog.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class UiColorDialogTestComponent implements OnInit {
-  @Input() colors: UiColorDialogColor[];
-  @Input() selectedColorIndex: number;
+  @Input() colors: UiColorDialogColor[] = [];
+  @Input() selectedColorIndex = 0;
 
-  results$: Observable<number | undefined>;
+  results$ = new Observable<number | undefined>();
 
   constructor(public dialogService: UiColorDialogService) {}
 

@@ -16,9 +16,9 @@ import { UiTopicDialogService } from './topic-dialog.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class TopicDialogTestComponent implements OnInit {
-  @Input() topics: string[];
+  @Input() topics: string[] = [];
 
-  results$: Observable<UiTopicDialogSelectionResult | undefined>;
+  results$ = new Observable<UiTopicDialogSelectionResult | undefined>();
 
   constructor(private readonly dialogService: UiTopicDialogService) {}
 
