@@ -22,6 +22,12 @@ import { Coord, MeshData } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { UiPointerButton } from './pointer-button';
 
+export interface UiPointerPickInfo {
+  pickedPoint: Coord;
+  pointerButton: UiPointerButton;
+  normal: Coord;
+}
+
 @Injectable()
 export class EngineFactory {
   create(canvas: HTMLCanvasElement): Engine {
@@ -98,7 +104,7 @@ export class UiSceneViewerService {
       return;
     }
 
-    const meshName = `node1 [${origin}]`;
+    const meshName = getMeshName(origin);
 
     deleteMesh(this.scene, meshName);
 
@@ -296,8 +302,6 @@ function deleteMesh(scene: Scene, name: string): void {
   }
 }
 
-export interface UiPointerPickInfo {
-  pickedPoint: Coord;
-  pointerButton: UiPointerButton;
-  normal: Coord;
+export function getMeshName(origin: Coord): string {
+  return `node1 ${JSON.stringify(origin)}`;
 }
