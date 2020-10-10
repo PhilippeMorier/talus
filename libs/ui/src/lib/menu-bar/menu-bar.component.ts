@@ -37,9 +37,7 @@ interface UiMenuBarMenuItem<T> {
 export class UiMenuBarComponent {
   @Input() menus: UiMenuBarMenu<unknown>[] | Nil = [];
 
-  // Without `<unknown>` on `EventEmitter` test don't run and throw
-  // Error: connect ECONNREFUSED 127.0.0.1:80
-  @Output() menuItemClick = new EventEmitter<unknown>();
+  @Output() menuItemClick = new EventEmitter();
 
   onMenuItemClick(value: unknown): void {
     this.menuItemClick.emit(value);
