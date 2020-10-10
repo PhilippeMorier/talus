@@ -1,59 +1,68 @@
-import { Coord, X, Y, Z } from '@talus/vdb';
+import { Coord } from '@talus/vdb';
 import { benchmark, suite } from '../../main';
 
+suite('[Coord] create', () => {
+  benchmark('array=[1,1,1]', () => {
+    const _array = [1, 1, 1];
+  });
+
+  benchmark('coord=new Coord(1,1,1)', () => {
+    const _coord = new Coord(1, 1, 1);
+  });
+
+  benchmark('coord={x:1,y:1,z:1}', () => {
+    const _coord: Coord = { x: 1, y: 1, z: 1 };
+  });
+});
+
 suite('[Coord] write', () => {
-  let coord: Coord = [0, 0, 0];
-
-  benchmark('coord=[1,1,1]', () => {
-    coord = [1, 1, 1];
+  const arr = [0, 0, 0];
+  benchmark('arr[0] = 1', () => {
+    arr[0] = 1;
+    arr[1] = 1;
+    arr[2] = 1;
   });
 
-  benchmark('coord[0]=1', () => {
-    coord[0] = 1;
-    coord[1] = 1;
-    coord[2] = 1;
-  });
-
-  const coordObj = { x: 0, y: 0, z: 0 };
-  benchmark('coordObj.x=1', () => {
-    coordObj.x = 1;
-    coordObj.y = 1;
-    coordObj.z = 1;
+  const coord = new Coord(0, 0, 0);
+  benchmark('coord.x=1', () => {
+    coord.x = 1;
+    coord.y = 1;
+    coord.z = 1;
   });
 });
 
 suite('[Coord] read', () => {
-  const coord: Coord = [0, 0, 0];
-  benchmark('coord[0]', () => {
-    const _x = coord[0];
-    const _y = coord[1];
-    const _z = coord[2];
+  const array = [0, 0, 0];
+  benchmark('array[0]', () => {
+    const _x = array[0];
+    const _y = array[1];
+    const _z = array[2];
   });
 
-  benchmark('coord[X]', () => {
-    const _x = coord[X];
-    const _y = coord[Y];
-    const _z = coord[Z];
-  });
-
-  const coordObj = { x: 0, y: 0, z: 0 };
-  benchmark('coordObj.x', () => {
-    const _x = coordObj.x;
-    const _y = coordObj.y;
-    const _z = coordObj.z;
+  const coord: Coord = new Coord(0, 0, 0);
+  benchmark('coord.x', () => {
+    const _x = coord.x;
+    const _y = coord.y;
+    const _z = coord.z;
   });
 });
 
 suite('[Coord] function parameter', () => {
-  const coord: Coord = [0, 1, 2];
+  const coord: Coord = new Coord(0, 1, 2);
 
   function oneParameter(xyz: Coord): void {
-    const _x = xyz[0];
-    const _y = xyz[1];
-    const _z = xyz[2];
+    const _x = xyz.x;
+    const _y = xyz.y;
+    const _z = xyz.z;
   }
 
-  function deconstruct([x, y, z]: Coord): void {
+  function deconstruct({ x, y, z }: Coord): void {
+    const _x = x;
+    const _y = y;
+    const _z = z;
+  }
+
+  function individualParameter(x: number, y: number, z: number): void {
     const _x = x;
     const _y = y;
     const _z = z;
@@ -63,7 +72,11 @@ suite('[Coord] function parameter', () => {
     oneParameter(coord);
   });
 
-  benchmark('fn([x,y,z])', () => {
+  benchmark('fn({x,y,z})', () => {
     deconstruct(coord);
+  });
+
+  benchmark('fn(x,y,z)', () => {
+    individualParameter(coord.x, coord.y, coord.z);
   });
 });

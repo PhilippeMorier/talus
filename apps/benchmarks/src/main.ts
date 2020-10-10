@@ -1,10 +1,11 @@
 import * as Benchmark from 'benchmark';
+import { Event, Suite, Target } from 'benchmark';
 import * as fs from 'fs';
 import { getJunitXml, TestSuite, TestSuiteReport } from 'junit-xml';
 
 import config from '../benchmark.config';
 
-const suites: Benchmark.Suite[] = [];
+const suites: Suite[] = [];
 const report: TestSuiteReport = {
   name: config.suiteName,
   time: 0,
@@ -12,13 +13,14 @@ const report: TestSuiteReport = {
 };
 
 export function suite(name: string, benchmarksFn: () => void): void {
-  const newSuite = new Benchmark.Suite(name);
+  const newSuite = new Suite(name);
   suites.push(newSuite);
 
-  newSuite.on('complete', event => {
-    logSummary(event.currentTarget);
+  newSuite.on('complete', (event: Event) => {
+    const suite = event.currentTarget as Suite;
+    logSummary(suite);
 
-    report.suites.push(convertToTestSuite(name, event.currentTarget));
+    report.suites.push(convertToTestSuite(name, suite));
 
     if (everySuiteFinished()) {
       sumUpTotalTime();
@@ -36,11 +38,14 @@ export function benchmark(name: string, fn: () => void): void {
   suites[suites.length - 1].add(name, fn);
 }
 
-function logSummary(suiteToLog: Benchmark.Suite): void {
+function logSummary(suiteToLog: Suite): void {
   logFastestBenchmarkNames(suiteToLog);
 
-  const benchmarks = Array.from({ length: suiteToLog.length }, (x, i) => suiteToLog[i]);
+  const benchmarks = toBenchmarks(suiteToLog);
   const descSortedBenchmarks = benchmarks.sort((a, b) => b.hz - a.hz);
+
+  // const benchmarks = Array.from({ length: suiteToLog.length }, (x, i) => suiteToLog[i] as Target);
+  // const descSortedBenchmarks = benchmarks.sort((a, b) => b.hz - a.hz);
   const highestHz = descSortedBenchmarks[0].hz;
 
   descSortedBenchmarks.forEach(bm => {
@@ -48,11 +53,11 @@ function logSummary(suiteToLog: Benchmark.Suite): void {
   });
 }
 
-function logFastestBenchmarkNames(suiteToLog: Benchmark.Suite): void {
-  const fastestBenchmarkNames = suiteToLog.filter('fastest').map(bm => bm.name);
+function logFastestBenchmarkNames(suiteToLog: Suite): void {
+  const fastestBenchmarkNames = suiteToLog.filter('fastest').map((bm: Target) => bm.name);
   const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
-  console.log(`\n${suiteToLog['name']}`);
+  console.log(`\n${(suiteToLog as any).name}`);
   console.log(`  Fastest ${conjugatedVerbBe} "${fastestBenchmarkNames.join(', ')}"`);
 }
 
@@ -63,26 +68,36 @@ function logBenchmarkBar(highestHz: number, bm: Benchmark): void {
   const filledBarLength = barPercentage / charsPerOnePercentage;
   const emptyBarLength = (100 - barPercentage) / charsPerOnePercentage;
 
-  const createBar = (length, char): string => Array.from({ length }, () => char).join('');
+  const createBar = (length: number, char: string): string =>
+    Array.from({ length }, () => char).join('');
   const filledBar = `${createBar(Math.floor(filledBarLength), '-')}`;
   const emptyBar = createBar(Math.ceil(emptyBarLength), ' ');
 
   console.log(`  |${filledBar}${emptyBar}| ${bm}`);
 }
 
-function convertToTestSuite(suiteName: string, currentSuite: Benchmark.Suite): TestSuite {
-  const benchmarks = Array.from({ length: currentSuite.length }, (x, i) => currentSuite[i]);
+function convertToTestSuite(suiteName: string, currentSuite: Suite): TestSuite {
+  const benchmarks = toBenchmarks(currentSuite);
 
   return {
     name: suiteName,
     time: benchmarks.map(bm => bm.stats.mean).reduce((previous, current) => previous + current, 0),
     testCases: benchmarks.map(bm => ({
       classname: suiteName,
-      name: bm.name,
+      name: (bm as any).name,
       time: bm.stats.mean,
     })),
     timestamp: new Date(benchmarks[0].times.timeStamp),
   };
+}
+
+function toBenchmarks(suite: Suite): Benchmark[] {
+  const benchmarks: Benchmark[] = [];
+  suite.forEach((bm: Benchmark) => {
+    benchmarks.push(bm);
+  });
+
+  return benchmarks;
 }
 
 function sumUpTotalTime(): void {
@@ -117,7 +132,7 @@ declare const require: any;
   const context = require.context('./', true, /\.benchmark\.ts$/);
   // Load the modules.
   console.log('Found benchmarks:');
-  context.keys().map(key => {
+  context.keys().map((key: string) => {
     console.log(`- ${key}`);
     context(key);
   });
