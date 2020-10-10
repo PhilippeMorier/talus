@@ -8,11 +8,7 @@ export class NodeUnion<ValueT, ChildT> {
     }
   }
 
-  getChild(): ChildT {
-    if (!this.child) {
-      throw new Error('Child is not set.');
-    }
-
+  getChild(): ChildT | undefined {
     return this.child;
   }
 
@@ -20,11 +16,7 @@ export class NodeUnion<ValueT, ChildT> {
     this.child = c;
   }
 
-  getValue(): ValueT {
-    if (!this.value) {
-      throw new Error('Value is not set.');
-    }
-
+  getValue(): ValueT | undefined {
     return this.value;
   }
 

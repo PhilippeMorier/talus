@@ -40,7 +40,12 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
   protected *beginChildOn(): IterableIterator<HashableNode<T>> {
     for (const index of this.childMask.beginOn()) {
-      yield this.nodes[index].getChild();
+      const child = this.nodes[index].getChild();
+      if (!child) {
+        throw new Error('Child mask is on but child is undefined.');
+      }
+
+      yield child;
     }
   }
 
@@ -62,9 +67,21 @@ abstract class InternalNode<T> implements HashableNode<T> {
   getValue(xyz: Coord): T {
     const i: Index = this.coordToOffset(xyz);
 
-    return this.childMask.isOff(i)
-      ? this.nodes[i].getValue()
-      : this.nodes[i].getChild().getValue(xyz);
+    if (this.childMask.isOff(i)) {
+      const value = this.nodes[i].getValue();
+      if (!value) {
+        throw new Error('Child mask is off but value is undefined.');
+      }
+
+      return value;
+    }
+
+    const child = this.nodes[i].getChild();
+    if (!child) {
+      throw new Error('Child mask is on but child is undefined.');
+    }
+
+    return child.getValue(xyz);
   }
 
   getValueAndCache(xyz: Coord, accessor: ValueAccessor3<T>): T {
@@ -72,11 +89,21 @@ abstract class InternalNode<T> implements HashableNode<T> {
     const node = this.nodes[i];
 
     if (this.childMask.isOn(i)) {
-      accessor.insert(xyz, node.getChild());
-      return node.getChild().getValueAndCache(xyz, accessor);
+      const child = node.getChild();
+      if (!child) {
+        throw new Error('Child mask is on but child is undefined.');
+      }
+
+      accessor.insert(xyz, child);
+      return child.getValueAndCache(xyz, accessor);
     }
 
-    return node.getValue();
+    const value = node.getValue();
+    if (!value) {
+      throw new Error('Child mask is off but value is undefined.');
+    }
+
+    return value;
   }
 
   probeLeafNodeAndCache(xyz: Coord, accessor: ValueAccessor3<T>): LeafNode<T> | undefined {
@@ -87,6 +114,10 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
     const node = this.nodes[i];
     const child = node.getChild();
+    if (!child) {
+      throw new Error('Child mask is on but child is undefined.');
+    }
+
     accessor.insert(xyz, child);
 
     return child.probeLeafNodeAndCache(xyz, accessor);
@@ -100,9 +131,14 @@ abstract class InternalNode<T> implements HashableNode<T> {
       this.setChildNode(i, this.createChildNode(xyz, node.getValue(), this.valueMask.isOn(i)));
     }
 
-    accessor.insert(xyz, node.getChild());
+    const child = node.getChild();
+    if (!child) {
+      throw new Error('Child node was set but child is still undefined.');
+    }
 
-    return node.getChild().touchLeafAndCache(xyz, accessor);
+    accessor.insert(xyz, child);
+
+    return child.touchLeafAndCache(xyz, accessor);
   }
 
   probeInternalNode1AndCache(
@@ -116,6 +152,10 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
     const node = this.nodes[i];
     const child = node.getChild();
+    if (!child) {
+      throw new Error('Child mask is on but child is undefined.');
+    }
+
     accessor.insert(xyz, child);
 
     return child instanceof InternalNode1 ? child : child.probeInternalNode1AndCache(xyz, accessor);
@@ -139,7 +179,12 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      node.getChild().setValueOn(xyz, value);
+      const child = node.getChild();
+      if (!child) {
+        throw new Error('Child mask is on or child node was set but child is still undefined.');
+      }
+
+      child.setValueOn(xyz, value);
     }
   }
 
@@ -161,8 +206,13 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      accessor.insert(xyz, node.getChild());
-      node.getChild().setValueAndCache(xyz, value, accessor);
+      const child = node.getChild();
+      if (!child) {
+        throw new Error('Child mask is on or child node was set but child is still undefined.');
+      }
+
+      accessor.insert(xyz, child);
+      child.setValueAndCache(xyz, value, accessor);
     }
   }
 
@@ -184,8 +234,13 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      accessor.insert(xyz, node.getChild());
-      node.getChild().setValueOffAndCache(xyz, value, accessor);
+      const child = node.getChild();
+      if (!child) {
+        throw new Error('Child mask is on or child node was set but child is still undefined.');
+      }
+
+      accessor.insert(xyz, child);
+      child.setValueOffAndCache(xyz, value, accessor);
     }
   }
 
@@ -205,8 +260,13 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
 
     if (hasChild) {
-      accessor.insert(xyz, node.getChild());
-      node.getChild().setActiveStateAndCache(xyz, on, accessor);
+      const child = node.getChild();
+      if (!child) {
+        throw new Error('Child mask is on or child node was set but child is still undefined.');
+      }
+
+      accessor.insert(xyz, child);
+      child.setActiveStateAndCache(xyz, on, accessor);
     }
   }
 
@@ -216,7 +276,12 @@ abstract class InternalNode<T> implements HashableNode<T> {
       return this.valueMask.isOn(i);
     }
 
-    return this.nodes[i].getChild().isValueOn(xyz);
+    const child = this.nodes[i].getChild();
+    if (!child) {
+      throw new Error('Child mask is on but child is undefined.');
+    }
+
+    return child.isValueOn(xyz);
   }
 
   isValueOnAndCache(xyz: Coord, accessor: ValueAccessor3<T>): boolean {
@@ -225,8 +290,13 @@ abstract class InternalNode<T> implements HashableNode<T> {
       return this.valueMask.isOn(i);
     }
 
-    accessor.insert(xyz, this.nodes[i].getChild());
-    return this.nodes[i].getChild().isValueOnAndCache(xyz, accessor);
+    const child = this.nodes[i].getChild();
+    if (!child) {
+      throw new Error('Child mask is on but child is undefined.');
+    }
+    accessor.insert(xyz, child);
+
+    return child.isValueOnAndCache(xyz, accessor);
   }
 
   /**
@@ -263,6 +333,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
   *beginVoxelOn(): IterableIterator<Voxel<T>> {
     for (const index of this.childMask.beginOn()) {
       const child = this.nodes[index].getChild();
+      if (!child) {
+        throw new Error('Child mask is on but child is undefined.');
+      }
 
       yield* child.beginVoxelOn();
     }
@@ -271,6 +344,9 @@ abstract class InternalNode<T> implements HashableNode<T> {
   *beginValueOn(): IterableIterator<ChildNode<T>> {
     for (const index of this.valueMask.beginOn()) {
       const child = this.nodes[index].getChild();
+      if (!child) {
+        throw new Error('Value mask is on but child is undefined.');
+      }
 
       yield* child.beginValueOn();
     }
@@ -332,14 +408,6 @@ abstract class InternalNode<T> implements HashableNode<T> {
     this.childMask.setOn(i);
     this.valueMask.setOff(i);
     this.nodes[i].setChild(child);
-  }
-
-  private getChildNode(i: Index): HashableNode<T> {
-    if (this.childMask.isOff(i)) {
-      throw new Error('Child is off.');
-    }
-
-    return this.nodes[i].getChild();
   }
 }
 

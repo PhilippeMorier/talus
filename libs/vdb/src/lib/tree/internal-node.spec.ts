@@ -40,10 +40,10 @@ describe('InternalNode', () => {
         },
       );
 
-      it('should get `undefined` on an unset index', () => {
+      it('should throw an error when accessing on empty index', () => {
         const child = new InternalNode1<boolean>(new Coord(0, 0, 0));
 
-        expect(child.getValue(new Coord(0, 0, 0))).toBeUndefined();
+        expect(() => child.getValue(new Coord(0, 0, 0))).toThrow();
       });
     });
 

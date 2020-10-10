@@ -16,6 +16,12 @@ describe('Tree', () => {
     expect(tree.getValue(new Coord(0, 1, 2))).toEqual(42);
   });
 
+  it('should return background value on unset voxel', () => {
+    const tree = new Tree(-1);
+
+    expect(tree.getValue(new Coord(0, 0, 0))).toEqual(tree.background);
+  });
+
   it('should activated value', () => {
     const tree = new Tree(-1);
 
