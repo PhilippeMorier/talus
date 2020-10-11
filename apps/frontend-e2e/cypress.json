@@ -3,6 +3,7 @@
   "fileServerFolder": ".",
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
+  "modifyObstructiveCode": false,
   "pluginsFile": "./src/plugins/index",
   "reporter": "junit",
   "reporterOptions": {
@@ -12,7 +13,7 @@
     "toConsole": true
   },
   "screenshotsFolder": "../../test-results/cypress/apps/frontend-e2e/screenshots",
-  "supportFile": false,
+  "supportFile": "./src/support/index.ts",
   "video": true,
   "videosFolder": "../../test-results/cypress/apps/frontend-e2e/videos"
 }
