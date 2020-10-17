@@ -4,7 +4,6 @@ import { ActionManager } from '@babylonjs/core/Actions/actionManager';
 // Babylon.js needs to target individual files to fully benefit from tree shaking.
 // See: https://doc.babylonjs.com/features/es6_support#tree-shaking
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
-import { TargetCamera } from '@babylonjs/core/Cameras/targetCamera';
 import { PickingInfo } from '@babylonjs/core/Collisions/pickingInfo';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -96,7 +95,7 @@ export class UiSceneViewerService {
     this.engine = this.engineFactory.create(canvas);
     this.scene = this.createScene(this.engine);
     this.light = createLight(this.scene);
-    this.createCamera(this.scene);
+    this.camera = this.createCamera(this.scene);
 
     this.registerPointerEvents(this.scene);
   }
@@ -171,7 +170,7 @@ export class UiSceneViewerService {
     return scene;
   }
 
-  private createCamera(scene: Scene): TargetCamera {
+  private createCamera(scene: Scene): ArcRotateCamera {
     const camera = this.cameraFactory.create(
       'camera',
       Math.PI / 2,
@@ -190,15 +189,15 @@ export class UiSceneViewerService {
 
     camera.setPosition(new Vector3(20, 20, -20));
 
-    this.attachCameraControl();
+    this.attachCameraControl(camera);
 
     return camera;
   }
 
-  private attachCameraControl(): void {
+  private attachCameraControl(camera: ArcRotateCamera): void {
     const renderingCanvas = this.engine?.getRenderingCanvas();
-    if (renderingCanvas && this.camera) {
-      this.camera.attachControl(renderingCanvas, true, false, 2);
+    if (renderingCanvas) {
+      camera.attachControl(renderingCanvas, true, false, 2);
     }
   }
 
