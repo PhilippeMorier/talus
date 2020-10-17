@@ -94,7 +94,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
-            "passWithNoTests": true
+            "tsConfig": "apps/frontend/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "apps/frontend/src/test-setup.ts"
           }
         }
       }
@@ -120,7 +122,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": "apps/frontend-e2e/tsconfig.e2e.json",
+            "tsConfig": ["apps/frontend-e2e/tsconfig.e2e.json"],
             "exclude": ["**/node_modules/**", "!apps/frontend-e2e/**/*"]
           }
         }
