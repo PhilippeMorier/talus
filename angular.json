@@ -135,7 +135,11 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/ui/tsconfig.lib.json", "libs/ui/tsconfig.spec.json"],
+            "tsConfig": [
+              "libs/ui/tsconfig.lib.json",
+              "libs/ui/tsconfig.spec.json",
+              "libs/ui/.storybook/tsconfig.json"
+            ],
             "exclude": ["**/node_modules/**", "!libs/ui/**/*"]
           }
         },
@@ -220,11 +224,9 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": ["apps/benchmarks/tsconfig.app.json"],
-            "exclude": ["**/node_modules/**", "!apps/benchmarks/**/*"]
+            "lintFilePatterns": ["apps/benchmarks/**/*.ts"]
           }
         }
       }
@@ -236,11 +238,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": ["libs/vdb/tsconfig.lib.json", "libs/vdb/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/vdb/**/*"]
+            "lintFilePatterns": [
+              "libs/vdb/**/*.ts",
+              "libs/vdb/**/*.spec.ts",
+              "libs/vdb/**/*.spec.tsx",
+              "libs/vdb/**/*.spec.js",
+              "libs/vdb/**/*.spec.jsx",
+              "libs/vdb/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -297,11 +304,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": ["libs/model/tsconfig.lib.json", "libs/model/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/model/**/*"]
+            "lintFilePatterns": [
+              "libs/model/**/*.ts",
+              "libs/model/**/*.spec.ts",
+              "libs/model/**/*.spec.tsx",
+              "libs/model/**/*.spec.js",
+              "libs/model/**/*.spec.jsx",
+              "libs/model/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -350,14 +362,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": [
-              "apps/kafka-proxy/tsconfig.app.json",
-              "apps/kafka-proxy/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/kafka-proxy/**/*"]
+            "lintFilePatterns": [
+              "apps/kafka-proxy/**/*.ts",
+              "apps/kafka-proxy/**/*.spec.ts",
+              "apps/kafka-proxy/**/*.d.ts"
+            ]
           }
         },
         "test": {
@@ -376,11 +387,16 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/shared/**/*"]
+            "lintFilePatterns": [
+              "libs/shared/**/*.ts",
+              "libs/shared/**/*.spec.ts",
+              "libs/shared/**/*.spec.tsx",
+              "libs/shared/**/*.spec.js",
+              "libs/shared/**/*.spec.jsx",
+              "libs/shared/**/*.d.ts"
+            ]
           }
         },
         "test": {

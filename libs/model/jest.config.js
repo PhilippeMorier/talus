@@ -1,6 +1,6 @@
 module.exports = {
-  name: 'model',
-  preset: '../../jest.config.js',
+  displayName: 'model',
+  preset: '../../jest.preset.js',
   // https://github.com/nrwl/nx/issues/837#issuecomment-501188633
   reporters: [
     'default',

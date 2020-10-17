@@ -5,7 +5,7 @@ import { Nil } from '@talus/shared';
 export type ToolValue = string | number;
 
 export interface UiToolbarToolConfig<T extends ToolValue> {
-  tooltip?: string;
+  tooltip: string;
   icon: string;
   value: T;
 }
