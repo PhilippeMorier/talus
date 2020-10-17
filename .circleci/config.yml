@@ -100,7 +100,7 @@ jobs:
       - save_cache:
           key: source-v1-{{ .Branch }}-{{ .Revision }}
           paths:
-            - ".git"
+            - '.git'
 
       # Download and cache dependencies
       # https://circleci.com/docs/2.0/caching/#yarn-node
