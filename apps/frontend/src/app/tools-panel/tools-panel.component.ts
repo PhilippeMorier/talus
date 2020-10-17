@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Tool } from '@talus/model';
 import { ToolValue, UiToolbarToolChange, UiToolbarToolConfig } from '@talus/ui';
 import { Observable } from 'rxjs';

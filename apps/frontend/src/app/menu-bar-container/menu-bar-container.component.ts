@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Action, select, Store } from '@ngrx/store';
+import { Action, Store, select } from '@ngrx/store';
 import { UiMenuBarMenu } from '@talus/ui';
 import { map } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';

@@ -1,16 +1,16 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
 // import '@babylonjs/core/Rendering/edgesRenderer';
 // import '@babylonjs/core/Rendering/outlineRenderer';
-import { select, Store } from '@ngrx/store';
-import { rgbaToInt, Tool } from '@talus/model';
+import { Store, select } from '@ngrx/store';
+import { Tool, rgbaToInt } from '@talus/model';
 import {
   UiFullscreenOverlayService,
   UiPointerButton,
   UiPointerPickInfo,
   UiSceneViewerService,
 } from '@talus/ui';
-import { areEqual, Coord, createMaxCoord, removeFraction } from '@talus/vdb';
-import { combineLatest, Observable } from 'rxjs';
+import { Coord, areEqual, createMaxCoord, removeFraction } from '@talus/vdb';
+import { Observable, combineLatest } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { LoadFileContainerComponent } from './load-file-container/load-file-container.component';
 import {

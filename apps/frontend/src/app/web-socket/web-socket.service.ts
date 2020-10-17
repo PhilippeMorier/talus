@@ -1,5 +1,5 @@
 import { EventName } from '@talus/model';
-import { fromEvent, Observable, Subject } from 'rxjs';
+import { Observable, Subject, fromEvent } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import io from 'socket.io-client';
 

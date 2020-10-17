@@ -1,7 +1,7 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { UiProgressSpinnerModule, UiSceneViewerTestModule, UI_OVERLAY_DATA } from '@talus/ui';
+import { UI_OVERLAY_DATA, UiProgressSpinnerModule, UiSceneViewerTestModule } from '@talus/ui';
 import { of } from 'rxjs';
 import * as fromApp from '../../app.reducer';
 import { initialMockState } from '../../testing';

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { rgbaToInt } from '@talus/model';
 import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
-import { areEqual, Coord, toKey } from '@talus/vdb';
+import { Coord, areEqual, toKey } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
@@ -33,8 +33,8 @@ import {
   voxelPainted,
   voxelRemoved,
   voxelSet,
-  voxelsSet,
   voxelUnderCursorChange,
+  voxelsSet,
 } from './scene-viewer-container.actions';
 
 @Injectable()

@@ -10,12 +10,12 @@ import {
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redone, undone } from './undo-redo.actions';
 import {
+  State,
   reducer,
   selectCurrentRedoEndAction,
   selectCurrentRedoStartAction,
   selectCurrentUndoEndAction,
   selectCurrentUndoStartAction,
-  State,
 } from './undo-redo.reducer';
 
 describe('UndoRedoReducer', () => {
