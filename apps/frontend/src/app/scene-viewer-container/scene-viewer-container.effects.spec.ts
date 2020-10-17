@@ -26,10 +26,10 @@ import {
 import { SceneViewerContainerEffects } from './scene-viewer-container.effects';
 
 const VOXEL_CHANGE: VoxelChange = {
-  affectedNodeOrigin: [0, 0, 0],
+  affectedNodeOrigin: { x: 0, y: 0, z: 0 },
   newValue: 42,
   oldValue: -1,
-  xyz: [0, 0, 0],
+  xyz: { x: 0, y: 0, z: 0 },
 };
 
 @Injectable()
@@ -98,7 +98,7 @@ describe('SceneViewerContainerEffects', () => {
   });
 
   it(`should dispatch 'voxelSet' after 'setVoxel'`, () => {
-    actions$ = hot('s', { s: setVoxel({ xyz: [0, 0, 0], newValue: 42 }) });
+    actions$ = hot('s', { s: setVoxel({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }) });
 
     const expectedVoxelSet$ = hot('v', {
       v: voxelSet(VOXEL_CHANGE),
@@ -109,7 +109,7 @@ describe('SceneViewerContainerEffects', () => {
 
   it(`should dispatch 'setVoxelFailed' after 'setVoxel'`, () => {
     spyOn(gridService, 'setVoxel').and.throwError('');
-    actions$ = hot('s', { s: setVoxel({ xyz: [0, 0, 0], newValue: 42 }) });
+    actions$ = hot('s', { s: setVoxel({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }) });
 
     const expectedSetVoxelFailed$ = hot('(v|)', {
       v: setVoxelFailed(),
@@ -119,7 +119,7 @@ describe('SceneViewerContainerEffects', () => {
   });
 
   it(`should dispatch 'voxelsSet' after 'setVoxels'`, () => {
-    actions$ = hot('s', { s: setVoxels({ coords: [[0, 0, 0]], newValues: [42] }) });
+    actions$ = hot('s', { s: setVoxels({ coords: [{ x: 0, y: 0, z: 0 }], newValues: [42] }) });
 
     const expectedVoxelsSet$ = hot('v', {
       v: voxelsSet({ voxelChanges: [VOXEL_CHANGE] }),
@@ -130,7 +130,7 @@ describe('SceneViewerContainerEffects', () => {
 
   it(`should dispatch 'setVoxelFailed' after 'setVoxels'`, () => {
     spyOn(gridService, 'setVoxels').and.throwError('');
-    actions$ = hot('s', { s: setVoxels({ coords: [[0, 0, 0]], newValues: [] }) });
+    actions$ = hot('s', { s: setVoxels({ coords: [{ x: 0, y: 0, z: 0 }], newValues: [] }) });
 
     const expectedSetVoxelsFailed$ = hot('(s|)', {
       s: setVoxelsFailed(),
@@ -140,17 +140,17 @@ describe('SceneViewerContainerEffects', () => {
   });
 
   it(`should dispatch 'startLine' after 'setLineCoord'`, () => {
-    actions$ = hot('a', { a: setLineCoord({ xyz: [0, 0, 0], newValue: 42 }) });
+    actions$ = hot('a', { a: setLineCoord({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }) });
 
     const expectedStartLine$ = hot('s', {
-      s: startLine({ xyz: [0, 0, 0], newValue: 42 }),
+      s: startLine({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }),
     });
 
     expect(effects.setLineCord$).toBeObservable(expectedStartLine$);
   });
 
   it(`should dispatch 'addFirstLineChange' after 'startLine'`, () => {
-    actions$ = hot('a', { a: startLine({ xyz: [0, 0, 0], newValue: 42 }) });
+    actions$ = hot('a', { a: startLine({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }) });
 
     const expectedStartLine$ = hot('a', {
       a: addFirstLineChange(VOXEL_CHANGE),
@@ -163,10 +163,30 @@ describe('SceneViewerContainerEffects', () => {
     spyOn(gridService, 'computeInternalNode1Mesh');
 
     const voxelChanges: VoxelChange[] = [
-      { affectedNodeOrigin: [0, 0, 0], newValue: 1, oldValue: 1, xyz: [0, 0, 1] },
-      { affectedNodeOrigin: [0, 0, 0], newValue: 1, oldValue: 1, xyz: [0, 0, 1] },
-      { affectedNodeOrigin: [8, 0, 0], newValue: 1, oldValue: 1, xyz: [8, 0, 0] },
-      { affectedNodeOrigin: [8, 0, 0], newValue: 1, oldValue: 1, xyz: [8, 0, 0] },
+      {
+        affectedNodeOrigin: { x: 0, y: 0, z: 0 },
+        newValue: 1,
+        oldValue: 1,
+        xyz: { x: 0, y: 0, z: 1 },
+      },
+      {
+        affectedNodeOrigin: { x: 0, y: 0, z: 0 },
+        newValue: 1,
+        oldValue: 1,
+        xyz: { x: 0, y: 0, z: 1 },
+      },
+      {
+        affectedNodeOrigin: { x: 8, y: 0, z: 0 },
+        newValue: 1,
+        oldValue: 1,
+        xyz: { x: 8, y: 0, z: 0 },
+      },
+      {
+        affectedNodeOrigin: { x: 8, y: 0, z: 0 },
+        newValue: 1,
+        oldValue: 1,
+        xyz: { x: 8, y: 0, z: 0 },
+      },
     ];
 
     actions$ = hot('-a', { a: voxelsSet({ voxelChanges }) });
@@ -174,8 +194,8 @@ describe('SceneViewerContainerEffects', () => {
     expect(effects.updateGridMeshMultiple$).toBeObservable(actions$);
 
     expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledTimes(2);
-    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith([0, 0, 0]);
-    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith([8, 0, 0]);
+    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith({ x: 0, y: 0, z: 0 });
+    expect(gridService.computeInternalNode1Mesh).toHaveBeenCalledWith({ x: 8, y: 0, z: 0 });
   });
 
   it(`should dispatch 'selectSession' after 'openSessionDialog'`, () => {

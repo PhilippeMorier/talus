@@ -77,7 +77,7 @@ describe('AppEffects', () => {
     spyOn(kafkaProxyService, 'syncAction');
 
     actions$ = hot('r', {
-      r: removeVoxel({ xyz: [0, 0, 0], needsSync: true }),
+      r: removeVoxel({ xyz: { x: 0, y: 0, z: 0 }, needsSync: true }),
     });
 
     expect(effects.syncActionToKafka$).toBeObservable(actions$);
