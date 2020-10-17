@@ -149,9 +149,6 @@ jobs:
       - run:
           name: Run unit tests
           command: yarn test:code-coverage
-          # Fix: "Failure message: ENOMEM: not enough memory, write"
-          environment:
-            NODE_OPTIONS: --max_old_space_size=4096
 
       - *store_test_results
 
