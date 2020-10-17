@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { UiMenuBarComponent, UiMenuBarMenu } from './menu-bar.component';
 import { UiMenuBarModule } from './menu-bar.module';
@@ -35,11 +35,13 @@ describe('UiMenuBarComponent', () => {
     },
   ];
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [UiMenuBarModule],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [UiMenuBarModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UiMenuBarComponent);

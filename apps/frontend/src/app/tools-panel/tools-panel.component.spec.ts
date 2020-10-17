@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -14,18 +14,20 @@ describe('ToolsPanelComponent', () => {
 
   const actions$: Observable<Action> = of();
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ToolsPanelComponent],
-      imports: [UiToolbarModule],
-      providers: [
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-        provideMockActions(() => actions$),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ToolsPanelComponent],
+        imports: [UiToolbarModule],
+        providers: [
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+          provideMockActions(() => actions$),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ToolsPanelComponent);

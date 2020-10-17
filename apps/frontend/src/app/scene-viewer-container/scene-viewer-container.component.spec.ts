@@ -1,6 +1,6 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -38,32 +38,36 @@ describe('SceneViewerContainerComponent', () => {
   let mockStore: MockStore<fromApp.State>;
   let mockSelectedToolIdSelector: MemoizedSelector<fromApp.State, Tool>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [UiFullscreenOverlayModule],
-      declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
-      providers: [
-        GridService,
-        { provide: UI_OVERLAY_DATA, useValue: {} },
-        { provide: OverlayRef, useValue: {} },
-        { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-      ],
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [UiFullscreenOverlayModule],
+        declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
+        providers: [
+          GridService,
+          { provide: UI_OVERLAY_DATA, useValue: {} },
+          { provide: OverlayRef, useValue: {} },
+          { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+        ],
+      }).compileComponents();
 
-    mockStore = TestBed.inject(MockStore);
+      mockStore = TestBed.inject(MockStore);
 
-    mockSelectedToolIdSelector = mockStore.overrideSelector(
-      fromApp.selectSelectedToolId,
-      Tool.SetVoxel,
-    );
-  }));
+      mockSelectedToolIdSelector = mockStore.overrideSelector(
+        fromApp.selectSelectedToolId,
+        Tool.SetVoxel,
+      );
+    }),
+  );
 
-  beforeEach(async(() => {
-    spyOn(mockStore, 'dispatch');
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      spyOn(mockStore, 'dispatch');
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SceneViewerContainerComponent);

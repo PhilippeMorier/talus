@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { UiToolbarComponent, UiToolbarToolConfig } from './toolbar.component';
 import { UiToolbarModule } from './toolbar.module';
@@ -20,11 +20,13 @@ describe('ToolbarComponent', () => {
     },
   ];
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [UiToolbarModule],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [UiToolbarModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UiToolbarComponent);
