@@ -17,7 +17,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import '@babylonjs/core/Physics/physicsHelper'; // Needed for `onPointerPick`
 import { Scene } from '@babylonjs/core/scene';
-import { Coord, MeshData } from '@talus/vdb';
+import { Coord, MeshData, toKey } from '@talus/vdb';
 import { Subject } from 'rxjs';
 import { UiPointerButton } from './pointer-button';
 
@@ -113,7 +113,7 @@ export class UiSceneViewerService {
       return;
     }
 
-    const meshName = getMeshName(origin);
+    const meshName = `node1 ${toKey(origin)}`;
 
     deleteMesh(this.scene, meshName);
 
@@ -309,8 +309,4 @@ function deleteMesh(scene: Scene, name: string): void {
   if (oldMesh) {
     oldMesh.dispose();
   }
-}
-
-export function getMeshName(origin: Coord): string {
-  return `node1 ${JSON.stringify(origin)}`;
 }

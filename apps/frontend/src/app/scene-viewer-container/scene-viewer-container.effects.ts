@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { rgbaToInt } from '@talus/model';
 import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
-import { areEqual, Coord } from '@talus/vdb';
+import { areEqual, Coord, toKey } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
@@ -227,7 +227,7 @@ export class SceneViewerContainerEffects {
   private getUniqueNodeOrigins(voxelChanges: VoxelChange[]): Coord[] {
     const origins = new Map<string, Coord>();
     voxelChanges.forEach(change => {
-      origins.set(change.affectedNodeOrigin.toString(), change.affectedNodeOrigin);
+      origins.set(toKey(change.affectedNodeOrigin), change.affectedNodeOrigin);
     });
 
     return Array.from(origins.values());

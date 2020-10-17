@@ -10,9 +10,16 @@ import {
   offset,
   offsetBy,
   removeFraction,
+  toKey,
 } from './coord';
 
 describe('Coord', () => {
+  it('gets string representation', () => {
+    const coord = { x: 1, y: 2, z: 3 };
+
+    expect(toKey(coord)).toEqual('{"x":1,"y":2,"z":3}');
+  });
+
   it('should add coordinates', () => {
     const c1 = new Coord(1, 2, 3);
     const c2 = new Coord(3, 2, 1);

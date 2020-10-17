@@ -11,8 +11,13 @@ export const Y = 1;
  */
 export const Z = 2;
 
+// Make interface, don't use constructor due performance impact
 export class Coord {
   constructor(public x: number, public y: number, public z: number) {}
+}
+
+export function toKey(coord: Coord): string {
+  return `${JSON.stringify(coord)}`;
 }
 
 export function add(c1: Coord, c2: Coord): Coord {
