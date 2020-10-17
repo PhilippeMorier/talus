@@ -14,5 +14,4 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import '../../../../.cypress/commands.base';
 import './commands';
