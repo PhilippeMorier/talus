@@ -14,6 +14,4 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-
-// TODO: `import` doesn't work
-require('./commands');
+import './commands';
