@@ -28,8 +28,10 @@
     "nx": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --async=false",
     "prettier:check": "yarn prettier --check --config ./.prettierrc --ignore-path ./.prettierignore '{*,\\.circleci,apps,libs}/**/*.{ts,scss,json,html,yml}'",
-    "test": "nx run-many --all --target=test --maxWorkers=1",
-    "test:code-coverage": "yarn test --code-coverage",
+    "test": "yarn test:all --maxWorkers=50%",
+    "test:all": "nx run-many --all --target=test",
+    "test:ci": "yarn test:code-coverage --maxWorkers=1",
+    "test:code-coverage": "yarn test:all --code-coverage",
     "update": "nx update @nrwl/workspace",
     "update:check": "nx update",
     "workspace-schematic": "nx workspace-schematic"
