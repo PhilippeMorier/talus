@@ -43,9 +43,6 @@ function logSummary(suiteToLog: Suite): void {
 
   const benchmarks = toBenchmarks(suiteToLog);
   const descSortedBenchmarks = benchmarks.sort((a, b) => b.hz - a.hz);
-
-  // const benchmarks = Array.from({ length: suiteToLog.length }, (x, i) => suiteToLog[i] as Target);
-  // const descSortedBenchmarks = benchmarks.sort((a, b) => b.hz - a.hz);
   const highestHz = descSortedBenchmarks[0].hz;
 
   descSortedBenchmarks.forEach(bm => {
