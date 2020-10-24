@@ -1,4 +1,4 @@
-import { Coord, CoordBBox } from '@talus/vdb';
+import { CoordBBox } from '@talus/vdb';
 import { Ray, TimeSpan } from './ray';
 import { Vec3 } from './vec3';
 
@@ -14,7 +14,7 @@ describe('Ray', () => {
   });
 
   it('should intersect with box', () => {
-    const box = new CoordBBox(new Coord(3, 0, 0), new Coord(20, 5, 20));
+    const box = new CoordBBox({ x: 3, y: 0, z: 0 }, { x: 20, y: 5, z: 20 });
     const eye = new Vec3(-1, 0, 0);
     const dir = new Vec3(1, 0, 0);
     const ray = new Ray(eye, dir);
@@ -26,7 +26,7 @@ describe('Ray', () => {
   });
 
   it('should clip intersecting ray', () => {
-    const box = new CoordBBox(new Coord(3, 0, 0), new Coord(20, 5, 20));
+    const box = new CoordBBox({ x: 3, y: 0, z: 0 }, { x: 20, y: 5, z: 20 });
     const eye = new Vec3(-1, 0, 0);
     const dir = new Vec3(1, 0, 0);
     const ray = new Ray(eye, dir);

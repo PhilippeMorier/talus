@@ -86,9 +86,9 @@ describe('SceneViewerContainerComponent', () => {
 
   it('should dispatch no action if not PointerButton.Main', () => {
     stubComponent.pointerPick.next({
-      pickedPoint: new Coord(0, 0, 0),
+      pickedPoint: { x: 0, y: 0, z: 0 },
       pointerButton: UiPointerButton.Secondary,
-      normal: new Coord(0, 0, 0),
+      normal: { x: 0, y: 0, z: 0 },
     });
 
     // Only once called due to first initial added voxel at [0, 0, 0]
@@ -97,22 +97,50 @@ describe('SceneViewerContainerComponent', () => {
 
   it.each([
     [
-      new Coord(1, 0.2, 0.9),
-      new Coord(1, 0, 0), // fraction part is removed
-      new Coord(1, 0, 0),
+      { x: 1, y: 0.2, z: 0.9 },
+      { x: 1, y: 0, z: 0 }, // fraction part is removed
+      { x: 1, y: 0, z: 0 },
     ],
-    [new Coord(0.99999999, 0.2, 0.9), new Coord(1, 0, 0), new Coord(1, 0, 0)],
-    [new Coord(0.2, 0.99999999, 0.9), new Coord(0, 1, 0), new Coord(0, 1, 0)],
-    [new Coord(0.2, 0.9, 0.0000000001), new Coord(0, 0, 0), new Coord(0, 0, 1)],
-    [new Coord(0, 0, -0.999999), new Coord(0, 0, -1), new Coord(0, 0, 1)],
-    [new Coord(0, -2, -0.999999), new Coord(0, -3, -2), new Coord(0, 0, -1)],
-    [new Coord(-0, -2, 3), new Coord(0, -3, 2), new Coord(0, 0, -1)],
-    [new Coord(0.5, 1.4, -1), new Coord(0, 1, -1), new Coord(0, 0, 1)],
+    [
+      { x: 0.99999999, y: 0.2, z: 0.9 },
+      { x: 1, y: 0, z: 0 },
+      { x: 1, y: 0, z: 0 },
+    ],
+    [
+      { x: 0.2, y: 0.99999999, z: 0.9 },
+      { x: 0, y: 1, z: 0 },
+      { x: 0, y: 1, z: 0 },
+    ],
+    [
+      { x: 0.2, y: 0.9, z: 0.0000000001 },
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 1 },
+    ],
+    [
+      { x: 0, y: 0, z: -0.999999 },
+      { x: 0, y: 0, z: -1 },
+      { x: 0, y: 0, z: 1 },
+    ],
+    [
+      { x: 0, y: -2, z: -0.999999 },
+      { x: 0, y: -3, z: -2 },
+      { x: 0, y: 0, z: -1 },
+    ],
+    [
+      { x: -0, y: -2, z: 3 },
+      { x: 0, y: -3, z: 2 },
+      { x: 0, y: 0, z: -1 },
+    ],
+    [
+      { x: 0.5, y: 1.4, z: -1 },
+      { x: 0, y: 1, z: -1 },
+      { x: 0, y: 0, z: 1 },
+    ],
   ])(
     'should dispatch `setVoxel` action for %j',
     (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
       const initialAction = setVoxel({
-        xyz: new Coord(0, 0, 0),
+        xyz: { x: 0, y: 0, z: 0 },
         newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
       });
       const action = setVoxel({
@@ -139,19 +167,39 @@ describe('SceneViewerContainerComponent', () => {
 
   it.each([
     [
-      new Coord(1.0000000000001, 0.5, 0.5),
-      new Coord(0, 0, 0), // fraction part is removed
-      new Coord(1, 0, 0),
+      { x: 1.0000000000001, y: 0.5, z: 0.5 },
+      { x: 0, y: 0, z: 0 }, // fraction part is removed
+      { x: 1, y: 0, z: 0 },
     ],
-    [new Coord(0.999999999999, 0.5, 0.5), new Coord(1, 0, 0), new Coord(-1, 0, 0)],
-    [new Coord(1.0000000000001, -0.5, 0.5), new Coord(1, -1, 0), new Coord(-1, 0, 0)],
-    [new Coord(-0.999999999999, -0.5, 0.5), new Coord(-1, -1, 0), new Coord(-1, 0, 0)],
-    [new Coord(-2.0000000000001, -0.5, 0.5), new Coord(-3, -1, 0), new Coord(1, 0, 0)],
-    [new Coord(0.5, 0.999999999999, 0.5), new Coord(0, 0, 0), new Coord(0, 1, 0)],
     [
-      new Coord(0.5461420538559825, 0.4841910809236776, -2),
-      new Coord(0, 0, -2),
-      new Coord(0, 0, -1),
+      { x: 0.999999999999, y: 0.5, z: 0.5 },
+      { x: 1, y: 0, z: 0 },
+      { x: -1, y: 0, z: 0 },
+    ],
+    [
+      { x: 1.0000000000001, y: -0.5, z: 0.5 },
+      { x: 1, y: -1, z: 0 },
+      { x: -1, y: 0, z: 0 },
+    ],
+    [
+      { x: -0.999999999999, y: -0.5, z: 0.5 },
+      { x: -1, y: -1, z: 0 },
+      { x: -1, y: 0, z: 0 },
+    ],
+    [
+      { x: -2.0000000000001, y: -0.5, z: 0.5 },
+      { x: -3, y: -1, z: 0 },
+      { x: 1, y: 0, z: 0 },
+    ],
+    [
+      { x: 0.5, y: 0.999999999999, z: 0.5 },
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
+    ],
+    [
+      { x: 0.5461420538559825, y: 0.4841910809236776, z: -2 },
+      { x: 0, y: 0, z: -2 },
+      { x: 0, y: 0, z: -1 },
     ],
   ])(
     'should dispatch `removeVoxel` action for %j',
@@ -161,7 +209,7 @@ describe('SceneViewerContainerComponent', () => {
       fixture.detectChanges();
 
       const initialAction = setVoxel({
-        xyz: new Coord(0, 0, 0),
+        xyz: { x: 0, y: 0, z: 0 },
         newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
       });
 

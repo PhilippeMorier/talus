@@ -1,4 +1,4 @@
-import { Coord, Grid } from '@talus/vdb';
+import { Grid } from '@talus/vdb';
 
 describe('Grid', () => {
   it('should get background', () => {
@@ -11,9 +11,9 @@ describe('Grid', () => {
     const grid = new Grid(-1);
     const accessor = grid.getAccessor();
 
-    accessor.setValueOn(new Coord(2, 1, 0), 42);
-    accessor.setValueOn(new Coord(845, 64, 242), 42);
-    accessor.setValueOn(new Coord(1000, 200000, 4000), 42);
+    accessor.setValueOn({ x: 2, y: 1, z: 0 }, 42);
+    accessor.setValueOn({ x: 845, y: 64, z: 242 }, 42);
+    accessor.setValueOn({ x: 1000, y: 200000, z: 4000 }, 42);
 
     let counter = 0;
     for (const voxel of grid.beginVoxelOn()) {

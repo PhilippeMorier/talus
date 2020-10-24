@@ -23,7 +23,7 @@ suite('[Coord] write', () => {
     arr[2] = 1;
   });
 
-  const coord = new Coord(0, 0, 0);
+  const coord = { x: 0, y: 0, z: 0 };
   benchmark('coord.x=1', () => {
     coord.x = 1;
     coord.y = 1;
@@ -39,7 +39,7 @@ suite('[Coord] read', () => {
     const _z = array[2];
   });
 
-  const coord: Coord = new Coord(0, 0, 0);
+  const coord: Coord = { x: 0, y: 0, z: 0 };
   benchmark('coord.x', () => {
     const _x = coord.x;
     const _y = coord.y;
@@ -48,7 +48,7 @@ suite('[Coord] read', () => {
 });
 
 suite('[Coord] function parameter', () => {
-  const coord: Coord = new Coord(0, 1, 2);
+  const coord: Coord = { x: 0, y: 1, z: 2 };
 
   function oneParameter(xyz: Coord): void {
     const _x = xyz.x;

@@ -1,5 +1,4 @@
 import { Tree } from './tree';
-import { Coord } from '@talus/vdb';
 
 describe('Tree', () => {
   it('should get background', () => {
@@ -11,31 +10,31 @@ describe('Tree', () => {
   it('should get/set value', () => {
     const tree = new Tree(-1);
 
-    tree.setValueOn(new Coord(0, 1, 2), 42);
+    tree.setValueOn({ x: 0, y: 1, z: 2 }, 42);
 
-    expect(tree.getValue(new Coord(0, 1, 2))).toEqual(42);
+    expect(tree.getValue({ x: 0, y: 1, z: 2 })).toEqual(42);
   });
 
   it('should return background value on unset voxel', () => {
     const tree = new Tree(-1);
 
-    expect(tree.getValue(new Coord(0, 0, 0))).toEqual(tree.background);
+    expect(tree.getValue({ x: 0, y: 0, z: 0 })).toEqual(tree.background);
   });
 
   it('should activated value', () => {
     const tree = new Tree(-1);
 
-    tree.setValueOn(new Coord(0, 1, 2), 42);
+    tree.setValueOn({ x: 0, y: 1, z: 2 }, 42);
 
-    expect(tree.isValueOn(new Coord(0, 1, 2))).toBeTruthy();
+    expect(tree.isValueOn({ x: 0, y: 1, z: 2 })).toBeTruthy();
   });
 
   it('should count voxel', () => {
     const tree = new Tree(-1);
 
-    tree.setValueOn(new Coord(0, 1, 2), 42);
-    tree.setValueOn(new Coord(845, 242, 64), 42);
-    tree.setValueOn(new Coord(1000, 4000, 200000), 42);
+    tree.setValueOn({ x: 0, y: 1, z: 2 }, 42);
+    tree.setValueOn({ x: 845, y: 242, z: 64 }, 42);
+    tree.setValueOn({ x: 1000, y: 4000, z: 200000 }, 42);
 
     expect(tree.onVoxelCount()).toEqual(3);
   });
@@ -43,9 +42,9 @@ describe('Tree', () => {
   it('should iterate over each activated voxel', () => {
     const tree = new Tree(-1);
 
-    tree.setValueOn(new Coord(0, 1, 2), 42);
-    tree.setValueOn(new Coord(845, 242, 64), 42);
-    tree.setValueOn(new Coord(1000, 4000, 200000), 42);
+    tree.setValueOn({ x: 0, y: 1, z: 2 }, 42);
+    tree.setValueOn({ x: 845, y: 242, z: 64 }, 42);
+    tree.setValueOn({ x: 1000, y: 4000, z: 200000 }, 42);
 
     let counter = 0;
     for (const voxel of tree.beginVoxelOn()) {

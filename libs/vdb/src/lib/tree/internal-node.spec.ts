@@ -15,14 +15,14 @@ describe('InternalNode', () => {
 
     describe('setValueOn()', () => {
       it.each([
-        [new Coord(0, 0, 0), true],
-        [new Coord(0, 0, 0), false],
-        [new Coord(0, 0, 1), true],
-        [new Coord(0, 0, 1), false],
-        [new Coord(0, 1, 0), true],
-        [new Coord(0, 1, 0), false],
-        [new Coord(1, 0, 0), true],
-        [new Coord(1, 0, 0), false],
+        [{ x: 0, y: 0, z: 0 }, true],
+        [{ x: 0, y: 0, z: 0 }, false],
+        [{ x: 0, y: 0, z: 1 }, true],
+        [{ x: 0, y: 0, z: 1 }, false],
+        [{ x: 0, y: 1, z: 0 }, true],
+        [{ x: 0, y: 1, z: 0 }, false],
+        [{ x: 1, y: 0, z: 0 }, true],
+        [{ x: 1, y: 0, z: 0 }, false],
         [new Coord(0, 0, InternalNode1.DIM - 1), true],
         [new Coord(0, 0, InternalNode1.DIM - 1), false],
         [new Coord(0, InternalNode1.DIM - 1, 0), true],
@@ -32,7 +32,7 @@ describe('InternalNode', () => {
       ])(
         '%#. should set and activate at the given index %j the value (%j)',
         (xyz: Coord, value: boolean) => {
-          const child = new InternalNode1<boolean>(new Coord(0, 0, 0));
+          const child = new InternalNode1<boolean>({ x: 0, y: 0, z: 0 });
 
           child.setValueOn(xyz, value);
 
@@ -41,9 +41,9 @@ describe('InternalNode', () => {
       );
 
       it('should throw an error when accessing on empty index', () => {
-        const child = new InternalNode1<boolean>(new Coord(0, 0, 0));
+        const child = new InternalNode1<boolean>({ x: 0, y: 0, z: 0 });
 
-        expect(() => child.getValue(new Coord(0, 0, 0))).toThrow();
+        expect(() => child.getValue({ x: 0, y: 0, z: 0 })).toThrow();
       });
     });
 
@@ -71,9 +71,9 @@ describe('InternalNode', () => {
         // 24 / 8 = 3 -> 3 x 64 = 192  ╮
         // 9  / 8 = 1 -> 1 x 8  = 8    ├─> 192 + 8 + 2 = 202
         // 17 / 8 = 2 -> 2 x 1  = 2    ╯
-        [new Coord(24, 9, 17), 202],
+        [{ x: 24, y: 9, z: 17 }, 202],
       ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
-        const child = new InternalNode1<number>(new Coord(0, 0, 0));
+        const child = new InternalNode1<number>({ x: 0, y: 0, z: 0 });
 
         expect(child.coordToOffset(xyz)).toEqual(offset);
       });
@@ -81,16 +81,16 @@ describe('InternalNode', () => {
 
     describe('isValueOn()', () => {
       it('should set each voxel', () => {
-        const node1 = new InternalNode1<number>(new Coord(0, 0, 0));
+        const node1 = new InternalNode1<number>({ x: 0, y: 0, z: 0 });
         const maxDim = InternalNode1.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
         for (let x = 0; x < maxDim; x++) {
           for (let y = 0; y < maxDim; y++) {
             for (let z = 0; z < maxDim; z++) {
-              node1.setValueOn(new Coord(x, y, z), onCounter);
+              node1.setValueOn({ x, y, z }, onCounter);
 
-              expect(node1.getValue(new Coord(x, y, z))).toEqual(onCounter);
+              expect(node1.getValue({ x, y, z })).toEqual(onCounter);
               onCounter++;
             }
           }
@@ -102,14 +102,14 @@ describe('InternalNode', () => {
 
     describe('onVoxelCount()', () => {
       it('should count all activated voxels', () => {
-        const node1 = new InternalNode1<number>(new Coord(0, 0, 0));
+        const node1 = new InternalNode1<number>({ x: 0, y: 0, z: 0 });
         const maxDim = InternalNode1.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
         for (let x = 0; x < maxDim; x++) {
           for (let y = 0; y < maxDim; y++) {
             for (let z = 0; z < maxDim; z++) {
-              node1.setValueOn(new Coord(x, y, z), 42);
+              node1.setValueOn({ x, y, z }, 42);
               onCounter++;
 
               expect(node1.onVoxelCount()).toEqual(onCounter);
@@ -123,13 +123,13 @@ describe('InternalNode', () => {
 
     describe('beginVoxelOn()', () => {
       it('should iterate over all activated voxels', () => {
-        const node1 = new InternalNode1<number>(new Coord(0, 0, 0));
+        const node1 = new InternalNode1<number>({ x: 0, y: 0, z: 0 });
         const expectedValues = [0, 1, 2, 3];
 
-        node1.setValueOn(new Coord(0, 0, 0), expectedValues[0]);
-        node1.setValueOn(new Coord(0, 0, 11), expectedValues[1]);
-        node1.setValueOn(new Coord(0, 22, 0), expectedValues[2]);
-        node1.setValueOn(new Coord(31, 0, 0), expectedValues[3]);
+        node1.setValueOn({ x: 0, y: 0, z: 0 }, expectedValues[0]);
+        node1.setValueOn({ x: 0, y: 0, z: 11 }, expectedValues[1]);
+        node1.setValueOn({ x: 0, y: 22, z: 0 }, expectedValues[2]);
+        node1.setValueOn({ x: 31, y: 0, z: 0 }, expectedValues[3]);
 
         let counter = 0;
         for (const voxel of node1.beginVoxelOn()) {
@@ -168,7 +168,7 @@ describe('InternalNode', () => {
       it.each(generateRandomCoords(100, 0, InternalNode2.DIM - 1))(
         'should set/get random value at %j ',
         (xyz: Coord) => {
-          const node2 = new InternalNode2<boolean>(new Coord(0, 0, 0));
+          const node2 = new InternalNode2<boolean>({ x: 0, y: 0, z: 0 });
 
           node2.setValueOn(xyz, true);
 
@@ -179,17 +179,17 @@ describe('InternalNode', () => {
 
     describe('coordToOffset()', () => {
       it.each([
-        [new Coord(0, 0, 0), 0],
-        [new Coord(0, 0, 256), 0],
-        [new Coord(0, 0, 64), 1],
-        [new Coord(0, 0, 128), 2],
-        [new Coord(0, 0, 192), 3],
+        [{ x: 0, y: 0, z: 0 }, 0],
+        [{ x: 0, y: 0, z: 256 }, 0],
+        [{ x: 0, y: 0, z: 64 }, 1],
+        [{ x: 0, y: 0, z: 128 }, 2],
+        [{ x: 0, y: 0, z: 192 }, 3],
 
-        [new Coord(0, 0, 64), 1],
-        [new Coord(0, 64, 0), 4],
-        [new Coord(64, 0, 0), 16],
+        [{ x: 0, y: 0, z: 64 }, 1],
+        [{ x: 0, y: 64, z: 0 }, 4],
+        [{ x: 64, y: 0, z: 0 }, 16],
       ])('should return for coordinate %j the offset (%j)', (xyz: Coord, offset: number) => {
-        const child = new InternalNode2<number>(new Coord(0, 0, 0));
+        const child = new InternalNode2<number>({ x: 0, y: 0, z: 0 });
 
         expect(child.coordToOffset(xyz)).toEqual(offset);
       });
@@ -197,14 +197,14 @@ describe('InternalNode', () => {
 
     describe('onVoxelCount()', () => {
       it('should count all activated voxels', () => {
-        const node2 = new InternalNode2<number>(new Coord(0, 0, 0));
+        const node2 = new InternalNode2<number>({ x: 0, y: 0, z: 0 });
         const maxDim = InternalNode2.DIM / 4; // Shorten test running time
 
         let onCounter = 0;
         for (let x = 0; x < maxDim; x++) {
           for (let y = 0; y < maxDim; y++) {
             for (let z = 0; z < maxDim; z++) {
-              node2.setValueOn(new Coord(x, y, z), 42);
+              node2.setValueOn({ x, y, z }, 42);
               onCounter++;
             }
           }
@@ -216,12 +216,12 @@ describe('InternalNode', () => {
 
     describe('beginVoxelOn()', () => {
       it('should iterate over all activated voxels', () => {
-        const node2 = new InternalNode2<number>(new Coord(0, 0, 0));
+        const node2 = new InternalNode2<number>({ x: 0, y: 0, z: 0 });
         const expectedValues = [0, 1, 2, 3];
 
-        node2.setValueOn(new Coord(0, 0, 0), expectedValues[0]);
-        node2.setValueOn(new Coord(0, 0, 50), expectedValues[1]);
-        node2.setValueOn(new Coord(0, 75, 0), expectedValues[2]);
+        node2.setValueOn({ x: 0, y: 0, z: 0 }, expectedValues[0]);
+        node2.setValueOn({ x: 0, y: 0, z: 50 }, expectedValues[1]);
+        node2.setValueOn({ x: 0, y: 75, z: 0 }, expectedValues[2]);
         node2.setValueOn(new Coord(InternalNode2.DIM - 1, 0, 0), expectedValues[3]);
 
         let counter = 0;
