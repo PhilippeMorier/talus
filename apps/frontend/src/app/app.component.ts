@@ -23,9 +23,7 @@ import * as fromApp from './app.reducer';
           <fe-options-panel></fe-options-panel>
         </ui-sidenav-shell-left>
 
-        <ui-sidenav-shell-right>
-          Right
-        </ui-sidenav-shell-right>
+        <ui-sidenav-shell-right>Right</ui-sidenav-shell-right>
 
         <ui-sidenav-shell-content>
           <fe-scene-viewer-container></fe-scene-viewer-container>
