@@ -35,7 +35,7 @@ module.exports = {
   globals: {
     'ts-jest': {
       diagnostics: false, // https://github.com/nrwl/nx/issues/1439#issuecomment-593684534
-      tsConfig: '<rootDir>/tsconfig.spec.json',
+      tsconfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.(html|svg)$',
       astTransformers: {
         before: [
