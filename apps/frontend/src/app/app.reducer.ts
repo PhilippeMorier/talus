@@ -3,9 +3,9 @@ import {
   Action,
   ActionReducer,
   ActionReducerMap,
+  MetaReducer,
   createFeatureSelector,
   createSelector,
-  MetaReducer,
 } from '@ngrx/store';
 import { environment } from '../environments/environment';
 import * as fromOptionsPanel from './options-panel/options-panel.reducer';

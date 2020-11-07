@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSidenav } from '@angular/material/sidenav';
 import { By } from '@angular/platform-browser';
 import { UiSidenavShellComponent } from './sidenav-shell.component';
@@ -11,11 +11,13 @@ describe.skip('SidenavShellComponent', () => {
   let component: UiSidenavShellComponent;
   let fixture: ComponentFixture<UiSidenavShellComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [UiSidenavShellModule],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [UiSidenavShellModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UiSidenavShellComponent);

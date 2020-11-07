@@ -4,7 +4,7 @@ import { ComponentType } from '@angular/cdk/portal/portal';
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 
 // Injection token that can be used to access the data that was passed in to an overlay.
-export const UI_OVERLAY_DATA = new InjectionToken<any>('UiOverlayData');
+export const UI_OVERLAY_DATA = new InjectionToken<string>('UiOverlayData');
 
 @Injectable()
 export class UiFullscreenOverlayService {
@@ -26,15 +26,16 @@ export class UiFullscreenOverlayService {
   }
 
   // Inspired by: https://stackoverflow.com/a/51323813/3731530
-  open<T>(component: ComponentType<T>, data: any): OverlayRef {
+  open<T>(component: ComponentType<T>, data: unknown): OverlayRef {
     const componentPortal = new ComponentPortal(component, undefined, this.createInjector(data));
     this.overlayRef.attach(componentPortal);
 
     return this.overlayRef;
   }
 
-  private createInjector(data: any): PortalInjector {
-    const injectorTokens = new WeakMap<any, any>([
+  private createInjector(data: unknown): PortalInjector {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    const injectorTokens = new WeakMap<object, unknown>([
       [UI_OVERLAY_DATA, data],
       [OverlayRef, this.overlayRef],
     ]);

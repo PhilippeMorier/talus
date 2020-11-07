@@ -1,6 +1,6 @@
 export class NodeUnion<ValueT, ChildT> {
-  private child: ChildT;
-  private value: ValueT;
+  private child?: ChildT;
+  private value?: ValueT;
 
   constructor(value?: ValueT) {
     if (value !== undefined) {
@@ -8,7 +8,7 @@ export class NodeUnion<ValueT, ChildT> {
     }
   }
 
-  getChild(): ChildT {
+  getChild(): ChildT | undefined {
     return this.child;
   }
 
@@ -16,7 +16,7 @@ export class NodeUnion<ValueT, ChildT> {
     this.child = c;
   }
 
-  getValue(): ValueT {
+  getValue(): ValueT | undefined {
     return this.value;
   }
 

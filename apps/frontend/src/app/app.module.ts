@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { UiSidenavShellModule, UiStatusBarModule } from '@talus/ui';
 import { AppComponent } from './app.component';
 import { AppEffects } from './app.effects';
-import { metaReducers, ROOT_REDUCERS } from './app.reducer';
+import { ROOT_REDUCERS, metaReducers } from './app.reducer';
 import { MenuBarContainerModule } from './menu-bar-container/menu-bar-container.module';
 import { OptionsPanelModule } from './options-panel/options-panel.module';
 import { SceneViewerContainerModule } from './scene-viewer-container';

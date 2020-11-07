@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { rgbaToInt } from '@talus/model';
 import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
-import { areEqual, Coord } from '@talus/vdb';
+import { Coord, areEqual, toKey } from '@talus/vdb';
 import { of } from 'rxjs';
 import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
@@ -33,8 +33,8 @@ import {
   voxelPainted,
   voxelRemoved,
   voxelSet,
-  voxelsSet,
   voxelUnderCursorChange,
+  voxelsSet,
 } from './scene-viewer-container.actions';
 
 @Injectable()
@@ -206,12 +206,12 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(selectTopic),
       tap(() => this.sceneViewerService.disposeSceneAndRestartRendering()),
-      tap(() => this.gridService.initialize()),
+      tap(() => this.gridService.reinitialize()),
       tap(({ topic }) => this.kafkaProxyService.setTopic(topic)),
       filter(({ isNewTopic }) => isNewTopic),
       map(() =>
         setVoxel({
-          xyz: [0, 0, 0],
+          xyz: { x: 0, y: 0, z: 0 },
           newValue: rgbaToInt({
             r: 0,
             g: 255,
@@ -227,7 +227,7 @@ export class SceneViewerContainerEffects {
   private getUniqueNodeOrigins(voxelChanges: VoxelChange[]): Coord[] {
     const origins = new Map<string, Coord>();
     voxelChanges.forEach(change => {
-      origins.set(change.affectedNodeOrigin.toString(), change.affectedNodeOrigin);
+      origins.set(toKey(change.affectedNodeOrigin), change.affectedNodeOrigin);
     });
 
     return Array.from(origins.values());

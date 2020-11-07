@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Tool } from '@talus/model';
-import { UiToolbarToolChange, UiToolbarToolConfig } from '@talus/ui';
+import { ToolValue, UiToolbarToolChange, UiToolbarToolConfig } from '@talus/ui';
 import { Observable } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { selectTool } from './tools-panel.actions';
@@ -47,7 +47,12 @@ export class ToolsPanelComponent {
     this.selectedToolId$ = store.pipe(select(fromApp.selectSelectedToolId));
   }
 
-  onToolChange(event: UiToolbarToolChange<Tool>): void {
-    this.store.dispatch(selectTool({ id: event.value }));
+  onToolChange(event: UiToolbarToolChange<ToolValue>): void {
+    // https://stackoverflow.com/questions/17380845/how-do-i-convert-a-string-to-enum-in-typescript#comment98790295_17381004
+    const tool: Tool | undefined = Tool[event.value as keyof typeof Tool];
+
+    if (tool) {
+      this.store.dispatch(selectTool({ id: tool }));
+    }
   }
 }

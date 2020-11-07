@@ -10,7 +10,7 @@ suite('[Grid] getValue()', () => {
     for (let x = 0; x < i; x++) {
       for (let y = 0; y < i; y++) {
         for (let z = 0; z < i; z++) {
-          grid.tree.getValue([x, y, z]);
+          grid.tree.getValue({ x, y, z });
         }
       }
     }
@@ -20,7 +20,7 @@ suite('[Grid] getValue()', () => {
     for (let x = 0; x < i; x++) {
       for (let y = 0; y < i; y++) {
         for (let z = 0; z < i; z++) {
-          accessor.getValue([x, y, z]);
+          accessor.getValue({ x, y, z });
         }
       }
     }
@@ -36,7 +36,7 @@ suite('[Grid] setValue()', () => {
     for (let x = 0; x < i; x++) {
       for (let y = 0; y < i; y++) {
         for (let z = 0; z < i; z++) {
-          grid.tree.setValueOn([x, y, z], i);
+          grid.tree.setValueOn({ x, y, z }, i);
         }
       }
     }
@@ -46,7 +46,7 @@ suite('[Grid] setValue()', () => {
     for (let x = 0; x < i; x++) {
       for (let y = 0; y < i; y++) {
         for (let z = 0; z < i; z++) {
-          accessor.setValueOn([x, y, z], i);
+          accessor.setValueOn({ x, y, z }, i);
         }
       }
     }
@@ -64,7 +64,7 @@ function initializeGrid(i: number): Grid {
   for (let x = 0; x < i; x++) {
     for (let y = 0; y < i; y++) {
       for (let z = 0; z < i; z++) {
-        grid.tree.setValueOn([x, y, z], i);
+        grid.tree.setValueOn({ x, y, z }, i);
       }
     }
   }

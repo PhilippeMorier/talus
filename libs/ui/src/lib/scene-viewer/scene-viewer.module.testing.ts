@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { Engine } from '@babylonjs/core/Engines';
 import { NullEngine } from '@babylonjs/core/Engines/nullEngine';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Scene } from '@babylonjs/core/scene';
-import { CameraFactory, EngineFactory, UiSceneViewerService } from './scene-viewer.service';
+import {
+  CameraFactory,
+  CreateCameraFn,
+  EngineFactory,
+  UiSceneViewerService,
+} from './scene-viewer.service';
 
-function testCameraFactory(): any {
+function testCameraFactory(): { create: CreateCameraFn } {
   return {
     create: (
       name: string,
@@ -38,7 +44,7 @@ function testCameraFactory(): any {
   };
 }
 
-function testEngineFactor(): any {
+function testEngineFactor(): { create(): Engine } {
   return { create: () => new NullEngine() };
 }
 

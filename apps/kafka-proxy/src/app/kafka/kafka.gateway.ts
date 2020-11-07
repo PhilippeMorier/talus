@@ -20,7 +20,7 @@ import { KafkaService } from './kafka.service';
 @WebSocketGateway({ namespace: 'kafka' })
 export class KafkaGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server?: Server;
 
   readonly getTopicsSubject = new Subject<void>();
 

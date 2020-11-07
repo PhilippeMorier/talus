@@ -32,6 +32,7 @@
       }
     ],
     "no-arg": true,
+    "no-any": true,
     "no-bitwise": true,
     "no-conflicting-lifecycle": true,
     "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
@@ -87,7 +88,12 @@
     ],
     "object-literal-sort-keys": false,
     "one-line": [true, "check-open-brace", "check-catch", "check-else", "check-whitespace"],
-    "ordered-imports": true,
+    "ordered-imports": [
+      true,
+      {
+        "named-imports-order": "lowercase-last"
+      }
+    ],
     "prefer-const": true,
     "prefer-on-push-component-change-detection": true,
     "quotemark": [true, "single"],

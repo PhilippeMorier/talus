@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -40,29 +40,31 @@ class OptionsPanelStubComponent {}
 // TypeError: Cannot read property 'runOutsideAngular' of undefined
 // at MatSidenav.ChangeDetectionStrategy (/Users/philippe/git/src/material/sidenav/drawer.ts:292:18)
 describe.skip('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        MenuBarContainerStubComponent,
-        OptionsPanelStubComponent,
-        SceneViewerContainerStubComponent,
-        ToolsPanelStubComponent,
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        UiSceneViewerTestModule,
-        UiSidenavShellModule,
-        UiStatusBarModule,
-      ],
-      providers: [
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          AppComponent,
+          MenuBarContainerStubComponent,
+          OptionsPanelStubComponent,
+          SceneViewerContainerStubComponent,
+          ToolsPanelStubComponent,
+        ],
+        imports: [
+          BrowserAnimationsModule,
+          RouterTestingModule,
+          UiSceneViewerTestModule,
+          UiSidenavShellModule,
+          UiStatusBarModule,
+        ],
+        providers: [
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);

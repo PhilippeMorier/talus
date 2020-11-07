@@ -35,13 +35,11 @@ interface UiMenuBarMenuItem<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiMenuBarComponent {
-  @Input() menus: UiMenuBarMenu<any>[] | Nil = [];
+  @Input() menus: UiMenuBarMenu<unknown>[] | Nil = [];
 
-  // Without `<any>` on `EventEmitter` test don't run and throw
-  // Error: connect ECONNREFUSED 127.0.0.1:80
-  @Output() menuItemClick = new EventEmitter<any>();
+  @Output() menuItemClick = new EventEmitter();
 
-  onMenuItemClick(value: any): void {
+  onMenuItemClick(value: unknown): void {
     this.menuItemClick.emit(value);
   }
 }

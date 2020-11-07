@@ -21,10 +21,14 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strictNullChecks": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "target": "es2015",
     "typeRoots": ["node_modules/@types"]
   },
   "angularCompilerOptions": {
+    "strictInjectionParameters": true,
     "strictTemplates": true
   },
   "exclude": ["node_modules", "tmp"]

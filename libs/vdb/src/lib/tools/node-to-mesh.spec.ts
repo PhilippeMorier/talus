@@ -6,8 +6,8 @@ describe('nodeToMesh()', () => {
     const grid = new Grid(0);
     const accessor = grid.getAccessor();
 
-    accessor.setValueOn([0, 0, 0], 1);
-    accessor.setValueOn([0, 0, 1], 1);
+    accessor.setValueOn({ x: 0, y: 0, z: 0 }, 1);
+    accessor.setValueOn({ x: 0, y: 0, z: 1 }, 1);
 
     const meshData = nodeToMesh(grid.tree.root, () => [0, 0, 0, 1]);
 

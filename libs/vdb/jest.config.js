@@ -1,7 +1,7 @@
 module.exports = {
   coverageDirectory: '../../coverage/libs/vdb',
-  name: 'vdb',
-  preset: '../../jest.config.js',
+  displayName: 'vdb',
+  preset: '../../jest.preset.js',
   // https://github.com/nrwl/nx/issues/837#issuecomment-501188633
   reporters: [
     'default',

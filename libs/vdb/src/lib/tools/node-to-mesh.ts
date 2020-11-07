@@ -41,7 +41,7 @@ export function nodeToMesh<T>(
   };
 
   for (const voxel of node.beginVoxelOn()) {
-    const [x, y, z] = voxel.globalCoord;
+    const { x, y, z } = voxel.globalCoord;
     const [r, g, b, a] = valueToColor(voxel.value);
 
     const v0 = [x, y, z];

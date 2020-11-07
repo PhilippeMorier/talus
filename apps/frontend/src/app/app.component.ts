@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromApp from './app.reducer';

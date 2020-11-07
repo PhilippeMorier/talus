@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Rgba } from '@talus/model';
 import { UiColorDialogColor } from '@talus/ui';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import * as fromApp from '../app.reducer';
 import { openColorDialog } from './options-panel.actions';
 

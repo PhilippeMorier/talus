@@ -1,4 +1,4 @@
-export class Topic {
+export interface Topic {
   name: string;
   offsets: KafkaTopicOffset[];
 }

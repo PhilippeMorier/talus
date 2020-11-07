@@ -1,6 +1,6 @@
 module.exports = {
-  name: 'shared',
-  preset: '../../jest.config.js',
+  displayName: 'shared',
+  preset: '../../jest.preset.js',
   // https://github.com/nrwl/nx/issues/837#issuecomment-501188633
   reporters: [
     'default',

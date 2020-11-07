@@ -10,20 +10,20 @@ import {
 } from '../scene-viewer-container/scene-viewer-container.actions';
 import { addUndo, redone, undone } from './undo-redo.actions';
 import {
+  State,
   reducer,
   selectCurrentRedoEndAction,
   selectCurrentRedoStartAction,
   selectCurrentUndoEndAction,
   selectCurrentUndoStartAction,
-  State,
 } from './undo-redo.reducer';
 
 describe('UndoRedoReducer', () => {
-  const voxelChange0 = createVoxelChange([0, 0, 0]);
+  const voxelChange0 = createVoxelChange({ x: 0, y: 0, z: 0 });
   const step0 = createStep(voxelChange0);
-  const voxelChange1 = createVoxelChange([1, 1, 1]);
+  const voxelChange1 = createVoxelChange({ x: 1, y: 1, z: 1 });
   const step1 = createStep(voxelChange1);
-  const voxelChange2 = createVoxelChange([2, 2, 2]);
+  const voxelChange2 = createVoxelChange({ x: 2, y: 2, z: 2 });
   const step2 = createStep(voxelChange2);
 
   it('should be undoing', () => {

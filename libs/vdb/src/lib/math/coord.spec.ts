@@ -10,69 +10,76 @@ import {
   offset,
   offsetBy,
   removeFraction,
+  toKey,
 } from './coord';
 
 describe('Coord', () => {
-  it('should add coordinates', () => {
-    const c1: Coord = [1, 2, 3];
-    const c2: Coord = [3, 2, 1];
+  it('gets string representation', () => {
+    const coord = { x: 1, y: 2, z: 3 };
 
-    expect(add(c1, c2)).toEqual([4, 4, 4]);
+    expect(toKey(coord)).toEqual('{"x":1,"y":2,"z":3}');
+  });
+
+  it('should add coordinates', () => {
+    const c1 = { x: 1, y: 2, z: 3 };
+    const c2 = { x: 3, y: 2, z: 1 };
+
+    expect(add(c1, c2)).toEqual({ x: 4, y: 4, z: 4 });
   });
 
   it('should create minimal coordinate', () => {
-    expect(createMinCoord()).toEqual([
-      Number.MIN_SAFE_INTEGER,
-      Number.MIN_SAFE_INTEGER,
-      Number.MIN_SAFE_INTEGER,
-    ]);
+    expect(createMinCoord()).toEqual({
+      x: Number.MIN_SAFE_INTEGER,
+      y: Number.MIN_SAFE_INTEGER,
+      z: Number.MIN_SAFE_INTEGER,
+    });
   });
 
   it('should consider coordinates equal', () => {
-    const c1: Coord = [1, 2, 3];
-    const c2: Coord = [1, 2, 3];
+    const c1 = { x: 1, y: 2, z: 3 };
+    const c2 = { x: 1, y: 2, z: 3 };
 
     expect(areEqual(c1, c2)).toBeTruthy();
   });
 
   it('should create clone', () => {
-    const c1: Coord = [1, 2, 3];
+    const c1 = { x: 1, y: 2, z: 3 };
 
     expect(clone(c1)).toEqual(c1);
     expect(clone(c1)).not.toBe(c1);
   });
 
   it('should create coord with minimal components', () => {
-    const c1: Coord = [10, 1, 20];
-    const c2: Coord = [0, 30, 2];
+    const c1 = { x: 10, y: 1, z: 20 };
+    const c2 = { x: 0, y: 30, z: 2 };
 
-    expect(minComponent(c1, c2)).toEqual([0, 1, 2]);
+    expect(minComponent(c1, c2)).toEqual({ x: 0, y: 1, z: 2 });
   });
 
   it('should offset by 10', () => {
-    const coord: Coord = [1, 2, 3];
+    const coord = { x: 1, y: 2, z: 3 };
 
-    expect(offsetBy(coord, 10)).toEqual([11, 12, 13]);
+    expect(offsetBy(coord, 10)).toEqual({ x: 11, y: 12, z: 13 });
   });
 
   it('should offset inline by 10', () => {
-    const coord: Coord = [1, 2, 3];
+    const coord = { x: 1, y: 2, z: 3 };
     offset(coord, 10);
 
-    expect(coord).toEqual([11, 12, 13]);
+    expect(coord).toEqual({ x: 11, y: 12, z: 13 });
   });
 
   it('should remove fraction', () => {
-    const coord: Coord = [-0, +0, +55.9735458326445];
+    const coord = { x: -0, y: +0, z: +55.9735458326445 };
     removeFraction(coord);
 
-    expect(coord).toEqual([0, 0, 55]);
+    expect(coord).toEqual({ x: 0, y: 0, z: 55 });
   });
 
   it.each([
-    [[0, 0, 0], [1, 1, 1], true],
-    [[0, 6, 6], [1, 1, 1], true],
-    [[3, 3, 3], [1, 1, 1], false],
+    [{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }, true],
+    [{ x: 0, y: 6, z: 6 }, { x: 1, y: 1, z: 1 }, true],
+    [{ x: 3, y: 3, z: 3 }, { x: 1, y: 1, z: 1 }, false],
   ])('should check if less', (a: Coord, b: Coord, isLesser: boolean) => {
     expect(lessThan(a, b)).toEqual(isLesser);
   });
@@ -81,43 +88,43 @@ describe('Coord', () => {
 describe('CoordBBox', () => {
   describe('expand()', () => {
     it('should expand from coordinate with given dimension', () => {
-      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+      const box = new CoordBBox({ x: 3, y: 0, z: 0 }, { x: 20, y: 5, z: 20 });
 
-      box.expand([0, 1, 5], 10);
+      box.expand({ x: 0, y: 1, z: 5 }, 10);
 
-      expect(box.min).toEqual([0, 0, 0]);
-      expect(box.max).toEqual([20, 10, 20]);
+      expect(box.min).toEqual({ x: 0, y: 0, z: 0 });
+      expect(box.max).toEqual({ x: 20, y: 10, z: 20 });
     });
 
     it('should expand bounding box to enclose point (x, y, z)', () => {
-      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
+      const box = new CoordBBox({ x: 3, y: 0, z: 0 }, { x: 20, y: 5, z: 20 });
 
-      box.expand([0, 1, 5]);
+      box.expand({ x: 0, y: 1, z: 5 });
 
-      expect(box.min).toEqual([0, 0, 0]);
-      expect(box.max).toEqual([20, 5, 20]);
+      expect(box.min).toEqual({ x: 0, y: 0, z: 0 });
+      expect(box.max).toEqual({ x: 20, y: 5, z: 20 });
     });
 
     it('should union bounding box with the given bounding box', () => {
-      const box = new CoordBBox([3, 0, 0], [20, 5, 20]);
-      const otherBox = new CoordBBox([2, 1, 3], [30, 10, 40]);
+      const box = new CoordBBox({ x: 3, y: 0, z: 0 }, { x: 20, y: 5, z: 20 });
+      const otherBox = new CoordBBox({ x: 2, y: 1, z: 3 }, { x: 30, y: 10, z: 40 });
 
       box.expand(otherBox);
 
-      expect(box.min).toEqual([2, 0, 0]);
-      expect(box.max).toEqual([30, 10, 40]);
+      expect(box.min).toEqual({ x: 2, y: 0, z: 0 });
+      expect(box.max).toEqual({ x: 30, y: 10, z: 40 });
     });
   });
 
   it.each([
-    [[3, 3, 3], [5, 5, 5], true], // complete inside
-    [[-1, 0, 0], [5, 5, 5], false], // min outside
-    [[0, 0, 0], [10, 10, 11], false], // max outside
-    [[0, 0, 0], [9, 10, 10], true], // same min
-    [[1, 0, 0], [10, 10, 10], true], // same max
-    [[0, 0, 0], [10, 10, 10], true], // same box
+    [{ x: 3, y: 3, z: 3 }, { x: 5, y: 5, z: 5 }, true], // complete inside
+    [{ x: -1, y: 0, z: 0 }, { x: 5, y: 5, z: 5 }, false], // min outside
+    [{ x: 0, y: 0, z: 0 }, { x: 10, y: 10, z: 11 }, false], // max outside
+    [{ x: 0, y: 0, z: 0 }, { x: 9, y: 10, z: 10 }, true], // same min
+    [{ x: 1, y: 0, z: 0 }, { x: 10, y: 10, z: 10 }, true], // same max
+    [{ x: 0, y: 0, z: 0 }, { x: 10, y: 10, z: 10 }, true], // same box
   ])('should detect if box is inside or not', (min: Coord, max: Coord, inside: boolean) => {
-    const box = new CoordBBox([0, 0, 0], [10, 10, 10]);
+    const box = new CoordBBox({ x: 0, y: 0, z: 0 }, { x: 10, y: 10, z: 10 });
     const insideBox = new CoordBBox(min, max);
 
     expect(box.isInside(insideBox)).toEqual(inside);

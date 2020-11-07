@@ -1,7 +1,7 @@
 import { OverlayRef } from '@angular/cdk/overlay';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { UiProgressSpinnerModule, UiSceneViewerTestModule, UI_OVERLAY_DATA } from '@talus/ui';
+import { UI_OVERLAY_DATA, UiProgressSpinnerModule, UiSceneViewerTestModule } from '@talus/ui';
 import { of } from 'rxjs';
 import * as fromApp from '../../app.reducer';
 import { initialMockState } from '../../testing';
@@ -12,25 +12,27 @@ describe('LoadFileContainerComponent', () => {
   let component: LoadFileContainerComponent;
   let fixture: ComponentFixture<LoadFileContainerComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LoadFileContainerComponent],
-      imports: [UiSceneViewerTestModule, UiProgressSpinnerModule],
-      providers: [
-        { provide: UI_OVERLAY_DATA, useValue: {} },
-        { provide: OverlayRef, useValue: {} },
-        {
-          provide: LoadFileService,
-          useValue: {
-            load: () => of({ coords: [], isConverting: false, isLoading: false, progress: 100 }),
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LoadFileContainerComponent],
+        imports: [UiSceneViewerTestModule, UiProgressSpinnerModule],
+        providers: [
+          { provide: UI_OVERLAY_DATA, useValue: {} },
+          { provide: OverlayRef, useValue: {} },
+          {
+            provide: LoadFileService,
+            useValue: {
+              load: () => of({ coords: [], isConverting: false, isLoading: false, progress: 100 }),
+            },
           },
-        },
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-      ],
-    }).compileComponents();
-  }));
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoadFileContainerComponent);

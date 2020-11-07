@@ -1,7 +1,7 @@
 module.exports = {
   coverageDirectory: '../../coverage/libs/ui',
-  name: 'ui',
-  preset: '../../jest.config.js',
+  displayName: 'ui',
+  preset: '../../jest.preset.js',
   // https://github.com/nrwl/nx/issues/837#issuecomment-501188633
   reporters: [
     'default',
@@ -37,10 +37,12 @@ module.exports = {
       diagnostics: false, // https://github.com/nrwl/nx/issues/1439#issuecomment-593684534
       tsConfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.(html|svg)$',
-      astTransformers: [
-        'jest-preset-angular/build/InlineFilesTransformer',
-        'jest-preset-angular/build/StripStylesTransformer',
-      ],
+      astTransformers: {
+        before: [
+          'jest-preset-angular/build/InlineFilesTransformer',
+          'jest-preset-angular/build/StripStylesTransformer',
+        ],
+      },
     },
   },
 };

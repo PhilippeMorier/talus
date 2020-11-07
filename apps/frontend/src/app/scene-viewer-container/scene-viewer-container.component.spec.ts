@@ -1,16 +1,16 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ChangeDetectionStrategy, Component, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MemoizedSelector } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { rgbaToInt, Tool } from '@talus/model';
+import { Tool, rgbaToInt } from '@talus/model';
 import {
+  UI_OVERLAY_DATA,
   UiFullscreenOverlayModule,
   UiPointerButton,
   UiPointerPickInfo,
   UiSceneViewerService,
-  UI_OVERLAY_DATA,
 } from '@talus/ui';
 import { Coord } from '@talus/vdb';
 import { Subject } from 'rxjs';
@@ -38,32 +38,36 @@ describe('SceneViewerContainerComponent', () => {
   let mockStore: MockStore<fromApp.State>;
   let mockSelectedToolIdSelector: MemoizedSelector<fromApp.State, Tool>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [UiFullscreenOverlayModule],
-      declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
-      providers: [
-        GridService,
-        { provide: UI_OVERLAY_DATA, useValue: {} },
-        { provide: OverlayRef, useValue: {} },
-        { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-      ],
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [UiFullscreenOverlayModule],
+        declarations: [SceneViewerContainerComponent, SceneViewerStubComponent],
+        providers: [
+          GridService,
+          { provide: UI_OVERLAY_DATA, useValue: {} },
+          { provide: OverlayRef, useValue: {} },
+          { provide: UiSceneViewerService, useValue: { resizeView: () => {} } },
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+        ],
+      }).compileComponents();
 
-    mockStore = TestBed.inject(MockStore);
+      mockStore = TestBed.inject(MockStore);
 
-    mockSelectedToolIdSelector = mockStore.overrideSelector(
-      fromApp.selectSelectedToolId,
-      Tool.SetVoxel,
-    );
-  }));
+      mockSelectedToolIdSelector = mockStore.overrideSelector(
+        fromApp.selectSelectedToolId,
+        Tool.SetVoxel,
+      );
+    }),
+  );
 
-  beforeEach(async(() => {
-    spyOn(mockStore, 'dispatch');
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      spyOn(mockStore, 'dispatch');
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SceneViewerContainerComponent);
@@ -82,9 +86,9 @@ describe('SceneViewerContainerComponent', () => {
 
   it('should dispatch no action if not PointerButton.Main', () => {
     stubComponent.pointerPick.next({
-      pickedPoint: [0, 0, 0],
+      pickedPoint: { x: 0, y: 0, z: 0 },
       pointerButton: UiPointerButton.Secondary,
-      normal: [0, 0, 0],
+      normal: { x: 0, y: 0, z: 0 },
     });
 
     // Only once called due to first initial added voxel at [0, 0, 0]
@@ -93,50 +97,50 @@ describe('SceneViewerContainerComponent', () => {
 
   it.each([
     [
-      [1, 0.2, 0.9],
-      [1, 0, 0], // fraction part is removed
-      [1, 0, 0],
+      { x: 1, y: 0.2, z: 0.9 },
+      { x: 1, y: 0, z: 0 }, // fraction part is removed
+      { x: 1, y: 0, z: 0 },
     ],
     [
-      [0.99999999, 0.2, 0.9],
-      [1, 0, 0],
-      [1, 0, 0],
+      { x: 0.99999999, y: 0.2, z: 0.9 },
+      { x: 1, y: 0, z: 0 },
+      { x: 1, y: 0, z: 0 },
     ],
     [
-      [0.2, 0.99999999, 0.9],
-      [0, 1, 0],
-      [0, 1, 0],
+      { x: 0.2, y: 0.99999999, z: 0.9 },
+      { x: 0, y: 1, z: 0 },
+      { x: 0, y: 1, z: 0 },
     ],
     [
-      [0.2, 0.9, 0.0000000001],
-      [0, 0, 0],
-      [0, 0, 1],
+      { x: 0.2, y: 0.9, z: 0.0000000001 },
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 1 },
     ],
     [
-      [0, 0, -0.999999],
-      [0, 0, -1],
-      [0, 0, 1],
+      { x: 0, y: 0, z: -0.999999 },
+      { x: 0, y: 0, z: -1 },
+      { x: 0, y: 0, z: 1 },
     ],
     [
-      [0, -2, -0.999999],
-      [0, -3, -2],
-      [0, 0, -1],
+      { x: 0, y: -2, z: -0.999999 },
+      { x: 0, y: -3, z: -2 },
+      { x: 0, y: 0, z: -1 },
     ],
     [
-      [-0, -2, 3],
-      [0, -3, 2],
-      [0, 0, -1],
+      { x: -0, y: -2, z: 3 },
+      { x: 0, y: -3, z: 2 },
+      { x: 0, y: 0, z: -1 },
     ],
     [
-      [0.5, 1.4, -1],
-      [0, 1, -1],
-      [0, 0, 1],
+      { x: 0.5, y: 1.4, z: -1 },
+      { x: 0, y: 1, z: -1 },
+      { x: 0, y: 0, z: 1 },
     ],
   ])(
     'should dispatch `setVoxel` action for %j',
     (pickedPoint: Coord, xyz: Coord, normal: Coord) => {
       const initialAction = setVoxel({
-        xyz: [0, 0, 0],
+        xyz: { x: 0, y: 0, z: 0 },
         newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
       });
       const action = setVoxel({
@@ -163,39 +167,39 @@ describe('SceneViewerContainerComponent', () => {
 
   it.each([
     [
-      [1.0000000000001, 0.5, 0.5],
-      [0, 0, 0], // fraction part is removed
-      [1, 0, 0],
+      { x: 1.0000000000001, y: 0.5, z: 0.5 },
+      { x: 0, y: 0, z: 0 }, // fraction part is removed
+      { x: 1, y: 0, z: 0 },
     ],
     [
-      [0.999999999999, 0.5, 0.5],
-      [1, 0, 0],
-      [-1, 0, 0],
+      { x: 0.999999999999, y: 0.5, z: 0.5 },
+      { x: 1, y: 0, z: 0 },
+      { x: -1, y: 0, z: 0 },
     ],
     [
-      [1.0000000000001, -0.5, 0.5],
-      [1, -1, 0],
-      [-1, 0, 0],
+      { x: 1.0000000000001, y: -0.5, z: 0.5 },
+      { x: 1, y: -1, z: 0 },
+      { x: -1, y: 0, z: 0 },
     ],
     [
-      [-0.999999999999, -0.5, 0.5],
-      [-1, -1, 0],
-      [-1, 0, 0],
+      { x: -0.999999999999, y: -0.5, z: 0.5 },
+      { x: -1, y: -1, z: 0 },
+      { x: -1, y: 0, z: 0 },
     ],
     [
-      [-2.0000000000001, -0.5, 0.5],
-      [-3, -1, 0],
-      [1, 0, 0],
+      { x: -2.0000000000001, y: -0.5, z: 0.5 },
+      { x: -3, y: -1, z: 0 },
+      { x: 1, y: 0, z: 0 },
     ],
     [
-      [0.5, 0.999999999999, 0.5],
-      [0, 0, 0],
-      [0, 1, 0],
+      { x: 0.5, y: 0.999999999999, z: 0.5 },
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
     ],
     [
-      [0.5461420538559825, 0.4841910809236776, -2],
-      [0, 0, -2],
-      [0, 0, -1],
+      { x: 0.5461420538559825, y: 0.4841910809236776, z: -2 },
+      { x: 0, y: 0, z: -2 },
+      { x: 0, y: 0, z: -1 },
     ],
   ])(
     'should dispatch `removeVoxel` action for %j',
@@ -205,7 +209,7 @@ describe('SceneViewerContainerComponent', () => {
       fixture.detectChanges();
 
       const initialAction = setVoxel({
-        xyz: [0, 0, 0],
+        xyz: { x: 0, y: 0, z: 0 },
         newValue: rgbaToInt({ r: 0, g: 255, b: 0, a: 255 }),
       });
 

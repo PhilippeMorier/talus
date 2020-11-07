@@ -16,7 +16,7 @@ aliases:
   # https://github.com/cypress-io/cypress-docker-images/tree/master/included
   - &use_docker_cypress_included
     docker:
-      - image: cypress/included:4.12.1
+      - image: cypress/included:5.5.0
 
   - &workspace ~/talus
 
@@ -88,11 +88,25 @@ jobs:
     <<: *set_working_directory
 
     steps:
+      # https://circleci.com/docs/2.0/caching/#source-caching
+      - restore_cache:
+          keys:
+            - source-v1-{{ .Branch }}-{{ .Revision }}
+            - source-v1-{{ .Branch }}-
+            - source-v1-
+
       - checkout
+
+      - save_cache:
+          key: source-v1-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - '.git'
 
       # Download and cache dependencies
       # https://circleci.com/docs/2.0/caching/#yarn-node
+      # https://circleci.com/docs/2.0/yarn/
       - restore_cache:
+          name: Restore Cache
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -101,13 +115,13 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: yarn install
+          command: yarn install --frozen-lockfile --immutable --cache-folder ~/.cache/yarn
 
       - save_cache:
+          name: Save Yarn & Cypress Cache
           paths:
             - ~/.cache/yarn
             - ~/.cache/Cypress
-            - ~/.cache/nx
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
@@ -148,7 +162,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: yarn test:code-coverage
+          command: yarn test:ci
 
       - *store_test_results
 

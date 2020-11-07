@@ -20,8 +20,8 @@ describe('VolumeRayIntersector', () => {
   });
 
   it('should march over one single leaf node', () => {
-    grid.tree.setValueOn([0, 0, 0], 42);
-    grid.tree.setValueOn([7, 7, 7], 42);
+    grid.tree.setValueOn({ x: 0, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 7, y: 7, z: 7 }, 42);
 
     const intersector = new VolumeRayIntersector(grid);
     expect(intersector.setIndexRay(ray)).toBeTruthy();
@@ -36,9 +36,9 @@ describe('VolumeRayIntersector', () => {
   });
 
   it('should march over two adjacent leaf nodes', () => {
-    grid.tree.setValueOn([0, 0, 0], 42);
-    grid.tree.setValueOn([8, 0, 0], 42);
-    grid.tree.setValueOn([15, 7, 7], 42);
+    grid.tree.setValueOn({ x: 0, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 8, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 15, y: 7, z: 7 }, 42);
 
     const intersector = new VolumeRayIntersector(grid);
     expect(intersector.setIndexRay(ray)).toBeTruthy();
@@ -51,10 +51,10 @@ describe('VolumeRayIntersector', () => {
   });
 
   it('should march over two adjacent leafs followed by a gab and leaf', () => {
-    grid.tree.setValueOn([0 * 8, 0, 0], 42);
-    grid.tree.setValueOn([1 * 8, 0, 0], 42);
-    grid.tree.setValueOn([3 * 8, 0, 0], 42);
-    grid.tree.setValueOn([3 * 8 + 7, 7, 7], 42);
+    grid.tree.setValueOn({ x: 0 * 8, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 1 * 8, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 3 * 8, y: 0, z: 0 }, 42);
+    grid.tree.setValueOn({ x: 3 * 8 + 7, y: 7, z: 7 }, 42);
 
     const intersector = new VolumeRayIntersector(grid);
     expect(intersector.setIndexRay(ray)).toBeTruthy();
@@ -71,21 +71,21 @@ describe('VolumeRayIntersector', () => {
 
   it('should get all voxel coordinates', () => {
     const expectedCoords: Coord[] = [
-      [0, 0, 0],
-      [1, 0, 0],
-      [1, 1, 0],
-      [2, 1, 0],
-      [2, 2, 0],
-      [3, 2, 0],
-      [3, 3, 0],
-      [4, 3, 0],
-      [5, 3, 0],
-      [5, 4, 0],
-      [6, 4, 0],
-      [6, 5, 0],
-      [7, 5, 0],
-      [7, 6, 0],
-      [8, 6, 0],
+      { x: 0, y: 0, z: 0 },
+      { x: 1, y: 0, z: 0 },
+      { x: 1, y: 1, z: 0 },
+      { x: 2, y: 1, z: 0 },
+      { x: 2, y: 2, z: 0 },
+      { x: 3, y: 2, z: 0 },
+      { x: 3, y: 3, z: 0 },
+      { x: 4, y: 3, z: 0 },
+      { x: 5, y: 3, z: 0 },
+      { x: 5, y: 4, z: 0 },
+      { x: 6, y: 4, z: 0 },
+      { x: 6, y: 5, z: 0 },
+      { x: 7, y: 5, z: 0 },
+      { x: 7, y: 6, z: 0 },
+      { x: 8, y: 6, z: 0 },
     ];
     // ...xx
     // ..xx.

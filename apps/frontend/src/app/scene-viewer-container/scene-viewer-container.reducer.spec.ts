@@ -10,16 +10,19 @@ import { reducer } from './scene-viewer-container.reducer';
 
 describe('SceneViewerContainerReducer', () => {
   const voxelChange: VoxelChange = {
-    xyz: [0, 0, 0],
-    affectedNodeOrigin: [0, 0, 0],
+    xyz: { x: 0, y: 0, z: 0 },
+    affectedNodeOrigin: { x: 0, y: 0, z: 0 },
     oldValue: 24,
     newValue: 42,
   };
 
   it('should set first line coord', () => {
-    const stateWithOneLineCoord = reducer(undefined, startLine({ xyz: [0, 0, 0], newValue: 42 }));
+    const stateWithOneLineCoord = reducer(
+      undefined,
+      startLine({ xyz: { x: 0, y: 0, z: 0 }, newValue: 42 }),
+    );
 
-    expect(stateWithOneLineCoord.selectedLineStartCoord).toEqual([0, 0, 0]);
+    expect(stateWithOneLineCoord.selectedLineStartCoord).toEqual({ x: 0, y: 0, z: 0 });
   });
 
   it('should reset selected line changes and start coord', () => {
@@ -29,7 +32,7 @@ describe('SceneViewerContainerReducer', () => {
         isDarkTheme: true,
         lastLoadedMessageOffset: 0,
         selectedLineChanges: [voxelChange, voxelChange, voxelChange],
-        selectedLineStartCoord: [0, 0, 0],
+        selectedLineStartCoord: { x: 0, y: 0, z: 0 },
         topics: [],
       },
       finishLine({ voxelChanges: [] }),

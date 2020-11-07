@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Action } from '@ngrx/store';
-import { DecodedKafkaMessage, Topic } from '@talus/model';
+import { DecodedKafkaMessage, fromKafkaMessage, Topic } from '@talus/model';
 import {
   CompressionTypes,
   Consumer,
@@ -57,7 +57,7 @@ export class KafkaService {
 
     return subscribe$.pipe(
       flatMap(() => runEachMessage$),
-      map(({ message }) => DecodedKafkaMessage.fromKafkaMessage(message)),
+      map(({ message }) => fromKafkaMessage(message)),
     );
   }
 

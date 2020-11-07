@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action, MemoizedSelector } from '@ngrx/store';
@@ -17,21 +17,23 @@ describe('OptionsPanelComponent', () => {
   const actions$: Observable<Action> = of();
   let mockSelectorSelectColors: MemoizedSelector<fromApp.State, Rgba[]>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [OptionsPanelComponent],
-      imports: [MatIconModule],
-      providers: [
-        provideMockStore<fromApp.State>({
-          initialState: initialMockState,
-        }),
-        provideMockActions(() => actions$),
-      ],
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [OptionsPanelComponent],
+        imports: [MatIconModule],
+        providers: [
+          provideMockStore<fromApp.State>({
+            initialState: initialMockState,
+          }),
+          provideMockActions(() => actions$),
+        ],
+      }).compileComponents();
 
-    mockStore = TestBed.inject(MockStore);
-    mockSelectorSelectColors = mockStore.overrideSelector(fromApp.selectColors, []);
-  }));
+      mockStore = TestBed.inject(MockStore);
+      mockSelectorSelectColors = mockStore.overrideSelector(fromApp.selectColors, []);
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OptionsPanelComponent);
