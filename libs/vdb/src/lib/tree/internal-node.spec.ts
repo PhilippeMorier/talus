@@ -23,12 +23,12 @@ describe('InternalNode', () => {
         [{ x: 0, y: 1, z: 0 }, false],
         [{ x: 1, y: 0, z: 0 }, true],
         [{ x: 1, y: 0, z: 0 }, false],
-        [new Coord(0, 0, InternalNode1.DIM - 1), true],
-        [new Coord(0, 0, InternalNode1.DIM - 1), false],
-        [new Coord(0, InternalNode1.DIM - 1, 0), true],
-        [new Coord(0, InternalNode1.DIM - 1, 0), false],
-        [new Coord(InternalNode1.DIM - 1, 0, 0), true],
-        [new Coord(InternalNode1.DIM - 1, 0, 0), false],
+        [{ x: 0, y: 0, z: InternalNode1.DIM - 1 }, true],
+        [{ x: 0, y: 0, z: InternalNode1.DIM - 1 }, false],
+        [{ x: 0, y: InternalNode1.DIM - 1, z: 0 }, true],
+        [{ x: 0, y: InternalNode1.DIM - 1, z: 0 }, false],
+        [{ x: InternalNode1.DIM - 1, y: 0, z: 0 }, true],
+        [{ x: InternalNode1.DIM - 1, y: 0, z: 0 }, false],
       ])(
         '%#. should set and activate at the given index %j the value (%j)',
         (xyz: Coord, value: boolean) => {
@@ -49,24 +49,24 @@ describe('InternalNode', () => {
 
     describe('coordToOffset()', () => {
       it.each([
-        [new Coord(0, 0, LeafNode.DIM), 1],
-        [new Coord(0, LeafNode.DIM, LeafNode.DIM), 8 + 1],
-        [new Coord(LeafNode.DIM, LeafNode.DIM, LeafNode.DIM), 64 + 8 + 1],
+        [{ x: 0, y: 0, z: LeafNode.DIM }, 1],
+        [{ x: 0, y: LeafNode.DIM, z: LeafNode.DIM }, 8 + 1],
+        [{ x: LeafNode.DIM, y: LeafNode.DIM, z: LeafNode.DIM }, 64 + 8 + 1],
 
-        [new Coord(0, 0, LeafNode.DIM * 0), 0],
-        [new Coord(0, 0, LeafNode.DIM * 1), 1],
-        [new Coord(0, 0, LeafNode.DIM * 2), 2],
-        [new Coord(0, 0, LeafNode.DIM * 3), 3],
+        [{ x: 0, y: 0, z: LeafNode.DIM * 0 }, 0],
+        [{ x: 0, y: 0, z: LeafNode.DIM * 1 }, 1],
+        [{ x: 0, y: 0, z: LeafNode.DIM * 2 }, 2],
+        [{ x: 0, y: 0, z: LeafNode.DIM * 3 }, 3],
 
-        [new Coord(0, LeafNode.DIM * 0, 0), 0 * 8],
-        [new Coord(0, LeafNode.DIM * 1, 0), 1 * 8],
-        [new Coord(0, LeafNode.DIM * 2, 0), 2 * 8],
-        [new Coord(0, LeafNode.DIM * 3, 0), 3 * 8],
+        [{ x: 0, y: LeafNode.DIM * 0, z: 0 }, 0 * 8],
+        [{ x: 0, y: LeafNode.DIM * 1, z: 0 }, 1 * 8],
+        [{ x: 0, y: LeafNode.DIM * 2, z: 0 }, 2 * 8],
+        [{ x: 0, y: LeafNode.DIM * 3, z: 0 }, 3 * 8],
 
-        [new Coord(LeafNode.DIM * 0, 0, 0), 0 * 64],
-        [new Coord(LeafNode.DIM * 1, 0, 0), 1 * 64],
-        [new Coord(LeafNode.DIM * 2, 0, 0), 2 * 64],
-        [new Coord(LeafNode.DIM * 3, 0, 0), 3 * 64],
+        [{ x: LeafNode.DIM * 0, y: 0, z: 0 }, 0 * 64],
+        [{ x: LeafNode.DIM * 1, y: 0, z: 0 }, 1 * 64],
+        [{ x: LeafNode.DIM * 2, y: 0, z: 0 }, 2 * 64],
+        [{ x: LeafNode.DIM * 3, y: 0, z: 0 }, 3 * 64],
 
         // 24 / 8 = 3 -> 3 x 64 = 192  ╮
         // 9  / 8 = 1 -> 1 x 8  = 8    ├─> 192 + 8 + 2 = 202
@@ -155,12 +155,11 @@ describe('InternalNode', () => {
     describe('setValueOn()', () => {
       const generateRandomInRange = (min: number, max: number): number =>
         Math.floor(Math.random() * (max - min + 1) + min);
-      const generateRandomCoord = (min: number, max: number): Coord =>
-        new Coord(
-          generateRandomInRange(min, max),
-          generateRandomInRange(min, max),
-          generateRandomInRange(min, max),
-        );
+      const generateRandomCoord = (min: number, max: number): Coord => ({
+        x: generateRandomInRange(min, max),
+        y: generateRandomInRange(min, max),
+        z: generateRandomInRange(min, max),
+      });
       const generateRandomCoords = (length: number, min: number, max: number): Coord[][] => {
         return Array.from({ length }, () => [generateRandomCoord(min, max)]);
       };
@@ -222,7 +221,7 @@ describe('InternalNode', () => {
         node2.setValueOn({ x: 0, y: 0, z: 0 }, expectedValues[0]);
         node2.setValueOn({ x: 0, y: 0, z: 50 }, expectedValues[1]);
         node2.setValueOn({ x: 0, y: 75, z: 0 }, expectedValues[2]);
-        node2.setValueOn(new Coord(InternalNode2.DIM - 1, 0, 0), expectedValues[3]);
+        node2.setValueOn({ x: InternalNode2.DIM - 1, y: 0, z: 0 }, expectedValues[3]);
 
         let counter = 0;
         for (const voxel of node2.beginVoxelOn()) {
