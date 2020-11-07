@@ -1,4 +1,4 @@
-import { Coord, LeafNode } from '@talus/vdb';
+import { LeafNode } from '@talus/vdb';
 import { InternalNode1, InternalNode2 } from './internal-node';
 import { Tree } from './tree';
 import { ValueAccessor3 } from './value-accessor';
@@ -172,7 +172,7 @@ describe('ValueAccessor', () => {
 
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed2Spy = spyOn<any>(accessor, 'isHashed2');
-      expect(accessor.probeInternalNode1(new Coord(LeafNode.DIM, 0, 0))).toBeInstanceOf(
+      expect(accessor.probeInternalNode1({ x: LeafNode.DIM, y: 0, z: 0 })).toBeInstanceOf(
         InternalNode1,
       );
       expect(isHashed2Spy.calls.count()).toEqual(0);
@@ -196,7 +196,7 @@ describe('ValueAccessor', () => {
       // Produce a cache L2 miss by accessing neighbouring InternalNode2
       accessor.setValueOn({ x: InternalNode2.DIM, y: 0, z: 0 }, 42);
 
-      expect(accessor.probeLeafNode(new Coord(LeafNode.DIM - 1, 0, 0))).toBeInstanceOf(LeafNode);
+      expect(accessor.probeLeafNode({ x: LeafNode.DIM - 1, y: 0, z: 0 })).toBeInstanceOf(LeafNode);
       expect(tree.root.probeLeafNodeAndCache).toBeCalledTimes(1);
     });
 
@@ -208,7 +208,7 @@ describe('ValueAccessor', () => {
       // Produce a cache L1 miss by accessing neighbouring InternalNode1
       accessor.setValueOn({ x: InternalNode1.DIM, y: 0, z: 0 }, 42);
 
-      expect(accessor.probeLeafNode(new Coord(0, LeafNode.DIM - 1, 0))).toBeInstanceOf(LeafNode);
+      expect(accessor.probeLeafNode({ x: 0, y: LeafNode.DIM - 1, z: 0 })).toBeInstanceOf(LeafNode);
       expect(tree.root.probeLeafNodeAndCache).not.toHaveBeenCalled();
     });
 
@@ -217,11 +217,11 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn({ x: 0, y: 0, z: 0 }, 42);
       // Produce a cache L0 miss by accessing neighbouring LeafNode
-      accessor.setValueOn(new Coord(LeafNode.DIM, 0, 0), 42);
+      accessor.setValueOn({ x: LeafNode.DIM, y: 0, z: 0 }, 42);
 
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed2Spy = spyOn<any>(accessor, 'isHashed2').and.callThrough();
-      expect(accessor.probeLeafNode(new Coord(0, LeafNode.DIM - 1, 0))).toBeInstanceOf(LeafNode);
+      expect(accessor.probeLeafNode({ x: 0, y: LeafNode.DIM - 1, z: 0 })).toBeInstanceOf(LeafNode);
       expect(isHashed2Spy.calls.count()).toEqual(0);
     });
 

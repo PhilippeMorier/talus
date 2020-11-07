@@ -1,13 +1,17 @@
 import { Coord } from '@talus/vdb';
 import { benchmark, suite } from '../../main';
 
+class Coordinate {
+  constructor(public x: number, public y: number, public z: number) {}
+}
+
 suite('[Coord] create', () => {
   benchmark('array=[1,1,1]', () => {
     const _array = [1, 1, 1];
   });
 
-  benchmark('coord=new Coord(1,1,1)', () => {
-    const _coord = new Coord(1, 1, 1);
+  benchmark('coord=new Coordinate(1,1,1)', () => {
+    const _coord = new Coordinate(1, 1, 1);
   });
 
   benchmark('coord={x:1,y:1,z:1}', () => {
