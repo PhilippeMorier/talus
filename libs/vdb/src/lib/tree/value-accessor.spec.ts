@@ -25,8 +25,8 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached({ x: 0, y: 0, z: 8 })).toBeTruthy();
       expect(accessor.isCached({ x: 0, y: 8, z: 0 })).toBeTruthy();
       expect(accessor.isCached({ x: 8, y: 0, z: 0 })).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM - 1))).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM))).toBeFalsy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM - 1 })).toBeTruthy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM })).toBeFalsy();
     });
 
     it('should return background value', () => {
@@ -53,8 +53,8 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached({ x: 0, y: 0, z: 8 })).toBeTruthy();
       expect(accessor.isCached({ x: 0, y: 8, z: 0 })).toBeTruthy();
       expect(accessor.isCached({ x: 8, y: 0, z: 0 })).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM - 1))).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM))).toBeFalsy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM - 1 })).toBeTruthy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM })).toBeFalsy();
 
       expect(accessor.isValueOn({ x: 0, y: 0, z: 0 })).toBeTruthy();
     });
@@ -85,8 +85,8 @@ describe('ValueAccessor', () => {
       expect(accessor.isCached({ x: 0, y: 0, z: 8 })).toBeTruthy();
       expect(accessor.isCached({ x: 0, y: 8, z: 0 })).toBeTruthy();
       expect(accessor.isCached({ x: 8, y: 0, z: 0 })).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM - 1))).toBeTruthy();
-      expect(accessor.isCached(new Coord(0, 0, InternalNode2.DIM))).toBeFalsy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM - 1 })).toBeTruthy();
+      expect(accessor.isCached({ x: 0, y: 0, z: InternalNode2.DIM })).toBeFalsy();
 
       expect(accessor.isValueOn({ x: 0, y: 0, z: 0 })).toBeFalsy();
     });
@@ -147,7 +147,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn({ x: 0, y: 0, z: 0 }, 42);
       // Produce a cache L2 miss by accessing neighbouring InternalNode2
-      accessor.setValueOn(new Coord(InternalNode2.DIM, 0, 0), 42);
+      accessor.setValueOn({ x: InternalNode2.DIM, y: 0, z: 0 }, 42);
 
       expect(accessor.probeInternalNode1({ x: 32, y: 0, z: 0 })).toBeInstanceOf(InternalNode1);
       expect(tree.root.probeInternalNode1AndCache).toBeCalledTimes(1);
@@ -159,7 +159,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn({ x: 0, y: 0, z: 0 }, 42);
       // Produce a cache L1 miss by accessing neighbouring InternalNode1
-      accessor.setValueOn(new Coord(InternalNode1.DIM, 0, 0), 42);
+      accessor.setValueOn({ x: InternalNode1.DIM, y: 0, z: 0 }, 42);
 
       expect(accessor.probeInternalNode1({ x: 32, y: 0, z: 0 })).toBeInstanceOf(InternalNode1);
       expect(tree.root.probeInternalNode1AndCache).not.toHaveBeenCalled();
@@ -194,7 +194,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn({ x: 0, y: 0, z: 0 }, 42);
       // Produce a cache L2 miss by accessing neighbouring InternalNode2
-      accessor.setValueOn(new Coord(InternalNode2.DIM, 0, 0), 42);
+      accessor.setValueOn({ x: InternalNode2.DIM, y: 0, z: 0 }, 42);
 
       expect(accessor.probeLeafNode(new Coord(LeafNode.DIM - 1, 0, 0))).toBeInstanceOf(LeafNode);
       expect(tree.root.probeLeafNodeAndCache).toBeCalledTimes(1);
@@ -206,7 +206,7 @@ describe('ValueAccessor', () => {
 
       accessor.setValueOn({ x: 0, y: 0, z: 0 }, 42);
       // Produce a cache L1 miss by accessing neighbouring InternalNode1
-      accessor.setValueOn(new Coord(InternalNode1.DIM, 0, 0), 42);
+      accessor.setValueOn({ x: InternalNode1.DIM, y: 0, z: 0 }, 42);
 
       expect(accessor.probeLeafNode(new Coord(0, LeafNode.DIM - 1, 0))).toBeInstanceOf(LeafNode);
       expect(tree.root.probeLeafNodeAndCache).not.toHaveBeenCalled();
@@ -232,7 +232,7 @@ describe('ValueAccessor', () => {
 
       // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       const isHashed1Spy = spyOn<any>(accessor, 'isHashed1').and.callThrough();
-      expect(accessor.probeLeafNode(new Coord(0, 0, LeafNode.DIM - 1))).toBeInstanceOf(LeafNode);
+      expect(accessor.probeLeafNode({ x: 0, y: 0, z: LeafNode.DIM - 1 })).toBeInstanceOf(LeafNode);
       expect(isHashed1Spy.calls.count()).toEqual(0);
     });
   });
