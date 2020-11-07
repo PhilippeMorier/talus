@@ -15,5 +15,6 @@
   "screenshotsFolder": "../../test-results/cypress/apps/frontend-e2e/screenshots",
   "supportFile": "./src/support/index.ts",
   "video": true,
-  "videosFolder": "../../test-results/cypress/apps/frontend-e2e/videos"
+  "videosFolder": "../../test-results/cypress/apps/frontend-e2e/videos",
+  "$schema": "https://on.cypress.io/cypress.schema.json"
 }
