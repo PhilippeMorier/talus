@@ -6,13 +6,13 @@ export interface DecodedKafkaMessage<T> {
   };
   key: string;
   offset: number;
-  value: T;
+  value?: T;
 }
 
 export function fromKafkaMessage<T>(message: KafkaMessage): DecodedKafkaMessage<T> {
   return {
     key: message.key.toString(),
-    value: JSON.parse(message.value.toString()),
+    ...(message.value && { value: JSON.parse(message.value.toString()) }),
     headers: { socketId: message.headers && message.headers['socketId'].toString() },
     offset: Number(message.offset),
   };

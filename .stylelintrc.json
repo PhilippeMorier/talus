@@ -6,6 +6,6 @@
   ],
   "rules": {
     "selector-type-no-unknown": [true, { "ignoreTypes": ["/^mat-/", "/^ui-/"] }],
-    "unit-whitelist": ["rem", "px", "%", "vh"]
+    "unit-allowed-list": ["rem", "px", "%", "vh"]
   }
 }
