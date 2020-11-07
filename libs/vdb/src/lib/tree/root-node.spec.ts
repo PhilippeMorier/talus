@@ -65,14 +65,14 @@ describe('RootNode', () => {
     root.setValueOn({ x: 102, y: 15, z: 127 }, 42);
     expect(root.getTableSize()).toEqual(1);
 
-    root.setValueOn(new Coord(0, 0, InternalNode2.DIM), 42);
-    root.setValueOn(new Coord(0, 1, InternalNode2.DIM), 42);
-    root.setValueOn(new Coord(1, 0, InternalNode2.DIM), 42);
+    root.setValueOn({ x: 0, y: 0, z: InternalNode2.DIM }, 42);
+    root.setValueOn({ x: 0, y: 1, z: InternalNode2.DIM }, 42);
+    root.setValueOn({ x: 1, y: 0, z: InternalNode2.DIM }, 42);
     expect(root.getTableSize()).toEqual(2);
 
-    root.setValueOn(new Coord(InternalNode2.DIM, 0, 0), 42);
-    root.setValueOn(new Coord(InternalNode2.DIM, 0, 1), 42);
-    root.setValueOn(new Coord(InternalNode2.DIM, 1, 0), 42);
+    root.setValueOn({ x: InternalNode2.DIM, y: 0, z: 0 }, 42);
+    root.setValueOn({ x: InternalNode2.DIM, y: 0, z: 1 }, 42);
+    root.setValueOn({ x: InternalNode2.DIM, y: 1, z: 0 }, 42);
     expect(root.getTableSize()).toEqual(3);
   });
 
@@ -81,9 +81,9 @@ describe('RootNode', () => {
     const expectedValues = [0, 1, 2, 3];
 
     root.setValueOn({ x: 0, y: 0, z: 0 }, expectedValues[0]);
-    root.setValueOn(new Coord(0, 0, InternalNode2.DIM), expectedValues[1]);
-    root.setValueOn(new Coord(0, InternalNode2.DIM, 0), expectedValues[2]);
-    root.setValueOn(new Coord(InternalNode2.DIM, 0, 0), expectedValues[3]);
+    root.setValueOn({ x: 0, y: 0, z: InternalNode2.DIM }, expectedValues[1]);
+    root.setValueOn({ x: 0, y: InternalNode2.DIM, z: 0 }, expectedValues[2]);
+    root.setValueOn({ x: InternalNode2.DIM, y: 0, z: 0 }, expectedValues[3]);
 
     let counter = 0;
     for (const voxel of root.beginVoxelOn()) {
@@ -98,13 +98,13 @@ describe('RootNode', () => {
     const root = new RootNode(-1);
 
     root.setValueOn({ x: 0, y: 0, z: 0 }, 42);
-    root.setValueOn(new Coord(0, 0, LeafNode.DIM), 42);
+    root.setValueOn({ x: 0, y: 0, z: LeafNode.DIM }, 42);
 
     expect(root.numBackgroundTiles()).toEqual(0);
   });
 
   it('should convert Coord to key and back', () => {
-    const coord: Coord = new Coord(InternalNode2.DIM, InternalNode2.DIM - 1, InternalNode2.DIM);
+    const coord: Coord = { x: InternalNode2.DIM, y: InternalNode2.DIM - 1, z: InternalNode2.DIM };
     const key = RootNode.coordToKey(coord);
 
     expect(key).toEqual(`256,0,256`);

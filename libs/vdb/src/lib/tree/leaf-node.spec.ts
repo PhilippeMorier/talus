@@ -1,4 +1,3 @@
-import { Coord } from '@talus/vdb';
 import { LeafNode } from './leaf-node';
 
 describe('LeafNode', () => {
@@ -68,7 +67,7 @@ describe('LeafNode', () => {
       for (let x = 0; x < LeafNode.DIM; x++) {
         for (let y = 0; y < LeafNode.DIM; y++) {
           for (let z = 0; z < LeafNode.DIM; z++) {
-            leaf.setValueOn(new Coord(x, y, z), 42);
+            leaf.setValueOn({ x, y, z }, 42);
             onCounter++;
 
             expect(leaf.onVoxelCount()).toEqual(onCounter);
@@ -179,14 +178,20 @@ describe('LeafNode', () => {
       const dim = LeafNode.DIM;
       const dimSquare = LeafNode.DIM * LeafNode.DIM;
 
-      const leaf = new LeafNode<number>(new Coord(dim, dim, dim));
+      const leaf = new LeafNode<number>({ x: dim, y: dim, z: dim });
 
-      expect(leaf.offsetToGlobalCoord(0)).toEqual(new Coord(dim, dim, dim));
-      expect(leaf.offsetToGlobalCoord(1)).toEqual(new Coord(dim, dim, dim + 1));
-      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1)).toEqual(new Coord(dim + 1, dim, dim + 1));
-      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1 * dim + 1)).toEqual(
-        new Coord(dim + 1, dim + 1, dim + 1),
-      );
+      expect(leaf.offsetToGlobalCoord(0)).toEqual({ x: dim, y: dim, z: dim });
+      expect(leaf.offsetToGlobalCoord(1)).toEqual({ x: dim, y: dim, z: dim + 1 });
+      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1)).toEqual({
+        x: dim + 1,
+        y: dim,
+        z: dim + 1,
+      });
+      expect(leaf.offsetToGlobalCoord(1 * dimSquare + 1 * dim + 1)).toEqual({
+        x: dim + 1,
+        y: dim + 1,
+        z: dim + 1,
+      });
     });
   });
 });
