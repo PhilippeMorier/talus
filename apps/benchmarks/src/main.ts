@@ -5,6 +5,13 @@ import { getJunitXml, TestSuite, TestSuiteReport } from 'junit-xml';
 
 import config from '../benchmark.config';
 
+type NameableSuite = Suite & Nameable;
+type NameableBenchmark = Benchmark & Nameable;
+
+interface Nameable {
+  name: string;
+}
+
 const suites: Suite[] = [];
 const report: TestSuiteReport = {
   name: config.suiteName,
@@ -54,7 +61,7 @@ function logFastestBenchmarkNames(suiteToLog: Suite): void {
   const fastestBenchmarkNames = suiteToLog.filter('fastest').map((bm: Target) => bm.name);
   const conjugatedVerbBe = fastestBenchmarkNames.length > 1 ? 'are' : 'is';
 
-  console.log(`\n${(suiteToLog as any).name}`);
+  console.log(`\n${(suiteToLog as NameableSuite).name}`);
   console.log(`  Fastest ${conjugatedVerbBe} "${fastestBenchmarkNames.join(', ')}"`);
 }
 
@@ -81,7 +88,7 @@ function convertToTestSuite(suiteName: string, currentSuite: Suite): TestSuite {
     time: benchmarks.map(bm => bm.stats.mean).reduce((previous, current) => previous + current, 0),
     testCases: benchmarks.map(bm => ({
       classname: suiteName,
-      name: (bm as any).name,
+      name: (bm as NameableBenchmark).name,
       time: bm.stats.mean,
     })),
     timestamp: new Date(benchmarks[0].times.timeStamp),
