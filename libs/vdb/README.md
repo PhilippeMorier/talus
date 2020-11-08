@@ -110,6 +110,7 @@ Currently, only the following hard-coded tree structure/hierarchy is supported:
   [VDB: High-Resolution Sparse Volumes with Dynamic Topology](http://www.museth.org/Ken/Publications_files/Museth_TOG13.pdf)
 - [Ken Museth](https://ken.museth.org/) explaining VDB:
   [OpenVDB: An Open Source Data Structure and Toolkit for High-Resolution Volumes](https://youtu.be/7hUH92xwODg)
+- [OpenVDB introduction 2013](https://artifacts.aswf.io/io/aswf/openvdb/openvdb_introduction_2013/1.0.0/openvdb_introduction_2013-1.0.0.pdf)
 - VDB on GPU:
   [Fast Fluid Simulations with Sparse Volumes on the GPU](https://www.researchgate.net/publication/325488464_Fast_Fluid_Simulations_with_Sparse_Volumes_on_the_GPU)
 - [Raytracing Sparse Volumes with NVIDIA® GVDB in DesignWorks](https://developer.nvidia.com/sites/default/files/akamai/designworks/docs/GVDB_TechnicalTalk_Siggraph2016.pdf)

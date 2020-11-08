@@ -59,9 +59,7 @@ export interface UiTopicDialogSelectionResult {
 
       <div mat-dialog-actions align="end">
         <button mat-button (click)="onCancelClick()">Cancel</button>
-        <button mat-button (click)="onOkClick()" [disabled]="!topicFrom.valid">
-          Ok
-        </button>
+        <button mat-button (click)="onOkClick()" [disabled]="!topicFrom.valid">Ok</button>
       </div>
     </div>
   `,
