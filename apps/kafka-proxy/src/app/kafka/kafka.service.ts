@@ -47,7 +47,7 @@ export class KafkaService {
   runConsumer(
     consumer: Consumer,
     topic: string,
-    fromBeginning: boolean = true,
+    fromBeginning = true,
   ): Observable<DecodedKafkaMessage<Action>> {
     const subscribe$ = fromPromise(consumer.subscribe({ topic, fromBeginning }));
 

@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { notNil } from '@talus/shared';
 import { UiColorDialogService } from '@talus/ui';
 import { of } from 'rxjs';
-import { catchError, flatMap, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { openColorDialog, openColorDialogFailed, selectColor } from './options-panel.actions';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class OptionsPanelEffects {
       map(({ colors, selectedColorIndex }) =>
         this.colorDialogService.open(colors, selectedColorIndex),
       ),
-      flatMap(dialogRef => dialogRef.beforeClosed()),
+      mergeMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
       map(colorIndex => selectColor({ colorIndex })),
       catchError(() => of(openColorDialogFailed())),

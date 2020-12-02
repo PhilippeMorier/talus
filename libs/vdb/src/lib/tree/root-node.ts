@@ -299,7 +299,7 @@ export class RootNode<T> implements HashableNode<T> {
    * as dense, i.e. with all voxels active. Else the individual
    * active voxels are visited to produce a tight bbox.
    */
-  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels = true): void {
     for (const [key, nodeStruct] of this.table) {
       const child = nodeStruct.isChild() && nodeStruct.getChild();
       if (child) {

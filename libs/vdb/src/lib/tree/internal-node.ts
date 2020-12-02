@@ -15,7 +15,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
 
   protected nodes: NodeUnion<T, HashableNode<T>>[] = [];
 
-  constructor(xyz: Coord, value?: T, active: boolean = false) {
+  constructor(xyz: Coord, value?: T, active = false) {
     if (this instanceof InternalNode1) {
       this.initializeInternalNode1(xyz, value, active);
     } else if (this instanceof InternalNode2) {
@@ -305,7 +305,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
    * If visitVoxels is false LeafNodes will be approximated as dense, i.e. with all
    * voxels active. Else the individual active voxels are visited to produce a tight bbox.
    */
-  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels = true): void {
     if (bbox.isInside(this.getNodeBoundingBox())) {
       return;
     }
@@ -352,7 +352,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     }
   }
 
-  protected initializeInternalNode1(xyz: Coord, value?: T, active: boolean = false): void {
+  protected initializeInternalNode1(xyz: Coord, value?: T, active = false): void {
     this.initialize(
       InternalNode1.NUM_VALUES,
       InternalNode1.DIM_MAX_INDEX_INVERTED,
@@ -362,7 +362,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     );
   }
 
-  protected initializeInternalNode2(xyz: Coord, value?: T, active: boolean = false): void {
+  protected initializeInternalNode2(xyz: Coord, value?: T, active = false): void {
     this.initialize(
       InternalNode2.NUM_VALUES,
       InternalNode2.DIM_MAX_INDEX_INVERTED,
@@ -377,7 +377,7 @@ abstract class InternalNode<T> implements HashableNode<T> {
     dimMaxIndexInverted: number,
     xyz: Coord,
     value?: T,
-    active: boolean = false,
+    active = false,
   ): void {
     this.childMask = new NodeMask(numValues);
     this.valueMask = new NodeMask(numValues);

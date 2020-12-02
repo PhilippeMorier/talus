@@ -17,8 +17,8 @@ import { Vec3 } from './vec3';
 export class DDA {
   private readonly DIM = 1 << this.log2Dim;
 
-  private t0: number = -1;
-  private t1: number = -1;
+  private t0 = -1;
+  private t1 = -1;
 
   private voxel: Coord = createMaxCoord();
   private step: Coord = createMaxCoord();
