@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { DecodedKafkaMessage, EventName, Topic } from '@talus/model';
 import { Observable, Subject } from 'rxjs';
-import { filter, flatMap, map, withLatestFrom } from 'rxjs/operators';
+import { filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { WebSocketService } from './web-socket.service';
 
 export interface SyncableAction extends Action {
@@ -31,7 +31,7 @@ export class KafkaProxyService {
       .pipe(map(topics => topics.filter(topic => topic.name !== '__consumer_offsets')));
 
     this.messages$ = this.topicSubject.pipe(
-      flatMap(topic =>
+      mergeMap(topic =>
         this.webSocketService.emitAndListen<string, DecodedKafkaMessage<SyncableAction>>(
           EventName.ConsumeTopic,
           topic,

@@ -6,7 +6,7 @@ import { notNil } from '@talus/shared';
 import { UiSceneViewerService, UiTopicDialogService } from '@talus/ui';
 import { Coord, areEqual, toKey } from '@talus/vdb';
 import { of } from 'rxjs';
-import { catchError, filter, flatMap, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as fromApp from '../app.reducer';
 import {
   createTopic,
@@ -183,7 +183,7 @@ export class SceneViewerContainerEffects {
     this.actions$.pipe(
       ofType(openTopicDialog),
       map(({ topics }) => this.topicDialogService.open(topics.map(topic => topic.name))),
-      flatMap(dialogRef => dialogRef.beforeClosed()),
+      mergeMap(dialogRef => dialogRef.beforeClosed()),
       notNil(),
       map(({ topicName, isNewTopic }) =>
         isNewTopic

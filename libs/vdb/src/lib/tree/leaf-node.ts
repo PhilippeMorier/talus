@@ -63,7 +63,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * @param value - a value with which to fill the buffer
    * @param active - the active state to which to initialize all voxels
    */
-  constructor(origin: Coord, value?: T, active: boolean = false) {
+  constructor(origin: Coord, value?: T, active = false) {
     this.buffer = new LeafBuffer<T>(LeafNode.NUM_VOXELS, value);
     this.valueMask = new NodeMask(LeafNode.NUM_VALUES, active);
 
@@ -191,7 +191,7 @@ export class LeafNode<T> implements HashableNode<T> {
    * If visitVoxels is false this LeafNode will be approximated as dense, i.e. with all
    * voxels active. Else the individual active voxels are visited to produce a tight bbox.
    */
-  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels: boolean = true): void {
+  evalActiveBoundingBox(bbox: CoordBBox, visitVoxels = true): void {
     const thisBbox = this.getNodeBoundingBox();
 
     // this LeafNode is already enclosed in the bbox

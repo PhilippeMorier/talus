@@ -1,7 +1,7 @@
 import { GlobalPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { ComponentType } from '@angular/cdk/portal/portal';
-import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { Injectable, InjectionToken, Injector, StaticProvider } from '@angular/core';
 
 // Injection token that can be used to access the data that was passed in to an overlay.
 export const UI_OVERLAY_DATA = new InjectionToken<string>('UiOverlayData');
@@ -33,13 +33,15 @@ export class UiFullscreenOverlayService {
     return this.overlayRef;
   }
 
-  private createInjector(data: unknown): PortalInjector {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    const injectorTokens = new WeakMap<object, unknown>([
-      [UI_OVERLAY_DATA, data],
-      [OverlayRef, this.overlayRef],
-    ]);
+  private createInjector(data: unknown): Injector {
+    const providers: StaticProvider[] = [
+      { provide: UI_OVERLAY_DATA, useValue: data },
+      { provide: OverlayRef, useValue: this.overlayRef },
+    ];
 
-    return new PortalInjector(this.injector, injectorTokens);
+    return Injector.create({
+      providers,
+      parent: this.injector,
+    });
   }
 }
