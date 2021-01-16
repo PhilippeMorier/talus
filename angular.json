@@ -58,7 +58,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -94,7 +95,8 @@
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/apps/frontend"]
         }
       }
     },
@@ -147,7 +149,8 @@
           "options": {
             "jestConfig": "libs/ui/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/libs/ui"]
         },
         "storybook": {
           "builder": "@nrwl/storybook:storybook",
@@ -177,7 +180,8 @@
             "ci": {
               "quiet": true
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         }
       },
       "schematics": {
@@ -214,7 +218,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -254,7 +259,8 @@
           "options": {
             "jestConfig": "libs/vdb/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/libs/vdb"]
         },
         "build": {
           "builder": "@nrwl/node:package",
@@ -265,7 +271,8 @@
             "main": "libs/vdb/src/index.ts",
             "assets": ["libs/vdb/*.md"],
             "srcRootForCompilationRoot": "libs/vdb/src"
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         }
       }
     },
@@ -320,7 +327,8 @@
           "options": {
             "jestConfig": "libs/model/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/libs/model"]
         }
       }
     },
@@ -352,7 +360,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -375,7 +384,8 @@
           "options": {
             "jestConfig": "apps/kafka-proxy/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/apps/kafka-proxy"]
         }
       }
     },
@@ -403,7 +413,8 @@
           "options": {
             "jestConfig": "libs/shared/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/libs/shared"]
         }
       }
     }
