@@ -190,8 +190,10 @@ See scripts on [nx.dev](https://nx.dev/angular/api/workspace/npmscripts)
 
 ### Update
 
-- `yarn nx update @angular/cli @angular/core @angular/cdk @angular/material`
-- [Angular Update Guide](https://update.angular.io/)
+- `yarn nx migrate @angular/cli`
+- `yarn nx migrate @angular/core`
+- `yarn nx migrate @angular/cdk`
+- `yarn nx migrate @angular/material`
 
 ### Generate transpiled code with AOT-compiler `ngc`
 
