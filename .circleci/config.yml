@@ -243,6 +243,8 @@ jobs:
 
       - run:
           name: Create index files
+          # Use different character (# instead /) as delimiter for `sed` command
+          # See: https://unix.stackexchange.com/a/378991
           command: |
             cd ./dist/apps/frontend
 
@@ -250,11 +252,11 @@ jobs:
 
             echo 'export LAST_COMMIT_HASH_SHORT=$(echo $CIRCLE_SHA1 | cut -c1-7)' >> $BASH_ENV
 
-            echo 'export BASE_PATH_CIRCLE_CI="https:\/\/$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com\/$CIRCLE_NODE_INDEX\/dist\/apps\/frontend\/"' >> $BASH_ENV
-            echo 'export BASE_PATH_GITHUB="https:\/\/philippemorier.github.io\/talus\/$CIRCLE_BRANCH\/$LAST_COMMIT_HASH_SHORT\/apps\/frontend\/"' >> $BASH_ENV
+            echo 'export BASE_PATH_CIRCLE_CI="https://$CIRCLE_BUILD_NUM-143906444-gh.circle-artifacts.com/$CIRCLE_NODE_INDEX/dist/apps/frontend/"' >> $BASH_ENV
+            echo 'export BASE_PATH_GITHUB="https://philippemorier.github.io/talus/$CIRCLE_BRANCH/$LAST_COMMIT_HASH_SHORT/apps/frontend/"' >> $BASH_ENV
 
-            echo 'export REPLACE_CIRCLE_CI="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_CIRCLE_CI/g"' >> $BASH_ENV
-            echo 'export REPLACE_GITHUB="s/BASE_PATH_PLACEHOLDER/$BASE_PATH_GITHUB/g"' >> $BASH_ENV
+            echo 'export REPLACE_CIRCLE_CI="s#BASE_PATH_PLACEHOLDER#$BASE_PATH_CIRCLE_CI#g"' >> $BASH_ENV
+            echo 'export REPLACE_GITHUB="s#BASE_PATH_PLACEHOLDER#$BASE_PATH_GITHUB#g"' >> $BASH_ENV
 
       # Variable interpolation doesn't work on multi-line command
       - run:
