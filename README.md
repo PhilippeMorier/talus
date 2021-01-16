@@ -9,29 +9,31 @@ This project was generated using [Nx](https://nx.dev) with the following command
 3. Add to top level `schematics` in `angular.json`
 
    ```json
-    "schematics": {
-      "@nrwl/schematics:application": {
-        "style": "scss",
-        "unitTestRunner": "jest",
-        "e2eTestRunner": "cypress"
-      },
-      "@nrwl/schematics:library": {
-        "style": "scss",
-        "unitTestRunner": "jest"
-      },
-      "@nrwl/angular:ng-add": {
-        "unitTestRunner": "jest",
-        "e2eTestRunner": "cypress"
-      },
-      "@nrwl/angular:application": {
-        "unitTestRunner": "jest",
-        "e2eTestRunner": "cypress"
-      },
-      "@nrwl/angular:component": {
-        "styleext": "scss",
-        "inlineTemplate": true
-      }
-    }
+   {
+     "schematics": {
+       "@nrwl/schematics:application": {
+         "style": "scss",
+         "unitTestRunner": "jest",
+         "e2eTestRunner": "cypress"
+       },
+       "@nrwl/schematics:library": {
+         "style": "scss",
+         "unitTestRunner": "jest"
+       },
+       "@nrwl/angular:ng-add": {
+         "unitTestRunner": "jest",
+         "e2eTestRunner": "cypress"
+       },
+       "@nrwl/angular:application": {
+         "unitTestRunner": "jest",
+         "e2eTestRunner": "cypress"
+       },
+       "@nrwl/angular:component": {
+         "styleext": "scss",
+         "inlineTemplate": true
+       }
+     }
+   }
    ```
 
 4. https://nx.dev/api/angular/schematics/ng-add  
