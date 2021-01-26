@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Light } from '@babylonjs/core';
+import { IPointerEvent, Light } from '@babylonjs/core';
 import { ActionManager } from '@babylonjs/core/Actions/actionManager';
 // Babylon.js needs to target individual files to fully benefit from tree shaking.
 // See: https://doc.babylonjs.com/features/es6_support#tree-shaking
@@ -195,10 +195,7 @@ export class UiSceneViewerService {
   }
 
   private attachCameraControl(camera: ArcRotateCamera): void {
-    const renderingCanvas = this.engine?.getRenderingCanvas();
-    if (renderingCanvas) {
-      camera.attachControl(renderingCanvas, true, false, 2);
-    }
+    camera.attachControl(true, false, 2);
   }
 
   private detachCameraControl(): void {
@@ -213,14 +210,14 @@ export class UiSceneViewerService {
     scene.onPointerMove = this.onPointerMove;
   }
 
-  private onPointerPick = (event: PointerEvent, pickInfo: PickingInfo): void => {
+  private onPointerPick = (event: IPointerEvent, pickInfo: PickingInfo): void => {
     const info = getPointerPickInfo(event, pickInfo);
     if (info) {
       this.pointerPickSubject$.next(info);
     }
   };
 
-  private onPointerMove = (event: PointerEvent, pickInfo: PickingInfo): void => {
+  private onPointerMove = (event: IPointerEvent, pickInfo: PickingInfo): void => {
     const info = getPointerPickInfo(event, pickInfo);
     if (info) {
       this.pointUnderPointerSubject$.next(info);
@@ -277,7 +274,7 @@ function getNormal(pickedMesh: AbstractMesh, faceId: number): Coord {
 }
 
 function getPointerPickInfo(
-  event: PointerEvent,
+  event: IPointerEvent,
   pickInfo: PickingInfo,
 ): UiPointerPickInfo | undefined {
   if (!pickInfo.pickedMesh || !pickInfo.pickedPoint) {
